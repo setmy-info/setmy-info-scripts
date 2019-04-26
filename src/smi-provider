@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+. `smi-base-path`
+echo ${PROVIDER}
+
+exit ${?}

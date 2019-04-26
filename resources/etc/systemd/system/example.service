@@ -1,0 +1,14 @@
+[Unit]
+Description=Example project service
+After=syslog.target
+
+[Service]
+Type=simple
+User=microservice
+Group=microservice
+ExecStart=/opt/setmy.info/bin/example.service start
+ExecStop=/opt/setmy.info/bin/example.service stop
+ExecReload=/opt/setmy.info/bin/example.service reload
+
+[Install]
+WantedBy=multi-user.target

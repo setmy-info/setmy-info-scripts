@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+. `smi-base-path`
+OS=`uname`
+
+FreeBSDEtcLocation() {
+    echo `smi-location`/etc/${PROVIDER}
+    return
+}
+
+LinuxEtcLocation() {
+    echo `smi-location`/etc
+    return
+}
+
+${OS}EtcLocation
+
+exit 0

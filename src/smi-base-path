@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+BASE_FILE_NAME="base.sh"
+SMI_LIB_DIR=`smi-lib-location`
+echo "${SMI_LIB_DIR}/${BASE_FILE_NAME}"
+
+exit 0

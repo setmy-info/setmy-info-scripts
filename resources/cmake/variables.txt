@@ -1,0 +1,84 @@
+
+SET (PROVIDER "setmy.info")
+
+IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    SET (CMAKE_INSTALL_PREFIX  "/opt/${PROVIDER}")
+ENDIF()
+IF(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+    SET (CMAKE_INSTALL_PREFIX  "/usr/local")
+    set(CPACK_ENABLE_FREEBSD_PKG ON CACHE BOOL "Enable pkg(8) generator in CPack")
+ENDIF()
+
+IF (${CMAKE_SYSTEM_PROCESSOR} MATCHES i386|i586|i686)
+        set ( ARCH "32")
+ELSE ()
+        set ( ARCH "64")
+ENDIF ()
+
+IF(EXISTS "/etc/debian_version")
+    SET ( DISTRIBUTION "Debian")
+ENDIF()
+IF(EXISTS "/etc/redhat-release")
+   SET ( DISTRIBUTION "RedHat")
+ENDIF()
+IF(EXISTS "/bin/freebsd-version")
+   SET ( DISTRIBUTION "FreeBSD")
+ENDIF()
+
+message("-- CMAKE_SYSTEM_INFO_FILE: ${CMAKE_SYSTEM_INFO_FILE}")
+message("-- CMAKE_SYSTEM_NAME:      ${CMAKE_SYSTEM_NAME}")
+message("-- CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
+message("-- CMAKE_SYSTEM:           ${CMAKE_SYSTEM}")
+message("-- CMAKE_HOST_UNIX:        ${CMAKE_HOST_UNIX}")
+message("-- CMAKE_SYSTEM_VERSION:   ${CMAKE_SYSTEM_VERSION}")
+message("-- DISTRIBUTION:           ${DISTRIBUTION}")
+
+SET (PROJECT_VERSION                ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
+SET (PROJECT_PATH                   ${PROJECT_BINARY_DIR})
+SET (BUILD_PATH                     ${PROJECT_PATH}/build)
+SET (RESOURCES_PATH                 ${PROJECT_PATH}/resources)
+SET (SOURCES_PATH                   ${PROJECT_PATH}/src)
+SET (INSTALL_SCRIPTS_PATH           ${RESOURCES_PATH}/install)
+SET (BINARY_OUTPUT_PATH             ${BUILD_PATH}/bin)
+SET (LIBRARY_OUTPUT_PATH            ${BUILD_PATH}/lib)
+SET (MAN_OUTPUT_PATH                ${BUILD_PATH}/man)
+SET (DOC_OUTPUT_PATH                ${BUILD_PATH}/doc)
+SET (ETC_OUTPUT_PATH                ${BUILD_PATH}/etc)
+SET (INFO_OUTPUT_PATH               ${BUILD_PATH}/info)
+SET (DEFAULT_PACKAGES               "TGZ;STGZ;7Z;TBZ2;TXZ;TZ;ZIP")
+
+SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
+
+ADD_CUSTOM_TARGET(build             ALL)
+ADD_CUSTOM_TARGET(clear             )
+
+ADD_CUSTOM_TARGET(dirs
+    mkdir -p ${BUILD_PATH} &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man1 &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man2 &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man3 &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man4 &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man5 &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man6 &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man7 &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man8 &&
+    mkdir -p ${MAN_OUTPUT_PATH}/man9 &&
+    mkdir -p ${INFO_OUTPUT_PATH} &&
+    mkdir -p ${LIBRARY_OUTPUT_PATH}/profiles &&
+    mkdir -p ${ETC_OUTPUT_PATH}/profile.d
+)
+
+ADD_CUSTOM_TARGET(gzipman     cp ${RESOURCES_PATH}/man/*.1 ${MAN_OUTPUT_PATH}/man1 && gzip -f ${MAN_OUTPUT_PATH}/man1/*.1)
+ADD_CUSTOM_TARGET(etcfiles    cp -R ${RESOURCES_PATH}/etc/profile.d/* ${ETC_OUTPUT_PATH}/profile.d)
+ADD_CUSTOM_TARGET(libfiles    )
+ADD_CUSTOM_TARGET(scrips      cp ${SOURCES_PATH}/* ${BINARY_OUTPUT_PATH})
+ADD_CUSTOM_TARGET(buildClear  rm -rf ./build)
+ADD_CUSTOM_TARGET(pkgClear    rm -rf ./${PROJECT_NAME}*.tar.gz ./${PROJECT_NAME}*.rpm ./${PROJECT_NAME}*.sh ./${PROJECT_NAME}*.deb ./${PROJECT_NAME}*.tar.Z ./${PROJECT_NAME}*.7z ./${PROJECT_NAME}*.tar.bz2 ./${PROJECT_NAME}*.tar.xz ./${PROJECT_NAME}*.zip)
+ADD_CUSTOM_TARGET(cmakeClear  rm -rf ./*.cmake ./_CPack_Packages install_manifest.txt CMakeCache.txt resources/CMakeFiles resources/cmake/CMakeFiles resources/cmake/*.cmake resources/cmake/CMakeCache.txt)
+
+ADD_DEPENDENCIES(build gzipman scrips etcfiles libfiles)
+ADD_DEPENDENCIES(gzipman  dirs)
+ADD_DEPENDENCIES(scrips   dirs)
+ADD_DEPENDENCIES(etcfiles dirs)
+ADD_DEPENDENCIES(libfiles dirs)
+ADD_DEPENDENCIES(clear cmakeClear buildClear pkgClear)

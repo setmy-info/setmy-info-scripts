@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+ . `smi-base-path`
+OS=`uname`
+
+FreeBSDVarLocation() {
+    echo `smi-location`/var/${PROVIDER}
+    return
+}
+
+LinuxVarLocation() {
+    echo /var/opt/${PROVIDER}
+    return
+}
+
+${OS}VarLocation
+
+exit ${?}

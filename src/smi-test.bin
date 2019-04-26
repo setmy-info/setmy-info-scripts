@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+echo "VERSION=${VERSION}"
+echo "CUR_DIR=${CUR_DIR}"
+for var in "$@"
+do
+    echo "Param: $var"
+done
+
+exit 0

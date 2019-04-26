@@ -1,0 +1,16 @@
+# Copyright 2018 Imre Tabur <imre.tabur@eesti.ee>
+
+export PROVIDER=setmy.info
+export VERSION=@PROJECT_VERSION@
+export COMMAND_NAME=`basename $0`
+BINARY_COMMAND_NAME=@CMAKE_INSTALL_PREFIX@/bin/$COMMAND_NAME.bin
+export LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib:$LD_LIBRARY_PATH
+export CUR_DIR=`pwd`
+
+include() {
+    FILE_TO_INCLUDE=${1}
+    if [ -f ${FILE_TO_INCLUDE} ]; then
+        . ${FILE_TO_INCLUDE}
+    fi
+    return
+}

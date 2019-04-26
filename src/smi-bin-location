@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+SMI_HOME=`smi-location`
+echo "${SMI_HOME}/bin"
+
+exit 0

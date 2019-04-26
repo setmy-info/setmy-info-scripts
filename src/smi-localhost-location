@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+# Deprecated
+
+ETC_LOCATION=`smi-etc-location`
+echo ${ETC_LOCATION}/localhost
+
+exit ${?}

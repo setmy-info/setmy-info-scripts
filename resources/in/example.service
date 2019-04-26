@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# Copyright 2018 Imre Tabur <imre.tabur@eesti.ee>
+
+# systemd script
+
+PROJECT_NAME=example-start-project
+PROJECT_VERSION=1.2.0-SNAPSHOT
+
+PROVIDER_NAME=has
+CUR_DIR=`pwd`
+OPT_DIR=/opt
+VAR_DIR=/var
+
+# TODO : load from libs/data
+#PROJECT_OPT_DIR=${OPT_DIR}/${PROVIDER_NAME}
+#PROJECT_BIN_DIR=${PROJECT_OPT_DIR}/bin
+#PROJECT_LIB_DIR=${PROJECT_OPT_DIR}/lib
+#PROJECT_DOC_DIR=${PROJECT_OPT_DIR}/doc
+#PROJECT_INFO_DIR=${PROJECT_OPT_DIR}/info
+#PROJECT_MAN_DIR=${PROJECT_OPT_DIR}/man
+
+#PROJECT_VAR_DIR=${VAR_DIR}/${OPT_DIR}/${PROVIDER_NAME}
+#WORKING_DIR=${PROJECT_VAR_DIR}/${PROJECT_NAME}
+
+#JAVA_BIN_DIR=${JAVA_HOME}/bin
+JAR_FILE_NAME=${PROJECT_NAME}-${PROJECT_VERSION}.jar
+#JAR_FILE=${HAS_LIB_DIR}/${JAR_FILE_NAME}
+#HOME=${JAVA_BIN_DIR}:${HOME}
+RETURN_VALUE=0
+
+restartService() {
+    echo "restartService"
+    stopService
+    sleep 3
+    startService
+}
+
+preService() {
+    echo "preService"
+    RETURN_VALUE=0
+}
+
+startService() {
+    java -jar ${JAR_FILE}
+    RETURN_VALUE=${?}
+}
+
+postService() {
+    echo "postService"
+    RETURN_VALUE=0
+}
+
+stopService() {
+    echo "stopService"
+    RETURN_VALUE=0
+}
+
+reloadService() {
+    echo "reloadService"
+    RETURN_VALUE=0
+}
+
+stopPostService() {
+    echo "stopPostService"
+    RETURN_VALUE=0
+}
+
+cd ${WORKING_DIR}
+case $1 in
+    start|stop|reload|pre|post|stopPost|restart) ${1}Service;;
+esac
+cd ${CUR_DIR}
+
+exit ${RETURN_VALUE}

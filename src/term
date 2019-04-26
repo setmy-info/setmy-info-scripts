@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+COMMAND_NAME=`basename ${0}`
+COMMAND_USER_FOLDER=${HOME}/.${COMMAND_NAME}
+PROFILE_SUFFIX="profile"
+DEFAULT_PROFILE_NAME=${COMMAND_USER_FOLDER}/default.${PROFILE_SUFFIX}
+
+if [ ! -d "${COMMAND_USER_FOLDER}" ]; then
+    mkdir -p ${COMMAND_USER_FOLDER}
+fi
+
+if [ -f "${DEFAULT_PROFILE_NAME}" ]; then
+    echo "Loading ${DEFAULT_PROFILE_NAME}"
+    . ${DEFAULT_PROFILE_NAME}
+fi
+
+loadProfiles() {
+    LOADABLE_PROFILES=${*}
+    PROFILES=
+    for arg in ${LOADABLE_PROFILES}; do
+        PROFILE_FILE_NAME="${HOME}/.${COMMAND_NAME}/${arg}.${PROFILE_SUFFIX}"
+        if [ -f "${PROFILE_FILE_NAME}" ]; then
+    	echo "Loading ${PROFILE_FILE_NAME}"
+    	. ${PROFILE_FILE_NAME}
+    	loadProfiles ${PROFILES}
+        fi
+    done
+    return
+}
+
+loadProfiles ${DEFAULT_PROFILES}
+loadProfiles ${*}
+konsole --workdir ${PWD} &
+
+exit 0

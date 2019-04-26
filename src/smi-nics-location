@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+# Deprecated
+
+ETC_LOCATION=`smi-localhost-location`
+echo ${ETC_LOCATION}/nics
+
+exit ${?}

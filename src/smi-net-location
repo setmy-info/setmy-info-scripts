@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+# Deprecated
+
+VAR_LOCATION=`smi-var-location`
+echo ${VAR_LOCATION}/net
+
+exit ${?}

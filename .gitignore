@@ -4,3 +4,13 @@ CMakeCache.txt
 CMakeFiles/
 Makefile
 build/
+_CPack_Packages/
+install_manifest.txt
+*.7z
+*.rpm
+*.sh
+*.tar.Z
+*.tar.bz2
+*.tar.gz
+*.tar.xz
+*.zip

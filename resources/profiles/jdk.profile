@@ -1,2 +1,2 @@
-export JAVA_HOME=/opt/jdk-12.0.1
+export JAVA_HOME=/opt/jdk
 export PATH=${PATH}:${JAVA_HOME}/bin

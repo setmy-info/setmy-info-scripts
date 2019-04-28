@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
+
+COMMAND_NAME=term
+PROFILE_NAME=${1}
+COMMAND_HOME_FOLDER=${HOME}/.${COMMAND_NAME}
+PROFILE_SUFFIX="profile"
+SYSTEM_PROFILES_DIR=`smi-lib-location`/profiles
+
+createHomeTermFolder() {
+    if [ ! -d "${COMMAND_HOME_FOLDER}" ]; then
+        mkdir -p ${COMMAND_HOME_FOLDER}
+    fi
+}
+
+copyBase() {
+    if [ ! -f "${HOME}/.${COMMAND_NAME}/${PROFILE_NAME}.${PROFILE_SUFFIX}" ] &&  [ -f "${SYSTEM_PROFILES_DIR}/${PROFILE_NAME}.${PROFILE_SUFFIX}" ]; then
+        cp ${SYSTEM_PROFILES_DIR}/${PROFILE_NAME}.${PROFILE_SUFFIX} ${HOME}/.${COMMAND_NAME}/${PROFILE_NAME}.${PROFILE_SUFFIX}
+    fi
+}
+
+edit() {
+    nano ${HOME}/.${COMMAND_NAME}/${PROFILE_NAME}.${PROFILE_SUFFIX}
+}
+
+createHomeTermFolder
+copyBase
+edit
+
+exit ${?}

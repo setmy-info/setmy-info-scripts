@@ -1,1 +1,1 @@
-export PROFILES="node mvn go jdk"
+export PROFILES="jdk mvn go cmake node gradle ant"

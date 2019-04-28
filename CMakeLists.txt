@@ -48,6 +48,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-nics-location"      DESTINATION bin
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-nodes-location"     DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-services-location"  DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-software"       DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/term-profile"       DESTINATION bin)
 
 INCLUDE(./resources/cmake/install.txt)
 INCLUDE(./resources/cmake/packaging.txt)

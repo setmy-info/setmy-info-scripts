@@ -3,34 +3,36 @@
 # Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
 
 COMMAND_NAME=`basename ${0}`
-COMMAND_USER_FOLDER=${HOME}/.${COMMAND_NAME}
+COMMAND_HOME_FOLDER=${HOME}/.${COMMAND_NAME}
 PROFILE_SUFFIX="profile"
-DEFAULT_PROFILE_NAME=${COMMAND_USER_FOLDER}/default.${PROFILE_SUFFIX}
+SYSTEM_PROFILES_DIR=`smi-lib-location`/profiles
 
-if [ ! -d "${COMMAND_USER_FOLDER}" ]; then
-    mkdir -p ${COMMAND_USER_FOLDER}
-fi
-
-if [ -f "${DEFAULT_PROFILE_NAME}" ]; then
-    echo "Loading ${DEFAULT_PROFILE_NAME}"
-    . ${DEFAULT_PROFILE_NAME}
-fi
+createHomeTermFolder() {
+    if [ ! -d "${COMMAND_HOME_FOLDER}" ]; then
+        mkdir -p ${COMMAND_HOME_FOLDER}
+    fi
+}
 
 loadProfiles() {
     LOADABLE_PROFILES=${*}
     PROFILES=
-    for arg in ${LOADABLE_PROFILES}; do
-        PROFILE_FILE_NAME="${HOME}/.${COMMAND_NAME}/${arg}.${PROFILE_SUFFIX}"
-        if [ -f "${PROFILE_FILE_NAME}" ]; then
-    	echo "Loading ${PROFILE_FILE_NAME}"
-    	. ${PROFILE_FILE_NAME}
-    	loadProfiles ${PROFILES}
+    for LOADABLE_PROFILE in ${LOADABLE_PROFILES}; do
+        HOME_PROFILE_FILE_NAME="${HOME}/.${COMMAND_NAME}/${LOADABLE_PROFILE}.${PROFILE_SUFFIX}"
+        SYSTEM_PROFILE_FILE_NAME="${SYSTEM_PROFILES_DIR}/${LOADABLE_PROFILE}.${PROFILE_SUFFIX}"
+        if [ -f "${HOME_PROFILE_FILE_NAME}" ]; then
+            echo "Loading: ${HOME_PROFILE_FILE_NAME}"
+            . ${HOME_PROFILE_FILE_NAME}
+            loadProfiles ${PROFILES}
+        elif [ -f "${SYSTEM_PROFILE_FILE_NAME}" ]; then
+            echo "Loading: ${SYSTEM_PROFILE_FILE_NAME}"
+            . ${SYSTEM_PROFILE_FILE_NAME}
+            loadProfiles ${PROFILES}
         fi
     done
     return
 }
 
-loadProfiles ${DEFAULT_PROFILES}
+createHomeTermFolder
 loadProfiles ${*}
 konsole --workdir ${PWD} &
 

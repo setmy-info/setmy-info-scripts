@@ -2,6 +2,16 @@
 
 # Copyright 2018 Imre Tabur <imre.tabur@eesti.ee>
 
-echo /usr/local
+OS=`uname`
+
+FreeBSDLocation() {
+    echo /usr/local
+}
+
+LinuxLocation() {
+    echo /opt/setmy.info
+}
+
+${OS}Location
 
 exit 0

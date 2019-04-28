@@ -8,9 +8,9 @@ export LD_LIBRARY_PATH=@CMAKE_INSTALL_PREFIX@/lib:$LD_LIBRARY_PATH
 export CUR_DIR=`pwd`
 
 include() {
-    FILE_TO_INCLUDE=${1}
-    if [ -f ${FILE_TO_INCLUDE} ]; then
-        . ${FILE_TO_INCLUDE}
+    FILE_TO_INCLUDE=$1
+    if [ -f $FILE_TO_INCLUDE ]; then
+        . $FILE_TO_INCLUDE
     fi
     return
 }

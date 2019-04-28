@@ -2,6 +2,8 @@
 
 # Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
 
+# Just example program. Not exactly binary, but for testing and example. 
+
 echo "VERSION=${VERSION}"
 echo "CUR_DIR=${CUR_DIR}"
 for var in "$@"

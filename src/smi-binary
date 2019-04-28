@@ -2,7 +2,11 @@
 
 # Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
 
-. `smi-base-path`
+# Binary execution script. Make symbolik link to that with new name.
+# Script will execute that program with .bin suffix.
+# For example symbolic link smi-test is linked to that and smi-test.bin is executed. 
+
+. `smi-base-file`
 ${BINARY_COMMAND_NAME} $@
 
 exit ${?}

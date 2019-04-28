@@ -7,12 +7,10 @@ OS=`uname`
 
 FreeBSDVarLocation() {
     echo `smi-location`/var/${PROVIDER}
-    return
 }
 
 LinuxVarLocation() {
     echo /var/opt/${PROVIDER}
-    return
 }
 
 ${OS}VarLocation

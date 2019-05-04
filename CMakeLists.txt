@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.12.1)
 PROJECT (setmy-info-scripts)
 
 SET (PROJECT_VERSION_MAJOR              0)
-SET (PROJECT_VERSION_MINOR              7)
+SET (PROJECT_VERSION_MINOR              8)
 SET (PROJECT_VERSION_PATCH              0)
 SET (PROJECT_VERSION_TWEAK              0)
 

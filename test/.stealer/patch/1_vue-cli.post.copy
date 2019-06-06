@@ -1,0 +1,1 @@
+rm -Rf test docs bin lib appveyor.yml circle.yml issue_template.md CONTRIBUTING.md LICENSE README.md

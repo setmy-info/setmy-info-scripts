@@ -1,0 +1,11 @@
+diff -ruN origin/package.json changed/package.json
+--- origin/package.json	2019-05-07 15:56:51.000000000 +0300
++++ changed/package.json	2019-05-07 16:04:16.369370811 +0300
+@@ -1,6 +1,6 @@
+ {
+   "name": "vue-cli",
+-  "version": "2.9.6",
++  "version": "2.9.6-extended",
+   "description": "A simple CLI for scaffolding Vue.js projects.",
+   "preferGlobal": true,
+   "bin": {

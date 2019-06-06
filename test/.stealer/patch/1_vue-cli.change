@@ -1,0 +1,3 @@
+echo "Doing after patching step (chamges) for ${CLEANED_DESTINATION_DIR}"
+sed -i 's/\"vue-cli\"/\"vue-cli-extended-foo\"/g' ./package.json
+

@@ -1,0 +1,24 @@
+#!/bin/sh
+
+. `smi-base-file`
+SMI_LIB_DIR=`smi-lib-location`
+
+. ${SMI_LIB_DIR}/stealer.include.sh
+. ${SMI_LIB_DIR}/stealer.commons.sh
+. ${SMI_LIB_DIR}/stealer.vcs.include.sh
+
+case $COMMAND_NAME in
+	smi-stealer)
+            COMMAND_NAME="smi_stealer"
+            ;;
+	*)
+            echo "Sorry, I don't understand"
+            ;;
+esac
+
+executeCommand $@
+COMMAND_RESULT=${?}
+
+cdCurDir
+
+exit ${COMMAND_RESULT}

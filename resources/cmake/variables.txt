@@ -70,7 +70,7 @@ ADD_CUSTOM_TARGET(dirs
 
 ADD_CUSTOM_TARGET(gzipman     cp ${RESOURCES_PATH}/man/*.1 ${MAN_OUTPUT_PATH}/man1 && gzip -f ${MAN_OUTPUT_PATH}/man1/*.1)
 ADD_CUSTOM_TARGET(etcfiles    cp -R ${RESOURCES_PATH}/etc/profile.d/* ${ETC_OUTPUT_PATH}/profile.d)
-ADD_CUSTOM_TARGET(libfiles    )
+ADD_CUSTOM_TARGET(libfiles    cp -R ${RESOURCES_PATH}/lib/* ${LIBRARY_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(scrips      cp ${SOURCES_PATH}/* ${BINARY_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildClear  rm -rf ./build)
 ADD_CUSTOM_TARGET(pkgClear    rm -rf ./${PROJECT_NAME}*.tar.gz ./${PROJECT_NAME}*.rpm ./${PROJECT_NAME}*.sh ./${PROJECT_NAME}*.deb ./${PROJECT_NAME}*.tar.Z ./${PROJECT_NAME}*.7z ./${PROJECT_NAME}*.tar.bz2 ./${PROJECT_NAME}*.tar.xz ./${PROJECT_NAME}*.zip)

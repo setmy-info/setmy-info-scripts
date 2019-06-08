@@ -2,7 +2,7 @@
 
 # Copyright 2019 Imre Tabur <imre.tabur@eesti.ee>
 
-. `smi-base-file`
+. `smi-include base.sh`
 echo ${PROVIDER}
 
 exit ${?}

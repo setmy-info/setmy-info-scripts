@@ -4,6 +4,7 @@
     <df root="." name="0">
       <df name="resources">
         <df name="lib">
+          <in>commons.sh</in>
           <in>stealer.commons.sh</in>
           <in>stealer.include.sh</in>
           <in>stealer.vcs.include.sh</in>
@@ -59,6 +60,8 @@
           <preBuildCommand>./configure </preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="resources/lib/commons.sh" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="resources/lib/stealer.commons.sh" ex="false" tool="3" flavor2="0">
       </item>
       <item path="resources/lib/stealer.include.sh" ex="false" tool="3" flavor2="0">

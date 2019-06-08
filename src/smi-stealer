@@ -1,11 +1,10 @@
 #!/bin/sh
 
-. `smi-base-file`
-SMI_LIB_DIR=`smi-lib-location`
-
-. ${SMI_LIB_DIR}/stealer.include.sh
-. ${SMI_LIB_DIR}/stealer.commons.sh
-. ${SMI_LIB_DIR}/stealer.vcs.include.sh
+. `smi-include base.sh`
+. `smi-include commons.sh`
+. `smi-include stealer.include.sh`
+. `smi-include stealer.commons.sh`
+. `smi-include stealer.vcs.include.sh`
 
 case $COMMAND_NAME in
 	smi-stealer)

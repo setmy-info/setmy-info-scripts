@@ -7,6 +7,8 @@
 # For example symbolic link smi-test is linked to that and smi-test.bin is executed. 
 
 . `smi-include base.sh`
+. `smi-include commons.sh`
+
 ${BINARY_COMMAND_NAME} $@
 
 exit ${?}

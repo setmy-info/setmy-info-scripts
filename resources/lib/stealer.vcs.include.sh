@@ -45,7 +45,14 @@ function copyProjectsDirectories() {
         PROJECT_ORIGINAL_DIR=${CHECKOUT_ORIGINAL_DIR}/${PROJECT_NAME}
         CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}
         createDirectory ${CLEANED_DESTINATION_DIR}
-        cp -R ${PROJECT_ORIGINAL_DIR}/* ${CLEANED_DESTINATION_DIR}/
+        if [ ! -z ${REPO_FOLDERS} ]; then
+            for REPO_FOLDER in ${REPO_FOLDERS}; do
+                cp -R ${PROJECT_ORIGINAL_DIR}/${REPO_FOLDER}/* ${CLEANED_DESTINATION_DIR}/
+            done
+        else
+            cp -R ${PROJECT_ORIGINAL_DIR}/* ${CLEANED_DESTINATION_DIR}/
+        fi
+        REPO_FOLDERS=
     done
 }
 

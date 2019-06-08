@@ -13,7 +13,6 @@ function smi_stealer_cmd() {
         echo "Parameter: ${PARAMETER}"
     done
     cloneDirectories
-    copyProjectsDirectories
     postCopyProjectsDirectories
     patchProjectsDirectories
     changeProjectsDirectories
@@ -26,8 +25,9 @@ function prepareDirectories() {
 }
 
 function cloneDirectories() {
+    echo "## Cloning directories ##"
     for PROJECT_NAME in ${PROJECTS_NAMES}; do
-        . ${REPOS_DIR}/${PROJECT_NAME}
+        include ${REPOS_DIR}/${PROJECT_NAME}
         CHECKOUT_DESTINATION_DIR=${CHECKOUT_ORIGINAL_DIR}/${PROJECT_NAME}
         if [ ! -d "${CHECKOUT_DESTINATION_DIR}" ]; then
             echo "Cloning project: ${PROJECT_NAME}"
@@ -37,26 +37,30 @@ function cloneDirectories() {
             execute ${REPO_TYPE} branch
             cdCurDir
         fi
+        copyProjectsDirectories
     done
 }
 
 function copyProjectsDirectories() {
-    for PROJECT_NAME in ${PROJECTS_NAMES}; do
-        PROJECT_ORIGINAL_DIR=${CHECKOUT_ORIGINAL_DIR}/${PROJECT_NAME}
-        CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}
-        createDirectory ${CLEANED_DESTINATION_DIR}
-        if [ ! -z ${REPO_FOLDERS} ]; then
-            for REPO_FOLDER in ${REPO_FOLDERS}; do
-                cp -R ${PROJECT_ORIGINAL_DIR}/${REPO_FOLDER}/* ${CLEANED_DESTINATION_DIR}/
-            done
-        else
-            cp -R ${PROJECT_ORIGINAL_DIR}/* ${CLEANED_DESTINATION_DIR}/
-        fi
-        REPO_FOLDERS=
-    done
+    echo "## Coping directories ##"
+    PROJECT_ORIGINAL_DIR=${CHECKOUT_ORIGINAL_DIR}/${PROJECT_NAME}
+    CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}
+    createDirectory ${CLEANED_DESTINATION_DIR}
+    echo "Repo folders: ${REPO_FOLDERS}"
+    if [ ! -z ${REPO_FOLDERS} ]; then
+        echo "Have repo folders to copy"
+        for REPO_FOLDER in ${REPO_FOLDERS}; do
+            cp -R ${PROJECT_ORIGINAL_DIR}/${REPO_FOLDER}/* ${CLEANED_DESTINATION_DIR}/
+        done
+    else
+        echo "Doesn't have repo folders to copy"
+        cp -R ${PROJECT_ORIGINAL_DIR}/* ${CLEANED_DESTINATION_DIR}/
+    fi
+    REPO_FOLDERS=""
 }
 
 function postCopyProjectsDirectories() {
+    echo "## Post copy directories ##"
     if [ -d "${PATCH_DIR}" ]; then
         for PROJECT_NAME in ${PROJECTS_NAMES}; do
             CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}
@@ -79,6 +83,7 @@ function postCopyProjectsDirectories() {
 }
 
 function patchProjectsDirectories() {
+    echo "## Patch directories ##"
     if [ -d "${PATCH_DIR}" ]; then
         for PROJECT_NAME in ${PROJECTS_NAMES}; do
             CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}
@@ -101,6 +106,7 @@ function patchProjectsDirectories() {
 }
 
 function changeProjectsDirectories() {
+    echo "## change project directories ##"
     if [ -d "${PATCH_DIR}" ]; then
         for PROJECT_NAME in ${PROJECTS_NAMES}; do
             CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}
@@ -123,6 +129,7 @@ function changeProjectsDirectories() {
 }
 
 function copyOnPlace() {
+    echo "## Copy on place ##"
     for PROJECT_NAME in ${PROJECTS_NAMES}; do
         CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}
         cp -R ${CLEANED_DESTINATION_DIR}/* ${CUR_DIR}/

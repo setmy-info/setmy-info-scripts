@@ -3,14 +3,23 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="resources">
+        <df name="cmake">
+          <in>bin.txt</in>
+          <in>etc.txt</in>
+          <in>lib.txt</in>
+          <in>man.txt</in>
+        </df>
         <df name="lib">
           <in>commons.sh</in>
+          <in>freebsd.sh</in>
           <in>stealer.commons.sh</in>
           <in>stealer.include.sh</in>
           <in>stealer.vcs.include.sh</in>
         </df>
       </df>
       <df name="src">
+        <in>hgrep</in>
+        <in>smi-jails-prepare</in>
         <in>smi-persons-location</in>
         <in>smi-stealer</in>
       </df>
@@ -60,7 +69,17 @@
           <preBuildCommand>./configure </preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="resources/cmake/bin.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="resources/cmake/etc.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="resources/cmake/lib.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="resources/cmake/man.txt" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="resources/lib/commons.sh" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="resources/lib/freebsd.sh" ex="false" tool="3" flavor2="0">
       </item>
       <item path="resources/lib/stealer.commons.sh" ex="false" tool="3" flavor2="0">
       </item>
@@ -70,6 +89,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/hgrep" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/smi-jails-prepare" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/smi-persons-location" ex="false" tool="3" flavor2="0">
       </item>

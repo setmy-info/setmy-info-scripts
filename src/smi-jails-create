@@ -1,0 +1,122 @@
+#!/bin/sh
+
+# Copyright (C) 2019 Imre Tabur
+
+. `smi-include base.sh`
+. `smi-include commons.sh`
+. `smi-include freebsd.sh`
+
+ETC_DIR=`smi-etc-location`
+JAILS_CONF_DIR=${ETC_DIR}/jails
+JAILS_LIST=`ls ${JAILS_CONF_DIR}`
+EXTRACT="tar -xvf"
+
+JAILS_DIR=`smi-jails-location`
+ETC_JAIL_CONF_FILE=/etc/jail.conf
+ETC_RC_CONF_FILE=/etc/rc.conf
+JAIL_CONF_DIR=
+JAIL_DIR=
+JAIL_ETC_RC_CONF_FILE=
+JAIL_ETC_RESOLV_CONF_FILE=
+DNS=
+DNS_SEARCH=
+GLOBAL_SOFTWARE=
+OS_VERSION=
+NIC=
+JAILS_STRING=
+DOMAIN=
+
+. ${ETC_DIR}/global
+
+jailRcConf() {
+    echo "sendmail_enable=NONE"
+    echo "syslogd_flags=-ss"
+    echo "rpcbind_enable=NO"
+}
+
+jailResolvConf() {
+    echo "search ${DNS_SEARCH}"
+    for DNS_ENTRY in ${DNS}; do
+        echo "nameserver ${DNS_ENTRY}"
+    done
+}
+
+jailConfHeader() {
+    echo "exec.start = \"/bin/sh /etc/rc\";"
+    echo "exec.stop = \"/bin/sh /etc/rc.shutdown\";"
+    echo "exec.clean;"
+}
+
+jailConfJail() {
+    echo "${JAIL} {"
+    echo "    host.hostname = ${JAIL}.${DOMAIN};"
+    echo "    path =\"/var/jails/${JAIL}\";"
+    echo "    interface = \"${NIC}\";"
+    echo "    ip4.addr = ${IP};"
+    echo "    allow.chflags;"
+    echo "    allow.raw_sockets;"
+    echo "    mount.devfs;"
+    echo "    mount.procfs;"
+    echo "    osrelease = \"${OS_VERSION}\";"
+    echo "}"
+}
+
+rcConfJail() {
+        echo "# Jails"
+        echo "jail_enable=\"YES\""
+        echo "jail_list=\"${JAILS_STRING}\""
+}
+
+doNothing() {
+    return
+}
+
+jailRcConfServices() {
+    ALL_JAIL_PACKAGES=$@
+    for PKG_NAME in ${ALL_JAIL_PACKAGES}; do
+        case "${PKG_NAME}" in
+        "nginx" | "tomcat9" | "mosquitto")
+            echo "${PKG_NAME}_enable=\"YES\""
+            ;;
+        "bind914")
+            echo "named_enable=\"YES\""
+            ;;
+        "postgresql11-server")
+            echo "postgresql_enable=\"YES\""
+            ;;
+        *)
+            doNothing
+            ;;
+        esac
+    done
+}
+
+installJails() {
+        for JAIL in ${JAILS_LIST}; do
+            JAILS_STRING="${JAILS_STRING} ${JAIL}"
+            JAIL_CONF_DIR=${JAILS_CONF_DIR}/${JAIL}
+            . ${JAIL_CONF_DIR}
+            JAIL_DIR=${JAILS_DIR}/${JAIL}
+            JAIL_ETC_RC_CONF_FILE=${JAIL_DIR}/etc/rc.conf
+            JAIL_ETC_RESOLV_CONF_FILE=${JAIL_DIR}/etc/resolv.conf
+            echo "=============================="
+            mkdir -p ${JAIL_DIR}
+            ${EXTRACT} jail.base-${OS_VERSION}.txz -C ${JAIL_DIR}
+            jailRcConf > ${JAIL_ETC_RC_CONF_FILE}
+            jailResolvConf ${DNS_SEARCH} ${DNS_SERVER} > ${JAIL_ETC_RESOLV_CONF_FILE}
+            jailConfJail >> ${ETC_JAIL_CONF_FILE}
+            pkg -c ${JAIL_DIR} install -y ${GLOBAL_SOFTWARE} ${SOFTWARE}
+            pkg -c ${JAIL_DIR} upgrade
+            jailRcConfServices "${GLOBAL_SOFTWARE} ${SOFTWARE}" >> ${JAIL_ETC_RC_CONF_FILE}
+            echo "${JAIL}.${DOMAIN} : ${IP} : ${SOFTWARE} : ${DNS} : ${DNS_SEARCH}"
+        done
+        rcConfJail >> "${ETC_RC_CONF_FILE}"
+}
+
+cd ${JAILS_DIR}
+jailConfHeader > ${ETC_JAIL_CONF_FILE}
+installJails
+
+cdCurDir
+
+exit 0

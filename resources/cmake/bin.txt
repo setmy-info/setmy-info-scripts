@@ -25,7 +25,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-stealer"                DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-include"                DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
-    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-location"        DESTINATION bin)
-    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-prepare"         DESTINATION bin)
-    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-create"          DESTINATION bin)
+    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-location"     DESTINATION bin)
+    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-prepare"      DESTINATION bin)
+    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-create"       DESTINATION bin)
+    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-delete-jail"        DESTINATION bin)
 ENDIF()

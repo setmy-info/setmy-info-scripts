@@ -2,6 +2,18 @@
 
 # Copyright (C) 2019 Imre Tabur
 
+# global file example
+#OS_VERSION="12.0-RELEASE"
+#NIC=em0
+#DNS_SEARCH="lan"
+#DNS="192.168.1.1 192.168.1.2"
+#GLOBAL_SOFTWARE="mc nano bash"
+
+# jail config file example:
+#DOMAIN=lan
+#IP=10.0.0.21/8
+#SOFTWARE="tomcat9 openjdk12 openjdk8 node10 mosquitto postgresql11-server bind914 nginx haproxy"
+
 . `smi-include base.sh`
 . `smi-include commons.sh`
 . `smi-include freebsd.sh`

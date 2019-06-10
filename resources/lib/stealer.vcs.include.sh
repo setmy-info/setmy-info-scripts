@@ -62,7 +62,7 @@ copyProjectsDirectories() {
 }
 
 patching() {
-    echo "## Post copy directories ##"
+    echo "## Patching ##"
     if [ -d "${PATCH_DIR}" ]; then
         cd ${CLEANED_DESTINATION_DIR}
 
@@ -80,7 +80,7 @@ postCopyProjectsDirectories() {
         COPY_FILE_NAMES=`ls ${PATCH_DIR}/*${PROJECT_NAME}.post.copy | sort`
         for COPY_FILE_NAME in ${COPY_FILE_NAMES}; do
             if [ -f ${COPY_FILE_NAME} ]; then
-                include ${PCOPY_FILE_NAME}
+                include ${COPY_FILE_NAME}
             fi
         done
     else

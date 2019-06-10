@@ -1,4 +1,4 @@
-# tools collection
+# Tools collection
 
 ## term
 Development terminal preparations

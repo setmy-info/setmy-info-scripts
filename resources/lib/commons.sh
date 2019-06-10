@@ -20,8 +20,9 @@ createDirectory() {
 
 include() {
     FILE_TO_INCLUDE=$1
-    if [ -f $FILE_TO_INCLUDE ]; then
-        . $FILE_TO_INCLUDE
+    if [ -f ${FILE_TO_INCLUDE} ]; then
+        echo "Including file: ${FILE_TO_INCLUDE}"
+        . ${FILE_TO_INCLUDE}
     fi
     return
 }

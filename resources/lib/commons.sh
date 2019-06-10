@@ -1,14 +1,14 @@
 
-function cdCurDir() {
+cdCurDir() {
     cd ${CUR_DIR}
 }
 
-function execute() {
+execute() {
     echo ${@}
     ${@}
 }
 
-function createDirectory() {
+createDirectory() {
     DIRS_TO_CREATE=${@}
     for DIRECTORY in ${DIRS_TO_CREATE}; do
         if [ ! -d ${DIRECTORY} ]; then

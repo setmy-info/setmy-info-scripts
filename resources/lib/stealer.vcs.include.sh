@@ -23,8 +23,7 @@ createProject() {
     cloneProject ${PROJECT_NAME}
     checkoutProject ${PROJECT_NAME} ${REPO_BRANCH}
     copyProject ${PROJECT_NAME} ${REPO_BRANCH}
-    #changeProject ${PROJECT_NAME}
-    #copyOnPlace ${PROJECT_NAME}
+    changeProject ${PROJECT_NAME} ${REPO_BRANCH} # TODO : wrong place
 }
 
 cloneProject() {
@@ -78,23 +77,40 @@ doCopy() {
 changeProject() {
     echo "# Change project ${1}"
     PROJECT_NAME=${1}
+    BRANCH_NAME=${2}
+    CLEANED_DESTINATION_DIR=${COPY_DIR}/${PROJECT_NAME}-${BRANCH_NAME}
     if [ ! -z ${REPO_FOLDERS} ]; then
         for REPO_FOLDER in ${REPO_FOLDERS}; do
-            DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/${REPO_FOLDER}/
+            DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/${REPO_FOLDER}
+            echo "Repo folder: ${REPO_FOLDER}"
+            doChanges ${PROJECT_NAME} ${BRANCH_NAME} ${DESTINATION_DIR} ${REPO_FOLDER}
         done
     else
-        DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/
+        DESTINATION_DIR=${CLEANED_DESTINATION_DIR}
+        doChanges ${PROJECT_NAME} ${BRANCH_NAME} ${DESTINATION_DIR}
     fi
+}
+
+doChanges() {
+    PROJECT_NAME=${1}
+    BRANCH_NAME=${2}
+    DESTINATION_DIR=${3}
+    REPO_FOLDER=${4}
 
     cd ${DESTINATION_DIR}
-    postCopyProjectChange ${PROJECT_NAME}
-    patchProject ${PROJECT_NAME}
-    postPatchChangeProject ${PROJECT_NAME}
+    echo "In: `pwd`, ${REPO_FOLDER}"
+    postCopyProjectChange ${PROJECT_NAME} ${BRANCH_NAME} ${REPO_FOLDER}
+    patchProject ${PROJECT_NAME} ${BRANCH_NAME} ${REPO_FOLDER}
+    postPatchChangeProject ${PROJECT_NAME} ${BRANCH_NAME} ${REPO_FOLDER}
+    copyOnPlace ${PROJECT_NAME} ${BRANCH_NAME} ${REPO_FOLDER}
     cdCurDir
 }
 
 postCopyProjectChange() {
     PROJECT_NAME=${1}
+    BRANCH_NAME=${2}
+    REPO_FOLDER=${3}
+
     echo "# Post copy procjet ${PROJECT_NAME}"
     if [ "$(ls ${PATCH_DIR}/*${PROJECT_NAME}.post.copy | wc -l)" -ge "1" ]; then
         COPY_FILE_NAMES=`ls ${PATCH_DIR}/*${PROJECT_NAME}.post.copy | sort`
@@ -111,6 +127,9 @@ postCopyProjectChange() {
 
 patchProject() {
     PROJECT_NAME=${1}
+    BRANCH_NAME=${2}
+    REPO_FOLDER=${3}
+
     echo "# Patch procjet ${PROJECT_NAME}"
     if [ "$(ls ${PATCH_DIR}/*${PROJECT_NAME}.patch | wc -l)" -ge "1" ]; then
         PATCH_NAMES=`ls ${PATCH_DIR}/*${PROJECT_NAME}.patch | sort`
@@ -126,7 +145,10 @@ patchProject() {
 
 postPatchChangeProject() {
     PROJECT_NAME=${1}
-    echo "## change project directories ##"
+    BRANCH_NAME=${2}
+    REPO_FOLDER=${3}
+
+    echo "# change project directories"
     if [ "$(ls ${PATCH_DIR}/*${PROJECT_NAME}.post.copy | wc -l)" -ge "1" ]; then
         CHANGE_FILE_NAMES=`ls ${PATCH_DIR}/*${PROJECT_NAME}.change | sort`
         for CHANGE_FILE_NAME in ${CHANGE_FILE_NAMES}; do
@@ -141,7 +163,17 @@ postPatchChangeProject() {
 
 copyOnPlace() {
     PROJECT_NAME=${1}
-    echo "## Copy on place ##"
-    # TODO : when subfolders
-    execute cp -R ${CLEANED_DESTINATION_DIR}/* ${CUR_DIR}/
+    BRANCH_NAME=${2}
+    REPO_FOLDER=${3}
+    
+    DIR=`pwd`
+
+    echo "# Copy on place ${PROJECT_NAME} ${BRANCH_NAME} ${REPO_FOLDER} in ${DIR}"
+    if [ ! -z ${REPO_FOLDER} ]; then
+        echo "WITH REPO FOLDER"
+        execute cp -R ./${REPO_FOLDER}/* ${CUR_DIR}/
+    else
+        echo "NO REPO FOLDER"
+        execute cp -R ./* ${CUR_DIR}/
+    fi
 }

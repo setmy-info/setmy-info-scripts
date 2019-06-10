@@ -23,13 +23,13 @@ createProject() {
     cloneProject ${PROJECT_NAME}
     checkoutProject ${PROJECT_NAME} ${REPO_BRANCH}
     copyProject ${PROJECT_NAME} ${REPO_BRANCH}
-    changeProject ${PROJECT_NAME}
-    copyOnPlace ${PROJECT_NAME}
+    #changeProject ${PROJECT_NAME}
+    #copyOnPlace ${PROJECT_NAME}
 }
 
 cloneProject() {
     PROJECT_NAME=${1}
-    CLONE_DESTINATION_DIR=${CLONE_ORIGINAL_DIR}/${PROJECT_NAME}
+    CLONE_DESTINATION_DIR=${CLONE_DIR}/${PROJECT_NAME}
     if [ ! -d "${CLONE_DESTINATION_DIR}" ]; then
         echo "# Cloning project: ${PROJECT_NAME} to ${CLONE_DESTINATION_DIR}"
         execute ${REPO_TYPE} clone ${REPO_URL} ${CLONE_DESTINATION_DIR}
@@ -39,7 +39,7 @@ cloneProject() {
 checkoutProject() {
     PROJECT_NAME=${1}
     BRANCH_NAME=${2}
-    CLONE_DESTINATION_DIR=${CLONE_ORIGINAL_DIR}/${PROJECT_NAME}
+    CLONE_DESTINATION_DIR=${CLONE_DIR}/${PROJECT_NAME}
     if [ -d "${CLONE_DESTINATION_DIR}" ]; then
         echo "# Checkout project ${PROJECT_NAME} in ${CLONE_DESTINATION_DIR} to branch/tag/hash ${BRANCH_NAME}"
         cd ${CLONE_DESTINATION_DIR}
@@ -51,17 +51,28 @@ checkoutProject() {
 copyProject() {
     PROJECT_NAME=${1}
     BRANCH_NAME=${2}
-    CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}- ${BRANCH_NAME}
-    echo "# Coping project ${PROJECT_NAME} to ${CLEANED_DESTINATION_DIR}"
+    CLONE_DESTINATION_DIR=${CLONE_DIR}/${PROJECT_NAME}
+    CLEANED_DESTINATION_DIR=${COPY_DIR}/${PROJECT_NAME}-${BRANCH_NAME}
+
     if [ ! -z ${REPO_FOLDERS} ]; then
         for REPO_FOLDER in ${REPO_FOLDERS}; do
-            DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/${REPO_FOLDER}/
+            SOURCE_DIR=${CLONE_DESTINATION_DIR}/${REPO_FOLDER}
+            DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/${REPO_FOLDER}
+            doCopy ${SOURCE_DIR} ${DESTINATION_DIR}
+            REPO_FOLDERS=""
         done
     else
-        DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/
+        SOURCE_DIR=${CLONE_DESTINATION_DIR}
+        DESTINATION_DIR=${CLEANED_DESTINATION_DIR}
+        doCopy ${SOURCE_DIR} ${DESTINATION_DIR}
     fi
-    execute cp -R ${PROJECT_ORIGINAL_DIR}/* ${DESTINATION_DIR}
-    REPO_FOLDERS=""
+}
+
+doCopy() {
+    SOURCE_DIR=${1}
+    DESTINATION_DIR=${2}
+    createDirectory ${DESTINATION_DIR}
+    cp -R ${SOURCE_DIR}/* ${DESTINATION_DIR}/
 }
 
 changeProject() {

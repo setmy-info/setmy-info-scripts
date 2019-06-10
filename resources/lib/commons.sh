@@ -4,7 +4,7 @@ cdCurDir() {
 }
 
 execute() {
-    echo ${@}
+    echo "Executing: ${@}"
     ${@}
 }
 

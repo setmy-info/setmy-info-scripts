@@ -26,3 +26,8 @@ include() {
     fi
     return
 }
+
+executeCommand() {
+    ${COMMAND_NAME}_cmd $@
+    return ${?}
+}

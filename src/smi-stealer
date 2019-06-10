@@ -3,7 +3,6 @@
 . `smi-include base.sh`
 . `smi-include commons.sh`
 . `smi-include stealer.include.sh`
-. `smi-include stealer.commons.sh`
 . `smi-include stealer.vcs.include.sh`
 
 case $COMMAND_NAME in

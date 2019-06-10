@@ -1,84 +1,94 @@
-# TODO
-# 1. VCS subfolder suport to move folders - inside repo take specific subfolder(s)
-# 2. Combine all projects cleaned into one before moving to place (+ steps to change that)
-# 3. 
-
-smi_stealer_initialize() {
-    prepareDirectories
-    return 0
-}
 
 smi_stealer_cmd() {
     for PARAMETER in ${@}; do
         echo "Parameter: ${PARAMETER}"
     done
-    iterateProjects
+    createProjects
     return 0
 }
 
-prepareDirectories() {
-    createDirectory ${CHECKOUT_DIR} ${CHECKOUT_ORIGINAL_DIR} ${CLEANED_DIR}
-}
-
-iterateProjects() {
-    echo "## Cloning directories ##"
+createProjects() {
+    echo "# Creating projects: ${PROJECTS_NAMES}"
     for PROJECT_NAME in ${PROJECTS_NAMES}; do
-        include ${REPOS_DIR}/${PROJECT_NAME}
-
-        CHECKOUT_DESTINATION_DIR=${CHECKOUT_ORIGINAL_DIR}/${PROJECT_NAME}
-        PROJECT_ORIGINAL_DIR=${CHECKOUT_ORIGINAL_DIR}/${PROJECT_NAME}
-        CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}
-
-        cloneProject
-        copyProjectsDirectories
-        patching
-        copyOnPlace
-
+        createProject ${PROJECT_NAME}
     done
 }
 
+createProject() {
+    echo "# Creating project ${1}"
+    PROJECT_NAME=${1}
+
+    include ${REPOS_DIR}/${PROJECT_NAME}
+
+    cloneProject ${PROJECT_NAME}
+    checkoutProject ${PROJECT_NAME} ${REPO_BRANCH}
+    copyProject ${PROJECT_NAME} ${REPO_BRANCH}
+    changeProject ${PROJECT_NAME}
+    copyOnPlace ${PROJECT_NAME}
+}
+
 cloneProject() {
-    if [ ! -d "${CHECKOUT_DESTINATION_DIR}" ]; then
-        echo "==> Cloning project: ${PROJECT_NAME} to ${CHECKOUT_DESTINATION_DIR}"
-        execute ${REPO_TYPE} clone ${REPO_URL} ${CHECKOUT_DESTINATION_DIR}
-        cd ${CHECKOUT_DESTINATION_DIR}
-        execute ${REPO_TYPE} checkout ${REPO_BRANCH}
-        execute ${REPO_TYPE} branch
+    PROJECT_NAME=${1}
+    CLONE_DESTINATION_DIR=${CLONE_ORIGINAL_DIR}/${PROJECT_NAME}
+    if [ ! -d "${CLONE_DESTINATION_DIR}" ]; then
+        echo "# Cloning project: ${PROJECT_NAME} to ${CLONE_DESTINATION_DIR}"
+        execute ${REPO_TYPE} clone ${REPO_URL} ${CLONE_DESTINATION_DIR}
+    fi
+}
+
+checkoutProject() {
+    PROJECT_NAME=${1}
+    BRANCH_NAME=${2}
+    CLONE_DESTINATION_DIR=${CLONE_ORIGINAL_DIR}/${PROJECT_NAME}
+    if [ -d "${CLONE_DESTINATION_DIR}" ]; then
+        echo "# Checkout project ${PROJECT_NAME} in ${CLONE_DESTINATION_DIR} to branch/tag/hash ${BRANCH_NAME}"
+        cd ${CLONE_DESTINATION_DIR}
+        execute ${REPO_TYPE} checkout ${BRANCH_NAME}
         cdCurDir
     fi
 }
 
-copyProjectsDirectories() {
-    echo "## Coping directories to cleaned folder ${CLEANED_DESTINATION_DIR} ##"
-    createDirectory ${CLEANED_DESTINATION_DIR}
+copyProject() {
+    PROJECT_NAME=${1}
+    BRANCH_NAME=${2}
+    CLEANED_DESTINATION_DIR=${CLEANED_DIR}/${PROJECT_NAME}- ${BRANCH_NAME}
+    echo "# Coping project ${PROJECT_NAME} to ${CLEANED_DESTINATION_DIR}"
     if [ ! -z ${REPO_FOLDERS} ]; then
         for REPO_FOLDER in ${REPO_FOLDERS}; do
-            execute cp -R ${PROJECT_ORIGINAL_DIR}/${REPO_FOLDER}/* ${CLEANED_DESTINATION_DIR}/
+            DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/${REPO_FOLDER}/
         done
     else
-        execute cp -R ${PROJECT_ORIGINAL_DIR}/* ${CLEANED_DESTINATION_DIR}/
+        DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/
     fi
+    execute cp -R ${PROJECT_ORIGINAL_DIR}/* ${DESTINATION_DIR}
     REPO_FOLDERS=""
 }
 
-patching() {
-    echo "## Patching ##"
-    if [ -d "${PATCH_DIR}" ]; then
-        cd ${CLEANED_DESTINATION_DIR}
-
-        postCopyProjectsDirectories
-        patchProjectsDirectories
-        changeProjectsDirectories
-        
-        cdCurDir
+changeProject() {
+    echo "# Change project ${1}"
+    PROJECT_NAME=${1}
+    if [ ! -z ${REPO_FOLDERS} ]; then
+        for REPO_FOLDER in ${REPO_FOLDERS}; do
+            DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/${REPO_FOLDER}/
+        done
+    else
+        DESTINATION_DIR=${CLEANED_DESTINATION_DIR}/
     fi
+
+    cd ${DESTINATION_DIR}
+    postCopyProjectChange ${PROJECT_NAME}
+    patchProject ${PROJECT_NAME}
+    postPatchChangeProject ${PROJECT_NAME}
+    cdCurDir
 }
 
-postCopyProjectsDirectories() {
-    echo "## Post copy directories ##"
+postCopyProjectChange() {
+    PROJECT_NAME=${1}
+    echo "# Post copy procjet ${PROJECT_NAME}"
     if [ "$(ls ${PATCH_DIR}/*${PROJECT_NAME}.post.copy | wc -l)" -ge "1" ]; then
         COPY_FILE_NAMES=`ls ${PATCH_DIR}/*${PROJECT_NAME}.post.copy | sort`
         for COPY_FILE_NAME in ${COPY_FILE_NAMES}; do
+            echo "Including ${COPY_FILE_NAME} for ${PROJECT_NAME}"
             if [ -f ${COPY_FILE_NAME} ]; then
                 include ${COPY_FILE_NAME}
             fi
@@ -88,8 +98,9 @@ postCopyProjectsDirectories() {
     fi;
 }
 
-patchProjectsDirectories() {
-    echo "## Patch directories ##"
+patchProject() {
+    PROJECT_NAME=${1}
+    echo "# Patch procjet ${PROJECT_NAME}"
     if [ "$(ls ${PATCH_DIR}/*${PROJECT_NAME}.patch | wc -l)" -ge "1" ]; then
         PATCH_NAMES=`ls ${PATCH_DIR}/*${PROJECT_NAME}.patch | sort`
         for PATCH_NAME in ${PATCH_NAMES}; do
@@ -102,7 +113,8 @@ patchProjectsDirectories() {
     fi;
 }
 
-changeProjectsDirectories() {
+postPatchChangeProject() {
+    PROJECT_NAME=${1}
     echo "## change project directories ##"
     if [ "$(ls ${PATCH_DIR}/*${PROJECT_NAME}.post.copy | wc -l)" -ge "1" ]; then
         CHANGE_FILE_NAMES=`ls ${PATCH_DIR}/*${PROJECT_NAME}.change | sort`
@@ -117,6 +129,8 @@ changeProjectsDirectories() {
 }
 
 copyOnPlace() {
+    PROJECT_NAME=${1}
     echo "## Copy on place ##"
+    # TODO : when subfolders
     execute cp -R ${CLEANED_DESTINATION_DIR}/* ${CUR_DIR}/
 }

@@ -1,0 +1,4 @@
+REPO_TYPE=hg
+REPO_URL=https://bitbucket.org/imreit/setmy.info
+REPO_BRANCH=develop
+REPO_FOLDERS="node-start-project"

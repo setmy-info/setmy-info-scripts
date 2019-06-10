@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Copyright (C) 2019 Imre Tabur
+
+. `smi-include base.sh`
+. `smi-include commons.sh`
+. `smi-include freebsd.sh`
+
+JAILS_DIR=`smi-jails-location`
+
+deleteJail() {
+    JAIL_NAME=${1}
+    JAIL_DIR=${JAILS_DIR}/${JAIL_NAME}
+    if [ -d ${DESTINATION} ]; then
+        rm -rf ${JAIL_DIR}
+        chflags -R noschg ${JAIL_DIR}
+        rm -rf ${JAIL_DIR}
+    fi
+}
+
+cd ${JAILS_DIR}
+deleteJail ${1}
+cdCurDir
+
+exit 0

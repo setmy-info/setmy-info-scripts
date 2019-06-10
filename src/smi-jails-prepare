@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Copyright (C) 2019 Imre Tabur
+
+. `smi-include base.sh`
+. `smi-include commons.sh`
+. `smi-include freebsd.sh`
+
+JAILS_DIR=`smi-jails-location`
+
+BASE_PACKAGES="base ports src"
+BASE_JAIL_DIR=${JAILS_DIR}/base
+
+EXTRACT="tar -xvvf"
+DOWNLOAD="wget -c"
+PACKAGE="tar cfJ"
+
+cd ${JAILS_DIR}
+
+mkdir -p ${BASE_JAIL_DIR}
+for SET in ${BASE_PACKAGES};
+do
+    ${DOWNLOAD} ${RELEASE_RESOURCE_URL}/${SET}.txz
+    ${EXTRACT} ${JAILS_DIR}/${SET}.txz --totals -C ${BASE_JAIL_DIR}
+done
+${PACKAGE} jail.base-${RELEASE}.txz -C ${BASE_JAIL_DIR} .
+
+cdCurDir
+
+exit 0

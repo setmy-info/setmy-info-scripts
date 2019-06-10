@@ -1,58 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
-  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <df root="." name="0">
-      <df name="src">
-        <in>smi-persons-location</in>
-      </df>
-    </df>
-    <logicalFolder name="ExternalFiles"
-                   displayName="Important Files"
-                   projectFiles="false"
-                   kind="IMPORTANT_FILES_FOLDER">
-      <itemPath>Makefile</itemPath>
-      <itemPath>configure</itemPath>
-      <itemPath>nbproject/private/launcher.properties</itemPath>
+    <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+        <df root="." name="0">
+            <df name="src">
+                <in>smi-persons-location</in>
+            </df>
+            <df name="resources">
+                <df name="cmake">
+                    <in>bin.txt</in>
+                    <in>etc.txt</in>
+                    <in>lib.txt</in>
+                    <in>man.txt</in>
+                </df>
+                <df name="lib">
+                    <in>commons.sh</in>
+                    <in>freebsd.sh</in>
+                    <in>stealer.commons.sh</in>
+                    <in>stealer.include.sh</in>
+                    <in>stealer.vcs.include.sh</in>
+                </df>
+            </df>
+            <df name="src">
+                <in>hgrep</in>
+                <in>smi-jails-prepare</in>
+                <in>smi-persons-location</in>
+                <in>smi-stealer</in>
+            </df>
+        </df>
+        <logicalFolder name="ExternalFiles"
+                       displayName="Important Files"
+                       projectFiles="false"
+                       kind="IMPORTANT_FILES_FOLDER">
+            <itemPath>Makefile</itemPath>
+            <itemPath>configure</itemPath>
+            <itemPath>nbproject/private/launcher.properties</itemPath>
+        </logicalFolder>
     </logicalFolder>
-  </logicalFolder>
-  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
-  <sourceRootList>
-    <Elem>.</Elem>
-  </sourceRootList>
-  <projectmakefile>Makefile</projectmakefile>
-  <confs>
-    <conf name="Default" type="0">
-      <toolsSet>
-        <compilerSet>default</compilerSet>
-        <dependencyChecking>false</dependencyChecking>
-        <rebuildPropChanged>false</rebuildPropChanged>
-      </toolsSet>
-      <codeAssistance>
-      </codeAssistance>
-      <makefileType>
-        <makeTool>
-          <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile</buildCommand>
-          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath></executablePath>
-          <cTool>
-            <incDir>
-              <pElem>.</pElem>
-            </incDir>
-          </cTool>
-          <ccTool>
-            <incDir>
-              <pElem>.</pElem>
-            </incDir>
-          </ccTool>
-        </makeTool>
-        <preBuild>
-          <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
-          <preBuildCommand>./configure </preBuildCommand>
-        </preBuild>
-      </makefileType>
-      <item path="src/smi-persons-location" ex="false" tool="3" flavor2="0">
-      </item>
-    </conf>
-  </confs>
+    <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+    <sourceRootList>
+        <Elem>.</Elem>
+    </sourceRootList>
+    <projectmakefile>Makefile</projectmakefile>
+    <confs>
+        <conf name="Default" type="0">
+            <toolsSet>
+                <compilerSet>default</compilerSet>
+                <dependencyChecking>false</dependencyChecking>
+                <rebuildPropChanged>false</rebuildPropChanged>
+            </toolsSet>
+            <codeAssistance>
+            </codeAssistance>
+            <makefileType>
+                <makeTool>
+                    <buildCommandWorkingDir>.</buildCommandWorkingDir>
+                    <buildCommand>${MAKE} -f Makefile</buildCommand>
+                    <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+                    <executablePath></executablePath>
+                    <cTool>
+                        <incDir>
+                            <pElem>.</pElem>
+                        </incDir>
+                    </cTool>
+                    <ccTool>
+                        <incDir>
+                            <pElem>.</pElem>
+                        </incDir>
+                    </ccTool>
+                </makeTool>
+                <preBuild>
+                    <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
+                    <preBuildCommand>./configure </preBuildCommand>
+                </preBuild>
+            </makefileType>
+            <item path="src/smi-persons-location" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/cmake/bin.txt" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/cmake/etc.txt" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/cmake/lib.txt" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/cmake/man.txt" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/lib/commons.sh" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/lib/freebsd.sh" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/lib/stealer.commons.sh" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/lib/stealer.include.sh" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="resources/lib/stealer.vcs.include.sh"
+                  ex="false"
+                  tool="3"
+                  flavor2="0">
+            </item>
+            <item path="src/hgrep" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="src/smi-jails-prepare" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="src/smi-persons-location" ex="false" tool="3" flavor2="0">
+            </item>
+            <item path="src/smi-stealer" ex="false" tool="3" flavor2="0">
+            </item>
+        </conf>
+    </confs>
 </configurationDescriptor>

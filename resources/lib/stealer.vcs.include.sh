@@ -1,19 +1,4 @@
 
-smi_stealer_cmd() {
-    for PARAMETER in ${@}; do
-        echo "Parameter: ${PARAMETER}"
-    done
-    createProjects
-    return 0
-}
-
-createProjects() {
-    echo "# Creating projects: ${PROJECTS_NAMES}"
-    for PROJECT_NAME in ${PROJECTS_NAMES}; do
-        createProject ${PROJECT_NAME}
-    done
-}
-
 createProject() {
     echo "# Creating project ${1}"
     PROJECT_NAME=${1}

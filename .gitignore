@@ -17,3 +17,5 @@ install_manifest.txt
 test/.stealer/checkout/*
 test/package-lock.json
 test/package.json
+test/.stealer/clone/
+test/.stealer/copy/

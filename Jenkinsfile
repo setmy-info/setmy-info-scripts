@@ -39,6 +39,11 @@ pipeline {
                 sh 'ls -la'
             }
         }
+        stage ('Deploy') {
+            steps {
+            	sh 'cp -f ./setmy-info-scripts-*.noarch.* /tank/org/has/files/www/rpms/'
+            }
+        }
     }
 
     post {

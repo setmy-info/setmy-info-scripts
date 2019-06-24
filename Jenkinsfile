@@ -34,6 +34,11 @@ pipeline {
                 sh 'make package'
             }
         }
+        stage('List') {
+            steps {
+                sh 'ls -la'
+            }
+        }
     }
 
     post {

@@ -42,6 +42,7 @@ pipeline {
         stage('List') {
             steps {
                 sh 'ls -la'
+                sh 'ls -la /tank/org/has/files/www/rpms/'
             }
         }
     }

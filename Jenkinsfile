@@ -29,7 +29,7 @@ pipeline {
                 sh 'make'
             }
         }
-        stage('Build') {
+        stage('Package') {
             steps {
                 sh 'make package'
             }

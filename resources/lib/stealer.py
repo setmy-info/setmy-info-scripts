@@ -7,7 +7,13 @@ from commons import getValue
 from commons import getEnvironment
 from commons import execSub
 
-
+'''
+Development:
+    ./configure && make && make package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-0.13.0.noarch.rpm
+    cd test && smi-stealer && cd ..
+    rm -R ./test/.stealer/copy
+    rm -Rf ./test/.stealer/clone
+'''
 class Locations():
     
     def __init__(self):

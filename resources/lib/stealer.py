@@ -1,9 +1,7 @@
 import os
-import shutil
 from os import listdir
 from os.path import isfile, join
 
-from commons import getValue
 from commons import getEnvironment
 from commons import execSub
 
@@ -14,8 +12,10 @@ Development:
     rm -R ./test/.stealer/copy
     rm -Rf ./test/.stealer/clone
 '''
+
+
 class Locations():
-    
+
     def __init__(self):
         self.currentDir = getEnvironment("CUR_DIR")
         self.stealerDir = self.currentDir + "/.stealer"
@@ -30,10 +30,13 @@ class Project():
 
     def __init__(self):
         self.name = None
+        ''' Repo props '''
         self.repoType = None
         self.repoUrl = None
         self.repoBranch = None
         self.repoFolders = None
+        ''' Other Protps '''
+        self.cleanedDestination = None
 
 
 locations = Locations()
@@ -73,14 +76,16 @@ def createProject(projectName):
     project.repoUrl = variableValues['REPO_URL'][0]
     project.repoBranch = variableValues['REPO_BRANCH'][0]
     project.repoFolders = variableValues['REPO_FOLDERS']
+    project.cleanedDestination = getCleanedDestinationDir(project)
     cloneProject(project)
     checkoutProject(project)
     copyProject(project)
+    changeProject(project)
 
 
 def cloneProject(project):
     cloneDestination = getCloneDestinationDir(project)
-    if(not os.path.exists(cloneDestination)):
+    if (not os.path.exists(cloneDestination)):
         result = execSub([project.repoType, 'clone', project.repoUrl, cloneDestination])
         print(result)
 
@@ -95,17 +100,17 @@ def checkoutProject(project):
 
 def copyProject(project):
     cloneDestination = getCloneDestinationDir(project)
-    cleanedDestination = getCleanedDestinationDir(project)
-    if not os.path.exists(cleanedDestination):
-        os.makedirs(cleanedDestination)
-    if(project.repoFolders is not None):
-        if(len(project.repoFolders) > 0):
+    '''project.cleanedDestination = getCleanedDestinationDir(project)'''
+    if not os.path.exists(project.cleanedDestination):
+        os.makedirs(project.cleanedDestination)
+    if (project.repoFolders is not None):
+        if (len(project.repoFolders) > 0):
             for repoFolder in project.repoFolders:
                 sourceDir = cloneDestination + "/" + repoFolder
-                destinationDir = cleanedDestination + "/" + repoFolder
+                destinationDir = project.cleanedDestination + "/" + repoFolder
                 doCopy(sourceDir, destinationDir)
         else:
-            doCopy(cloneDestination, cleanedDestination)
+            doCopy(cloneDestination, project.cleanedDestination)
 
 
 def getCloneDestinationDir(project):
@@ -127,3 +132,28 @@ def doCopy(sourceDir, destinatoinDir):
     result = execSub(cmd)
     print(result)
 
+
+def changeProject(project):
+    for repoFolder in project.repoFolders:
+        destinationDir = project.cleanedDestination + "/" + repoFolder
+        doChanges(project, destinationDir)
+
+def doChanges(project, destinationDir):
+    ''' TODO : is it correctly '''
+    postCopyProjectChange(project)
+    patchProject(project)
+    postPatchChangeProject(project)
+    copyOnPlace(project)
+
+
+def postCopyProjectChange():
+    ''' TODO '''
+
+def patchProject():
+    ''' TODO '''
+
+def postPatchChangeProject():
+    ''' TODO '''
+
+def copyOnPlace():
+    ''' TODO '''

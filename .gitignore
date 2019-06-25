@@ -19,3 +19,4 @@ test/package-lock.json
 test/package.json
 test/.stealer/clone/
 test/.stealer/copy/
+.idea/

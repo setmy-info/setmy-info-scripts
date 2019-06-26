@@ -152,26 +152,41 @@ def doChanges(project, destinationDir):
 
 def postCopyProjectChange(project):
     ''' TODO '''
+    postCopyFileNames = getPostCopyFiles(project)
+    for postCopyFileName in postCopyFileNames:
+        shellInclude(postCopyFileName)
 
 
 def shellInclude(shellIncludeFileName):
-    ''' TODO '''
+    ''' TODO : test it '''
+    cmd = ["smi-stealer-shell", shellIncludeFileName]
+    print(str(cmd))
+    result = execSub(cmd)
+    print(result)
 
 
 def patchProject(project):
     ''' TODO : test it '''
-    patchFileNames = glob.glob(getPatchFilePattern(project))
-    patchFileNames.sort()
-    for patchFileName in project.patchFileNames:
+    patchFileNames = getPatchFiles(project)
+    for patchFileName in patchFileNames:
         cmd = ["patch", "-f", "-s", "-p1", "<", patchFileName]
-        print(str(cmd));
+        print(str(cmd))
         result = execSub(cmd)
         print(result)
 
 
-def getPatchFilePattern(project):
-    result = locations.patchDir + "/*" + project.name + ".patch"
-    return result
+def getPatchFiles(project):
+    return getSortedFilesListByPattern(locations.patchDir + "/*" + project.name + ".patch")
+
+
+def getPostCopyFiles(project):
+    return getSortedFilesListByPattern(locations.patchDir + "/*" + project.name + ".post.copy")
+
+
+def getSortedFilesListByPattern(pattern):
+    fileNames = glob.glob(pattern)
+    fileNames.sort()
+    return fileNames
 
 
 def postPatchChangeProject(project):

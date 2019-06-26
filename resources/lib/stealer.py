@@ -1,4 +1,5 @@
 import os
+import glob
 from os import listdir
 from os.path import isfile, join
 
@@ -138,22 +139,44 @@ def changeProject(project):
         destinationDir = project.cleanedDestination + "/" + repoFolder
         doChanges(project, destinationDir)
 
+
 def doChanges(project, destinationDir):
-    ''' TODO : is it correctly '''
+    ''' TODO '''
+    os.chdir(destinationDir)
     postCopyProjectChange(project)
     patchProject(project)
     postPatchChangeProject(project)
     copyOnPlace(project)
+    os.chdir(locations.currentDir)
 
 
-def postCopyProjectChange():
+def postCopyProjectChange(project):
     ''' TODO '''
 
-def patchProject():
+
+def shellInclude(shellIncludeFileName):
     ''' TODO '''
 
-def postPatchChangeProject():
+
+def patchProject(project):
+    ''' TODO : test it '''
+    patchFileNames = glob.glob(getPatchFilePattern(project))
+    patchFileNames.sort()
+    for patchFileName in project.patchFileNames:
+        cmd = ["patch", "-f", "-s", "-p1", "<", patchFileName]
+        print(str(cmd));
+        result = execSub(cmd)
+        print(result)
+
+
+def getPatchFilePattern(project):
+    result = locations.patchDir + "/*" + project.name + ".patch"
+    return result
+
+
+def postPatchChangeProject(project):
     ''' TODO '''
 
-def copyOnPlace():
+
+def copyOnPlace(project):
     ''' TODO '''

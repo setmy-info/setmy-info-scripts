@@ -119,9 +119,9 @@ patchProject() {
     if [ "$(ls ${PATCH_DIR}/*${PROJECT_NAME}.patch | wc -l)" -ge "1" ]; then
         PATCH_NAMES=`ls ${PATCH_DIR}/*${PROJECT_NAME}.patch | sort`
         for PATCH_NAME in ${PATCH_NAMES}; do
-        if [ -f ${PATCH_NAME} ]; then
-            patch -f -s -p1 < ${PATCH_NAME}
-        fi
+            if [ -f ${PATCH_NAME} ]; then
+                patch -f -s -p1 < ${PATCH_NAME}
+            fi
         done
     else
         echo "No patch files";

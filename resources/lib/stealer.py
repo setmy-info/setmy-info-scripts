@@ -176,11 +176,19 @@ def patchProject(project):
 
 
 def getPatchFiles(project):
-    return getSortedFilesListByPattern(locations.patchDir + "/*" + project.name + ".patch")
+    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".patch")
 
 
 def getPostCopyFiles(project):
-    return getSortedFilesListByPattern(locations.patchDir + "/*" + project.name + ".post.copy")
+    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".post.copy")
+
+
+def getChangeFiles(project):
+    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".change")
+
+
+def getProjectPatchSuffix(project):
+    return locations.patchDir + "/*" + project.name
 
 
 def getSortedFilesListByPattern(pattern):
@@ -191,6 +199,9 @@ def getSortedFilesListByPattern(pattern):
 
 def postPatchChangeProject(project):
     ''' TODO '''
+    changeFiles = getChangeFiles(project)
+    for changeFile in changeFiles:
+        shellInclude(changeFile)
 
 
 def copyOnPlace(project):

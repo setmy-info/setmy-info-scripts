@@ -129,9 +129,7 @@ def doCopy(sourceDir, destinatoinDir):
         print('Directory not created. Error: %s' % e)
 
     cmd = ["cp", "-R", sourceDir + "/*", destinatoinDir + "/"]
-    print(str(cmd));
-    result = execSub(cmd)
-    print(result)
+    execCmd(cmd)
 
 
 def changeProject(project):
@@ -160,9 +158,7 @@ def postCopyProjectChange(project):
 def shellInclude(shellIncludeFileName):
     ''' TODO : test it '''
     cmd = ["smi-stealer-shell", shellIncludeFileName]
-    print(str(cmd))
-    result = execSub(cmd)
-    print(result)
+    execCmd(cmd)
 
 
 def patchProject(project):
@@ -170,9 +166,7 @@ def patchProject(project):
     patchFileNames = getPatchFiles(project)
     for patchFileName in patchFileNames:
         cmd = ["patch", "-f", "-s", "-p1", "<", patchFileName]
-        print(str(cmd))
-        result = execSub(cmd)
-        print(result)
+        execCmd(cmd)
 
 
 def getPatchFiles(project):
@@ -198,11 +192,41 @@ def getSortedFilesListByPattern(pattern):
 
 
 def postPatchChangeProject(project):
-    ''' TODO '''
+    ''' TODO : test it '''
     changeFiles = getChangeFiles(project)
     for changeFile in changeFiles:
         shellInclude(changeFile)
 
 
 def copyOnPlace(project):
-    ''' TODO '''
+    ''' TODO : test it '''
+    copyProjectRepoFolders(project)
+    copyProjectRepoFolders2(project)
+
+
+def copyProjectRepoFolders(project):
+    if (project.repoFolders is not None):
+        if (len(project.repoFolders) > 0):
+            for repoFolder in project.repoFolders:
+                copyProjectRepoFolder(repoFolder)
+
+
+def copyProjectRepoFolders2(project):
+    if ((project.repoFolders is None) or (len(project.repoFolders) == 0)):
+        copyProjectFullRepo()
+
+
+def copyProjectRepoFolder(repoFolder):
+    cmd = ["cp", "-R", "./" + repoFolder + "/*", locations.currentDir]
+    execCmd(cmd)
+
+
+def copyProjectFullRepo():
+    cmd = ["cp", "-R", "./*", locations.currentDir]
+    execCmd(cmd)
+
+
+def execCmd(cmd):
+    print(str(cmd))
+    result = execSub(cmd)
+    print(result)

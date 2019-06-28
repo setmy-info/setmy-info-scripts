@@ -170,29 +170,41 @@ def patchProject(project):
 
 
 def getPatchFiles(project):
-    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".patch")
+    list = getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".patch")
+    print(str(list))
+    return list
 
 
 def getPostCopyFiles(project):
-    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".post.copy")
+    list = getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".post.copy")
+    print(str(list))
+    return list
 
 
 def getChangeFiles(project):
-    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".change")
+    list = getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".change")
+    print(str(list))
+    return list
 
 
 def getProjectPatchSuffix(project):
-    return locations.patchDir + "/*" + project.name
+    suffix = locations.patchDir + "/*" + project.name
+    print("Suffix: " + suffix)
+    return suffix
 
 
 def getSortedFilesListByPattern(pattern):
+    print('------------getSortedFilesListByPattern--------------')
     fileNames = glob.glob(pattern)
+    print('File names 1: ' + str(fileNames))
     fileNames.sort()
+    print('File names 2: ' + str(fileNames))
     return fileNames
 
 
 def postPatchChangeProject(project):
     ''' TODO : test it '''
+    print('------------postPatchChangeProject--------------')
     changeFiles = getChangeFiles(project)
     for changeFile in changeFiles:
         shellInclude(changeFile)
@@ -200,11 +212,13 @@ def postPatchChangeProject(project):
 
 def copyOnPlace(project):
     ''' TODO : test it '''
+    print('------------copyOnPlace--------------')
     copyProjectRepoFolders(project)
     copyProjectRepoFolders2(project)
 
 
 def copyProjectRepoFolders(project):
+    print('------------copyProjectRepoFolders--------------')
     if (project.repoFolders is not None):
         if (len(project.repoFolders) > 0):
             for repoFolder in project.repoFolders:
@@ -212,11 +226,13 @@ def copyProjectRepoFolders(project):
 
 
 def copyProjectRepoFolders2(project):
+    print('------------copyProjectRepoFolders2--------------')
     if ((project.repoFolders is None) or (len(project.repoFolders) == 0)):
         copyProjectFullRepo()
 
 
 def copyProjectRepoFolder(repoFolder):
+    print('------------copyProjectRepoFolder--------------')
     cmd = ["cp", "-R", "./" + repoFolder + "/*", locations.currentDir]
     execCmd(cmd)
 

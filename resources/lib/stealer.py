@@ -170,18 +170,21 @@ def patchProject(project):
 
 
 def getPatchFiles(project):
+    print('------------getPatchFiles--------------')
     list = getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".patch")
     print(str(list))
     return list
 
 
 def getPostCopyFiles(project):
+    print('------------getPostCopyFiles--------------')
     list = getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".post.copy")
     print(str(list))
     return list
 
 
 def getChangeFiles(project):
+    print('------------getChangeFiles--------------')
     list = getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".change")
     print(str(list))
     return list

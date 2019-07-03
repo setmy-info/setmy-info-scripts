@@ -163,6 +163,7 @@ def shellInclude(shellIncludeFileName):
 
 def patchProject(project):
     ''' TODO : test it '''
+    print('------------patchProject--------------')
     patchFileNames = getPatchFiles(project)
     for patchFileName in patchFileNames:
         cmd = ["patch", "-f", "-s", "-p1", "<", patchFileName]
@@ -192,12 +193,13 @@ def getChangeFiles(project):
 
 def getProjectPatchSuffix(project):
     suffix = locations.patchDir + "/*" + project.name
-    print("Suffix: " + suffix)
+    print("getProjectPatchSuffix suffix: " + suffix)
     return suffix
 
 
 def getSortedFilesListByPattern(pattern):
     print('------------getSortedFilesListByPattern--------------')
+    print('pattern: ' + pattern)
     fileNames = glob.glob(pattern)
     print('File names 1: ' + str(fileNames))
     fileNames.sort()

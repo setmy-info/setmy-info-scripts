@@ -1,0 +1,6 @@
+# PLACEHOLDER-BEGIN #
+
+CONFIGURE_FILE("${RESOURCES_PATH}/in/smi-location.in"   "${BINARY_OUTPUT_PATH}/smi-location")
+CONFIGURE_FILE("${RESOURCES_PATH}/in/base.sh.in"        "${LIBRARY_OUTPUT_PATH}/base.sh")
+
+# PLACEHOLDER-END #

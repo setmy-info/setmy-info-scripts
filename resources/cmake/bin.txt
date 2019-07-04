@@ -1,3 +1,5 @@
+# PLACEHOLDER-BEGIN #
+
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/term"                       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-location"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-bin-location"           DESTINATION bin)
@@ -31,3 +33,5 @@ IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-create"       DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-delete-jail"        DESTINATION bin)
 ENDIF()
+
+# PLACEHOLDER-END #

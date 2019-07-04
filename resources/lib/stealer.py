@@ -133,7 +133,7 @@ def doCopy(sourceDir, destinationDir):
 
 def changeProject(project):
     print('------------changeProject--------------')
-    if (project.repoFolders is not None):
+    if project.repoFolders is None or len(project.repoFolders) == 0:
         for repoFolder in project.repoFolders:
             destinationDir = project.cleanedDestination + "/" + repoFolder
             doChanges(project, destinationDir)
@@ -231,14 +231,14 @@ def copyOnPlace(project):
 def copyProjectRepoFolders(project):
     print('------------copyProjectRepoFolders--------------')
     if (project.repoFolders is not None):
-        if (len(project.repoFolders) > 0):
+        if len(project.repoFolders) > 0:
             for repoFolder in project.repoFolders:
                 copyProjectRepoFolder(repoFolder)
 
 
 def copyProjectRepoFolders2(project):
     print('------------copyProjectRepoFolders2--------------')
-    if ((project.repoFolders is None) or (len(project.repoFolders) == 0)):
+    if project.repoFolders is None or len(project.repoFolders) == 0:
         copyProjectFullRepo()
 
 

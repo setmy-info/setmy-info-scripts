@@ -109,8 +109,14 @@ def copyProject(project):
             for repoFolder in project.repoFolders:
                 sourceDir = cloneDestination + "/" + repoFolder
                 destinationDir = project.cleanedDestination + "/" + repoFolder
+                try:
+                    os.makedirs(destinationDir)
+                except OSError as e:
+                    print('Directory not created. Error: %s' % e)
+                print('------------ start copy for one of --------------')
                 doCopy(sourceDir, destinationDir)
         else:
+            print('------------ start copy for single --------------')
             doCopy(cloneDestination, project.cleanedDestination)
 
 
@@ -122,13 +128,9 @@ def getCleanedDestinationDir(project):
     return locations.copyDir + "/" + project.name + "/" + project.repoBranch
 
 
-def doCopy(sourceDir, destinatoinDir):
-    try:
-        os.makedirs(destinatoinDir)
-    except OSError as e:
-        print('Directory not created. Error: %s' % e)
-
-    cmd = ["cp", "-R", sourceDir + "/*", destinatoinDir + "/"]
+def doCopy(sourceDir, destinationDir):
+    print('------------doCopy--------------')
+    cmd = ["cp", "-R", sourceDir + "/*", destinationDir + "/"]
     execCmd(cmd)
 
 
@@ -157,6 +159,7 @@ def postCopyProjectChange(project):
 
 def shellInclude(shellIncludeFileName):
     ''' TODO : test it '''
+    print('------------shellInclude--------------')
     cmd = ["smi-stealer-shell", shellIncludeFileName]
     execCmd(cmd)
 
@@ -243,6 +246,7 @@ def copyProjectRepoFolder(repoFolder):
 
 
 def copyProjectFullRepo():
+    print('------------copyProjectFullRepo--------------')
     cmd = ["cp", "-R", "./*", locations.currentDir]
     execCmd(cmd)
 

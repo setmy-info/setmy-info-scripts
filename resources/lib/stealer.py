@@ -113,10 +113,8 @@ def copyProject(project):
                     os.makedirs(destinationDir)
                 except OSError as e:
                     print('Directory not created. Error: %s' % e)
-                print('------------ start copy for one of --------------')
                 doCopy(sourceDir, destinationDir)
         else:
-            print('------------ start copy for single --------------')
             doCopy(cloneDestination, project.cleanedDestination)
 
 
@@ -129,19 +127,23 @@ def getCleanedDestinationDir(project):
 
 
 def doCopy(sourceDir, destinationDir):
-    print('------------doCopy--------------')
     cmd = ["cp", "-R", sourceDir + "/*", destinationDir + "/"]
     execCmd(cmd)
 
 
 def changeProject(project):
-    for repoFolder in project.repoFolders:
-        destinationDir = project.cleanedDestination + "/" + repoFolder
-        doChanges(project, destinationDir)
+    print('------------changeProject--------------')
+    if (project.repoFolders is not None):
+        for repoFolder in project.repoFolders:
+            destinationDir = project.cleanedDestination + "/" + repoFolder
+            doChanges(project, destinationDir)
+    else:
+        doChanges(project, project.cleanedDestination + "/")
 
 
 def doChanges(project, destinationDir):
     ''' TODO '''
+    print('------------doChanges--------------')
     os.chdir(destinationDir)
     postCopyProjectChange(project)
     patchProject(project)
@@ -152,6 +154,7 @@ def doChanges(project, destinationDir):
 
 def postCopyProjectChange(project):
     ''' TODO '''
+    print('------------postCopyProjectChange--------------')
     postCopyFileNames = getPostCopyFiles(project)
     for postCopyFileName in postCopyFileNames:
         shellInclude(postCopyFileName)

@@ -3,20 +3,20 @@ import os
 from sqlite3.dbapi2 import paramstyle
 
 
-def getValue(commandName):
-    return execSub([commandName])
+def get_value(command_name):
+    return exec_sub([command_name])
 
 
-def execSub(params):
+def exec_sub(params):
     print("execSub: " + str(params));
 #    procString = ""
 #    for param in params:
 #        procString += param
-    procString = ' '.join(params)
-    result = subprocess.Popen(procString, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    proc_string = ' '.join(params)
+    result = subprocess.Popen(proc_string, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout, stderr = result.communicate()
     return stdout.decode('utf-8')
 
 
-def getEnvironment(name):
+def get_environment(name):
     return os.environ.get(name)

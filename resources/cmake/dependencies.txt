@@ -1,0 +1,14 @@
+# PLACEHOLDER-BEGIN #
+
+ADD_DEPENDENCIES(build gzipman scrips etcfiles libfiles)
+ADD_DEPENDENCIES(gzipman  dirs)
+ADD_DEPENDENCIES(scrips   dirs)
+ADD_DEPENDENCIES(etcfiles dirs)
+ADD_DEPENDENCIES(libfiles dirs)
+ADD_DEPENDENCIES(clear cmakeClear buildClear pkgClear)
+
+ADD_DEPENDENCIES(build setprofiles serviceScripts)
+ADD_DEPENDENCIES(setprofiles dirs)
+ADD_DEPENDENCIES(serviceScripts dirs)
+
+# PLACEHOLDER-END #

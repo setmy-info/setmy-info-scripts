@@ -3,8 +3,8 @@ import glob
 from os import listdir
 from os.path import isfile, join
 
-from commons import getEnvironment
-from commons import execSub
+from commons import get_environment
+from commons import exec_sub
 
 '''
 Development:
@@ -15,37 +15,102 @@ Development:
 '''
 
 
-class Locations():
+class Locations:
 
     def __init__(self):
-        self.currentDir = getEnvironment("CUR_DIR")
-        self.stealerDir = self.currentDir + "/.stealer"
-        self.reposDir = self.stealerDir + "/repos"
-        self.projectNames = [f for f in listdir(self.reposDir) if isfile(join(self.reposDir, f))]
-        self.patchDir = self.stealerDir + "/patch"
-        self.cloneDir = self.stealerDir + "/clone"
-        self.copyDir = self.stealerDir + "/copy"
+        self.current_dir = get_environment("CUR_DIR")
+        self.stealer_dir = self.current_dir + "/.stealer"
+        self.repos_dir = self.stealer_dir + "/repos"
+        self.project_names = [f for f in listdir(self.repos_dir) if isfile(join(self.repos_dir, f))]
+        self.patch_dir = self.stealer_dir + "/patch"
+        self.clone_dir = self.stealer_dir + "/clone"
+        self.copy_dir = self.stealer_dir + "/copy"
 
 
-class Project():
+class Project:
 
     def __init__(self):
         self.name = None
         ''' Repo props '''
-        self.repoType = None
-        self.repoUrl = None
-        self.repoBranch = None
-        self.repoFolders = None
-        ''' Other Protps '''
-        self.cleanedDestination = None
+        self.repo_type = None
+        self.repo_url = None
+        self.repo_branch = None
+        self.repo_folders = None
+        ''' Other props '''
+        self.cleaned_destination = None
 
 
 locations = Locations()
 
 
-def readVariableValues(fileName):
+def steal():
+    print("Start borrowing: " + str(locations.project_names))
+    create_projects()
+
+
+def create_projects():
+    for projectName in locations.project_names:
+        print("# BEGIN")
+        create_project(projectName)
+        print("# END")
+
+
+def create_project(project_name):
+    print("Creating:" + project_name)
+    variable_values = read_variable_values(locations.repos_dir + "/" + project_name)
+    print("Vars:" + str(variable_values))
+    project = Project()
+    project.name = project_name
+    project.repo_type = variable_values['REPO_TYPE'][0]
+    project.repo_url = variable_values['REPO_URL'][0]
+    project.repo_branch = variable_values['REPO_BRANCH'][0]
+    project.repo_folders = variable_values['REPO_FOLDERS']
+    project.cleaned_destination = get_cleaned_destination_dir(project)
+    clone_destination = clone_project(project)
+    checkout_project(project, clone_destination)
+    copy_and_change_project(project, clone_destination)
+
+
+def clone_project(project):
+    clone_destination = get_clone_destination_dir(project)
+    if not os.path.exists(clone_destination):
+        result = exec_sub([project.repo_type, 'clone', project.repo_url, clone_destination])
+        print(result)
+    return clone_destination
+
+
+def checkout_project(project, clone_destination):
+    os.chdir(clone_destination)
+    sub_command = None
+    if project.repo_type == 'git':
+        sub_command = 'checkout'
+    if project.repo_type == 'hg':
+        sub_command = 'update'
+    result = exec_sub([project.repo_type, sub_command, project.repo_branch])
+    print(result)
+    os.chdir(locations.current_dir)
+
+
+def copy_and_change_project(project, clone_destination):
+    if not os.path.exists(project.cleaned_destination):
+        os.makedirs(project.cleaned_destination)
+    if project.repo_folders is not None:
+        if len(project.repo_folders) > 0:
+            for repo_folder in project.repo_folders:
+                source_dir = clone_destination + "/" + repo_folder
+                destination_dir = project.cleaned_destination + "/" + repo_folder
+                try:
+                    os.makedirs(destination_dir)
+                except OSError as e:
+                    print('Directory not created. Error: %s' % e)
+                do_copy(source_dir, destination_dir)
+        else:
+            do_copy(clone_destination, project.cleaned_destination)
+
+
+def read_variable_values(file_name):
     constants = {}
-    file = open(fileName, "r")
+    file = open(file_name, "r")
     lines = file.readlines()
     for line in lines:
         name, val = line.split('=')
@@ -55,154 +120,20 @@ def readVariableValues(fileName):
     return constants
 
 
-def steal():
-    print("Start borrowing: " + str(locations.projectNames))
-    createProjects()
+def get_cleaned_destination_dir(project):
+    return locations.copy_dir + "/" + project.name + "/" + project.repo_branch
 
 
-def createProjects():
-    for projectName in locations.projectNames:
-        print("=========== BEGIN ==========")
-        createProject(projectName)
-        print("===========  END  ==========")
+def get_clone_destination_dir(project):
+    return locations.clone_dir + "/" + project.name
 
 
-def createProject(projectName):
-    print("Creating:" + projectName)
-    variableValues = readVariableValues(locations.reposDir + "/" + projectName)
-    print("Vars:" + str(variableValues))
-    project = Project()
-    project.name = projectName
-    project.repoType = variableValues['REPO_TYPE'][0]
-    project.repoUrl = variableValues['REPO_URL'][0]
-    project.repoBranch = variableValues['REPO_BRANCH'][0]
-    project.repoFolders = variableValues['REPO_FOLDERS']
-    project.cleanedDestination = getCleanedDestinationDir(project)
-    cloneProject(project)
-    checkoutProject(project)
-    copyProject(project)
-    changeProject(project)
+def do_copy(source_dir, destination_dir):
+    cmd = ["cp", "-R", source_dir + "/*", destination_dir + "/"]
+    exec_cmd(cmd)
 
 
-def cloneProject(project):
-    cloneDestination = getCloneDestinationDir(project)
-    if (not os.path.exists(cloneDestination)):
-        result = execSub([project.repoType, 'clone', project.repoUrl, cloneDestination])
-        print(result)
-
-
-def checkoutProject(project):
-    cloneDestination = getCloneDestinationDir(project)
-    os.chdir(cloneDestination)
-    result = execSub([project.repoType, 'checkout', project.repoBranch])
-    print(result)
-    os.chdir(locations.currentDir)
-
-
-def copyProject(project):
-    cloneDestination = getCloneDestinationDir(project)
-    '''project.cleanedDestination = getCleanedDestinationDir(project)'''
-    if not os.path.exists(project.cleanedDestination):
-        os.makedirs(project.cleanedDestination)
-    if (project.repoFolders is not None):
-        if (len(project.repoFolders) > 0):
-            for repoFolder in project.repoFolders:
-                sourceDir = cloneDestination + "/" + repoFolder
-                destinationDir = project.cleanedDestination + "/" + repoFolder
-                doCopy(sourceDir, destinationDir)
-        else:
-            doCopy(cloneDestination, project.cleanedDestination)
-
-
-def getCloneDestinationDir(project):
-    return locations.cloneDir + "/" + project.name
-
-
-def getCleanedDestinationDir(project):
-    return locations.copyDir + "/" + project.name + "/" + project.repoBranch
-
-
-def doCopy(sourceDir, destinatoinDir):
-    try:
-        os.makedirs(destinatoinDir)
-    except OSError as e:
-        print('Directory not created. Error: %s' % e)
-
-    cmd = ["cp", "-R", sourceDir + "/*", destinatoinDir + "/"]
-    print(str(cmd));
-    result = execSub(cmd)
-    print(result)
-
-
-def changeProject(project):
-    for repoFolder in project.repoFolders:
-        destinationDir = project.cleanedDestination + "/" + repoFolder
-        doChanges(project, destinationDir)
-
-
-def doChanges(project, destinationDir):
-    ''' TODO '''
-    os.chdir(destinationDir)
-    postCopyProjectChange(project)
-    patchProject(project)
-    postPatchChangeProject(project)
-    copyOnPlace(project)
-    os.chdir(locations.currentDir)
-
-
-def postCopyProjectChange(project):
-    ''' TODO '''
-    postCopyFileNames = getPostCopyFiles(project)
-    for postCopyFileName in postCopyFileNames:
-        shellInclude(postCopyFileName)
-
-
-def shellInclude(shellIncludeFileName):
-    ''' TODO : test it '''
-    cmd = ["smi-stealer-shell", shellIncludeFileName]
+def exec_cmd(cmd):
     print(str(cmd))
-    result = execSub(cmd)
+    result = exec_sub(cmd)
     print(result)
-
-
-def patchProject(project):
-    ''' TODO : test it '''
-    patchFileNames = getPatchFiles(project)
-    for patchFileName in patchFileNames:
-        cmd = ["patch", "-f", "-s", "-p1", "<", patchFileName]
-        print(str(cmd))
-        result = execSub(cmd)
-        print(result)
-
-
-def getPatchFiles(project):
-    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".patch")
-
-
-def getPostCopyFiles(project):
-    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".post.copy")
-
-
-def getChangeFiles(project):
-    return getSortedFilesListByPattern(getProjectPatchSuffix(project) + ".change")
-
-
-def getProjectPatchSuffix(project):
-    return locations.patchDir + "/*" + project.name
-
-
-def getSortedFilesListByPattern(pattern):
-    fileNames = glob.glob(pattern)
-    fileNames.sort()
-    return fileNames
-
-
-def postPatchChangeProject(project):
-    ''' TODO '''
-    changeFiles = getChangeFiles(project)
-    for changeFile in changeFiles:
-        shellInclude(changeFile)
-
-
-def copyOnPlace(project):
-    ''' TODO '''

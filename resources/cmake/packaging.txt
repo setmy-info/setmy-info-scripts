@@ -1,3 +1,5 @@
+# PLACEHOLDER-BEGIN #
+
 #https://cmake.org/cmake/help/v3.14/manual/cpack-generators.7.html
 SET(CPACK_PACKAGE_NAME                    "${PROJECT_NAME}")
 SET(CPACK_PACKAGE_VENDOR                  "${PROJECT_VENDOR}")
@@ -61,4 +63,8 @@ IF(DISTRIBUTION STREQUAL "FreeBSD")
     SET(CPACK_GENERATOR                       "${DEFAULT_PACKAGES}")
 ENDIF()
 
+# PLACEHOLDER-PRE-PACK#
+
 include(CPack)
+
+# PLACEHOLDER-END #

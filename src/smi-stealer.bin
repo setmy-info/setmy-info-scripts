@@ -5,4 +5,4 @@ from stealer import steal
 
 steal()
 
-sys.exit(43)
+sys.exit(0)

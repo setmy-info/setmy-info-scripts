@@ -7,6 +7,18 @@ Development terminal preparations
 Stealing (actually borrowin) as a function. Collect code from different locations, apply changes, add your code and get working solution - .stealer folder as an input and working solution as an output.
 Decrease code repeating and increase development efficency.
 
+## Build
+
+./configure
+
+make
+
+make package
+
+sudo rpm -e setmy-info-scripts
+
+sudo rpm -i setmy-info-scripts-0.18.0.noarch.rpm
+
 ### Donate
 
 * [Set your favorite donation](https://www.paypal.me/imretabur "Donate any amount")

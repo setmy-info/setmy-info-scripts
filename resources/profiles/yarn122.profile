@@ -1,2 +1,2 @@
-export YARN_HOME=/opt/yarn-v1.15.2
+export YARN_HOME=/opt/yarn-v1.22.4
 export PATH=${YARN_HOME}/bin:${PATH}

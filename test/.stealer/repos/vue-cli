@@ -1,4 +1,0 @@
-REPO_TYPE=git
-REPO_URL=https://github.com/vuejs/vue-cli
-REPO_BRANCH=master
-REPO_FOLDERS=""

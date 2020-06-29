@@ -1,4 +1,0 @@
-REPO_TYPE=git
-REPO_URL=https://github.com/setmy-info/setmy.info.git
-REPO_BRANCH=develop
-REPO_FOLDERS="node-start-project"

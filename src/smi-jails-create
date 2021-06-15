@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2019 Imre Tabur
+# Copyright (C) 2019, 2020, 2021 Imre Tabur
 
 # global file example
 #OS_VERSION="12.0-RELEASE"

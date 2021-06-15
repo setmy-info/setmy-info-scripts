@@ -17,7 +17,7 @@ make package
 
 sudo rpm -e setmy-info-scripts
 
-sudo rpm -i setmy-info-scripts-0.18.0.noarch.rpm
+sudo rpm -i setmy-info-scripts-0.20.0.noarch.rpm
 
 ### Donate
 

@@ -7,6 +7,8 @@ COMMAND_HOME_FOLDER=${HOME}/.${COMMAND_NAME}
 PROFILE_SUFFIX="profile"
 SYSTEM_PROFILES_DIR=`smi-lib-location`/profiles
 
+. `smi-include konsole.sh`
+
 createHomeTermFolder() {
     if [ ! -d "${COMMAND_HOME_FOLDER}" ]; then
         mkdir -p ${COMMAND_HOME_FOLDER}
@@ -34,6 +36,6 @@ loadProfiles() {
 
 createHomeTermFolder
 loadProfiles ${*}
-konsole --workdir ${PWD} &
+findTerminal
 
 exit 0

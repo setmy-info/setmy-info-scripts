@@ -1,4 +1,0 @@
-REPO_TYPE=git
-REPO_URL=https://github.com/setmy-info/stealer-test-b.git
-REPO_BRANCH=develop
-REPO_FOLDERS="subfolder"

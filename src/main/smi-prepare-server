@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Copyright (C) 2021 Imre Tabur <imre.tabur@eesti.ee>
+
+. `smi-include base.sh`
+. `smi-include commons.sh`
+
+dnf install -y bind dhcp-server tftp-server tftp openssh-server openldap-clients openldap-servers samba samba-client samba-dc samba-dc-bind-dlz samba-common-tools samba-winbind tigervnc tigervnc-selinux tigervnc-server mosquitto rabbitmq-server nginx ansible ntpsec
+
+exit ${?}

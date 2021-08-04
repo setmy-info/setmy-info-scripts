@@ -1,10 +1,21 @@
-function tryToOpenTerminal() {
-    COMMAND_NAME=${1}
+function tryToOpenXfceTerminal() {
+     COMMAND_NAME=xfce4-terminal
     if ! command -v ${COMMAND_NAME} &> /dev/null
     then
         echo "${COMMAND_NAME} terminal could not be found"
     else
-        ${COMMAND_NAME} --working-directory=${PWD} --title=${COMMAND_NAME} &
+        ${COMMAND_NAME} --title=${COMMAND_NAME} --working-directory=${PWD} --disable-server &
+        exit 0
+    fi
+}
+
+function tryToOpenGnomeTerminal() {
+    COMMAND_NAME=gnome-terminal
+    if ! command -v ${COMMAND_NAME} &> /dev/null
+    then
+        echo "${COMMAND_NAME} terminal could not be found"
+    else
+        g${COMMAND_NAME} --working-directory=${PWD} &
         exit 0
     fi
 }
@@ -31,9 +42,8 @@ function tryToOpenXterm() {
 }
 
 function findTerminal() {
-     tryToOpenTerminal xfce4-terminal
-     tryToOpenTerminal xfce-terminal
-     tryToOpenTerminal gnome-terminal
+     tryToOpenXfceTerminal
+     tryToOpenGnomeTerminal
      tryToOpenKonsole
      tryToOpenXterm
 }

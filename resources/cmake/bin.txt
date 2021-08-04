@@ -24,7 +24,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/term-profile"               DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-organizations-location" DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-persons-location"       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-include"                DESTINATION bin)
-INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-prepare-server"         DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-scheduled"              DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-scheduled-deploy"       DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-location"     DESTINATION bin)

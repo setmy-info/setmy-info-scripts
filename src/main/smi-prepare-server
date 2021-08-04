@@ -5,6 +5,9 @@
 . `smi-include base.sh`
 . `smi-include commons.sh`
 
-dnf install -y bind dhcp-server tftp-server tftp openssh-server openldap-clients openldap-servers samba samba-client samba-dc samba-dc-bind-dlz samba-common-tools samba-winbind tigervnc tigervnc-selinux tigervnc-server mosquitto rabbitmq-server nginx ansible ntpsec make gcc cpp gcc-c++ rpm-build
+dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+dnf install -y docker-ce docker-ce-cli containerd.io
+systemctl enable docker
+dnf install -y bind dhcp-server tftp-server tftp openssh-server openldap-clients openldap samba samba-client samba-common-tools samba-winbind tigervnc tigervnc-selinux tigervnc-server mosquitto nginx ansible make gcc cpp gcc-c++ rpm-build
 
 exit ${?}

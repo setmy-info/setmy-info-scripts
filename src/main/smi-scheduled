@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Copyring 2021 Imre Tabur
+
+/opt/has/bin/deploy
+
+exit 0

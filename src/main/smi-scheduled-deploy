@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Copyright 2021 Imre Tabur
+
+PACKAGE_NAME=
+FROM_DIR=
+HISTORY_DIR=
+DEPLOY_DIR=
+
+CUR_DIR=${PWD}
+
+deployFiles() {
+    FILES=`ls ${FROM_DIR}/*.tar.gz`
+    for FILE_PATH_NAME in ${FILES}
+    do
+	deployTarGzFile ${FILE_PATH_NAME}
+    done
+}
+
+deployTarGzFile() {
+    FILE_PATH_NAME=${1}
+    if [ -f ${FILE_PATH_NAME} ]
+    then
+    echo "Processing ${FILE_PATH_NAME}"
+    cp ${FILE_PATH_NAME} ${DEPLOY_DIR}
+    cd ${DEPLOY_DIR}
+    rm -Rf ${DEPLOY_DIR}/${PACKAGE_NAM}
+    chown has:has ${DEPLOY_DIR}/*.tar.gz
+    tar xvzf ${DEPLOY_DIR}/${PACKAGE_NAM}*.tar.gz
+    mv ${DEPLOY_DIR}/${PACKAGE_NAM}*.tar.gz ${HISTORY_DIR}
+    rm -f ${FILE_PATH_NAME}
+    fi
+    cd ${CUR_DIR}
+}
+test -f ${FROM_DIR}/*.tar.gz && deployFiles
+
+exit $?

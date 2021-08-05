@@ -15,7 +15,7 @@ function tryToOpenGnomeTerminal() {
     then
         echo "${COMMAND_NAME} terminal could not be found"
     else
-        g${COMMAND_NAME} --working-directory=${PWD} &
+        ${COMMAND_NAME} --working-directory=${PWD} &
         exit 0
     fi
 }

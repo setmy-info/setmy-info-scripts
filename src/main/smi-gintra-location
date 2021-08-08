@@ -2,7 +2,6 @@
 
 # Copyright (C) 2019-2021 Imre Tabur <imre.tabur@eesti.ee>
 
-. `smi-include base.sh`
-echo ${VERSION}
+echo /gintra
 
 exit ${?}

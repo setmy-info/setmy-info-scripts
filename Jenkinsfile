@@ -36,13 +36,13 @@ pipeline {
         }
         stage ('Deploy') {
             steps {
-            	sh 'cp -f ./setmy-info-scripts-*.noarch.* /tank/org/has/files/www/rpms/'
+            	sh 'cp -f ./setmy-info-scripts-*.noarch.* /gintra/org/has/files/www/rpms/'
             }
         }
         stage('List') {
             steps {
                 sh 'ls -la'
-                sh 'ls -la /tank/org/has/files/www/rpms/'
+                sh 'ls -la /gintra/org/has/files/www/rpms/'
             }
         }
     }

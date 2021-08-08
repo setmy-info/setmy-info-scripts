@@ -9,15 +9,19 @@ Decrease code repeating and increase development efficency.
 
 ## Build
 
+```sh
 ./configure
-
 make
-
 make package
-
 sudo rpm -e setmy-info-scripts
+sudo rpm -i setmy-info-scripts-0.31.0.noarch.rpm
+```
 
-sudo rpm -i setmy-info-scripts-0.30.0.noarch.rpm
+All in single line:
+
+```sh
+./configure && make clear clean && make all package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-0.31.0.noarch.rpm
+```
 
 ### Donate
 

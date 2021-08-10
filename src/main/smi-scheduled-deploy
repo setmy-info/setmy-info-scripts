@@ -25,15 +25,17 @@ deployFiles() {
 deployTarGzFile() {
     FILE_PATH_NAME=${1}
     TIMESTAMP=`smi-timestamp`
+    FILE_NAME=`basename ${FILE_PATH_NAME}`
     if [ -f ${FILE_PATH_NAME} ]
     then
     echo "Processing ${FILE_PATH_NAME}"
+    echo "File name ${FILE_NAME}"
     cp ${FILE_PATH_NAME} ${DEPLOY_DIR}
     cd ${DEPLOY_DIR}
     rm -Rf ${DEPLOY_DIR}/${PACKAGE_NAME}
     chown ${DEPLOY_OWNER}:${DEPLOY_GROUP} ${DEPLOY_DIR}/*.tar.gz
-    tar xvzf ${DEPLOY_DIR}/${PACKAGE_NAME}*.tar.gz
-    mv ${DEPLOY_DIR}/${PACKAGE_NAME}*.tar.gz ${HISTORY_DIR}/${TIMESTAMP}-${PACKAGE_NAME}*.tar.gz
+    tar xvzf ${DEPLOY_DIR}/${FILE_NAME}
+    mv ${DEPLOY_DIR}/${FILE_NAME} ${HISTORY_DIR}/${TIMESTAMP}-${FILE_NAME}
     rm -f ${FILE_PATH_NAME}
     fi
     cd ${CUR_DIR}

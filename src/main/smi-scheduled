@@ -2,6 +2,6 @@
 
 # Copyring 2021 Imre Tabur
 
-/opt/has/bin/deploy
+/opt/setmy.info/bin/smi-scheduled-deploy
 
 exit 0

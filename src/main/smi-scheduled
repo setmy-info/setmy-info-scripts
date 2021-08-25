@@ -5,4 +5,4 @@
 export PATH="/opt/setmy.info/bin:${PATH}"
 /opt/setmy.info/bin/smi-scheduled-deploy
 
-exit 0
+exit $?

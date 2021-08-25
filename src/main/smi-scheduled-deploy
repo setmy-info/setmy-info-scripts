@@ -14,6 +14,8 @@ CUR_DIR=${PWD}
 # DEPLOY_GROUP=
 include `smi-etc-location`/smi-scheduled-deploy.sh
 
+LOCK_FILE_NAME=/tmp/smi-scheduled-deploy-lock
+
 deployFiles() {
     FILES=`ls ${FROM_DIR}/*.tar.gz`
     for FILE_PATH_NAME in ${FILES}
@@ -28,6 +30,7 @@ deployTarGzFile() {
     FILE_NAME=`basename ${FILE_PATH_NAME}`
     if [ -f ${FILE_PATH_NAME} ]
     then
+    sleep 30
     echo "Processing ${FILE_PATH_NAME}"
     echo "File name ${FILE_NAME}"
     cp ${FILE_PATH_NAME} ${DEPLOY_DIR}
@@ -40,6 +43,11 @@ deployTarGzFile() {
     fi
     cd ${CUR_DIR}
 }
+
+if [ -f ${LOCK_FILE_NAME} ]
+then
+    exit 0
+fi
 test -f ${FROM_DIR}/*.tar.gz && deployFiles
 
 exit $?

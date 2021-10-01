@@ -1,5 +1,6 @@
 # PLACEHOLDER-BEGIN #
 
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/hgrep"                      DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/term"                       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-location"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-bin-location"           DESTINATION bin)

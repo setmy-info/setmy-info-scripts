@@ -19,6 +19,12 @@ ORIGINAL_PAGER=${PAGER}
 
 export PAGER=cat
 
+jailRcConf() {
+    echo "sendmail_enable=NONE"
+    echo "syslogd_flags=-ss"
+    echo "rpcbind_enable=NO"
+}
+
 mkdir -p ${JAILS_DIR}
 cd ${JAILS_DIR}
 
@@ -29,6 +35,8 @@ do
     ${DOWNLOAD} ${RELEASE_RESOURCE_URL}/${SET}.txz
     ${EXTRACT} ${JAILS_DIR}/${SET}.txz --totals -C ${BASE_JAIL_DIR}
 done
+
+jailRcConf > ${BASE_JAIL_DIR}/etc/rc.conf
 freebsd-update -b ${BASE_JAIL_DIR} --not-running-from-cron fetch
 freebsd-update -b ${BASE_JAIL_DIR} --not-running-from-cron install
 pkg -c ${BASE_JAIL_DIR} update -q

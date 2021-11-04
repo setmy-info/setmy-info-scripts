@@ -8,8 +8,7 @@
 
 JAILS_DIR=`smi-jails-location`
 
-#src can be added also, but is not needed"
-BASE_PACKAGES="base ports"
+BASE_PACKAGES="base ports src"
 BASE_JAIL_DIR=${JAILS_DIR}/base
 
 EXTRACT="tar -xvvf"
@@ -43,7 +42,7 @@ pkg -c ${BASE_JAIL_DIR} update -q
 pkg -c ${BASE_JAIL_DIR} upgrade -y
 pkg -c ${BASE_JAIL_DIR} install -y bash mc nano
 pw -R ${BASE_JAIL_DIR} addgroup -n microservice
-pw -R ${BASE_JAIL_DIR} adduser microservice -g microservice -d /nonexistent -s /usr/sbin/nologin -c "Microserice nologin user"
+pw -R ${BASE_JAIL_DIR} adduser microservice -g microservice -d /nonexistent -s /usr/sbin/nologin -c "Microservice nologin user"
 ${PACKAGE} jail.base-${RELEASE}.txz -C ${BASE_JAIL_DIR} .
 
 export PAGER=${ORIGINAL_PAGER}

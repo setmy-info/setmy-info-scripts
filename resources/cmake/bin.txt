@@ -30,6 +30,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-scheduled-deploy"       DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-timestamp"              DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
+    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-location"     DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-prepare"      DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-create"       DESTINATION bin)

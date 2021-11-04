@@ -1,0 +1,154 @@
+#!/bin/sh
+
+# Copyright (C) 2021 Imre Tabur
+
+. `smi-include base.sh`
+. `smi-include commons.sh`
+. `smi-include freebsd.sh`
+
+eval $@
+
+COMMAND=${0}
+PARAMETERS=$@
+JAIL_FILE=Jailfile
+DOWNLOAD_CMD="wget -c"
+EXTRACT_CMD="tar -xvvf"
+PACKAGE_CMD="tar cfJ"
+MKDIR_CMD="mkdir -p"
+RM_CMD="rm -fR"
+ORIGINAL_PAGER=${PAGER}
+JAILS_DIR=`smi-jails-location`
+JAIL_DIR=${JAILS_DIR}/${JAIL}
+BASE_PACKAGES="base ports"
+BUILD_DATE=`date`
+INSTALL_CMD="pkg -c ${JAIL_DIR} install -y"
+UPDATE_CMD="pkg -c ${JAIL_DIR} update -q"
+UPGRADE_CMD="pkg -c ${JAIL_DIR} upgrade -y"
+COPY_CMD="cp -f -R"
+RUN_CMD="chroot ${JAIL_DIR}"
+PW_CMD="pw -R ${JAIL_DIR}"
+SYSRC_CMD="sysrc -R ${JAIL_DIR}"
+FP_UPDATE_CMD="freebsd-update -b ${JAIL_DIR} --not-running-from-cron"
+CUR_DIR=`pwd`
+
+# For replacing default pager for freebsd-update
+export PAGER=cat
+
+if [ -z "$JAIL" ]; then
+    echo "Need to set JAIL"
+    exit 1
+fi
+
+if [ -z "$TAG" ]; then
+    echo "Need to set TAG"
+    exit 2
+fi
+
+goSudo() {
+    CMD_USER=`whoami`
+    if [ "${CMD_USER}" != "root" ]; then
+	sudo ${COMMAND} ${PARAMETERS}
+	exit 0
+    fi
+}
+
+runJailfile() {
+    if [ -f "./${JAIL_FILE}" ]; then
+        . ./${JAIL_FILE}
+    else
+        echo "Error: ${JAIL_FILE} not found! Exiting."
+        exit 3
+    fi
+}
+
+FROM() {
+    FROM_VALUE=$@
+    echo "FROM ${FROM_VALUE} for ${JAIL} at ${JAIL_DIR}"
+    if [ "${FROM_VALUE}" = "base" ]; then
+	chflags -R noschg ${JAIL_DIR}
+	${RM_CMD} ${JAIL_DIR}
+	${MKDIR_CMD} ${JAIL_DIR}
+	for PACKAGE_NAME in ${BASE_PACKAGES};
+	do
+	    ${DOWNLOAD_CMD} ${RELEASE_RESOURCE_URL}/${PACKAGE_NAME}.txz -O ${JAILS_DIR}/${PACKAGE_NAME}.txz
+	    ${EXTRACT_CMD} ${JAILS_DIR}/${PACKAGE_NAME}.txz --totals -C ${JAIL_DIR}
+	done
+    else
+	
+    fi
+}
+
+COPY() {
+    echo "COPY $@"
+    ${COPY_CMD} ${1} ${JAIL_DIR}/${2}
+}
+
+RUN() {
+    RUN_VALUE=$@
+    echo "RUN ${RUN_VALUE}"
+    ${RUN_CMD} ${RUN_VALUE}
+}
+
+CMD() {
+    CMD_VALUE=$@
+    echo "CMD ${CMD_VALUE}"
+}
+
+MAINTAINER() {
+    MAINTAINER_VALUE=$@
+    echo "MAINTAINER ${MAINTAINER_VALUE} ${JAIL}"
+}
+
+LABEL() {
+    LABEL_VALUE=$@
+    echo "LABEL ${LABEL_VALUE} ${JAIL}"
+}
+
+ENV() {
+    ENV_VALUE=$@
+    echo "ENV ${ENV_VALUE} ${JAIL}"
+}
+
+INSTALL() {
+    INSTALL_VALUE=$@
+    echo "Install at ${JAIL_DIR}"
+    ${INSTALL_CMD} ${INSTALL_VALUE}
+}
+
+UPDATE() {
+    echo "Update at ${JAIL_DIR}"
+    ${UPDATE_CMD}
+}
+
+FB_UPDATE() {
+    echo "FreeBSD update at ${JAIL_DIR}"
+    ${FP_UPDATE_CMD} fetch
+    ${FP_UPDATE_CMD} install
+}
+
+UPGRADE() {
+    echo "Upgrade ${JAIL} at ${JAIL_DIR}"
+    ${UPGRADE_CMD}
+}
+
+PW() {
+    PW_VALUE=$@
+    echo "PW at ${JAIL_DIR}"
+    ${PW_CMD} ${PW_VALUE}
+}
+
+SYSRC() {
+    SYSRC_VALUE=$@
+    echo "SYSRC at ${JAIL_DIR}"
+    ${SYSRC_CMD} ${SYSRC_VALUE}
+}
+
+PACKAGE() {
+    echo "PACKAGE ${JAIL} at ${JAIL_DIR}"
+    ${PACKAGE_CMD} ${JAILS_DIR}/${JAIL}-${TAG}.txz -C ${JAIL_DIR} .
+}
+
+goSudo
+runJailfile
+
+exit 0

@@ -30,19 +30,24 @@ PW_CMD="pw -R ${JAIL_DIR}"
 SYSRC_CMD="sysrc -R ${JAIL_DIR}"
 FP_UPDATE_CMD="freebsd-update -b ${JAIL_DIR} --not-running-from-cron"
 CUR_DIR=`pwd`
+CD_VALUE="/"
 
 # For replacing default pager for freebsd-update
 export PAGER=cat
 
-if [ -z "$JAIL" ]; then
-    echo "Need to set JAIL"
-    exit 1
-fi
+checkJail() {
+    if [ -z "$JAIL" ]; then
+        echo "Need to set JAIL"
+	exit 1
+    fi
+}
 
-if [ -z "$TAG" ]; then
-    echo "Need to set TAG"
-    exit 2
-fi
+checkTag() {
+    if [ -z "$TAG" ]; then
+        echo "Need to set TAG"
+	exit 2
+    fi
+}
 
 goSudo() {
     CMD_USER=`whoami`
@@ -53,8 +58,8 @@ goSudo() {
 }
 
 runJailfile() {
-    if [ -f "./${JAIL_FILE}" ]; then
-        . ./${JAIL_FILE}
+    if [ -f "${CUR_DIR}/${JAIL_FILE}" ]; then
+        . ${CUR_DIR}/${JAIL_FILE}
     else
         echo "Error: ${JAIL_FILE} not found! Exiting."
         exit 3
@@ -65,33 +70,60 @@ FROM() {
     FROM_VALUE=$@
     echo "FROM ${FROM_VALUE} for ${JAIL} at ${JAIL_DIR}"
     if [ "${FROM_VALUE}" = "base" ]; then
-	chflags -R noschg ${JAIL_DIR}
-	${RM_CMD} ${JAIL_DIR}
-	${MKDIR_CMD} ${JAIL_DIR}
-	for PACKAGE_NAME in ${BASE_PACKAGES};
-	do
-	    ${DOWNLOAD_CMD} ${RELEASE_RESOURCE_URL}/${PACKAGE_NAME}.txz -O ${JAILS_DIR}/${PACKAGE_NAME}.txz
-	    ${EXTRACT_CMD} ${JAILS_DIR}/${PACKAGE_NAME}.txz --totals -C ${JAIL_DIR}
-	done
+        prepareBaseJailDir
     else
-	
+	prepareJailDir
     fi
+}
+
+prepareBaseJailDir() {
+    deleteJailDir
+    ${MKDIR_CMD} ${JAIL_DIR}
+    downloadBasePackages
+}
+
+deleteJailDir() {
+    chflags -R noschg ${JAIL_DIR}
+    ${RM_CMD} ${JAIL_DIR}
+}
+
+downloadBasePackages() {
+    for PACKAGE_NAME in ${BASE_PACKAGES};
+    do
+        ${DOWNLOAD_CMD} ${RELEASE_RESOURCE_URL}/${PACKAGE_NAME}.txz -O ${JAILS_DIR}/${PACKAGE_NAME}.txz
+        ${EXTRACT_CMD} ${JAILS_DIR}/${PACKAGE_NAME}.txz --totals -C ${JAIL_DIR}
+    done
+}
+
+prepareJailDir() {
+    deleteJailDir
+    ${MKDIR_CMD} ${JAIL_DIR}
+    FROM_TAG=${FROM_VALUE#*:}
+    FROM_PACKAGE_NAME=${FROM_VALUE%:*}
+    FROM_JAIL_DIR_NAME=${FROM_PACKAGE_NAME}-${FROM_TAG}
+    FROM_JAIL_FILE_NAME=${FROM_JAIL_DIR_NAME}.txz
+    FROM_JAIL_ABSOLUTE_FILE_NAME=${JAILS_DIR}/${FROM_JAIL_FILE_NAME}
+    ${EXTRACT_CMD} ${FROM_JAIL_ABSOLUTE_FILE_NAME} --totals -C ${JAIL_DIR}
 }
 
 COPY() {
     echo "COPY $@"
-    ${COPY_CMD} ${1} ${JAIL_DIR}/${2}
+    ${COPY_CMD} ${CUR_DIR}/${1} ${JAIL_DIR}/${2}
+}
+
+CD() {
+    CD_VALUE=$@
 }
 
 RUN() {
     RUN_VALUE=$@
     echo "RUN ${RUN_VALUE}"
-    ${RUN_CMD} ${RUN_VALUE}
+    ${RUN_CMD} sh -c "cd ${CD_VALUE} ; ${RUN_VALUE}"
 }
 
 CMD() {
     CMD_VALUE=$@
-    echo "CMD ${CMD_VALUE}"
+    echo "CMD ${CMD_VALUE} : TODO : need to implement"
 }
 
 MAINTAINER() {
@@ -106,7 +138,7 @@ LABEL() {
 
 ENV() {
     ENV_VALUE=$@
-    echo "ENV ${ENV_VALUE} ${JAIL}"
+    echo "ENV ${ENV_VALUE} ${JAIL} : TODO : need to implement"
 }
 
 INSTALL() {
@@ -145,9 +177,12 @@ SYSRC() {
 
 PACKAGE() {
     echo "PACKAGE ${JAIL} at ${JAIL_DIR}"
+    ${RM_CMD} ${JAILS_DIR}/${JAIL}-${TAG}.txz
     ${PACKAGE_CMD} ${JAILS_DIR}/${JAIL}-${TAG}.txz -C ${JAIL_DIR} .
 }
 
+checkJail
+checkTag
 goSudo
 runJailfile
 

@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# Copyright (C) 2021 Imre Tabur
+
+. `smi-include base.sh`
+. `smi-include commons.sh`
+. `smi-include freebsd.sh`
+
+COMMAND=${0}
+PARAMETERS=${@}
+JAIL_NAMES=${@}
+CUR_DIR=`pwd`
+ORIGINAL_PAGER=${PAGER}
+JAILS_DIR=`smi-jails-location`
+JAIL_DIR=${JAILS_DIR}/${JAIL}
+export PAGER=cat
+
+goSudo() {
+    CMD_USER=`whoami`
+    if [ "${CMD_USER}" != "root" ]; then
+        sudo ${COMMAND} ${PARAMETERS}
+        exit ${?}
+    fi
+    return
+}
+
+doUpdate() {
+    for JAIL in ${JAIL_NAMES}
+    do
+        JAIL_DIR=${JAILS_DIR}/${JAIL}
+        freebsd-update -b ${JAIL_DIR} --not-running-from-cron fetch
+        freebsd-update -b ${JAIL_DIR} --not-running-from-cron install
+        pkg -c ${JAIL_DIR} update -f
+        pkg -c ${JAIL_DIR} upgrade -y
+    done
+}
+
+goSudo
+doUpdate
+
+export PAGER=${ORIGINAL_PAGER}
+
+exit 0

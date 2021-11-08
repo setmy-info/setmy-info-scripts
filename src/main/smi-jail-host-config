@@ -1,0 +1,84 @@
+#!/bin/sh
+
+# Copyright (C) 2019, 2020, 2021 Imre Tabur
+
+. `smi-include base.sh`
+. `smi-include commons.sh`
+. `smi-include freebsd.sh`
+
+COMMAND=${0}
+PARAMETERS=${@}
+
+ETC_DIR=`smi-etc-location`
+JAILS_CONF_DIR=${ETC_DIR}/jails
+JAILS_LIST=`ls ${JAILS_CONF_DIR}`
+JAILS_STRING=
+ETC_JAIL_CONF_FILE=/etc/jail.conf
+JAILS_DIR=`smi-jails-location`
+
+. ${ETC_DIR}/global
+
+goSudo() {
+    CMD_USER=`whoami`
+    if [ "${CMD_USER}" != "root" ]; then
+        sudo ${COMMAND} ${PARAMETERS}
+        exit ${?}
+    fi
+    return
+}
+
+jailResolvConf() {
+    echo "search ${DNS_SEARCH}"
+    for DNS_ENTRY in ${DNS}; do
+        echo "nameserver ${DNS_ENTRY}"
+    done
+}
+
+jailConfHeader() {
+    echo "exec.start = \"/bin/sh /etc/rc\";"
+    echo "exec.stop = \"/bin/sh /etc/rc.shutdown\";"
+    echo "exec.clean;"
+}
+
+jailConfJail() {
+    echo "${JAIL} {"
+    echo "    host.hostname = ${NAME}.${DOMAIN};"
+    echo "    path =\"/var/jails/${NAME}\";"
+    echo "    interface = \"${NIC}\";"
+    echo "    ip4.addr = ${IP};"
+    echo "    allow.chflags;"
+    echo "    allow.raw_sockets;"
+    echo "    mount.devfs;"
+    echo "    mount.procfs;"
+    echo "    osrelease = \"${OS_VERSION}\";"
+    echo "}"
+}
+
+rcConfJail() {
+        sysrc jail_enable=YES
+        sysrc jail_list="${JAILS_STRING}"
+}
+
+configureJails() {
+	jailConfHeader > ${ETC_JAIL_CONF_FILE}
+        for JAIL in ${JAILS_LIST}; do
+            JAIL_CONF_DIR=${JAILS_CONF_DIR}/${JAIL}
+            . ${JAIL_CONF_DIR}
+            JAILS_STRING="${JAILS_STRING} ${NAME}"
+            JAIL_DIR=${JAILS_DIR}/${NAME}
+            JAIL_ETC_RESOLV_CONF_FILE=${JAIL_DIR}/etc/resolv.conf
+            echo "=============================="
+            jailResolvConf > ${JAIL_ETC_RESOLV_CONF_FILE}
+            jailConfJail >> ${ETC_JAIL_CONF_FILE}
+            echo "${JAIL_DIR} = ${JAIL}.${DOMAIN} (${IP}); DNS servers: ${DNS}; DNS search: ${DNS_SEARCH}"
+            echo "=============================="
+        done
+        rcConfJail
+}
+
+goSudo
+configureJails
+
+cdCurDir
+
+exit 0

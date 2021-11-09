@@ -18,6 +18,11 @@ goSudo() {
     return
 }
 
+LinuxBSDUpdate() {
+    echo "=== Linux (CentOS/Fedora/Rocky) update ==="
+    dnf update -y
+}
+
 FreeBSDUpdate() {
     echo "=== FreeBSD update ==="
     ORIGINAL_PAGER=${PAGER}

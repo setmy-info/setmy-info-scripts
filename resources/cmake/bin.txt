@@ -29,7 +29,6 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-scheduled"              DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-scheduled-deploy"       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-timestamp"              DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-host-update"            DESTINATION bin)
-INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-full-update"            DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)
@@ -38,6 +37,7 @@ IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail-delete"        DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail-host-config"   DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-update"       DESTINATION bin)
+    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-full-update"        DESTINATION bin)
 ENDIF()
 
 # PLACEHOLDER-END #

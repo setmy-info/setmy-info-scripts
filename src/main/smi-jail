@@ -52,7 +52,7 @@ checkTag() {
 goSudo() {
     CMD_USER=`whoami`
     if [ "${CMD_USER}" != "root" ]; then
-	sudo ${COMMAND} ${PARAMETERS}
+	sudo -i ${COMMAND} ${PARAMETERS}
 	exit 0
     fi
 }
@@ -139,6 +139,9 @@ LABEL() {
 ENV() {
     ENV_VALUE=$@
     echo "ENV ${ENV_VALUE} ${JAIL} : TODO : need to implement"
+    #Looks like thats not correct file
+    #mkdir -p ${JAIL_DIR}/usr/local/etc/profile.d
+    #echo "${ENV_VALUE}" >> ${JAIL_DIR}/usr/local/etc/profile.d/jail.sh
 }
 
 INSTALL() {

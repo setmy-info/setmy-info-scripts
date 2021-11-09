@@ -12,13 +12,13 @@ PARAMETERS=${@}
 goSudo() {
     CMD_USER=`whoami`
     if [ "${CMD_USER}" != "root" ]; then
-        sudo ${COMMAND} ${PARAMETERS}
+        sudo -i ${COMMAND} ${PARAMETERS}
         exit ${?}
     fi
     return
 }
 
-LinuxBSDUpdate() {
+LinuxUpdate() {
     echo "=== Linux (CentOS/Fedora/Rocky) update ==="
     dnf update -y
 }

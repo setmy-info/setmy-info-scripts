@@ -6,7 +6,7 @@ PROJECT (setmy-info-scripts)
 
 SET (PROJECT_VERSION_MAJOR              0)
 SET (PROJECT_VERSION_MINOR              40)
-SET (PROJECT_VERSION_PATCH              0)
+SET (PROJECT_VERSION_PATCH              1)
 SET (PROJECT_VERSION_TWEAK              0)
 
 SET (PROJECT_DESCRIPTION_SUMMARY        "setmy.info scripts")

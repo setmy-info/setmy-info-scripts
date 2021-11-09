@@ -21,7 +21,7 @@ JAILS_DIR=`smi-jails-location`
 goSudo() {
     CMD_USER=`whoami`
     if [ "${CMD_USER}" != "root" ]; then
-        sudo ${COMMAND} ${PARAMETERS}
+        sudo -i ${COMMAND} ${PARAMETERS}
         exit ${?}
     fi
     return

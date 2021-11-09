@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Copyright (C) 2019, 2020, 2021 Imre Tabur
+
+. `smi-include base.sh`
+. `smi-include commons.sh`
+. `smi-include freebsd.sh`
+
+COMMAND=${0}
+ETC_DIR=`smi-etc-location`
+JAILS_CONF_DIR=${ETC_DIR}/jails
+JAILS_LIST=`ls ${JAILS_CONF_DIR}`
+JAILS_DIR=`smi-jails-location`
+
+goSudo() {
+    CMD_USER=`whoami`
+    if [ "${CMD_USER}" != "root" ]; then
+        sudo -i ${COMMAND}
+        exit ${?}
+    fi
+    return
+}
+
+updateJails() {
+        for JAIL in ${JAILS_LIST}; do
+            JAIL_CONF_DIR=${JAILS_CONF_DIR}/${JAIL}
+            . ${JAIL_CONF_DIR}
+            JAIL_DIR=${JAILS_DIR}/${NAME}
+            echo "=============================="
+            echo "Updating jail '${NAME}' at '${JAILS_DIR}/${NAME}'"
+            smi-jail-update ${NAME}
+            echo "=============================="
+        done
+}
+
+goSudo
+updateJails
+
+cdCurDir
+
+exit 0

@@ -52,7 +52,7 @@ checkTag() {
 goSudo() {
     CMD_USER=`whoami`
     if [ "${CMD_USER}" != "root" ]; then
-	sudo -i ${COMMAND} ${PARAMETERS}
+	sudo ${COMMAND} ${PARAMETERS}
 	exit 0
     fi
 }

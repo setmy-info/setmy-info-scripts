@@ -12,6 +12,7 @@ PARAMETERS=${@}
 goSudo() {
     CMD_USER=`whoami`
     if [ "${CMD_USER}" != "root" ]; then
+	# -i should be to get environment variables to be loaded. Without it at least Linux environment setmy-info scripts bin directory is not loaded.
         sudo -i ${COMMAND} ${PARAMETERS}
         exit ${?}
     fi

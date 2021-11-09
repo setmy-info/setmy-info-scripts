@@ -18,7 +18,7 @@ export PAGER=cat
 goSudo() {
     CMD_USER=`whoami`
     if [ "${CMD_USER}" != "root" ]; then
-        sudo -i ${COMMAND} ${PARAMETERS}
+        sudo ${COMMAND} ${PARAMETERS}
         exit ${?}
     fi
     return

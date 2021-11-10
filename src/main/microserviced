@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# $FreeBSD$
+#
+
+# PROVIDE: microserviced
+# REQUIRE: DAEMON NETWORKING FILESYSTEMS
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="microserviced"
+desc="setmy.info microservice daemon"
+rcvar="${name}_enable"
+command="/usr/sbin/daemon"
+procname="/usr/sbin/daemon"
+pidfile_child="/var/run/${name}.pid"
+pidfile="/var/run/${name}_daemon.pid"
+start_precmd="${name}_pre_start"
+
+. /opt/has/lib/${name}.sh
+
+microserviced_pre_start() {
+    echo ${JAVA_VERSION}
+    rc_flags="-r -P ${pidfile} -p ${pidfile_child} ${COMMAND} ${rc_flags}"
+    touch ${pidfile}
+}
+
+load_rc_config $name
+run_rc_command "$1"

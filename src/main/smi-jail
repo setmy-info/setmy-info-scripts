@@ -123,7 +123,7 @@ RUN() {
 
 CMD() {
     CMD_VALUE=$@
-    echo "CMD ${CMD_VALUE} : TODO : need to implement"
+    echo "COMMAND=${CMD_VALUE}" > ${JAIL_DIR}/opt/has/lib/microserviced.sh
 }
 
 MAINTAINER() {

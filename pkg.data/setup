@@ -1,0 +1,38 @@
+#!/bin/sh
+
+#Change that for corresponding release
+RELEASE=10.0
+
+. ./package
+
+CURDIR=${PACKAGE_NAME_VERSION}
+VERSION=${CURDIR##*-}
+TMPNAME=${CURDIR%*-${VERSION}}
+NAME=${TMPNAME##*/}
+RPMDIRS=${TMPNAME%*${NAME}}
+DATADIR=./pkg.data
+SCRIPTSDIR=${DATADIR}/Makefiles
+
+#Change that, if produc is different from target
+PRODUCTNAME=${NAME}
+
+echo TARGETNAME=${NAME}             > ./Makefile.${NAME}
+echo VERSION=${VERSION}            >> ./Makefile.${NAME}
+echo RELEASE=${RELEASE}            >> ./Makefile.${NAME}
+echo PRODUCTNAME=${PRODUCTNAME}    >> ./Makefile.${NAME}
+cat  ${SCRIPTSDIR}/Makefile        >> ./Makefile.${NAME}
+
+echo Name:    ${NAME}               > ./${NAME}-${VERSION}-${RELEASE}.spec
+echo Version: ${VERSION}           >> ./${NAME}-${VERSION}-${RELEASE}.spec
+echo Release: ${RELEASE}           >> ./${NAME}-${VERSION}-${RELEASE}.spec
+echo \%define  _productname ${PRODUCTNAME} >> ./${NAME}-${VERSION}-${RELEASE}.spec
+cat ${DATADIR}/RHL/rhl.specf       >> ./${NAME}-${VERSION}-${RELEASE}.spec
+cat ./ChangeLog                    >> ./${NAME}-${VERSION}-${RELEASE}.spec
+
+#Configures source that are bin to that source package
+FILE=./configure
+if [ -f ${FILE} ]; then
+  ./configure
+fi
+
+exit 0

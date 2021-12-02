@@ -1,0 +1,60 @@
+Summary: HAS Systems standard base installation and files/utils.
+License: Commercial
+URL: http://www.hearandseesystems.com/
+Group: System Environment/Base
+Source: http://www.hearandseesystems.com/software/Linux/%{name}-%{version}-%{release}.src.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildArch: noarch
+
+%description
+HAS System standard server instllation and configuration.
+
+%prep
+%setup
+
+%build
+./setup
+
+%install
+rm -rf %{buildroot}
+%makeinstall -f Makefile.%{name} DESTDIR=$RPM_BUILD_ROOT
+
+%clean
+rm -rf %{buildroot}
+
+%files
+%defattr(0755,root,root)
+/etc/profile.d/has.sh
+/opt/has/bin/has.bin.dir
+/opt/has/bin/has.data.dir
+/opt/has/bin/has.doc.dir
+/opt/has/bin/has.etc.dir
+/opt/has/bin/has.files.dir
+/opt/has/bin/has.help.dir
+/opt/has/bin/has.home.dir
+/opt/has/bin/has.lib.dir
+/opt/has/bin/has.var.dir
+/opt/has/bin/has.shell.inc.file
+/opt/has/bin/has.product.name
+/opt/has/bin/has.svn.server
+/opt/has/bin/has.ssh.keys
+%dir /opt/has
+%dir /opt/has/bin
+%dir /opt/has/lib
+%dir /opt/has/doc
+%dir /opt/has/files
+%dir /opt/has/help
+%dir /opt/has/etc
+%dir /opt/has/include
+%dir /var/opt/has
+%dir /var/opt/has/data
+%defattr(0644,root,root)
+/etc/yum.repos.d/has.repo
+/opt/has/lib/shell.inc
+
+%post
+useradd -r -s /sbin/nologin has.systems
+
+%preun
+
+%changelog

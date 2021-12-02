@@ -2,15 +2,15 @@
 
 # Copyright (C) 2021 Imre Tabur
 
-. `smi-include base.sh`
+. $(smi-include base.sh)
 
-OS=`uname`
-CUR_DIR=`pwd`
+OS=$(uname)
+CUR_DIR=$(pwd)
 COMMAND=${0}
 PARAMETERS=${@}
 
 goSudo() {
-    CMD_USER=`whoami`
+    CMD_USER=$(whoami)
     if [ "${CMD_USER}" != "root" ]; then
 	# -i should be to get environment variables to be loaded. Without it at least Linux environment setmy-info scripts bin directory is not loaded.
         sudo -i ${COMMAND} ${PARAMETERS}
@@ -25,7 +25,7 @@ LinuxUpdate() {
 }
 
 FreeBSDUpdate() {
-    echo "=== FreeBSD update ==="
+    echo "=== FreeBSD host update ==="
     ORIGINAL_PAGER=${PAGER}
     export PAGER=cat
     freebsd-update --not-running-from-cron fetch

@@ -18,11 +18,13 @@ pidfile_child="/var/run/${name}.pid"
 pidfile="/var/run/${name}_daemon.pid"
 start_precmd="${name}_pre_start"
 
+SERVICE_LOG= "/var/log/${name}.log"}
+
 . /opt/has/lib/${name}.sh
 
 microserviced_pre_start() {
     echo ${JAVA_VERSION}
-    rc_flags="-r -P ${pidfile} -p ${pidfile_child} ${COMMAND} ${rc_flags}"
+    rc_flags="-r -P ${pidfile} -p ${pidfile_child} ${COMMAND} >> ${SERVICE_LOG} 2>&1 ${rc_flags}"
     touch ${pidfile}
 }
 

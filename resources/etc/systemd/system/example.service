@@ -1,14 +1,15 @@
 [Unit]
-Description=Example project service
-After=syslog.target
+Description=setmy.info example service
+After=syslog.service network.target postgresql-14.service
 
 [Service]
 Type=simple
 User=microservice
 Group=microservice
-ExecStart=/opt/setmy.info/bin/example.service start
-ExecStop=/opt/setmy.info/bin/example.service stop
-ExecReload=/opt/setmy.info/bin/example.service reload
+EnvironmentFile=/opt/setmy.info/lib/environment.conf
+ExecStart=/opt/setmy.info/bin/microservice start
+ExecStop=/opt/setmy.info/bin/microservice stop
+ExecReload=/opt/setmy.info/bin/microservice reload
 
 [Install]
 WantedBy=multi-user.target

@@ -4,7 +4,7 @@
 
 CUR_DIR=${PWD}
 
-. `smi-include commons.sh`
+. $(smi-include commons.sh)
 
 # PACKAGE_NAME=
 # FROM_DIR=
@@ -12,12 +12,12 @@ CUR_DIR=${PWD}
 # DEPLOY_DIR=
 # DEPLOY_OWNER=
 # DEPLOY_GROUP=
-include `smi-etc-location`/smi-scheduled-deploy.sh
+include $(smi-etc-location)/smi-scheduled-deploy.sh
 
 LOCK_FILE_NAME=/tmp/smi-scheduled-deploy-lock
 
 deployFiles() {
-    FILES=`ls ${FROM_DIR}/*.tar.gz`
+    FILES=$(ls ${FROM_DIR}/*.tar.gz)
     for FILE_PATH_NAME in ${FILES}
     do
 	deployTarGzFile ${FILE_PATH_NAME}
@@ -26,8 +26,8 @@ deployFiles() {
 
 deployTarGzFile() {
     FILE_PATH_NAME=${1}
-    TIMESTAMP=`smi-timestamp`
-    FILE_NAME=`basename ${FILE_PATH_NAME}`
+    TIMESTAMP=$(smi-timestamp)
+    FILE_NAME=$(basename ${FILE_PATH_NAME})
     if [ -f ${FILE_PATH_NAME} ]
     then
     sleep 30

@@ -1,0 +1,4 @@
+REM set NODE_HOME=%PUB_DIR%\node-v17.0.1-win-x64
+set NODE_HOME=%PUB_DIR%\node-v16.15.1-win-x64
+set NODE_BIN_DIR=%NODE_HOME%
+set PATH=%NODE_BIN_DIR%;%PATH%

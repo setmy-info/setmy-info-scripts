@@ -1,4 +1,3 @@
-call %LOADER_CMD% jdk
 call %LOADER_CMD% mvn
 call %LOADER_CMD% ant
 call %LOADER_CMD% gradle

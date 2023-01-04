@@ -1,3 +1,3 @@
-set MICRONAUT_HOME=%PUB_DIR%\micronaut-cli-3.7.5
-set MICRONAUT_BIN_DIR=%MICRONAUT_HOME%\bin
-set PATH=%MICRONAUT_BIN_DIR%;%PATH%
+set MN_HOME=%PUB_DIR%\micronaut-cli-3.8.0
+set MN_BIN_DIR=%MN_HOME%\bin
+set PATH=%MN_BIN_DIR%;%PATH%

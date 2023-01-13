@@ -16,3 +16,4 @@ call %LOADER_CMD% 7zip
 call %LOADER_CMD% julia
 call %LOADER_CMD% go
 call %LOADER_CMD% mk8s
+call %LOADER_CMD% bazel

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Copyright (C) 2023 Imre Tabur <imre.tabur@eesti.ee>
+
+. `smi-include base.sh`
+echo "Not finished"
+
+exit ${?}

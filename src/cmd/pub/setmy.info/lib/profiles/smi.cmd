@@ -1,0 +1,1 @@
+set PATH=%SMI_BIN_DIR%;%PATH%

@@ -1,0 +1,3 @@
+set K11X_HOME=%PUB_DIR%\kubectx
+set K11X_BIN_DIR=%K11X_HOME%\bin
+set PATH=%K11X_BIN_DIR%;%PATH%

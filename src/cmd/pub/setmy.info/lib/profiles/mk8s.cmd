@@ -1,0 +1,3 @@
+set MINI_K8S_HOME=%PUB_DIR%\minikube
+set MINI_K8S_BIN_DIR=%MINI_K8S_HOME%\bin
+set PATH=%MINI_K8S_BIN_DIR%;%PATH%

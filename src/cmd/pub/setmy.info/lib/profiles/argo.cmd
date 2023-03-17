@@ -1,0 +1,3 @@
+set ARGO_HOME=%PUB_DIR%\argo
+set ARGO_BIN_DIR=%ARGO_HOME%\bin
+set PATH=%ARGO_BIN_DIR%;%PATH%

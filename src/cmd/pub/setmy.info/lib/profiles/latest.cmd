@@ -7,7 +7,7 @@ call %LOADER_CMD% groovy
 call %LOADER_CMD% mn
 call %LOADER_CMD% grails
 call %LOADER_CMD% jfx
-call %LOADER_CMD% pyth
+call %LOADER_CMD% python
 call %LOADER_CMD% smi
 call %LOADER_CMD% leiningen
 call %LOADER_CMD% clojurescript

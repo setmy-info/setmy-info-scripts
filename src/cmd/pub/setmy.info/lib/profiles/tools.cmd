@@ -1,3 +1,4 @@
+
 call %LOADER_CMD% mvn
 call %LOADER_CMD% ant
 call %LOADER_CMD% gradle
@@ -14,6 +15,10 @@ call %LOADER_CMD% cmake
 call %LOADER_CMD% 7zip
 call %LOADER_CMD% julia
 call %LOADER_CMD% go
+call %LOADER_CMD% k8s
 call %LOADER_CMD% mk8s
+call %LOADER_CMD% bazel
+call %LOADER_CMD% postgres
+call %LOADER_CMD% argo
 
 if exist %USERPROFILE%\.term\profiles\tools.cmd (call %USERPROFILE%\.term\profiles\tools.cmd)

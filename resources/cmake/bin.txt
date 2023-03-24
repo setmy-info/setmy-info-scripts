@@ -31,6 +31,13 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-timestamp"              DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-host-update"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-sync"                   DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-ci-cli"                 DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/create-venv"                DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-venv"                   DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/venv-prepare"               DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/base64encode"               DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/base64decode"               DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/degrees"                    DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/radians"                    DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)

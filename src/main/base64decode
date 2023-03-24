@@ -1,0 +1,5 @@
+#!/bin/sh
+
+python ${SMI_LIB_DIR}/base64decode.py ${*}
+
+exit ${?}

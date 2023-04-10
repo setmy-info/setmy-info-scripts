@@ -20,3 +20,4 @@ call %LOADER_CMD% mk8s
 call %LOADER_CMD% bazel
 call %LOADER_CMD% postgres
 call %LOADER_CMD% argo
+call %LOADER_CMD% selenium

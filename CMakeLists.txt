@@ -1,11 +1,11 @@
-cmake_minimum_required (VERSION 3.20.5)
+cmake_minimum_required (VERSION 3.26.3)
 
 # PLACEHOLDER-BEGIN #
 
 PROJECT (setmy-info-scripts)
 
 SET (PROJECT_VERSION_MAJOR              0)
-SET (PROJECT_VERSION_MINOR              51)
+SET (PROJECT_VERSION_MINOR              52)
 SET (PROJECT_VERSION_PATCH              0)
 SET (PROJECT_VERSION_TWEAK              0)
 

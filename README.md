@@ -1,11 +1,14 @@
 # Tools collection
 
 ## term
+
 Development terminal preparations
 
 ## stealer
-Stealing (actually borrowin) as a function. Collect code from different locations, apply changes, add your code and get working solution - .stealer folder as an input and working solution as an output.
-Decrease code repeating and increase development efficency.
+
+Stealing (actually borrowing) as a function. Collect code from different locations, apply changes, add your code and get
+working solution - .stealer folder as an input and working solution as an output.
+Decrease code repeating and increase development efficiency.
 
 ## Build
 
@@ -14,13 +17,13 @@ Decrease code repeating and increase development efficency.
 make
 make package
 sudo rpm -e setmy-info-scripts
-sudo rpm -i setmy-info-scripts-0.51.0.noarch.rpm
+sudo rpm -i setmy-info-scripts-0.52.0.noarch.rpm
 ```
 
 All in single line:
 
 ```sh
-./configure && make clear clean && make all package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-0.51.0.noarch.rpm
+./configure && make clear clean && make all package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-0.52.0.noarch.rpm
 ```
 
 ### Donate

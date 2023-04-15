@@ -22,7 +22,7 @@ ADD_CUSTOM_TARGET(dirs
 ADD_CUSTOM_TARGET(gzipman        cp ${RESOURCES_PATH}/man/*.1 ${MAN_OUTPUT_PATH}/man1 && gzip -f ${MAN_OUTPUT_PATH}/man1/*.1)
 ADD_CUSTOM_TARGET(etcfiles       cp -R ${RESOURCES_PATH}/etc/profile.d/* ${ETC_OUTPUT_PATH}/profile.d)
 ADD_CUSTOM_TARGET(libfiles       cp -R ${SOURCES_PATH}/lib/* ${LIBRARY_OUTPUT_PATH})
-ADD_CUSTOM_TARGET(scrips         cp ${SOURCES_PATH}/main/* ${BINARY_OUTPUT_PATH})
+ADD_CUSTOM_TARGET(scripts        cp ${SOURCES_PATH}/main/* ${BINARY_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildClear     rm -rf ./build)
 ADD_CUSTOM_TARGET(pkgClear       rm -rf ./${PROJECT_NAME}*.tar.gz ./${PROJECT_NAME}*.rpm ./${PROJECT_NAME}*.sh ./${PROJECT_NAME}*.deb ./${PROJECT_NAME}*.tar.Z ./${PROJECT_NAME}*.7z ./${PROJECT_NAME}*.tar.bz2 ./${PROJECT_NAME}*.tar.xz ./${PROJECT_NAME}*.zip)
 ADD_CUSTOM_TARGET(cmakeClear     rm -rf ./*.cmake ./_CPack_Packages install_manifest.txt CMakeCache.txt resources/CMakeFiles resources/cmake/CMakeFiles resources/cmake/*.cmake resources/cmake/CMakeCache.txt)

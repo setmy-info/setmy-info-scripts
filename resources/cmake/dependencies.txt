@@ -1,8 +1,8 @@
 # PLACEHOLDER-BEGIN #
 
-ADD_DEPENDENCIES(build gzipman scrips etcfiles libfiles)
+ADD_DEPENDENCIES(build gzipman scripts etcfiles libfiles)
 ADD_DEPENDENCIES(gzipman  dirs)
-ADD_DEPENDENCIES(scrips   dirs)
+ADD_DEPENDENCIES(scripts   dirs)
 ADD_DEPENDENCIES(etcfiles dirs)
 ADD_DEPENDENCIES(libfiles dirs)
 ADD_DEPENDENCIES(clear cmakeClear buildClear pkgClear)

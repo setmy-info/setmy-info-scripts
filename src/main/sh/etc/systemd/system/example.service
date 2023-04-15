@@ -1,6 +1,6 @@
 [Unit]
 Description=setmy.info example service
-After=syslog.service network.target postgresql-14.service
+After=syslog.service network.target postgresql-15.service
 
 [Service]
 Type=simple

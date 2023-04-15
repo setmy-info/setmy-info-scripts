@@ -1,0 +1,7 @@
+#!/bin/sh
+
+SMI_LIB_DIR=`smi-lib-location`
+SBCL_LD_LIBRARY_PATH=${SMI_LIB_DIR}
+sbcl --script ${SBCL_LD_LIBRARY_PATH}/smi-cl-test.lisp ${*}
+
+exit ${?}

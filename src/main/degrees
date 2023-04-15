@@ -1,5 +1,0 @@
-#!/bin/sh
-
-groovy %SMI_LIB_DIR%\degrees.groovy %*
-
-exit ${?}

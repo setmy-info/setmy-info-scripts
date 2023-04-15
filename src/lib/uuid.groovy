@@ -1,1 +1,0 @@
-print UUID.randomUUID().toString()

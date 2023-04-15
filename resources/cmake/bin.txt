@@ -38,6 +38,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/base64encode"               DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/base64decode"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/degrees"                    DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/radians"                    DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/uuid"                       DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-cl-test"                DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)
@@ -48,6 +50,10 @@ IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-update"       DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-full-update"        DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/microserviced"          DESTINATION bin)
+ENDIF()
+
+IF (WIN32)
+    # TODO : Win32/Win64 things
 ENDIF()
 
 # PLACEHOLDER-END #

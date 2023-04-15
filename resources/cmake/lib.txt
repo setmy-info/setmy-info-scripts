@@ -8,6 +8,8 @@ INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/base64decode.py"               DESTINATION
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/base64encode.py"               DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/radians.groovy"                DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/degrees.groovy"                DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/uuid.groovy"                   DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/smi-cl-test.lisp"              DESTINATION lib)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/freebsd.sh"                DESTINATION lib)

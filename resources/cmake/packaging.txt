@@ -1,6 +1,6 @@
 # PLACEHOLDER-BEGIN #
 
-#https://cmake.org/cmake/help/v3.14/manual/cpack-generators.7.html
+# https://cmake.org/cmake/help/v3.26/manual/cpack-generators.7.html
 SET(CPACK_PACKAGE_NAME                    "${PROJECT_NAME}")
 SET(CPACK_PACKAGE_VENDOR                  "${PROJECT_VENDOR}")
 SET(CPACK_PACKAGE_DESCRIPTION             "${PROJECT_DESCRIPTION}")
@@ -14,20 +14,20 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY       "CPack Component Example")
 SET(CPACK_PACKAGING_INSTALL_PREFIX        ${CMAKE_INSTALL_PREFIX})
 SET(CPACK_PACKAGE_RELOCATABLE             TRUE)
 
-#https://cmake.org/cmake/help/v3.14/cpack_gen/rpm.html#cpack_gen:CPack%20RPM%20Generator
+# https://cmake.org/cmake/help/v3.26/cpack_gen/rpm.html
 SET(CPACK_RPM_PACKAGE_DESCRIPTION         "${PROJECT_DESCRIPTION}")
 SET(CPACK_RPM_PACKAGE_LICENSE             "MIT")
 SET(CPACK_RPM_PACKAGE_DEBUG               true)
-SET(CPACK_RPM_PRE_INSTALL_SCRIPT_FILE     "${INSTALL_SCRIPTS_PATH}/pre.install.sh")
-SET(CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE   "${INSTALL_SCRIPTS_PATH}/pre.uninstall.sh")
-SET(CPACK_RPM_POST_INSTALL_SCRIPT_FILE    "${INSTALL_SCRIPTS_PATH}/post.install.sh")
-SET(CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE  "${INSTALL_SCRIPTS_PATH}/post.uninstall.sh")
+SET(CPACK_RPM_PRE_INSTALL_SCRIPT_FILE     "${MAIN_SH_SOURCES_PATH}/rpm/pre.install.sh")
+SET(CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE   "${MAIN_SH_SOURCES_PATH}/rpm/pre.uninstall.sh")
+SET(CPACK_RPM_POST_INSTALL_SCRIPT_FILE    "${MAIN_SH_SOURCES_PATH}/rpm/post.install.sh")
+SET(CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE  "${MAIN_SH_SOURCES_PATH}/rpm/post.uninstall.sh")
 SET(CPACK_RPM_PACKAGE_SUMMARY             "Summary")
 SET(CPACK_RPM_PACKAGE_NAME                ${PROJECT_NAME})
 SET(CPACK_RPM_CHANGELOG_FILE              "${PROJECT_PATH}/changelog")
 # SET(CPACK_RPM_PACKAGE_REQUIRES            "some-else >= 1.0.0")
 
-# https://cmake.org/cmake/help/v3.14/cpack_gen/deb.html
+# https://cmake.org/cmake/help/v3.26/cpack_gen/deb.html
 # http://www.debian.org/doc/debian-policy/ch-controlfields.html
 # https://wiki.ubuntu.com/PackagingGuide/Basic?action=show&redirect=HowToBuildDebianPackagesFromScratch/
 SET(CPACK_DEBIAN_PACKAGE_NAME             "${PROJECT_NAME}")
@@ -39,7 +39,7 @@ SET(CPACK_DEBIAN_PACKAGE_PRIORITY         "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION          "libs")
 SET(CPACK_DEBIAN_ARCHITECTURE             "all")
 
-# https://cmake.org/cmake/help/v3.14/cpack_gen/freebsd.html
+# https://cmake.org/cmake/help/v3.26/cpack_gen/freebsd.html
 SET(CPACK_FREEBSD_PACKAGE_NAME            "${PROJECT_NAME}")
 SET(CPACK_FREEBSD_PACKAGE_COMMENT         "${PROJECT_DESCRIPTION_SUMMARY}")
 SET(CPACK_FREEBSD_PACKAGE_DESCRIPTION     "${PROJECT_DESCRIPTION}")
@@ -51,6 +51,17 @@ SET(CPACK_FREEBSD_PACKAGE_ORIGIN          "misc/${PROJECT_NAME}")
 SET(CPACK_FREEBSD_PACKAGE_CATEGORIES      "libs")
 SET(CPACK_FREEBSD_PACKAGE_DEPS            "")
 
+# https://cmake.org/cmake/help/v3.26/cpack_gen/nsis.html
+SET(CPACK_NSIS_DISPLAY_NAME               "NSIS Display name")
+SET(CPACK_NSIS_PACKAGE_NAME               "NSIS Package name")
+SET(CPACK_NSIS_INSTALLED_ICON_NAME        "${APP_LOW_NAME}.ico")
+SET(CPACK_NSIS_HELP_LINK                  ${APP_URL})
+SET(CPACK_NSIS_URL_INFO_ABOUT             ${APP_URL})
+SET(CPACK_NSIS_CONTACT                    ${APP_EMAIL})
+
+IF (WIN32)
+    SET(CPACK_GENERATOR                       "${DEFAULT_PACKAGES};NSIS")
+ENDIF()
 IF(DISTRIBUTION STREQUAL "RedHat")
     SET(CPACK_GENERATOR                       "${DEFAULT_PACKAGES};RPM")
 ENDIF()

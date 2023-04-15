@@ -1,4 +1,4 @@
-PYTHON_MAJOR_MINOR_VERSION=%1%
+PYTHON_MAJOR_MINOR_VERSION=${1}
 python -m venv ./.venv
 smi-venv
 python -m pip install --upgrade pip

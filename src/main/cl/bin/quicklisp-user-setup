@@ -1,0 +1,8 @@
+#!/usr/bin/sh
+
+SMI_LIB_DIR=$(smi-lib-location)
+SBCL_LD_LIBRARY_PATH=${SMI_LIB_DIR}
+
+sbcl --load /opt/quicklisp/lib/quicklisp.lisp --script ${SBCL_LD_LIBRARY_PATH}/quicklisp-user-setup.lisp
+
+exit ${?}

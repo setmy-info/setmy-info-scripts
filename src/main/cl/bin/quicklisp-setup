@@ -1,0 +1,8 @@
+#!/usr/bin/sh
+
+mkdir -p /opt/quicklisp/lib
+cd /opt/quicklisp/lib
+wget -c https://beta.quicklisp.org/quicklisp.lisp
+wget -c https://beta.quicklisp.org/quicklisp.lisp.asc
+
+exit ${?}

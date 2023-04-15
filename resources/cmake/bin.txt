@@ -40,6 +40,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/degrees"                    DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/radians"                    DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/uuid"                       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-cl-test"                DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-setup"            DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-user-setup"       DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)

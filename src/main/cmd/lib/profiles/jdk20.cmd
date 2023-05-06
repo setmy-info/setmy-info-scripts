@@ -1,3 +1,3 @@
-set JAVA_HOME=%PUB_DIR%\jdk-20
+set JAVA_HOME=%PUB_DIR%\jdk-20.0.1
 set JAVA_BIN_DIR=%JAVA_HOME%\bin
 set PATH=%JAVA_BIN_DIR%;%PATH%

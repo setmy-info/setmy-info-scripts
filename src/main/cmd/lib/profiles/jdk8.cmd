@@ -1,3 +1,3 @@
-set JAVA_HOME=%PUB_DIR%\zulu-jdk8.0.312
+set JAVA_HOME=%PUB_DIR%\zulu8.70.0.23-ca-jdk8.0.372-win_x64
 set JAVA_BIN_DIR=%JAVA_HOME%\bin
 set PATH=%JAVA_BIN_DIR%;%PATH%

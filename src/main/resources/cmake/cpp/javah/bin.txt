@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- javah bin.txt")
+
+# PLACEHOLDER-END #

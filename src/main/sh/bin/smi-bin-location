@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2019, 2020, 2021 Imre Tabur <imre.tabur@eesti.ee>
+# Copyright (C) 2019, 2020, 2021 Imre Tabur <imre.tabur@mail.ee>
 
 SMI_HOME=`smi-location`
 echo "${SMI_HOME}/bin"

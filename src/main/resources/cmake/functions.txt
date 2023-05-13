@@ -1,0 +1,13 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- functions.txt")
+
+function(INCLUDE_CMAKE_FILE)
+    IF(EXISTS ${ARGV0})
+        MESSAGE("INCLUDING: ${ARGV0}")
+        INCLUDE(${ARGV0})
+    ELSE()
+        MESSAGE("NOT INCLUDING: ${ARGV0} - FILE DOESNT EXIST")
+    ENDIF()
+endfunction()
+
+# PLACEHOLDER-END #

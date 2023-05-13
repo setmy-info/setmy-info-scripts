@@ -1,0 +1,12 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- cmake sources.txt")
+
+IF(EXISTS ${MAIN_CMAKE_PATH}/cpp/sources.txt)
+    INCLUDE(${MAIN_CMAKE_PATH}/cpp/sources.txt)
+ENDIF()
+
+IF(EXISTS ${TEST_CMAKE_PATH}/cpp/sources.txt)
+    INCLUDE(${TEST_CMAKE_PATH}/cpp/sources.txt)
+ENDIF()
+
+# PLACEHOLDER-END #

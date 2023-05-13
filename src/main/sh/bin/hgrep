@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2019, 2020, 2021, 2022 Imre Tabur <imre.tabur@eesti.ee>
+# Copyright (C) 2019, 2020, 2021, 2022 Imre Tabur <imre.tabur@mail.ee>
 
 cat ~/.bash_history | grep ${1}
 

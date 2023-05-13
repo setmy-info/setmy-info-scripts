@@ -1,0 +1,6 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- javah dependencies.txt")
+
+ADD_DEPENDENCIES(build javah)
+
+# PLACEHOLDER-END #

@@ -9,6 +9,7 @@ install_manifest.txt
 *.7z
 *.rpm
 *.noarch.sh
+*.*.sh
 *.tar.Z
 *.tar.bz2
 *.tar.gz
@@ -21,3 +22,10 @@ test/.stealer/clone/
 test/.stealer/copy/
 .idea/
 *.iml
+target
+/src/main/resources/cmake/developer.txt
+/.vs/
+Testing
+.ninja_deps
+.ninja_log
+build.ninja

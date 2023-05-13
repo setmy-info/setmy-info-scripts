@@ -1,0 +1,8 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- test cpp sources.txt")
+
+enable_testing()
+
+INCLUDE(${TEST_CPP_CMAKE_PATH}/library/sources.txt)
+
+# PLACEHOLDER-END #

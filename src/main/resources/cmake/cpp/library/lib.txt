@@ -1,0 +1,7 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- library lib.txt")
+
+INSTALL(TARGETS "examplestatic" DESTINATION lib)
+INSTALL(TARGETS "exampleshared" DESTINATION lib)
+
+# PLACEHOLDER-END #

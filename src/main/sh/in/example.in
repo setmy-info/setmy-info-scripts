@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Author: Imre Tabur
+export LD_LIBRARY_PATH=@SCRIPTS_INSTALL_PREFIX@/lib:$LD_LIBRARY_PATH
+COMMAND_NAME=$(basename $0)
+
+@SCRIPTS_INSTALL_PREFIX@/bin/$COMMAND_NAME.bin "$@"
+
+exit $?

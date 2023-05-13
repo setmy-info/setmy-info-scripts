@@ -1,0 +1,2 @@
+
+INCLUDE_CMAKE_FILE(${TEST_CPP_CMAKE_PATH}/library/dependencies.txt)

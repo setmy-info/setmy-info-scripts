@@ -1,0 +1,7 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- main bin.txt")
+
+# TEMP C++ scripts
+INSTALL(TARGETS   "example.bin"                                      DESTINATION bin)
+
+# PLACEHOLDER-END #

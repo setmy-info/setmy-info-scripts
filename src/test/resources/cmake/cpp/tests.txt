@@ -1,0 +1,1 @@
+INCLUDE(${TEST_CPP_CMAKE_PATH}/library/tests.txt)

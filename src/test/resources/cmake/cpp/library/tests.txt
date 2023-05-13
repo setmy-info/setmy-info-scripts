@@ -1,0 +1,17 @@
+# https://www.boost.org/doc/libs/1_78_0/libs/test/doc/html/boost_test/runtime_config/test_unit_filtering.html
+
+add_test(NAME ut COMMAND test.bin --run_test=ut)
+add_test(NAME library_ut COMMAND test.bin --run_test=library/ut)
+
+IF(VERIFY_USED)
+add_test(NAME it COMMAND test.bin --run_test=it)
+add_test(NAME library_it COMMAND test.bin --run_test=library/it)
+
+add_test(NAME valgrind_ut COMMAND valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=all ${BINARY_OUTPUT_PATH}/test.bin --run_test=ut)
+add_test(NAME valgrind_library_ut COMMAND valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=all ${BINARY_OUTPUT_PATH}/test.bin --run_test=library/ut)
+
+add_test(NAME valgrind_it COMMAND valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=all ${BINARY_OUTPUT_PATH}/test.bin --run_test=it)
+add_test(NAME valgrind_library_it COMMAND valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=all ${BINARY_OUTPUT_PATH}/test.bin --run_test=library/it)
+ENDIF()
+
+#add_integration_test()

@@ -1,5 +1,80 @@
 #!/bin/sh
 
-cmake .
+CMAKE_OPTIONS=
+
+DEFAULT_VERIFY_USED=true
+VERIFY_USED=${DEFAULT_VERIFY_USED}
+
+DEFAULT_CMAKE_BUILD_TYPE=Debug
+CMAKE_BUILD_TYPE=${DEFAULT_CMAKE_BUILD_TYPE}
+
+DEFAULT_CONFIGURE_MODE=Developer
+CONFIGURE_MODE=${DEFAULT_CONFIGURE_MODE}
+
+DEFAULT_PROJECT_IS_SNAPSHOT=true
+PROJECT_IS_SNAPSHOT=${DEFAULT_PROJECT_IS_SNAPSHOT}
+
+# ci
+function_ci() {
+    function_release
+}
+
+# release
+function_release() {
+    CMAKE_BUILD_TYPE=Release
+    CONFIGURE_MODE=Real
+    PROJECT_IS_SNAPSHOT=false
+    VERIFY_USED=true
+}
+
+# debug
+function_debug() {
+    CMAKE_BUILD_TYPE=Debug
+}
+
+# verify
+function_verify() {
+    VERIFY_USED=true
+}
+
+# skipITs
+function_skipITs() {
+    VERIFY_USED=false
+}
+
+# noSnapshot
+function_noSnapshot() {
+    PROJECT_IS_SNAPSHOT=false
+}
+
+# realPaths
+function_realPaths() {
+    CONFIGURE_MODE=Real
+}
+
+# clean
+function_clean() {
+    rm -rf ./target
+    rm -rf ./*.tar.gz ./*.rpm ./*.sh ./*.deb ./*.tar.Z ./*.7z ./*.tar.bz2 ./*.tar.xz ./*.zip
+    rm -rf ./*.cmake  ./Testing ./CMakeFiles ./_CPack_Packages install_manifest.txt CMakeCache.txt
+    exit 0
+}
+
+
+generate() {
+    CMAKE_OPTIONS="-DVERIFY_USED=${VERIFY_USED} -DPROJECT_IS_SNAPSHOT=${PROJECT_IS_SNAPSHOT} -DCONFIGURE_MODE=${CONFIGURE_MODE} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} ${CMAKE_OPTIONS}"
+    callCommand cmake ${CMAKE_OPTIONS} .
+}
+
+callCommand() {
+    echo "$@"
+    "$@"
+}
+
+for SUFFIX in "$@"; do
+    function_${SUFFIX}
+done
+
+generate
 
 exit ${?}

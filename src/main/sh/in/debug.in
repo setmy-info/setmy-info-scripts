@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Author: Imre Tabur
+export LD_LIBRARY_PATH=@SCRIPTS_INSTALL_PREFIX@/lib:$LD_LIBRARY_PATH
+
+kdbg @SCRIPTS_INSTALL_PREFIX@/bin/test.bin "$@"
+
+exit 0

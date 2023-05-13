@@ -1,0 +1,6 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- test dependencies.txt")
+
+INCLUDE_CMAKE_FILE(${TEST_CPP_CMAKE_PATH}/dependencies.txt)
+
+# PLACEHOLDER-END #

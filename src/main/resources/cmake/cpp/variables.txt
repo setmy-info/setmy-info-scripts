@@ -20,11 +20,13 @@ ENDIF()
 
 IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" )
     SET (EXAMPLE_LINKING            "-lexampleshared -pthread -ldl")
+    # -lboost_unit_test_framework
     SET (EXAMPLE_TEST_LINKING       "-lexampleshared -pthread -ldl")
 ENDIF()
 
 SET (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
 SET (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+SET (MEM_LEAK_TEST_COMMAND valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=all)
 
 INCLUDE_DIRECTORIES("${MAIN_INCLUDES_PATH}")
 INCLUDE_DIRECTORIES("${INCLUDE_OUTPUT_PATH}")

@@ -35,7 +35,7 @@ SET(CPACK_RPM_POST_INSTALL_SCRIPT_FILE    "${RPM_INSTALL_SCRIPTS_PATH}/post.inst
 SET(CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE  "${RPM_INSTALL_SCRIPTS_PATH}/post.uninstall.sh")
 SET(CPACK_RPM_PACKAGE_SUMMARY             "Summary")
 SET(CPACK_RPM_PACKAGE_NAME                ${PROJECT_NAME})
-SET(CPACK_RPM_CHANGELOG_FILE              "${PROJECT_PATH}/changelog")
+SET(CPACK_RPM_CHANGELOG_FILE              ${CHANGE_LOG_FILE_NAME})
 # SET(CPACK_RPM_PACKAGE_REQUIRES            "some-else >= 1.0.0")
 
 # https://cmake.org/cmake/help/v3.26/cpack_gen/deb.html

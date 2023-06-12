@@ -1,3 +1,5 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- test cpp tests.txt")
 
 #ADD_TEST(NAME data_types_test_ut COMMAND test.bin --run_test=data_types_test/ut)
 
@@ -6,3 +8,5 @@ IF(VERIFY_USED)
 ENDIF()
 
 INCLUDE(${TEST_CPP_CMAKE_PATH}/library/tests.txt)
+
+# PLACEHOLDER-END #

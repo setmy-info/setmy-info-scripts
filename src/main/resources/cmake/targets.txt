@@ -38,6 +38,7 @@ ADD_CUSTOM_TARGET(buildServiceScripts cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/sys
 ADD_CUSTOM_TARGET(buildProfiles       cp -R ${MAIN_SH_SOURCES_PATH}/lib/profiles/* ${LIBRARY_OUTPUT_PATH}/profiles)
 ADD_CUSTOM_TARGET(site)
 
+INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/targets.txt)
 INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/targets.txt)
 INCLUDE_CMAKE_FILE(${TEST_CMAKE_PATH}/targets.txt)
 

@@ -1,4 +1,5 @@
 # PLACEHOLDER-BEGIN #
+MESSAGE("-- bin.txt")
 
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/hgrep"                      DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/term"                       DESTINATION bin)
@@ -43,6 +44,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-cl-test"                DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-setup"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-user-setup"       DESTINATION bin)
 
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/bin.txt)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/cpp/bin.txt)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")

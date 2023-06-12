@@ -1,0 +1,7 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- sh man.txt")
+
+#INSTALL(DIRECTORY "${MAN_OUTPUT_PATH}/man1"             DESTINATION man)
+#...
+
+# PLACEHOLDER-END #

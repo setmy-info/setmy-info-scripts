@@ -1,4 +1,5 @@
 # PLACEHOLDER-BEGIN #
+MESSAGE("-- packaging.txt")
 
 # Binary packages or non-binary (scripts, Java, Python) packages.
 SET (MACHINE_BINARY_PROJECT FALSE)

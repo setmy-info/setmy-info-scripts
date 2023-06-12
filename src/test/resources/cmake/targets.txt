@@ -3,6 +3,7 @@ MESSAGE("-- test targets.txt")
 
 ADD_CUSTOM_TARGET(verify        @echo ============= Integration Test ========================)
 
+INCLUDE_CMAKE_FILE(${TEST_SH_CMAKE_PATH}/targets.txt)
 INCLUDE_CMAKE_FILE(${TEST_CPP_CMAKE_PATH}/targets.txt)
 
 # PLACEHOLDER-END #

@@ -1,0 +1,14 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- sh bin.txt")
+
+#INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/hgrep"                      DESTINATION bin)
+
+IF(DISTRIBUTION STREQUAL "FreeBSD")
+#    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)
+ENDIF()
+
+IF (WIN32)
+    # TODO : Win32/Win64 things
+ENDIF()
+
+# PLACEHOLDER-END #

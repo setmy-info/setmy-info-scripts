@@ -1,5 +1,5 @@
 # PLACEHOLDER-BEGIN #
-MESSAGE("-- cmake sources.txt")
+MESSAGE("-- sources.txt")
 
 IF(EXISTS ${MAIN_CMAKE_PATH}/cpp/sources.txt)
     INCLUDE(${MAIN_CMAKE_PATH}/cpp/sources.txt)

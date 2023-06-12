@@ -1,0 +1,9 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- sh dependencies.txt")
+
+#ADD_DEPENDENCIES(build buildMan buildShellScripts buildGroovyScripts buildPythonScripts buildCLScripts buildEtc buildLibShells)
+
+#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/dependencies.txt)
+#INCLUDE_CMAKE_FILE(${TEST_CMAKE_PATH}/dependencies.txt)
+
+# PLACEHOLDER-END #

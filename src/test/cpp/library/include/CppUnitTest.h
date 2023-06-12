@@ -1,6 +1,6 @@
-#ifndef CPP_UNIT_TEST_H_
-#define	CPP_UNIT_TEST_H_
+#ifndef SET_MY_INFO_CPP_UNIT_TEST_H
+#define	SET_MY_INFO_CPP_UNIT_TEST_H
 
 #include <boost/test/included/unit_test.hpp>
 
-#endif // CPP_UNIT_TEST_H_
+#endif // SET_MY_INFO_CPP_UNIT_TEST_H

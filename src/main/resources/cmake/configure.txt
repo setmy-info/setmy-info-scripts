@@ -1,9 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- configure.txt")
 
-CONFIGURE_FILE("${MAIN_SH_SOURCES_PATH}/in/smi-location.in" "${BINARY_OUTPUT_PATH}/smi-location")
-CONFIGURE_FILE("${MAIN_SH_SOURCES_PATH}/in/base.sh.in"      "${LIBRARY_OUTPUT_PATH}/base.sh")
-
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/configure.txt)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/cpp/configure.txt)
 

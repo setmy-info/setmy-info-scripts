@@ -1,19 +1,11 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- dependencies.txt")
 
-ADD_DEPENDENCIES(build buildMan buildShellScripts buildGroovyScripts buildPythonScripts buildCLScripts buildEtc buildLibShells)
-ADD_DEPENDENCIES(buildMan           makeDirectories)
-ADD_DEPENDENCIES(buildShellScripts  makeDirectories)
+ADD_DEPENDENCIES(build buildGroovyScripts buildPythonScripts buildCLScripts)
 ADD_DEPENDENCIES(buildGroovyScripts makeDirectories)
 ADD_DEPENDENCIES(buildPythonScripts makeDirectories)
 ADD_DEPENDENCIES(buildCLScripts     makeDirectories)
-ADD_DEPENDENCIES(buildEtc           makeDirectories)
-ADD_DEPENDENCIES(buildLibShells     makeDirectories)
 ADD_DEPENDENCIES(clear clearCmake clearBuild clearPkg)
-
-ADD_DEPENDENCIES(build buildProfiles buildServiceScripts)
-ADD_DEPENDENCIES(buildProfiles makeDirectories)
-ADD_DEPENDENCIES(buildServiceScripts makeDirectories)
 
 INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/dependencies.txt)
 INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/dependencies.txt)

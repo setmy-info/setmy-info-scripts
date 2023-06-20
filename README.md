@@ -72,6 +72,8 @@ All in single line:
   * **crm**
   * **tools**, helpers
 
+* systemd example.service link is missing, also *.service is missing.
+
 ### Donate
 
 * [Set your favorite donation](https://www.paypal.me/imretabur "Donate any amount")

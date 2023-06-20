@@ -24,7 +24,7 @@ sudo rpm -i setmy-info-scripts-0.54.0-SNAPSHOT.noarch.rpm
 All in single line:
 
 ```sh
-./configure release && make clear clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-0.54.0.noarch.rpm
+./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-0.54.0.noarch.rpm
 ```
 
 ### Build options

@@ -49,7 +49,28 @@ All in single line:
 
 # TODO
 
-* sh separate into subdirectories (common/base, devel, server, software, desktop (devel. workstation), ...)
+* sh separate into subdirectories:
+  * common or **base**
+    * time
+    * string
+    * CLI
+  * **development** (devel. workstation)
+    * python
+    * groovy
+    * C/C++
+    * Java
+    * JavaScript
+    * AI, TensorFlow
+  * **server**
+    * ansible
+  * desktop or **workstation**
+  * ~~software~~
+  * **vcs**, git, mercurial, subversion
+  * ssl, **pki**
+  * aws, google, **cloud**
+  * k8s, **virtualization**, docker
+  * **crm**
+  * **tools**, helpers
 
 ### Donate
 

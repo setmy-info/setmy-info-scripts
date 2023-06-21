@@ -43,6 +43,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/uuid"                       DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-cl-test"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-setup"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-user-setup"       DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/microservice"               DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)

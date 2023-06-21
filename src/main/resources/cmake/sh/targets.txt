@@ -16,7 +16,8 @@ ADD_CUSTOM_TARGET(makeDirectories
     mkdir -p ${LIBRARY_OUTPUT_PATH}/profiles &&
     mkdir -p ${ETC_PROFILED_OUTPUT_PATH} &&
     mkdir -p ${INCLUDE_OUTPUT_PATH} &&
-    mkdir -p ${ETC_SYSTEM_OUTPUT_PATH}
+    mkdir -p ${ETC_SYSTEM_OUTPUT_PATH} &&
+    mkdir -p ${ETC_SYSTEM_OUTPUT_PATH}/systemd/system
 )
 
 ADD_CUSTOM_TARGET(buildMan            cp ${MAIN_MAN_SOURCES_PATH}/*.1 ${MAN_OUTPUT_PATH}/man1 && gzip -f ${MAN_OUTPUT_PATH}/man1/*.1)

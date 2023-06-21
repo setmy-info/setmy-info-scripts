@@ -1,0 +1,8 @@
+#!/bin/sh
+
+while true; do
+  echo "Running infinite loop..."
+  sleep 1
+done
+
+exit 0

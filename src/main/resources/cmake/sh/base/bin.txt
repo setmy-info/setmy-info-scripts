@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- base bin.txt")
+
+# PLACEHOLDER-END #

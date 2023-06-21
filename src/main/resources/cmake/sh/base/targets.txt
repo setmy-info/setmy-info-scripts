@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- base targets.txt")
+
+# PLACEHOLDER-END #

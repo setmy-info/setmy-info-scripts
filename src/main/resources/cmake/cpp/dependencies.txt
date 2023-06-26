@@ -1,12 +1,12 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- cpp dependencies.txt")
 
-ADD_DEPENDENCIES(build    includes)
-ADD_DEPENDENCIES(includes makeDirectories)
-ADD_DEPENDENCIES(site     doxygen)
+#ADD_DEPENDENCIES(build    includes)
+#ADD_DEPENDENCIES(includes makeDirectories)
+#ADD_DEPENDENCIES(site     doxygen)
 
-INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/javah/dependencies.txt)
-INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/library/dependencies.txt)
-INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/main/dependencies.txt)
+#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/javah/dependencies.txt)
+#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/library/dependencies.txt)
+#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/main/dependencies.txt)
 
 # PLACEHOLDER-END #

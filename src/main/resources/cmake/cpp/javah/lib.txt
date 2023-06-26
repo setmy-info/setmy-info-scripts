@@ -1,4 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- javah lib.txt")
-
-# PLACEHOLDER-END #

@@ -7,6 +7,7 @@
 . `smi-include base.sh`
 
 # Call passed script (does some root related work - installs software etc)
+echo "Executing: ${2} for user ${1}"
 ${2}
 
 # Removes sudo rights

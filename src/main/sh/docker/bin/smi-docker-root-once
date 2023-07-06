@@ -11,7 +11,7 @@ echo "Executing: ${2} for user ${1}"
 ${2}
 
 # Removes sudo rights
-sed -i "/${1}/d" /etc/sudoers
+#sed -i "/${1}/d" /etc/sudoers
 rm -f /etc/sudoers
 #cp -f /etc/sudoers.backup /etc/sudoers
 

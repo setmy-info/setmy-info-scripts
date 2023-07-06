@@ -16,7 +16,7 @@ shift 2
 
 # Do root related work and remove sudo rights
 #sudo smi-docker-root-once ${AS_ROOT_USER_SCRIPT}
-echo "Executing as root"
+echo "Executing as root from ${CURRENT_USER}"
 sudo /bin/sh -c "source /etc/profile.d/setmy-info.sh && smi-docker-root-once ${CURRENT_USER} ${AS_ROOT_USER_SCRIPT}"
 # Continue as restricted user inside container
 echo "Executing as user"

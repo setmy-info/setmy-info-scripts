@@ -2,5 +2,6 @@
 MESSAGE("-- sh dependencies.txt")
 
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/dependencies.txt)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/dependencies.txt)
 
 # PLACEHOLDER-END #

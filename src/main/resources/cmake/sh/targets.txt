@@ -2,5 +2,6 @@
 MESSAGE("-- sh targets.txt")
 
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/targets.txt)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/targets.txt)
 
 # PLACEHOLDER-END #

@@ -2,5 +2,6 @@
 MESSAGE("-- sh lib.txt")
 
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/lib.txt)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/lib.txt)
 
 # PLACEHOLDER-END #

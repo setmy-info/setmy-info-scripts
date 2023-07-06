@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
+
+# is called by smi-docker-command
+
+. `smi-include base.sh`
+
+# Call passed script (does some root related work - installs software etc)
+${1}
+
+# Removes sudo rights
+sed -i '/microservice/d' /etc/sudoers
+#cp -f /etc/sudoers.backup /etc/sudoers
+
+exit 0

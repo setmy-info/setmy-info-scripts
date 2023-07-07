@@ -9,9 +9,7 @@ if [ $# -lt 2 ]; then
     exit 1
 fi
 
-UID=$(id -u)
 CURRENT_USER=$(whoami)
-#CURRENT_USER=${USER}
 AS_ROOT_USER_SCRIPT=${1}
 AS_RESTRICTED_USER_SCRIPT=${2}
 shift 2

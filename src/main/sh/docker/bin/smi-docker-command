@@ -10,7 +10,7 @@ if [ $# -lt 2 ]; then
 fi
 
 UID=$(id -u)
-CURRENT_USER=$(id -nu "${UID}")
+CURRENT_USER=$(whoami)
 #CURRENT_USER=${USER}
 AS_ROOT_USER_SCRIPT=${1}
 AS_RESTRICTED_USER_SCRIPT=${2}

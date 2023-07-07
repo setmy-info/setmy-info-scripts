@@ -3,9 +3,10 @@
 # Executed by installer at install step end.
 echo "### Post-Install"
 
-username=microservice
-if ! id "$username" >/dev/null 2>&1; then
-    useradd --system $username
+USER_NAME=microservice
+if ! id "${USER_NAME}" >/dev/null 2>&1; then
+    # useradd ${USER_NAME} --shell /sbin/nologin --no-create-home
+    useradd --system ${USER_NAME}
 fi
 
 SMI_PROVIDER=setmy.info

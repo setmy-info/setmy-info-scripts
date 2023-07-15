@@ -49,7 +49,7 @@ All in single line:
 
 # TODO
 
-* sh separate into subdirectories (common/base, devel, server, software, desktop (devel. workstation), ...)
+* sh separate into subdirectories (common/base, devel, server, software, desktop (devel. workstation), AWS, Google, K8S, git, ...)
 
 ### Donate
 

@@ -1,13 +1,7 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- sh lib.txt")
 
-#INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/profiles"                  DESTINATION lib)
-#INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/base.sh"                       DESTINATION lib)
-
-#INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/cpp/lib.txt)
-
-IF(DISTRIBUTION STREQUAL "FreeBSD")
-#    INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/freebsd.sh"                DESTINATION lib)
-ENDIF()
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/lib.txt)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/lib.txt)
 
 # PLACEHOLDER-END #

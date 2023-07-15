@@ -1,4 +1,3 @@
-
 # Tools collection
 
 ## term
@@ -18,13 +17,13 @@ Decrease code repeating and increase development efficiency.
 make
 make package
 sudo rpm -e setmy-info-scripts
-sudo rpm -i setmy-info-scripts-0.54.0-SNAPSHOT.noarch.rpm
+sudo rpm -i setmy-info-scripts-0.56.0-SNAPSHOT.noarch.rpm
 ```
 
 All in single line:
 
 ```sh
-./configure release && make clear clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-0.54.0.noarch.rpm
+./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-0.56.0.noarch.rpm
 ```
 
 ### Build options
@@ -34,8 +33,8 @@ All in single line:
 **ci** - synonyme for release
 
 **release** -
-    verification (unit tests, integration tests incl. valgrind tests), release (no debug info) binaries, stripped, without 
-    -SNAPSHOT, real paths in side scripts.
+verification (unit tests, integration tests incl. valgrind tests), release (no debug info) binaries, stripped, without
+-SNAPSHOT, real paths in side scripts.
 
 **skipITs** - like maven skipITS, that skips integration tests incl. valgrind tests.
 
@@ -49,7 +48,28 @@ All in single line:
 
 # TODO
 
-* sh separate into subdirectories (common/base, devel, server, software, desktop (devel. workstation), AWS, Google, K8S, git, ...)
+* sh separate into subdirectories (common/base, devel, server, software, desktop (devel. workstation), AWS, Google, K8S, git, ...):
+    * common or **base**
+        * time
+        * string
+        * CLI
+    * **development** (devel. workstation)
+        * python
+        * groovy
+        * C/C++
+        * Java
+        * JavaScript
+        * AI, TensorFlow
+    * **server**
+        * ansible
+    * desktop or **workstation**
+    * ~~software~~
+    * **vcs**, git, mercurial, subversion
+    * ssl, **pki**
+    * aws, google, **cloud**
+    * k8s, **virtualization**, docker
+    * **crm**
+    * **tools**, helpers
 
 ### Donate
 

@@ -1,19 +1,7 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- sh targets.txt")
 
-#SET (CMAKE_VERBOSE_MAKEFILE TRUE)
-
-#ADD_CUSTOM_TARGET(build ALL)
-#ADD_CUSTOM_TARGET(clear)
-
-#ADD_CUSTOM_TARGET(makeDirectories
-#    mkdir -p ${BUILD_PATH} &&
-#    mkdir -p ${MAN_OUTPUT_PATH}/man1 &&
-#)
-
-#ADD_CUSTOM_TARGET(buildMan            cp ${MAIN_MAN_SOURCES_PATH}/*.1 ${MAN_OUTPUT_PATH}/man1 && gzip -f ${MAN_OUTPUT_PATH}/man1/*.1)
-
-#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/targets.txt)
-#INCLUDE_CMAKE_FILE(${TEST_CMAKE_PATH}/targets.txt)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/targets.txt)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/targets.txt)
 
 # PLACEHOLDER-END #

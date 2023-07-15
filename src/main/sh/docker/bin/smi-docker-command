@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
+
+. `smi-include base.sh`
+
+if [ $# -lt 2 ]; then
+    echo "At least two parameters are required"
+    exit 1
+fi
+
+CURRENT_USER=$(whoami)
+AS_ROOT_USER_SCRIPT=${1}
+AS_RESTRICTED_USER_SCRIPT=${2}
+shift 2
+
+# Do root related work and remove sudo rights
+#sudo smi-docker-root-once ${AS_ROOT_USER_SCRIPT}
+echo "Executing as root from ${CURRENT_USER}"
+sudo /bin/sh -c "source /etc/profile.d/setmy-info.sh && smi-docker-root-once ${CURRENT_USER} ${AS_ROOT_USER_SCRIPT}"
+# Continue as restricted user inside container
+echo "Executing as user"
+${AS_RESTRICTED_USER_SCRIPT} "$@"
+
+exit ${?}

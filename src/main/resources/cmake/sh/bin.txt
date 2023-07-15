@@ -1,14 +1,7 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- sh bin.txt")
 
-#INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/hgrep"                      DESTINATION bin)
-
-IF(DISTRIBUTION STREQUAL "FreeBSD")
-#    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)
-ENDIF()
-
-IF (WIN32)
-    # TODO : Win32/Win64 things
-ENDIF()
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/bin.txt)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/bin.txt)
 
 # PLACEHOLDER-END #

@@ -11,13 +11,18 @@
             <arg value="checkout"/>
             <arg value="master"/>
         </exec>
-        <exec executable="./configure" osfamily="unix" dir="."/>
+        <exec executable="./configure" osfamily="unix" dir=".">
+            <arg value="clean"/>
+        </exec>
+        <exec executable="./configure" osfamily="unix" dir=".">
+            <arg value="release"/>
+        </exec>
         <exec executable="make" osfamily="unix" dir=".">
-            <arg value="clear"/>
             <arg value="clean"/>
         </exec>
         <exec executable="make" osfamily="unix" dir=".">
             <arg value="all"/>
+            <arg value="test"/>
             <arg value="package"/>
         </exec>
     </target>

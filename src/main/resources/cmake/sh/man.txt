@@ -1,7 +1,7 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- sh man.txt")
 
-#INSTALL(DIRECTORY "${MAN_OUTPUT_PATH}/man1"             DESTINATION man)
-#...
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/man.txt)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/man.txt)
 
 # PLACEHOLDER-END #

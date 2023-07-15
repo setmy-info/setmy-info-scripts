@@ -1,4 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- library dependencies.txt")
-
-# PLACEHOLDER-END #

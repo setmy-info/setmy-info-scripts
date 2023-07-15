@@ -1,0 +1,7 @@
+#!/usr/sh
+
+FROM_URL=${1}
+TO_FILE=${2}
+curl -L ${FROM_URL} -o ${TO_FILE}
+
+exit 0

@@ -1,0 +1,1 @@
+echo %TEMP%\setmy.info

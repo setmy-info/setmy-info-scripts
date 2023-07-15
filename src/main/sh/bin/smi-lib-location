@@ -2,7 +2,7 @@
 
 # Copyright (C) 2019, 2020, 2021 Imre Tabur <imre.tabur@mail.ee>
 
-SMI_HOME=`smi-location`
+SMI_HOME=$(smi-location)
 echo "${SMI_HOME}/lib"
 
 exit 0

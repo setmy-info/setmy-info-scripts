@@ -1,4 +1,4 @@
-#!/usr/sh
+#!/bin/sh
 
 FROM_URL=${1}
 TO_FILE=${2}

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+PACKAGE_NAME=${1}
+
+if [ -z "$PACKAGE_NAME" ]; then
+    #echo "Argument ei ole edastatud"
+    exit 1
+fi
+
+echo "TODO: download package ${PACKAGE_NAME}"
+
+exit 0

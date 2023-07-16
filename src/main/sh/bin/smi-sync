@@ -1,5 +1,9 @@
 #!/bin/sh
 
-rsync -avu --delete --exclude "**/lost+found" ${1}/ ${2}
+SOURCE_DIR="${1}/"
+DESTINATION_DIR="${2}"
 
-exit 0
+# --delete
+rsync -avu --ignore-errors --exclude "**/lost+found" "${SOURCE_DIR}" "${DESTINATION_DIR}";
+
+exit ${?}

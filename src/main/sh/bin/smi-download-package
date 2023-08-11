@@ -1,12 +1,14 @@
 #!/bin/sh
 
 PACKAGE_NAME=${1}
+TEMP_DIR=
 
 if [ -z "$PACKAGE_NAME" ]; then
-    #echo "Argument ei ole edastatud"
+    echo "No package name"
     exit 1
 fi
 
 echo "TODO: download package ${PACKAGE_NAME}"
+mkdir -p
 
 exit 0

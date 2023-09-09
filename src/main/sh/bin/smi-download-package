@@ -4,7 +4,6 @@
 . $(smi-include packages.sh)
 
 createHomePackagesFolder
-loadPackages ${*}
 installPackages ${*}
 
 exit 0

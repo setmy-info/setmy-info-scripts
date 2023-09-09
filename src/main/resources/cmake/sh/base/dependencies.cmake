@@ -8,8 +8,8 @@ ADD_DEPENDENCIES(buildShellScripts  makeDirectories)
 ADD_DEPENDENCIES(buildEtc           makeDirectories)
 ADD_DEPENDENCIES(buildLibShells     makeDirectories)
 
-ADD_DEPENDENCIES(build buildProfiles buildServiceScripts)
-ADD_DEPENDENCIES(buildProfiles makeDirectories)
+ADD_DEPENDENCIES(build buildProfiles buildPackages buildServiceScripts)
+ADD_DEPENDENCIES(buildProfiles buildPackages makeDirectories)
 ADD_DEPENDENCIES(buildServiceScripts makeDirectories)
 
 # PLACEHOLDER-END #

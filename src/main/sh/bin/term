@@ -4,35 +4,10 @@
 
 COMMAND_NAME=`basename ${0}`
 COMMAND_HOME_FOLDER=${HOME}/.${COMMAND_NAME}
-PROFILE_SUFFIX="profile"
-SYSTEM_PROFILES_DIR=`smi-lib-location`/profiles
+SYSTEM_PROFILES_DIR=$(smi-lib-location)/profiles
 
-. `smi-include konsole.sh`
-
-createHomeTermFolder() {
-    if [ ! -d "${COMMAND_HOME_FOLDER}" ]; then
-        mkdir -p ${COMMAND_HOME_FOLDER}
-    fi
-}
-
-loadProfiles() {
-    LOADABLE_PROFILES=${*}
-    PROFILES=
-    for LOADABLE_PROFILE in ${LOADABLE_PROFILES}; do
-        HOME_PROFILE_FILE_NAME="${HOME}/.${COMMAND_NAME}/${LOADABLE_PROFILE}.${PROFILE_SUFFIX}"
-        SYSTEM_PROFILE_FILE_NAME="${SYSTEM_PROFILES_DIR}/${LOADABLE_PROFILE}.${PROFILE_SUFFIX}"
-        if [ -f "${HOME_PROFILE_FILE_NAME}" ]; then
-            echo "Loading: ${HOME_PROFILE_FILE_NAME}"
-            . ${HOME_PROFILE_FILE_NAME}
-            loadProfiles ${PROFILES}
-        elif [ -f "${SYSTEM_PROFILE_FILE_NAME}" ]; then
-            echo "Loading: ${SYSTEM_PROFILE_FILE_NAME}"
-            . ${SYSTEM_PROFILE_FILE_NAME}
-            loadProfiles ${PROFILES}
-        fi
-    done
-    return
-}
+. $(smi-include konsole.sh)
+. $(smi-include profiles.sh)
 
 createHomeTermFolder
 loadProfiles ${*}

@@ -2,9 +2,12 @@
 MESSAGE("-- base lib.cmake")
 
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/profiles"                  DESTINATION lib)
+INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/packages"                  DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/base.sh"                       DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/commons.sh"                    DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/konsole.sh"                    DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/profiles.sh"                   DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/packages.sh"                   DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/base64decode.py"               DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/base64encode.py"               DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/radians.groovy"                DESTINATION lib)

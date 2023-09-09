@@ -1,14 +1,10 @@
 #!/bin/sh
 
-PACKAGE_NAME=${1}
-TEMP_DIR=
+. $(smi-include base.sh)
+. $(smi-include packages.sh)
 
-if [ -z "$PACKAGE_NAME" ]; then
-    echo "No package name"
-    exit 1
-fi
-
-echo "TODO: download package ${PACKAGE_NAME}"
-mkdir -p
+createHomePackagesFolder
+loadPackages ${*}
+installPackages ${*}
 
 exit 0

@@ -13,11 +13,11 @@ Decrease code repeating and increase development efficiency.
 ## Build
 
 ```sh
-./configure
-make
-make package
+./configure release
+make clean
+make all test package
 sudo rpm -e setmy-info-scripts
-sudo rpm -i setmy-info-scripts-0.57.0-SNAPSHOT.noarch.rpm
+sudo rpm -i setmy-info-scripts-0.57.0.noarch.rpm
 ```
 
 All in single line:

@@ -1,7 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- sh configure.txt")
-
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/configure.txt)
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/configure.txt)
-
-# PLACEHOLDER-END #

@@ -1,0 +1,7 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- docker bin.cmake")
+
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-docker-command" DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-docker-root-once" DESTINATION bin)
+
+# PLACEHOLDER-END #

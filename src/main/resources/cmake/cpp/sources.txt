@@ -1,8 +1,0 @@
-MESSAGE("-- main cpp sources.txt")
-
-#INCLUDE_DIRECTORIES("/usr/include")
-#INCLUDE_DIRECTORIES_WINDOWS("C:\\pub\\boost_1_82_0")
-
-#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/javah/sources.txt)
-#INCLUDE(${MAIN_CPP_CMAKE_PATH}/library/sources.txt)
-#INCLUDE(${MAIN_CPP_CMAKE_PATH}/main/sources.txt)

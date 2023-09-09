@@ -1,4 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- test sh dependencies.txt")
-
-# PLACEHOLDER-END #

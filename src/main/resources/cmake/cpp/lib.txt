@@ -1,7 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- cpp lib.txt")
-
-#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/javah/lib.txt)
-#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/library/lib.txt)
-
-# PLACEHOLDER-END #

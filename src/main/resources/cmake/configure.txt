@@ -1,7 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- configure.txt")
-
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/configure.txt)
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/cpp/configure.txt)
-
-# PLACEHOLDER-END #

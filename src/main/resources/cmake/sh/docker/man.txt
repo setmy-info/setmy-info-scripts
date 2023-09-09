@@ -1,4 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- docker man.txt")
-
-# PLACEHOLDER-END #

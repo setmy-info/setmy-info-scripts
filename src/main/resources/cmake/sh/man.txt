@@ -1,7 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- sh man.txt")
-
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/man.txt)
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/man.txt)
-
-# PLACEHOLDER-END #

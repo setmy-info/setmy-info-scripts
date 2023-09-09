@@ -1,6 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- docker dependencies.txt")
-
-ADD_DEPENDENCIES(build buildDockerShellScripts)
-
-# PLACEHOLDER-END #

@@ -16,19 +16,19 @@ SET (PROJECT_MAINTAINER                 "Imre Tabur <imre.tabur@mail.ee>")
 SET (PROJECT_WWW                        "https://setmy.info")
 SET (PROJECT_LICENSE                    "MIT")
 
-INCLUDE(./src/main/resources/cmake/functions.txt)
-INCLUDE(./src/main/resources/cmake/variables.txt)
-INCLUDE(./src/main/resources/cmake/sources.txt)
-INCLUDE(./src/main/resources/cmake/targets.txt)
-INCLUDE(./src/main/resources/cmake/dependencies.txt)
-INCLUDE(./src/main/resources/cmake/configure.txt)
-INCLUDE(./src/main/resources/cmake/lib.txt)
-INCLUDE(./src/main/resources/cmake/bin.txt)
-INCLUDE(./src/main/resources/cmake/man.txt)
-INCLUDE(./src/main/resources/cmake/etc.txt)
+INCLUDE(./src/main/resources/cmake/functions.cmake)
+INCLUDE(./src/main/resources/cmake/variables.cmake)
+INCLUDE(./src/main/resources/cmake/sources.cmake)
+INCLUDE(./src/main/resources/cmake/targets.cmake)
+INCLUDE(./src/main/resources/cmake/dependencies.cmake)
+INCLUDE(./src/main/resources/cmake/configure.cmake)
+INCLUDE(./src/main/resources/cmake/lib.cmake)
+INCLUDE(./src/main/resources/cmake/bin.cmake)
+INCLUDE(./src/main/resources/cmake/man.cmake)
+INCLUDE(./src/main/resources/cmake/etc.cmake)
 
 # PLACEHOLDER-PRE-PACKAGING #
 
-INCLUDE(./src/main/resources/cmake/packaging.txt)
+INCLUDE(./src/main/resources/cmake/packaging.cmake)
 
 # PLACEHOLDER-END #

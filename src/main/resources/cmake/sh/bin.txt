@@ -1,7 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- sh bin.txt")
-
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/base/bin.txt)
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/docker/bin.txt)
-
-# PLACEHOLDER-END #

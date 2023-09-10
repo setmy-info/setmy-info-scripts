@@ -45,6 +45,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-setup"            DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-user-setup"       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/microservice"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-download"               DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-download-package"       DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-install-package"        DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-temp-location"          DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")

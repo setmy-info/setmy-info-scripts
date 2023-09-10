@@ -31,3 +31,16 @@ executeCommand() {
     ${COMMAND_NAME}_cmd $@
     return ${?}
 }
+
+get_parent_dir() {
+    DIR="$1"
+    PARENT_DIR="${DIR%/*}"
+    case "${PARENT_DIR}" in
+        */)
+            ;;
+        *)
+            PARENT_DIR="${PARENT_DIR}/"
+            ;;
+    esac
+    echo "${PARENT_DIR}"
+}

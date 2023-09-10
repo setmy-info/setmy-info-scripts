@@ -1,7 +1,17 @@
 #!/bin/sh
 
+. $(smi-include base.sh)
+. $(smi-include commons.sh)
+
 FROM_URL=${1}
 TO_FILE=${2}
-curl -L ${FROM_URL} -o ${TO_FILE}
+PARENT_DIR=$(get_parent_dir ${TO_FILE})
+if [ ! -d "$PARENT_DIR" ]; then
+    mkdir -p ${PARENT_DIR}
+fi
+
+if [ ! -f "${TO_FILE}" ]; then
+    curl -L ${FROM_URL} -o ${TO_FILE}
+fi
 
 exit 0

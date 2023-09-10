@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2019, 2020, 2021 Imre Tabur <imre.tabur@mail.ee>
+# Copyright (C) 2019 - 2023 Imre Tabur <imre.tabur@mail.ee>
 
 BASE_FILE_NAME=${1}
 SMI_LIB_DIR=`smi-lib-location`

@@ -4,7 +4,6 @@
 . $(smi-include commons.sh)
 . $(smi-include packages.sh)
 
-createHomePackagesFolder
-downloadPackages ${*}
+installPackages ${*}
 
 exit 0

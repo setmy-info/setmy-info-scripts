@@ -48,6 +48,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-download"               DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-download-package"       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-install-package"        DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-temp-location"          DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-home-location"          DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-home-packages-location" DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)

@@ -3,6 +3,6 @@
 # Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
 
 SMI_PROVIDER_NAME=$(smi-provider)
-echo "${TMPDIR}/${SMI_PROVIDER_NAME}"
+echo "${HOME}/.${SMI_PROVIDER_NAME}"
 
 exit 0

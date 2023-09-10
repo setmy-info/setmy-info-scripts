@@ -11,6 +11,7 @@ if [ ! -d "$PARENT_DIR" ]; then
 fi
 
 if [ ! -f "${TO_FILE}" ]; then
+    echo "Downloading: curl -L ${FROM_URL} -o ${TO_FILE}"
     curl -L ${FROM_URL} -o ${TO_FILE}
 fi
 

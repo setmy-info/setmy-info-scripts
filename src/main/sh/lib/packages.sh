@@ -1,8 +1,7 @@
-PROVIDER_HOME_DIR=~/.${PROVIDER}
-HOME_PACKAGES_DIR=${PROVIDER_HOME_DIR}/packages
+HOME_PACKAGES_DIR=$(smi-home-packages-location)
 
 all_download_func() {
-    downloadPackages sbcl jdk zulu_jdk jdk17 jdk21 tomcat zeebe infinispan hsqldb hsqldb nodejs maven gradle cmake julia go dvc jenkins
+    downloadPackages sbcl jdk zulu_jdk jdk17 jdk21 tomcat zeebe infinispan hsqldb hsqldb nodejs maven gradle cmake julia go dvc jenkins groovy mn grails leiningen
 }
 
 SBCL_VERSION=2.3.8
@@ -29,21 +28,22 @@ jdk_download_func() {
     smi-download ${JDK_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME}
 }
 jdk_install_func() {
-      return
+    tar -xvzf --overwrite ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME} -C /opt
+    ln -sf /opt/jdk /opt/${JDK_DIR_NAME}
 }
 
 ZULU_JDK17_VERSION=17.44.15
 ZULU_JDK17_BASE_VERSION=17.0.8
-ZULU_JDK17_DIR_NAME=zulu${JDK17_VERSION}-ca-crac-jdk${JDK17_BASE_VERSION}-linux_x64
-ZULU_JDK17_NAME_PREFIX=zulu${JDK17_VERSION}-ca-crac-jdk${JDK17_BASE_VERSION}
-ZULU_JDK17_TAR_FILE_NAME=${JDK17_NAME_PREFIX}-linux_x64.tar
-ZULU_JDK17_TAR_GZ_FILE_NAME=${JDK17_TAR_FILE_NAME}.gz
-ZULU_JDK17_TAR_GZ_FILE_URL=https://cdn.azul.com/zulu/bin/${JDK17_TAR_GZ_FILE_NAME}
+ZULU_JDK17_DIR_NAME=zulu${ZULU_JDK17_VERSION}-ca-jdk${ZULU_JDK17_BASE_VERSION}-linux_x64
+ZULU_JDK17_NAME_PREFIX=zulu${ZULU_JDK17_VERSION}-ca-jdk${ZULU_JDK17_BASE_VERSION}
+ZULU_JDK17_ZIP_FILE_NAME=${ZULU_JDK17_NAME_PREFIX}-linux_x64.zip
+ZULU_JDK17_TAR_GZ_FILE_URL=https://cdn.azul.com/zulu/bin/${ZULU_JDK17_ZIP_FILE_NAME}
 zulu_jdk_download_func() {
-    smi-download ${ZULU_JDK17_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ZULU_JDK17_TAR_GZ_FILE_NAME}
+    smi-download ${ZULU_JDK17_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ZULU_JDK17_ZIP_FILE_NAME}
 }
 zulu_jdk_install_func() {
-      return
+    unzip ${HOME_PACKAGES_DIR}/${ZULU_JDK17_ZIP_FILE_NAME} -d /opt
+    ln -sf /opt/zulu-jdk17 /opt/${ZULU_JDK17_DIR_NAME}
 }
 
 JDK17_VERSION=17.0.2
@@ -53,7 +53,7 @@ JDK17_DIR_NAME=jdk-${JDK17_VERSION}
 JDK17_NAME_PREFIX=openjdk-${JDK17_VERSION}
 JDK17_TAR_FILE_NAME=${JDK17_NAME_PREFIX}_linux-x64_bin.tar
 JDK17_TAR_GZ_FILE_NAME=${JDK17_TAR_FILE_NAME}.gz
-JDK17_TAR_GZ_FILE_URL=https://download.java.net/java/GA/${JDK17_VERSION}/${JDK17_HASH_PART}/${JDK17_NUMERIC_PART}/GPL/${JDK17_TAR_GZ_FILE_NAME}
+JDK17_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK17_VERSION}/${JDK17_HASH_PART}/${JDK17_NUMERIC_PART}/GPL/${JDK17_TAR_GZ_FILE_NAME}
 jdk17_download_func() {
     smi-download ${JDK17_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK17_TAR_GZ_FILE_NAME}
 }
@@ -222,10 +222,70 @@ JENKINS_HOME_DIR_NAME=jenkins
 JENKINS_HOME_TAR_FILE_NAME=${JENKINS_HOME_DIR_NAME}-${JENKINS_HOME_VERSION}.tar
 JENKINS_HOME_TAR_GZ_FILE_NAME=${JENKINS_HOME_TAR_FILE_NAME}.gz
 jenkins_home_download_func() {
-    smi-download ${JENKINS_HOME_TAR_GZ_FILE_NAME} ${HOME_PACKAGES_DIR}/${JENKINS_HOME_TAR_FILE_NAME}
+    #smi-download ${JENKINS_HOME_TAR_GZ_FILE_NAME} ${HOME_PACKAGES_DIR}/${JENKINS_HOME_TAR_FILE_NAME}
+    return
 }
 jenkins_install_func() {
       return
+}
+
+GROOVY_VERSION=4.0.14
+GROOVY_DIR_NAME=apache-groovy-sdk-${GROOVY_VERSION}
+GROOVY_ZIP_FILE_NAME=${GROOVY_DIR_NAME}.zip
+GROOVY_ZIP_FILE_URL="https://groovy.jfrog.io/ui/api/v1/download?repoKey=dist-release-local&path=groovy-zips%252F${GROOVY_ZIP_FILE_NAME}&isNativeBrowsing=true"
+groovy_download_func() {
+    smi-download ${GROOVY_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GROOVY_ZIP_FILE_NAME}
+}
+groovy_install_func() {
+      return
+}
+
+MN_VERSION=4.1.0
+MN_DIR_NAME=micronaut-cli-${MN_VERSION}
+MN_ZIP_FILE_NAME=${MN_DIR_NAME}.zip
+MN_ZIP_FILE_URL=https://github.com/micronaut-projects/micronaut-starter/releases/download/v${MN_VERSION}/${MN_ZIP_FILE_NAME}
+mn_download_func() {
+    smi-download ${MN_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${MN_ZIP_FILE_NAME}
+}
+mn_install_func() {
+      return
+}
+
+GRAILS_VERSION=6.0.0
+GRAILS_DIR_NAME=grails-${GRAILS_VERSION}
+GRAILS_ZIP_FILE_NAME=${GRAILS_DIR_NAME}.zip
+GRAILS_ZIP_FILE_URL=https://github.com/grails/grails-core/releases/download/v${GRAILS_VERSION}/${GRAILS_ZIP_FILE_NAME}
+grails_download_func() {
+    smi-download ${GRAILS_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GRAILS_ZIP_FILE_NAME}
+}
+grails_install_func() {
+      return
+}
+
+LEININGEN_FILE_NAME=lein
+LEININGEN_FILE_URL=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/${LEININGEN_FILE_NAME}
+leiningen_download_func() {
+    smi-download ${LEININGEN_FILE_URL} ${HOME_PACKAGES_DIR}/${LEININGEN_FILE_NAME}
+}
+leiningen_install_func() {
+      return
+}
+
+kubectl_xx() {
+    # This overwrites any existing configuration in /etc/yum.repos.d/kubernetes.repo
+#    cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+#    [kubernetes]
+#    name=Kubernetes
+#    baseurl=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
+#    enabled=1
+#    gpgcheck=1
+#    gpgkey=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
+#    EOF
+#    yum install -y kubectl
+
+    # Minikube
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm
+    sudo rpm -Uvh minikube-latest.x86_64.rpm
 }
 
 createHomePackagesFolder() {
@@ -242,6 +302,7 @@ downloadPackages() {
 
 downloadPackage() {
     PACKAGE_NAME=${1}
+    echo "Downloading package: ${PACKAGE_NAME}"
     ${PACKAGE_NAME}_download_func
     return
 }

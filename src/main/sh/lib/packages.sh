@@ -14,7 +14,7 @@ sbcl_download_func() {
     smi-download ${SBCL_TAR_BZ2_FILE_URL} ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME}
 }
 sbcl_install_func() {
-    sudo tar -xvjf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME}
+    sudo tar --overwrite -xvjf ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME} -C /opt 
     sudo rm -f /opt/${SBCL_NAME}
     sudo ln -sf /opt/${SBCL_DIR_NAME} /opt/sbcl
 }
@@ -31,7 +31,7 @@ jdk_download_func() {
     smi-download ${JDK_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME}
 }
 jdk_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${JDK_DIR_NAME} /opt/jdk
 }
 
@@ -61,7 +61,7 @@ jdk17_download_func() {
     smi-download ${JDK17_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK17_TAR_GZ_FILE_NAME}
 }
 jdk17_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${JDK17_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK17_TAR_GZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${JDK17_DIR_NAME} /opt/jdk17
 }
 
@@ -77,7 +77,7 @@ jdk21_download_func() {
     smi-download ${JDK21_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK21_TAR_GZ_FILE_NAME}
 }
 jdk21_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${JDK21_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK21_TAR_GZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${JDK21_DIR_NAME} /opt/jdk21
 }
 
@@ -91,7 +91,7 @@ tomcat_download_func() {
     smi-download ${TOMCAT_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${TOMCAT_TAR_GZ_FILE_NAME}
 }
 tomcat_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${TOMCAT_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${TOMCAT_TAR_GZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${TOMCAT_DIR_NAME} /opt/tomcat
     # TODO : gie correct rights to sub folders
 }
@@ -105,7 +105,7 @@ zeebe_download_func() {
     smi-download ${ZEEBE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ZEEBE_TAR_GZ_FILE_NAME}
 }
 zeebe_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${ZEEBE_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${ZEEBE_TAR_GZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${ZEEBE_DIR_NAME} /opt/zeebe
 }
 
@@ -142,7 +142,7 @@ nodejs_download_func() {
     smi-download ${NODE_TAR_XZ_FILE_URL} ${HOME_PACKAGES_DIR}/${NODE_TAR_XZ_FILE_NAME}
 }
 nodejs_install_func() {
-    sudo tar -xvJf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${NODE_TAR_XZ_FILE_NAME}
+    sudo tar --overwrite -xvJf ${HOME_PACKAGES_DIR}/${NODE_TAR_XZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${NODE_DIR_NAME} /opt/node
 }
 
@@ -155,7 +155,7 @@ maven_download_func() {
     smi-download ${MAVEN_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MAVEN_TAR_GZ_FILE_NAME}
 }
 maven_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${MAVEN_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${MAVEN_TAR_GZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${MAVEN_DIR_NAME} /opt/maven
 }
 
@@ -180,7 +180,7 @@ cmake_download_func() {
     smi-download ${CMAKE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${CMAKE_TAR_GZ_FILE_NAME}
 }
 cmake_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${CMAKE_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${CMAKE_TAR_GZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${CMAKE_DIR_NAME} /opt/cmake
 }
 
@@ -195,7 +195,7 @@ julia_download_func() {
     smi-download ${JULIA_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JULIA_TAR_GZ_FILE_NAME}
 }
 julia_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${JULIA_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JULIA_TAR_GZ_FILE_NAME} -C /opt
     sudo rm -f /opt/${JULIA_NAME}
     sudo ln -sf /opt/${JULIA_DIR_NAME} /opt/${JULIA_NAME}
 }
@@ -209,7 +209,7 @@ go_download_func() {
     smi-download ${GO_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${GO_TAR_GZ_FILE_NAME}
 }
 go_install_func() {
-    sudo tar -xvzf --overwrite -C /opt ${HOME_PACKAGES_DIR}/${GO_TAR_GZ_FILE_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${GO_TAR_GZ_FILE_NAME} -C /opt
     sudo ln -sf /opt/${GO_DIR_NAME} /opt/go
 }
 

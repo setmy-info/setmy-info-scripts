@@ -19,6 +19,7 @@ sbcl_install_func() {
     sudo ln -sf /opt/${SBCL_DIR_NAME} /opt/sbcl
 }
 
+JDK_NAME=jdk
 JDK_VERSION=20.0.2
 JDK_HASH=6e380f22cbe7469fa75fb448bd903d8e
 JDK_URI_NR_PART=9
@@ -35,6 +36,7 @@ jdk_install_func() {
     sudo ln -sf /opt/${JDK_DIR_NAME} /opt/jdk
 }
 
+ZULU_NAME=zulu
 ZULU_JDK17_VERSION=17.44.15
 ZULU_JDK17_BASE_VERSION=17.0.8
 ZULU_JDK17_DIR_NAME=zulu${ZULU_JDK17_VERSION}-ca-jdk${ZULU_JDK17_BASE_VERSION}-linux_x64
@@ -49,6 +51,7 @@ zulu_jdk_install_func() {
     sudo ln -sf /opt/${ZULU_JDK17_DIR_NAME} /opt/zulu-jdk17
 }
 
+JDK17_NAME=jdk17
 JDK17_VERSION=17.0.2
 JDK17_HASH_PART=dfd4a8d0985749f896bed50d7138ee7f
 JDK17_NUMERIC_PART=8
@@ -65,6 +68,7 @@ jdk17_install_func() {
     sudo ln -sf /opt/${JDK17_DIR_NAME} /opt/jdk17
 }
 
+JDK21_NAME=jdk21
 JDK21_VERSION=21.0.0
 JDK21_HASH_PART=dfd4a8d0985749f896bed50d7138ee7f
 JDK21_NUMERIC_PART=8
@@ -81,6 +85,7 @@ jdk21_install_func() {
     sudo ln -sf /opt/${JDK21_DIR_NAME} /opt/jdk21
 }
 
+TOMCAT_NAME=apache-tomcat
 TOMCAT_MAJOR_VERSION=10
 TOMCAT_VERSION=${TOMCAT_MAJOR_VERSION}.1.13
 TOMCAT_DIR_NAME=apache-tomcat-${TOMCAT_VERSION}
@@ -96,6 +101,7 @@ tomcat_install_func() {
     # TODO : gie correct rights to sub folders
 }
 
+ZEEBE_NAME=camunda-zeebe
 ZEEBE_VERSION=8.0.21
 ZEEBE_DIR_NAME=camunda-zeebe-${ZEEBE_VERSION}
 ZEEBE_TAR_FILE_NAME=${ZEEBE_DIR_NAME}.tar
@@ -109,6 +115,7 @@ zeebe_install_func() {
     sudo ln -sf /opt/${ZEEBE_DIR_NAME} /opt/zeebe
 }
 
+INFINISPAN_NAME=infinispan
 INFINISPAN_VERSION=14.0.13
 INFINISPAN_DIR_NAME=infinispan-server-${INFINISPAN_VERSION}.Final
 INFINISPAN_ZIP_FILE_NAME=${INFINISPAN_DIR_NAME}.zip
@@ -121,6 +128,7 @@ infinispan_install_func() {
     sudo ln -sf /opt/${INFINISPAN_DIR_NAME} /opt/infinispan
 }
 
+HSQLDB_NAME=hsqldb
 HSQLDB_VERSION=2.7.2
 HSQLDB_DIR_NAME=hsqldb-${HSQLDB_VERSION}
 HSQLDB_ZIP_FILE_NAME=${HSQLDB_DIR_NAME}.zip
@@ -133,6 +141,7 @@ hsqldb_install_func() {
     sudo ln -sf /opt/${HSQLDB_DIR_NAME} /opt/hsqldb
 }
 
+NODE_NAME=node
 NODE_VERSION=18.17.1
 NODE_DIR_NAME=node-v${NODE_VERSION}-linux-x64
 NODE_TAR_FILE_NAME=${NODE_DIR_NAME}.tar
@@ -146,6 +155,7 @@ nodejs_install_func() {
     sudo ln -sf /opt/${NODE_DIR_NAME} /opt/node
 }
 
+MAVEN_NAME=maven
 MAVEN_VERSION=3.9.4
 MAVEN_DIR_NAME=apache-maven-${MAVEN_VERSION}
 MAVEN_TAR_FILE_NAME=${MAVEN_DIR_NAME}-bin.tar
@@ -159,6 +169,7 @@ maven_install_func() {
     sudo ln -sf /opt/${MAVEN_DIR_NAME} /opt/maven
 }
 
+GRADLE_NAME=gradle
 GRADLE_VERSION=8.3
 GRADLE_DIR_NAME=gradle-${GRADLE_VERSION}
 GRADLE_ZIP_FILE_NAME=${GRADLE_DIR_NAME}-bin.zip
@@ -171,6 +182,7 @@ gradle_install_func() {
     sudo ln -sf /opt/${GRADLE_DIR_NAME} /opt/gradle
 }
 
+CMAKE_NAME=cmake
 CMAKE_VERSION=3.27.4
 CMAKE_DIR_NAME=cmake-${CMAKE_VERSION}-linux-x86_64
 CMAKE_TAR_FILE_NAME=${CMAKE_DIR_NAME}.tar
@@ -200,8 +212,9 @@ julia_install_func() {
     sudo ln -sf /opt/${JULIA_DIR_NAME} /opt/${JULIA_NAME}
 }
 
+GO_NAME=go
 GO_VERSION=1.21.1
-GO_DIR_NAME=go
+GO_DIR_NAME=${GO_NAME}
 GO_TAR_FILE_NAME=${GO_DIR_NAME}${GO_VERSION}.linux-amd64.tar
 GO_TAR_GZ_FILE_NAME=${GO_TAR_FILE_NAME}.gz
 GO_TAR_GZ_FILE_URL=https://go.dev/dl/${GO_TAR_GZ_FILE_NAME}
@@ -213,6 +226,7 @@ go_install_func() {
     sudo ln -sf /opt/${GO_DIR_NAME} /opt/go
 }
 
+DVC_NAME=dvc
 DVC_VERSION=3.19.0
 DVC_DIR_NAME=dvc-${DVC_VERSION}-1.x86_64
 DVC_RPM_FILE_NAME=${DVC_DIR_NAME}.rpm
@@ -224,6 +238,7 @@ dvc_install_func() {
     sudo rpm -Uvh ${HOME_PACKAGES_DIR}/${DVC_RPM_FILE_NAME}
 }
 
+JENKINS_NAME=jenkins
 JENKINS_VERSION=2.414.1
 JENKINS_DIR_NAME=jenkins
 JENKINS_WAR_FILE_NAME=${JENKINS_DIR_NAME}.war
@@ -246,6 +261,7 @@ jenkins_install_func() {
     return
 }
 
+GROOVY_NAME=groovy
 GROOVY_VERSION=4.0.14
 GROOVY_DIR_NAME=apache-groovy-sdk-${GROOVY_VERSION}
 GROOVY_ZIP_FILE_NAME=${GROOVY_DIR_NAME}.zip
@@ -258,6 +274,7 @@ groovy_install_func() {
     sudo ln -sf /opt/${GROOVY_DIR_NAME} /opt/groovy
 }
 
+MN_NAME=micronaut
 MN_VERSION=4.1.0
 MN_DIR_NAME=micronaut-cli-${MN_VERSION}
 MN_ZIP_FILE_NAME=${MN_DIR_NAME}.zip
@@ -287,16 +304,23 @@ grails_install_func() {
     sudo ln -sf /opt/${GRAILS_DIR_NAME} /opt/${GRAILS_NAME}
 }
 
+LEININGEN_NAME=lein
 LEININGEN_FILE_NAME=lein
 LEININGEN_FILE_URL=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/${LEININGEN_FILE_NAME}
 leiningen_download_func() {
     smi-download ${LEININGEN_FILE_URL} ${HOME_PACKAGES_DIR}/${LEININGEN_FILE_NAME}
 }
 leiningen_install_func() {
-    return
+    sudo mkdir -p /opt/leiningen/bin
+    sudo mkdir -p /opt/leiningen/lib
+    sudo mkdir -p /opt/leiningen/self-installs
+    sudo cp ${HOME_PACKAGES_DIR}/${LEININGEN_FILE_NAME} /opt/leiningen/bin
+    sudo chmod ugo+x /opt/leiningen/bin/lein
+    sudo /opt/leiningen/bin/lein self-insstall
 }
 
 kubectl_download_func() {
+    # yum config is already installed.
     return
 }
 kubectl_install_func() {
@@ -305,6 +329,7 @@ kubectl_install_func() {
     sudo dnf install -y kubectl
 }
 
+MINIKUBE_NAME=minikube
 MINIKUBE_RPM_FILE_NAME=minikube-latest.x86_64.rpm
 MINIKUBE_RPM_FILE_URL=https://storage.googleapis.com/minikube/releases/latest/{MINIKUBE_VERSION}/${MINIKUBE_RPM_FILE_NAME}
 minikube_download_func() {
@@ -312,6 +337,23 @@ minikube_download_func() {
 }
 minikube_install_func() {
     sudo rpm -Uvh ${HOME_PACKAGES_DIR}/${MINIKUBE_RPM_FILE_NAME}
+}
+
+ARGOCLI_NAME=argo
+ARGOCLI_VERSION=3.4.11
+ARGOCLI_DIR_NAME=${ARGOCLI_NAME}-linux-amd64
+ARGOCLI_GZ_FILE_NAME=${ARGOCLI_DIR_NAME}.gz
+ARGOCLI_GZ_FILE_URL=https://github.com/argoproj/argo-workflows/releases/download/v${ARGOCLI_VERSION}/${ARGOCLI_GZ_FILE_NAME}
+argocli_download_func() {
+    smi-download ${ARGOCLI_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ARGOCLI_GZ_FILE_NAME}
+}
+argocli_install_func() {
+    CURRENT_DIR=$(pwd)
+    cd /opt
+    sudo gunzip ${HOME_PACKAGES_DIR}/${ARGOCLI_GZ_FILE_NAME}
+    sudo rm -f /opt/${ARGOCLI_NAME}
+    sudo ln -sf /opt/${ARGOCLI_DIR_NAME} /opt/${ARGOCLI_NAME}
+    cd ${CURRENT_DIR}
 }
 
 docker_download_func() {

@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- docker lib.cmake")
 
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/docker.sh" DESTINATION lib)
+
 # PLACEHOLDER-END #

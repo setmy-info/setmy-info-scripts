@@ -9,6 +9,6 @@
 . $(smi-include packages.sh)
 . $(smi-include docker.sh)
 
-dockerPrepare
+dockerBuild
 
 exit 0

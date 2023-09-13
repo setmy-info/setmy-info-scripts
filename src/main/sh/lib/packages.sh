@@ -7,16 +7,20 @@ all_download_func() {
 SBCL_NAME=sbcl
 SBCL_VERSION=2.3.8
 SBCL_DIR_NAME=${SBCL_NAME}-${SBCL_VERSION}-x86-64-linux-binary
-SBCL_TAR_FILE_NAME=${SBCL_DIR_NAME}.tar
+SBCL_TAR_FILE_NAME=${SBCL_NAME}-${SBCL_VERSION}-x86-64-linux-binary.tar
 SBCL_TAR_BZ2_FILE_NAME=${SBCL_TAR_FILE_NAME}.bz2
 SBCL_TAR_BZ2_FILE_URL=http://prdownloads.sourceforge.net/sbcl/${SBCL_TAR_BZ2_FILE_NAME}
 sbcl_download_func() {
     smi-download ${SBCL_TAR_BZ2_FILE_URL} ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME}
 }
 sbcl_install_func() {
-    sudo tar --overwrite -xvjf ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME} -C /opt 
+    CURRENT_DIR=$(pwd)
+    sudo tar --overwrite -xvjf ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME} -C ${HOME_PACKAGES_DIR}
+    cd ${HOME_PACKAGES_DIR}/sbcl-${SBCL_VERSION}-x86-64-linux
+    sudo INSTALL_ROOT=/opt/sbcl-${SBCL_VERSION}-x86-64-linux sh install.sh
     sudo rm -f /opt/${SBCL_NAME}
-    sudo ln -sf /opt/${SBCL_DIR_NAME} /opt/sbcl
+    sudo ln -sf /opt/${SBCL_DIR_NAME} /opt/${SBCL_NAME}
+    cd ${CURRENT_DIR}
 }
 
 JDK_NAME=jdk

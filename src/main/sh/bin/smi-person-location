@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
+
+FIRST_NAME=$1
+LAST_NAME=$2
+PERSON_HASH=$(smi-person-name-hash ${FIRST_NAME} ${LAST_NAME})
+echo $(smi-persons-location)/${PERSON_HASH}
+
+exit ${?}

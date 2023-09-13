@@ -26,6 +26,7 @@ INCLUDE(./src/main/resources/cmake/lib.cmake)
 INCLUDE(./src/main/resources/cmake/bin.cmake)
 INCLUDE(./src/main/resources/cmake/man.cmake)
 INCLUDE(./src/main/resources/cmake/etc.cmake)
+INCLUDE(./src/main/resources/cmake/var.cmake)
 
 # PLACEHOLDER-PRE-PACKAGING #
 

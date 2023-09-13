@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
+
+PERON_NAME_SALT="550e8400-e29b-41d4-a716-446655440000"
+USER_HASH_LENGTH=26
+FIRST_NAME=$1
+LAST_NAME=$2
+
+NAME_COMBINED="${FIRST_NAME} ${LAST_NAME} ${PERON_NAME_SALT}"
+FULL_HASH=$(echo -n "${NAME_COMBINED}" | sha512sum | cut -d ' ' -f 1)
+USER_HASH="person_hash_${FULL_HASH:0:$USER_HASH_LENGTH}"
+echo "$USER_HASH"
+
+exit ${?}

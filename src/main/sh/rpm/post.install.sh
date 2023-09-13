@@ -16,5 +16,6 @@ if command -v systemctl >/dev/null 2>&1; then
 fi
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-test
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-stealer
+mkdir -p /var/opt/${SMI_PROVIDER}
 
 exit ${?}

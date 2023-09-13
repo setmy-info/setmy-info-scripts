@@ -18,7 +18,8 @@ ADD_CUSTOM_TARGET(makeDirectories
     mkdir -p ${INCLUDE_OUTPUT_PATH} &&
     mkdir -p ${ETC_SYSTEM_OUTPUT_PATH} &&
     mkdir -p ${ETC_YUM_REPOS_PATH} &&
-    mkdir -p ${ETC_SYSTEM_OUTPUT_PATH}/systemd/system
+    mkdir -p ${ETC_SYSTEM_OUTPUT_PATH}/systemd/system &&
+    mkdir -p ${SMI_VAR_PATH}
 )
 
 ADD_CUSTOM_TARGET(buildMan             cp ${MAIN_MAN_SOURCES_PATH}/*.1 ${MAN_OUTPUT_PATH}/man1 && gzip -f ${MAN_OUTPUT_PATH}/man1/*.1)

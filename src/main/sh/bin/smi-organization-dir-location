@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
+
+COUNTRY_CODE=${1}
+ORG_SHORT_NAME=${2}
+DIRECTORY_NAME=${3}
+
+echo $(smi-organization-location ${COUNTRY_CODE} ${ORG_SHORT_NAME})/${DIRECTORY_NAME}
+
+exit ${?}

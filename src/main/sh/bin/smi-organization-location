@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
+
+# ISO 3166-1 alpha-2
+COUNTRY_CODE=${1}
+ORG_SHORT_NAME=${2}
+
+if [ -z "$COUNTRY_CODE" ]; then
+    echo "Need to set COUNTRY_CODE"
+	exit 1
+fi
+
+if [ -z "$ORG_SHORT_NAME" ]; then
+    echo "Need to set ORG_SHORT_NAME - organization short name"
+	exit 2
+fi
+
+echo $(smi-organizations-location)/${COUNTRY_CODE}/${ORG_SHORT_NAME}
+
+exit ${?}

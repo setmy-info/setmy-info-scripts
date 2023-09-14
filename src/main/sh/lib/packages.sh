@@ -51,23 +51,6 @@ jdk17_install_func() {
     sudo ln -sf /opt/${JDK17_DIR_NAME} /opt/jdk17
 }
 
-JDK21_NAME=jdk21
-JDK21_VERSION=21.0.0
-JDK21_HASH_PART=dfd4a8d0985749f896bed50d7138ee7f
-JDK21_NUMERIC_PART=8
-JDK21_DIR_NAME=jdk-${JDK21_VERSION}
-JDK21_NAME_PREFIX=openjdk-${JDK21_VERSION}
-JDK21_TAR_FILE_NAME=${JDK21_NAME_PREFIX}_linux-x64_bin.tar
-JDK21_TAR_GZ_FILE_NAME=${JDK21_TAR_FILE_NAME}.gz
-JDK21_TAR_GZ_FILE_URL=https://download.java.net/java/GA/${JDK21_VERSION}/${JDK21_HASH_PART}/${JDK21_NUMERIC_PART}/GPL/${JDK21_TAR_GZ_FILE_NAME}
-jdk21_download_func() {
-    smi-download ${JDK21_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK21_TAR_GZ_FILE_NAME}
-}
-jdk21_install_func() {
-    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK21_TAR_GZ_FILE_NAME} -C /opt
-    sudo ln -sf /opt/${JDK21_DIR_NAME} /opt/jdk21
-}
-
 TOMCAT_NAME=apache-tomcat
 TOMCAT_MAJOR_VERSION=10
 TOMCAT_VERSION=${TOMCAT_MAJOR_VERSION}.1.13

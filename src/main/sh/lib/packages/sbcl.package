@@ -9,7 +9,7 @@ sbcl_download_func() {
 }
 sbcl_install_func() {
     CURRENT_DIR=$(pwd)
-    sudo tar --overwrite -xvjf ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME} -C ${HOME_PACKAGES_DIR}
+    tar --overwrite -xvjf ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME} -C ${HOME_PACKAGES_DIR}
     cd ${HOME_PACKAGES_DIR}/sbcl-${SBCL_VERSION}-x86-64-linux
     sudo INSTALL_ROOT=/opt/sbcl-${SBCL_VERSION}-x86-64-linux sh install.sh
     sudo rm -f /opt/${SBCL_NAME}

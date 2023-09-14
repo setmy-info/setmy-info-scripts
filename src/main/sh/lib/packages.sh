@@ -405,13 +405,13 @@ downloadPackages() {
 downloadPackage() {
     PACKAGE_NAME=${1}
     echo "Downloading package: ${PACKAGE_NAME}"
-    SYS_PACKAGE_FILE_NAME=${SYSTEM_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
+    SYS_PACKAGE_FILE_NAME=packages/${PACKAGE_NAME}.${PACKAGE_PREFIX}
     HOME_PACKAGE_FILE_NAME=${HOME_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
     if [ -f "${SYS_PACKAGE_FILE_NAME}" ]; then
         smi-include ${SYS_PACKAGE_FILE_NAME}
     fi
     if [ -f "${HOME_PACKAGE_FILE_NAME}" ]; then
-        smi-include ${HOME_PACKAGE_FILE_NAME}
+        . ${HOME_PACKAGE_FILE_NAME}
     fi
     ${PACKAGE_NAME}_download_func
     return
@@ -427,13 +427,13 @@ installPackages() {
 
 installPackage() {
     PACKAGE_NAME=${1}
-    SYS_PACKAGE_FILE_NAME=${SYSTEM_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
+    SYS_PACKAGE_FILE_NAME=packages/${PACKAGE_NAME}.${PACKAGE_PREFIX}
     HOME_PACKAGE_FILE_NAME=${HOME_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
     if [ -f "${SYS_PACKAGE_FILE_NAME}" ]; then
         smi-include ${SYS_PACKAGE_FILE_NAME}
     fi
     if [ -f "${HOME_PACKAGE_FILE_NAME}" ]; then
-        smi-include ${HOME_PACKAGE_FILE_NAME}
+        . ${HOME_PACKAGE_FILE_NAME}
     fi
     ${PACKAGE_NAME}_install_func
     return

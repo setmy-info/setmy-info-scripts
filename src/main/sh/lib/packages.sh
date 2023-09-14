@@ -186,17 +186,6 @@ jenkins_install_func() {
     return
 }
 
-JENKINS_HOME_VERSION=1.0.1
-JENKINS_HOME_DIR_NAME=jenkins
-JENKINS_HOME_TAR_FILE_NAME=${JENKINS_HOME_DIR_NAME}-${JENKINS_HOME_VERSION}.tar
-JENKINS_HOME_TAR_GZ_FILE_NAME=${JENKINS_HOME_TAR_FILE_NAME}.gz
-jenkins_home_download_func() {
-    return
-}
-jenkins_install_func() {
-    return
-}
-
 GROOVY_NAME=groovy
 GROOVY_VERSION=4.0.14
 GROOVY_DIR_NAME=apache-groovy-sdk-${GROOVY_VERSION}

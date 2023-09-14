@@ -179,7 +179,7 @@ JENKINS_VERSION=2.423
 JENKINS_DIR_NAME=jenkins
 JENKINS_WAR_FILE_NAME=${JENKINS_DIR_NAME}.war
 #JENKINS_WAR_FILE_URL=https://ftp.halifax.rwth-aachen.de/jenkins/war-stable/${JENKINS_VERSION}/${JENKINS_WAR_FILE_NAME}
-JENKINS_WAR_FILE_URL=https://ftp.halifax.rwth-aachen.de/jenkins/${JENKINS_WAR_FILE_NAME}
+JENKINS_WAR_FILE_URL=https://ftp.halifax.rwth-aachen.de/jenkins/war/${JENKINS_VERSION}/${JENKINS_WAR_FILE_NAME}
 jenkins_download_func() {
     smi-download ${JENKINS_WAR_FILE_URL} ${HOME_PACKAGES_DIR}/${JENKINS_WAR_FILE_NAME}
 }

@@ -2,10 +2,6 @@ SYSTEM_PACKAGES_DIR=$(smi-packages-location)
 HOME_PACKAGES_DIR=$(smi-home-packages-location)
 PACKAGE_PREFIX=package
 
-all_download_func() {
-    downloadPackages sbcl jdk zulu_jdk jdk17 jdk21 tomcat zeebe infinispan hsqldb hsqldb nodejs maven gradle cmake julia go dvc jenkins groovy mn grails leiningen kubectl minikube docker nginx
-}
-
 JDK_NAME=jdk
 JDK_VERSION=20.0.2
 JDK_HASH=6e380f22cbe7469fa75fb448bd903d8e

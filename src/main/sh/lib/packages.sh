@@ -359,22 +359,6 @@ downloadPackages() {
     for INSTALLABLE_PACKAGE in ${INSTALLABLE_PACKAGES}; do
         downloadPackage ${INSTALLABLE_PACKAGE}
     done
-    return
-}
-
-downloadPackage() {
-    PACKAGE_NAME=${1}
-    echo "Downloading package: ${PACKAGE_NAME}"
-    SYS_PACKAGE_FILE_NAME=${SYSTEM_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
-    HOME_PACKAGE_FILE_NAME=${HOME_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
-    if [ -f "${SYS_PACKAGE_FILE_NAME}" ]; then
-        . ${SYS_PACKAGE_FILE_NAME}
-    fi
-    if [ -f "${HOME_PACKAGE_FILE_NAME}" ]; then
-        . ${HOME_PACKAGE_FILE_NAME}
-    fi
-    ${PACKAGE_NAME}_download_func
-    return
 }
 
 installPackages() {
@@ -382,10 +366,30 @@ installPackages() {
     for INSTALLABLE_PACKAGE in ${INSTALLABLE_PACKAGES}; do
         installPackage ${INSTALLABLE_PACKAGE}
     done
-    return
+}
+
+downloadPackage() {
+    PACKAGE_NAME=${1}
+    echo "Downloading package: ${PACKAGE_NAME}"
+    includePackage ${PACKAGE_NAME}
+    ${PACKAGE_NAME}_download_func
 }
 
 installPackage() {
+    PACKAGE_NAME=${1}
+    echo "Installing package: ${PACKAGE_NAME}"
+    includePackage ${PACKAGE_NAME}
+    ${PACKAGE_NAME}_install_func
+}
+
+includePackages() {
+    INCLUDE_PACKAGES=${*}
+    for PACKAGE_NAME in ${INCLUDE_PACKAGES}; do
+        includePackage ${PACKAGE_NAME}
+    done
+}
+
+includePackage() {
     PACKAGE_NAME=${1}
     SYS_PACKAGE_FILE_NAME=${SYSTEM_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
     HOME_PACKAGE_FILE_NAME=${HOME_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
@@ -395,6 +399,4 @@ installPackage() {
     if [ -f "${HOME_PACKAGE_FILE_NAME}" ]; then
         . ${HOME_PACKAGE_FILE_NAME}
     fi
-    ${PACKAGE_NAME}_install_func
-    return
 }

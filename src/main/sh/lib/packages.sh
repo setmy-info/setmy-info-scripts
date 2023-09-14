@@ -51,36 +51,6 @@ jdk17_install_func() {
     sudo ln -sf /opt/${JDK17_DIR_NAME} /opt/jdk17
 }
 
-TOMCAT_NAME=apache-tomcat
-TOMCAT_MAJOR_VERSION=10
-TOMCAT_VERSION=${TOMCAT_MAJOR_VERSION}.1.13
-TOMCAT_DIR_NAME=apache-tomcat-${TOMCAT_VERSION}
-TOMCAT_TAR_FILE_NAME=${TOMCAT_DIR_NAME}.tar
-TOMCAT_TAR_GZ_FILE_NAME=${TOMCAT_TAR_FILE_NAME}.gz
-TOMCAT_TAR_GZ_FILE_URL=https://dlcdn.apache.org/tomcat/tomcat-${TOMCAT_MAJOR_VERSION}/v${TOMCAT_VERSION}/bin/${TOMCAT_TAR_GZ_FILE_NAME}
-tomcat_download_func() {
-    smi-download ${TOMCAT_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${TOMCAT_TAR_GZ_FILE_NAME}
-}
-tomcat_install_func() {
-    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${TOMCAT_TAR_GZ_FILE_NAME} -C /opt
-    sudo ln -sf /opt/${TOMCAT_DIR_NAME} /opt/tomcat
-    # TODO : gie correct rights to sub folders
-}
-
-ZEEBE_NAME=camunda-zeebe
-ZEEBE_VERSION=8.0.21
-ZEEBE_DIR_NAME=camunda-zeebe-${ZEEBE_VERSION}
-ZEEBE_TAR_FILE_NAME=${ZEEBE_DIR_NAME}.tar
-ZEEBE_TAR_GZ_FILE_NAME=${ZEEBE_TAR_FILE_NAME}.gz
-ZEEBE_TAR_GZ_FILE_URL=https://github.com/camunda/zeebe/releases/download/${ZEEBE_VERSION}/${ZEEBE_TAR_GZ_FILE_NAME}
-zeebe_download_func() {
-    smi-download ${ZEEBE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ZEEBE_TAR_GZ_FILE_NAME}
-}
-zeebe_install_func() {
-    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${ZEEBE_TAR_GZ_FILE_NAME} -C /opt
-    sudo ln -sf /opt/${ZEEBE_DIR_NAME} /opt/zeebe
-}
-
 INFINISPAN_NAME=infinispan
 INFINISPAN_VERSION=14.0.13
 INFINISPAN_DIR_NAME=infinispan-server-${INFINISPAN_VERSION}.Final

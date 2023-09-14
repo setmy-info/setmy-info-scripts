@@ -1,4 +1,6 @@
+SYSTEM_PACKAGES_DIR=$(smi-packages-location)
 HOME_PACKAGES_DIR=$(smi-home-packages-location)
+PACKAGE_PREFIX=package
 
 all_download_func() {
     downloadPackages sbcl jdk zulu_jdk jdk17 jdk21 tomcat zeebe infinispan hsqldb hsqldb nodejs maven gradle cmake julia go dvc jenkins groovy mn grails leiningen kubectl minikube docker nginx
@@ -403,6 +405,14 @@ downloadPackages() {
 downloadPackage() {
     PACKAGE_NAME=${1}
     echo "Downloading package: ${PACKAGE_NAME}"
+    SYS_PACKAGE_FILE_NAME=${SYSTEM_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
+    HOME_PACKAGE_FILE_NAME=${HOME_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
+    if [ -f "${SYS_PACKAGE_FILE_NAME}" ]; then
+        smi-include ${SYS_PACKAGE_FILE_NAME}
+    fi
+    if [ -f "${HOME_PACKAGE_FILE_NAME}" ]; then
+        smi-include ${HOME_PACKAGE_FILE_NAME}
+    fi
     ${PACKAGE_NAME}_download_func
     return
 }
@@ -417,6 +427,14 @@ installPackages() {
 
 installPackage() {
     PACKAGE_NAME=${1}
+    SYS_PACKAGE_FILE_NAME=${SYSTEM_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
+    HOME_PACKAGE_FILE_NAME=${HOME_PACKAGES_DIR}/${PACKAGE_NAME}.${PACKAGE_PREFIX}
+    if [ -f "${SYS_PACKAGE_FILE_NAME}" ]; then
+        smi-include ${SYS_PACKAGE_FILE_NAME}
+    fi
+    if [ -f "${HOME_PACKAGE_FILE_NAME}" ]; then
+        smi-include ${HOME_PACKAGE_FILE_NAME}
+    fi
     ${PACKAGE_NAME}_install_func
     return
 }

@@ -6,7 +6,7 @@ COMMAND_NAME=term
 PROFILE_NAME=${1}
 COMMAND_HOME_FOLDER=${HOME}/.${COMMAND_NAME}
 PROFILE_SUFFIX="profile"
-SYSTEM_PROFILES_DIR=`smi-lib-location`/profiles
+SYSTEM_PROFILES_DIR=$(smi-profiles-location)
 
 createHomeTermFolder() {
     if [ ! -d "${COMMAND_HOME_FOLDER}" ]; then

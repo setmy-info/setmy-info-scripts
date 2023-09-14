@@ -1,0 +1,20 @@
+SMI_NAME=setmy-info-scripts
+SMI_VERSION=0.57.0
+SMI_GIT_URL=https://github.com/setmy-info/${SMI_NAME}.git
+
+smi_download_func() {
+    CUR_DIR=$(pwd)
+    cd "$(smi-home-packages-location)"
+    git clone ${SMI_GIT_URL}
+    cd ${SMI_NAME}
+    ./configure release && make clean && make all test package && sudo rpm -e ${SMI_NAME} && sudo rpm -i ${SMI_NAME}-${SMI_VERSION}.noarch.rpm
+    cp ${SMI_NAME}-${SMI_VERSION}.noarch.rpm ../
+    cd ${CUR_DIR}
+}
+
+smi_install_func() {
+    CUR_DIR=$(pwd)
+    cd "$(smi-home-packages-location)"
+    sudo rpm -Uvh ${SMI_NAME}-${SMI_VERSION}.noarch.rpm
+    cd ${CUR_DIR}
+}

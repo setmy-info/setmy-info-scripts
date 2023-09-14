@@ -12,6 +12,8 @@ dockerBuild() {
 }
 
 build_image() {
+    export BUILDKIT_PROGRESS=plain
+    export DOCKER_BUILDKIT=0
     docker build -t ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:${DOCKER_PROJECT_VERSION} .
     export DOCKER_BUILDKIT="${DOCKER_BUILDKIT}"
     export BUILDKIT_PROGRESS="${BUILDKIT_PROGRESS}"

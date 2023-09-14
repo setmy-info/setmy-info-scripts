@@ -8,6 +8,6 @@ jenkins_home_download_func() {
     cp ${JENKINS_HOME_TAR_GZ_FILE_PATH} ${HOME_PACKAGES_DIR}
 }
 
-jenkins_install_func() {
+jenkins_home_install_func() {
     return
 }

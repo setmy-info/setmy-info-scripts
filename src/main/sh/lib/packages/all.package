@@ -1,4 +1,4 @@
 
 all_download_func() {
-    downloadPackages sbcl jdk zulu_jdk jdk17 jdk21 tomcat zeebe infinispan hsqldb hsqldb nodejs maven gradle cmake julia go dvc jenkins groovy mn grails leiningen kubectl minikube docker nginx smi
+    downloadPackages sbcl jdk zulu_jdk jdk17 jdk21 tomcat zeebe infinispan hsqldb hsqldb nodejs maven gradle cmake julia go dvc jenkins jenkins_home groovy mn grails leiningen kubectl minikube docker nginx smi
 }

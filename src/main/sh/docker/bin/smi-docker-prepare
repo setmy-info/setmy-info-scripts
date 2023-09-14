@@ -2,12 +2,11 @@
 
 # Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
 
-. ./build.sh
-
 . $(smi-include base.sh)
 . $(smi-include commons.sh)
 . $(smi-include packages.sh)
 . $(smi-include docker.sh)
+. ./build.sh
 
 dockerPrepare
 

@@ -6,25 +6,6 @@ all_download_func() {
     downloadPackages sbcl jdk zulu_jdk jdk17 jdk21 tomcat zeebe infinispan hsqldb hsqldb nodejs maven gradle cmake julia go dvc jenkins groovy mn grails leiningen kubectl minikube docker nginx
 }
 
-SBCL_NAME=sbcl
-SBCL_VERSION=2.3.8
-SBCL_DIR_NAME=${SBCL_NAME}-${SBCL_VERSION}-x86-64-linux-binary
-SBCL_TAR_FILE_NAME=${SBCL_NAME}-${SBCL_VERSION}-x86-64-linux-binary.tar
-SBCL_TAR_BZ2_FILE_NAME=${SBCL_TAR_FILE_NAME}.bz2
-SBCL_TAR_BZ2_FILE_URL=http://prdownloads.sourceforge.net/sbcl/${SBCL_TAR_BZ2_FILE_NAME}
-sbcl_download_func() {
-    smi-download ${SBCL_TAR_BZ2_FILE_URL} ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME}
-}
-sbcl_install_func() {
-    CURRENT_DIR=$(pwd)
-    sudo tar --overwrite -xvjf ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME} -C ${HOME_PACKAGES_DIR}
-    cd ${HOME_PACKAGES_DIR}/sbcl-${SBCL_VERSION}-x86-64-linux
-    sudo INSTALL_ROOT=/opt/sbcl-${SBCL_VERSION}-x86-64-linux sh install.sh
-    sudo rm -f /opt/${SBCL_NAME}
-    sudo ln -sf /opt/${SBCL_DIR_NAME} /opt/${SBCL_NAME}
-    cd ${CURRENT_DIR}
-}
-
 JDK_NAME=jdk
 JDK_VERSION=20.0.2
 JDK_HASH=6e380f22cbe7469fa75fb448bd903d8e

@@ -7,7 +7,7 @@ smi_download_func() {
     cd "$(smi-home-packages-location)"
     git clone ${SMI_GIT_URL}
     cd ${SMI_NAME}
-    ./configure release && make clean && make all test package && sudo rpm -e ${SMI_NAME} && sudo rpm -i ${SMI_NAME}-${SMI_VERSION}.noarch.rpm
+    ./configure release && make clean && make all test package
     cp ${SMI_NAME}-${SMI_VERSION}.noarch.rpm ../
     cd ${CUR_DIR}
 }

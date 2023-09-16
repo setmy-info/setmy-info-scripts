@@ -10,6 +10,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-etc-location"           DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-man-location"           DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-var-location"           DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-gintra-location"        DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-client-gintra-location" DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-net-location"           DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-binary"                 DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-test.bin"               DESTINATION bin)

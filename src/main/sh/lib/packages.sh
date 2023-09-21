@@ -16,6 +16,7 @@ jdk_download_func() {
 }
 jdk_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME} -C /opt
+    sudo rm -f /opt/${JDK_NAME}
     sudo ln -sf /opt/${JDK_DIR_NAME} /opt/jdk
 }
 
@@ -102,6 +103,7 @@ maven_download_func() {
 }
 maven_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${MAVEN_TAR_GZ_FILE_NAME} -C /opt
+    sudo rm -f /opt/${MAVEN_NAME}
     sudo ln -sf /opt/${MAVEN_DIR_NAME} /opt/maven
 }
 

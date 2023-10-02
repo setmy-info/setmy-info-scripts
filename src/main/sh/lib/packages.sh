@@ -190,7 +190,7 @@ jenkins_install_func() {
 }
 
 GROOVY_NAME=groovy
-GROOVY_VERSION=4.0.14
+GROOVY_VERSION=4.0.15
 GROOVY_DIR_NAME=apache-groovy-sdk-${GROOVY_VERSION}
 GROOVY_ZIP_FILE_NAME=${GROOVY_DIR_NAME}.zip
 GROOVY_ZIP_FILE_URL="https://groovy.jfrog.io/ui/api/v1/download?repoKey=dist-release-local&path=groovy-zips%252F${GROOVY_ZIP_FILE_NAME}&isNativeBrowsing=true"
@@ -203,7 +203,7 @@ groovy_install_func() {
 }
 
 MN_NAME=micronaut
-MN_VERSION=4.1.0
+MN_VERSION=4.1.3
 MN_DIR_NAME=micronaut-cli-${MN_VERSION}
 MN_ZIP_FILE_NAME=${MN_DIR_NAME}.zip
 MN_ZIP_FILE_URL=https://github.com/micronaut-projects/micronaut-starter/releases/download/v${MN_VERSION}/${MN_ZIP_FILE_NAME}

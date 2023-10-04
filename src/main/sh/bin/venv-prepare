@@ -1,5 +1,0 @@
-. ./project
-smi-create-venv ${PROJECT_PYTHON_VERSION}
-smi-venv
-pip install -r ${PROJECT_REQUIREMENTS}
-deactivate

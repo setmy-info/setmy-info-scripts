@@ -1,6 +1,6 @@
 call .\project
-call create-venv %PROJECT_PYTHON_VERSION%
-call smi-venv
+call smi-create-venv %PROJECT_PYTHON_VERSION%
+call .\.venv\Scripts\activate
 call pip install -r %PROJECT_REQUIREMENTS%
 call deactivate
 REM project.cmd file

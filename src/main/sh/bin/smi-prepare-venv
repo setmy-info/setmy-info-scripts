@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# PROJECT_REQUIREMENTS=requirements.txt requirements2.txt
+. ./project
+
+REQUIREMENTS_TXT_FILES=""
+for REQUIREMENTS_FILE in ${PROJECT_REQUIREMENTS}; do
+  REQUIREMENTS_TXT_FILES="${REQUIREMENTS_TXT_FILES} -r ${REQUIREMENTS_FILE}"
+done
+
+smi-create-venv
+. .\.venv\Scripts\activate
+pip install ${PROJECT_REQUIREMENTS}
+deactivate
+
+exit 0

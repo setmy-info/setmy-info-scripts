@@ -35,6 +35,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-sync"                   DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-ci-cli"                 DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-create-venv"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-prepare-venv"           DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-python"                 DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-venv-command"           DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/base64encode"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/base64decode"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/degrees"                    DESTINATION bin)

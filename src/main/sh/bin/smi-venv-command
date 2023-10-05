@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ ! -d "./.venv" ]; then
+    smi-prepare-venv
+fi
+
+. ./.venv/bin/activate
+"${@}"
+RESULT_CODE=${?}
+deactivate
+
+exit ${RESULT_CODE}

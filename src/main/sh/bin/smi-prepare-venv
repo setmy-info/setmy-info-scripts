@@ -1,16 +1,20 @@
 #!/bin/sh
 
+. $(smi-include commons.sh)
+
 # PROJECT_REQUIREMENTS=requirements.txt requirements2.txt
 . ./project
 
 REQUIREMENTS_TXT_FILES=""
 for REQUIREMENTS_FILE in ${PROJECT_REQUIREMENTS}; do
-  REQUIREMENTS_TXT_FILES="${REQUIREMENTS_TXT_FILES} -r ${REQUIREMENTS_FILE}"
+    if [ -e "${REQUIREMENTS_FILE}" ]; then
+        REQUIREMENTS_TXT_FILES="${REQUIREMENTS_TXT_FILES} -r ${REQUIREMENTS_FILE}"
+    fi
 done
 
 smi-create-venv
-. .\.venv\Scripts\activate
-pip install ${PROJECT_REQUIREMENTS}
+. ./.venv/bin/activate
+execute pip install ${REQUIREMENTS_TXT_FILES}
 deactivate
 
 exit 0

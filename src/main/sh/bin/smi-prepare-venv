@@ -3,7 +3,19 @@
 . $(smi-include commons.sh)
 
 # PROJECT_REQUIREMENTS=requirements.txt requirements2.txt
+# Default installs
 . ./project
+
+# export SMI_PROJECT_REQUIREMENTS="requirements.txt requirements2.txt"
+# Have parameters on environment variable, use these - rewrite variable
+if [ -n "$SMI_PROJECT_REQUIREMENTS" ]; then
+    PROJECT_REQUIREMENTS="$SMI_PROJECT_REQUIREMENTS"
+fi
+
+# Have parameters on command line, then rewrite variable
+if [ "$#" -gt 0 ]; then
+    PROJECT_REQUIREMENTS="$*"
+fi
 
 REQUIREMENTS_TXT_FILES=""
 for REQUIREMENTS_FILE in ${PROJECT_REQUIREMENTS}; do

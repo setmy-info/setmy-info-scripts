@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Copyright (C) 2023 etc Imre Tabur <imre.tabur@mail.ee>
+
+if [ $# -lt 2 ]; then
+  echo "Usage: $0 <DIRECTORY> <command and parameters>"
+  exit 1
+fi
+
+EXEC_DIR="${1}"
+shift 1
+
+if [ ! -d "${EXEC_DIR}" ]; then
+  echo "Directory '${EXEC_DIR}' doesn't exist."
+  exit 1
+fi
+
+EXEC_COMMAND="${1}"
+shift 1
+
+
+cd "${EXEC_DIR}" || exit 1
+
+"${EXEC_COMMAND}" "${@}"
+EXEC_RESULT_CODE=${?}
+
+cd "${EXEC_DIR}"
+
+exit ${EXEC_RESULT_CODE}

@@ -10,9 +10,11 @@ fi
 EXEC_DIR="${1}"
 shift 1
 
+mkdir -p "${EXEC_DIR}"
+
 if [ ! -d "${EXEC_DIR}" ]; then
   echo "Directory '${EXEC_DIR}' doesn't exist."
-  exit 1
+  exit 2
 fi
 
 EXEC_COMMAND="${1}"

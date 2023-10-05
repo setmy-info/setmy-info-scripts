@@ -56,7 +56,7 @@ function_realPaths() {
 function_clean() {
     rm -rf ./target
     rm -rf ./*.tar.gz ./*.rpm ./*.sh ./*.deb ./*.tar.Z ./*.7z ./*.tar.bz2 ./*.tar.xz ./*.zip
-    rm -rf ./*.cmake  ./Testing ./CMakeFiles ./_CPack_Packages install_manifest.txt CMakeCache.txt
+    rm -rf ./*.cmake  ./Testing ./CMakeFiles ./_CPack_Packages install_manifest.txt CMakeCache.txt Makefile
     exit 0
 }
 

@@ -1,5 +1,5 @@
 if not exist ".\.venv\" (
-    smi-prepare-venv
+    call smi-prepare-venv
 )
 
 call .\.venv\Scripts\activate

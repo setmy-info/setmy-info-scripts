@@ -3,6 +3,6 @@ if not exist ".\.venv\" (
 )
 
 call .\.venv\Scripts\activate
-%*
+call %*
 set RESULT_CODE=%errorlevel%
 call deactivate

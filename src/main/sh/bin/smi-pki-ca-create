@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. $(smi-include pki.sh)
+
+OUT_DIR="${1}"
+ROOT_DOMAIN=${2}
+
+# smi-pki-create-ca /tmp/abc "has.ee.gintra"
+
+pkiStartCA ${OUT_DIR} ${ROOT_DOMAIN}
+
+exit 0

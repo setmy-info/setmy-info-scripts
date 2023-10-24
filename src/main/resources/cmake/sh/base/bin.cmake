@@ -61,6 +61,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-packages-location"      DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-exec-location"          DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-encrypt"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-decrypt"                DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-ca-create"          DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)

@@ -25,7 +25,7 @@ ADD_CUSTOM_TARGET(makeDirectories
 
 ADD_CUSTOM_TARGET(buildMan             cp ${MAIN_MAN_SOURCES_PATH}/*.1 ${MAN_OUTPUT_PATH}/man1 && gzip -f ${MAN_OUTPUT_PATH}/man1/*.1)
 ADD_CUSTOM_TARGET(buildEtc             cp -R ${MAIN_SH_SOURCES_PATH}/etc/profile.d/* ${ETC_OUTPUT_PATH}/profile.d)
-ADD_CUSTOM_TARGET(buildLibShells       cp ${MAIN_SH_SOURCES_PATH}/lib/*.sh ${LIBRARY_OUTPUT_PATH})
+ADD_CUSTOM_TARGET(buildLibShells       cp ${MAIN_SH_SOURCES_PATH}/lib/*.sh ${LIBRARY_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/lib/*.txt ${LIBRARY_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildShellScripts    cp ${MAIN_SH_SOURCES_PATH}/bin/* ${BINARY_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildServiceScripts  cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/*.service ${ETC_SYSTEM_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/environment.conf ${ETC_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildYumReposScripts cp ${MAIN_SH_SOURCES_PATH}/etc/yum.repos.d/*.repo ${ETC_YUM_REPOS_PATH})

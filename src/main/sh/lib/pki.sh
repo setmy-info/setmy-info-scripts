@@ -66,7 +66,7 @@ pkiDoCertRequest() {
     # Gen public key
     openssl rsa -in ${CERT_PRIVATE_KEY} -pubout -out ${CERT_PUBLIC_KEY}
     # Gen certificate request
-    openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}"
+    openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -addext "subjectAltName = DNS:${DOMAIN_NAME}"
 }
 
 pkiDoCASigning() {

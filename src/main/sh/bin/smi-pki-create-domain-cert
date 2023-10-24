@@ -7,6 +7,6 @@ DOMAIN=${2}
 
 # smi-pki-create-ca /tmp/abc "ldap.has.ee.gintra"
 
-pkiCreateComainCert ${OUT_DIR} ${DOMAIN}
+pkiCreateDomainCert ${OUT_DIR} ${DOMAIN}
 
 exit 0

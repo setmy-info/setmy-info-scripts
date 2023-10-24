@@ -73,7 +73,7 @@ pkiDoCASigning() {
     openssl x509 -noout -text -in ${CERT_FILE}
 }
 
-pkiCreateComainCert() {
+pkiCreateDomainCert() {
     # /tank/organizations/ee/has/development/configuration/pki
     TANK_CERTS_DIR="${1}"
     # "ldap.has.ee.gintra"

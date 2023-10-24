@@ -66,9 +66,8 @@ pkiDoCertRequest() {
     # Gen public key
     openssl rsa -in ${CERT_PRIVATE_KEY} -pubout -out ${CERT_PUBLIC_KEY}
     # Gen certificate request
+    # TODO : is -addext "subjectAltName... needed? Also is -config ${TANK_CERTS_DIR}/openssl.cfg needed?
     openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -addext "subjectAltName = DNS:${DOMAIN_NAME}" -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
-    # openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
-    # openssl req -extfile <(printf "subjectAltName=DNS:example.com,DNS:www.example.com") -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
 }
 
 pkiDoCASigning() {

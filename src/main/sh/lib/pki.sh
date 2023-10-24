@@ -66,9 +66,9 @@ pkiDoCertRequest() {
     # Gen public key
     openssl rsa -in ${CERT_PRIVATE_KEY} -pubout -out ${CERT_PUBLIC_KEY}
     # Gen certificate request
-    # openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -addext "subjectAltName = DNS:${DOMAIN_NAME}" -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
+    openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -addext "subjectAltName = DNS:${DOMAIN_NAME}" -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
     # openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
-    openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -reqexts SAN -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
+    # openssl req -extfile <(printf "subjectAltName=DNS:example.com,DNS:www.example.com") -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
 }
 
 pkiDoCASigning() {
@@ -85,11 +85,15 @@ pkiDoCASigning() {
     CERT_REQUEST=${TANK_CERTS_DIR}/${DOMAIN_NAME}.${CERT_REQUEST_SUFFIX}
     CERT_FILE=${TANK_CERTS_DIR}/${DOMAIN_NAME}.${CERT_SUFFIX}
 
-    openssl x509 -req -days 1095 \
+    openssl x509 \
+        -extfile <(printf "subjectAltName=DNS:${DOMAIN_NAME},DNS:www.${DOMAIN_NAME}") \
+        -req \
+        -days 1095 \
         -in ${CERT_REQUEST} \
         -CA ${CA_CERT} \
         -CAkey ${CA_CERT_PRIVATE_KEY} \
-        -CAcreateserial -out ${CERT_FILE}
+        -CAcreateserial \
+        -out ${CERT_FILE}
     echo ${DOMAIN_NAME}
     openssl x509 -noout -text -in ${CERT_FILE}
 }

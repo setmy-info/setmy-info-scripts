@@ -68,7 +68,7 @@ pkiDoCertRequest() {
     # Gen certificate request
     # openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -addext "subjectAltName = DNS:${DOMAIN_NAME}" -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
     # openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
-    openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
+    openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -reqexts SAN -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
 }
 
 pkiDoCASigning() {

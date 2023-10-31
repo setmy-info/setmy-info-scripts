@@ -1,0 +1,15 @@
+GRAILS_NAME=grails
+GRAILS_VERSION=6.0.0
+GRAILS_DIR_NAME=${GRAILS_NAME}-${GRAILS_VERSION}
+GRAILS_ZIP_FILE_NAME=${GRAILS_DIR_NAME}.zip
+GRAILS_ZIP_FILE_URL=https://github.com/grails/grails-core/releases/download/v${GRAILS_VERSION}/${GRAILS_ZIP_FILE_NAME}
+
+grails_download_func() {
+    smi-download ${GRAILS_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GRAILS_ZIP_FILE_NAME}
+}
+
+grails_install_func() {
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${GRAILS_ZIP_FILE_NAME} -d /opt
+    sudo rm -f /opt/${GRAILS_NAME}
+    sudo ln -sf /opt/${GRAILS_DIR_NAME} /opt/${GRAILS_NAME}
+}

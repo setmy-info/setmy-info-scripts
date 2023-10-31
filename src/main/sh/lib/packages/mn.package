@@ -1,0 +1,17 @@
+MN_NAME=micronaut
+MN_VERSION=4.1.4
+MN_DIR_NAME=micronaut-cli-${MN_VERSION}
+MN_ZIP_FILE_NAME=${MN_DIR_NAME}.zip
+MN_ZIP_FILE_URL=https://github.com/micronaut-projects/micronaut-starter/releases/download/v${MN_VERSION}/${MN_ZIP_FILE_NAME}
+
+mn_download_func() {
+    smi-download ${MN_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${MN_ZIP_FILE_NAME}
+}
+
+mn_install_func() {
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${MN_ZIP_FILE_NAME} -d /opt
+    sudo rm -f /opt/micronaut
+    sudo rm -f /opt/mn
+    sudo ln -sf /opt/${MN_DIR_NAME} /opt/micronaut
+    sudo ln -sf /opt/${MN_DIR_NAME} /opt/mn
+}

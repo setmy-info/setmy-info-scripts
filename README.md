@@ -13,7 +13,7 @@ Decrease code repeating and increase development efficiency.
 ## Build
 
 ```sh
-SCRIPTS_VERSION=0.65.0
+SCRIPTS_VERSION=0.66.0
 ./configure release
 make clean
 make all test package

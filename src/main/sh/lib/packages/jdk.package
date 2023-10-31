@@ -1,0 +1,19 @@
+JDK_NAME=jdk
+JDK_VERSION=21.0.1
+JDK_HASH=415e3f918a1f4062a0074a2794853d0d
+JDK_URI_NR_PART=12
+JDK_DIR_NAME=jdk-${JDK_VERSION}
+JDK_NAME_PREFIX=openjdk-${JDK_VERSION}
+JDK_TAR_FILE_NAME=${JDK_NAME_PREFIX}_linux-x64_bin.tar
+JDK_TAR_GZ_FILE_NAME=${JDK_TAR_FILE_NAME}.gz
+JDK_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK_VERSION}/${JDK_HASH}/${JDK_URI_NR_PART}/GPL/${JDK_TAR_GZ_FILE_NAME}
+
+jdk_download_func() {
+    smi-download ${JDK_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME}
+}
+
+jdk_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME} -C /opt
+    sudo rm -f /opt/${JDK_NAME}
+    sudo ln -sf /opt/${JDK_DIR_NAME} /opt/jdk
+}

@@ -1,0 +1,17 @@
+JULIA_NAME=julia
+JULIA_BASE_VERSION=1.9
+JULIA_VERSION=${JULIA_BASE_VERSION}.3
+JULIA_DIR_NAME=${JULIA_NAME}-${JULIA_VERSION}
+JULIA_TAR_FILE_NAME=${JULIA_DIR_NAME}-linux-x86_64.tar
+JULIA_TAR_GZ_FILE_NAME=${JULIA_TAR_FILE_NAME}.gz
+JULIA_TAR_GZ_FILE_URL=https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_BASE_VERSION}/${JULIA_TAR_GZ_FILE_NAME}
+
+julia_download_func() {
+    smi-download ${JULIA_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JULIA_TAR_GZ_FILE_NAME}
+}
+
+julia_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JULIA_TAR_GZ_FILE_NAME} -C /opt
+    sudo rm -f /opt/${JULIA_NAME}
+    sudo ln -sf /opt/${JULIA_DIR_NAME} /opt/${JULIA_NAME}
+}

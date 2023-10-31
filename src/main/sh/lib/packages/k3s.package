@@ -1,0 +1,7 @@
+k3s_download_func() {
+    return
+}
+
+k3s_install_func() {
+    return
+}

@@ -1,0 +1,14 @@
+HSQLDB_NAME=hsqldb
+HSQLDB_VERSION=2.7.2
+HSQLDB_DIR_NAME=hsqldb-${HSQLDB_VERSION}
+HSQLDB_ZIP_FILE_NAME=${HSQLDB_DIR_NAME}.zip
+HSQLDB_ZIP_FILE_URL=https://altushost-swe.dl.sourceforge.net/project/hsqldb/hsqldb/hsqldb_2_7/${HSQLDB_ZIP_FILE_NAME}
+
+hsqldb_download_func() {
+    smi-download ${HSQLDB_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${HSQLDB_ZIP_FILE_NAME}
+}
+
+hsqldb_install_func() {
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${HSQLDB_ZIP_FILE_NAME} -d /opt
+    sudo ln -sf /opt/${HSQLDB_DIR_NAME} /opt/hsqldb
+}

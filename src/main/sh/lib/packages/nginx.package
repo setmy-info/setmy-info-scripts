@@ -1,0 +1,11 @@
+NGINX_VERSION=1.24.0
+
+nginx_download_func() {
+    return
+}
+
+nginx_install_func() {
+    sudo dnf install -y yum-utils
+    sudo dnf config-manager --set-enabled nginx-stable
+    sudo dnf install -y nginx
+}

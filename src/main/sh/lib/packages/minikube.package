@@ -1,0 +1,11 @@
+MINIKUBE_NAME=minikube
+MINIKUBE_RPM_FILE_NAME=minikube-latest.x86_64.rpm
+MINIKUBE_RPM_FILE_URL=https://storage.googleapis.com/minikube/releases/latest/{MINIKUBE_VERSION}/${MINIKUBE_RPM_FILE_NAME}
+
+minikube_download_func() {
+    smi-download ${MINIKUBE_RPM_FILE_URL} ${HOME_PACKAGES_DIR}/${MINIKUBE_RPM_FILE_NAME}
+}
+
+minikube_install_func() {
+    sudo rpm -Uvh ${HOME_PACKAGES_DIR}/${MINIKUBE_RPM_FILE_NAME}
+}

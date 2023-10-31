@@ -1,0 +1,14 @@
+GRADLE_NAME=gradle
+GRADLE_VERSION=8.4
+GRADLE_DIR_NAME=gradle-${GRADLE_VERSION}
+GRADLE_ZIP_FILE_NAME=${GRADLE_DIR_NAME}-bin.zip
+GRADLE_ZIP_FILE_URL=https://services.gradle.org/distributions/${GRADLE_ZIP_FILE_NAME}
+
+gradle_download_func() {
+    smi-download ${GRADLE_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GRADLE_ZIP_FILE_NAME}
+}
+
+gradle_install_func() {
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${GRADLE_ZIP_FILE_NAME} -d /opt
+    makeOptLink /opt/gradle /opt/${GRADLE_DIR_NAME}
+}

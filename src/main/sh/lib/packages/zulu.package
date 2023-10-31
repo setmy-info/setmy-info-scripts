@@ -1,0 +1,16 @@
+ZULU_NAME=zulu
+ZULU_JDK17_VERSION=17.46.19
+ZULU_JDK17_BASE_VERSION=17.0.9
+ZULU_JDK17_DIR_NAME=zulu${ZULU_JDK17_VERSION}-ca-jdk${ZULU_JDK17_BASE_VERSION}-linux_x64
+ZULU_JDK17_NAME_PREFIX=zulu${ZULU_JDK17_VERSION}-ca-jdk${ZULU_JDK17_BASE_VERSION}
+ZULU_JDK17_ZIP_FILE_NAME=${ZULU_JDK17_NAME_PREFIX}-linux_x64.zip
+ZULU_JDK17_TAR_GZ_FILE_URL=https://cdn.azul.com/zulu/bin/${ZULU_JDK17_ZIP_FILE_NAME}
+
+zulu_jdk_download_func() {
+    smi-download ${ZULU_JDK17_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ZULU_JDK17_ZIP_FILE_NAME}
+}
+
+zulu_jdk_install_func() {
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${ZULU_JDK17_ZIP_FILE_NAME} -d /opt
+    sudo ln -sf /opt/${ZULU_JDK17_DIR_NAME} /opt/zulu-jdk17
+}

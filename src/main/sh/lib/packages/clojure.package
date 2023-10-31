@@ -1,0 +1,12 @@
+CLOJURE_NAME=clojure
+CLOJURE_FILE_NAME=lein
+CLOJURE_VERSION=2.10.0
+CLOJURE_FILE_URL=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/${LEININGEN_FILE_NAME}
+
+clojure_download_func() {
+    return
+}
+
+clojure_install_func() {
+    return
+}

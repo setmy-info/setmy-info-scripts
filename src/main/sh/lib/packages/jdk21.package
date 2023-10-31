@@ -14,6 +14,6 @@ jdk21_download_func() {
 }
 jdk21_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK21_TAR_GZ_FILE_NAME} -C /opt
-    sudo ln -sf /opt/${JDK21_DIR_NAME} /opt/jdk21
+    makeOptLink /opt/jdk21 /opt/${JDK21_DIR_NAME}
 }
 

@@ -1,0 +1,15 @@
+MAVEN_NAME=maven
+MAVEN_VERSION=3.9.5
+MAVEN_DIR_NAME=apache-maven-${MAVEN_VERSION}
+MAVEN_TAR_FILE_NAME=${MAVEN_DIR_NAME}-bin.tar
+MAVEN_TAR_GZ_FILE_NAME=${MAVEN_TAR_FILE_NAME}.gz
+MAVEN_TAR_GZ_FILE_URL=https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+
+mvn_download_func() {
+    smi-download ${MAVEN_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MAVEN_TAR_GZ_FILE_NAME}
+}
+
+mvn_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${MAVEN_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/maven /opt/${MAVEN_DIR_NAME}
+}

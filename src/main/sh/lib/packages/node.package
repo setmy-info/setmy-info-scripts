@@ -1,0 +1,15 @@
+NODE_NAME=node
+NODE_VERSION=21.0.0
+NODE_DIR_NAME=node-v${NODE_VERSION}-linux-x64
+NODE_TAR_FILE_NAME=${NODE_DIR_NAME}.tar
+NODE_TAR_XZ_FILE_NAME=${NODE_TAR_FILE_NAME}.xz
+NODE_TAR_XZ_FILE_URL=https://nodejs.org/dist/v${NODE_VERSION}/${NODE_TAR_XZ_FILE_NAME}
+
+nodejs_download_func() {
+    smi-download ${NODE_TAR_XZ_FILE_URL} ${HOME_PACKAGES_DIR}/${NODE_TAR_XZ_FILE_NAME}
+}
+
+nodejs_install_func() {
+    sudo tar --overwrite -xvJf ${HOME_PACKAGES_DIR}/${NODE_TAR_XZ_FILE_NAME} -C /opt
+    sudo ln -sf /opt/${NODE_DIR_NAME} /opt/node
+}

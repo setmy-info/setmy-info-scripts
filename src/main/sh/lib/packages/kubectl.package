@@ -1,0 +1,9 @@
+kubectl_download_func() {
+    # yum config is already installed.
+    return
+}
+kubectl_install_func() {
+    sudo dnf config-manager --set-enabled kubernetes
+    # dnf --enablerepo=kubernetes install
+    sudo dnf install -y kubectl
+}

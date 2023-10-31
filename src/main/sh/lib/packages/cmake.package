@@ -1,0 +1,15 @@
+CMAKE_NAME=cmake
+CMAKE_VERSION=3.27.7
+CMAKE_DIR_NAME=cmake-${CMAKE_VERSION}-linux-x86_64
+CMAKE_TAR_FILE_NAME=${CMAKE_DIR_NAME}.tar
+CMAKE_TAR_GZ_FILE_NAME=${CMAKE_TAR_FILE_NAME}.gz
+CMAKE_TAR_GZ_FILE_URL=https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/${CMAKE_TAR_GZ_FILE_NAME}
+
+cmake_download_func() {
+    smi-download ${CMAKE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${CMAKE_TAR_GZ_FILE_NAME}
+}
+
+cmake_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${CMAKE_TAR_GZ_FILE_NAME} -C /opt
+    sudo ln -sf /opt/${CMAKE_DIR_NAME} /opt/cmake
+}

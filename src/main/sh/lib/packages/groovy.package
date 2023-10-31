@@ -1,0 +1,14 @@
+GROOVY_NAME=groovy
+GROOVY_VERSION=4.0.15
+GROOVY_DIR_NAME=apache-groovy-sdk-${GROOVY_VERSION}
+GROOVY_ZIP_FILE_NAME=${GROOVY_DIR_NAME}.zip
+GROOVY_ZIP_FILE_URL="https://groovy.jfrog.io/ui/api/v1/download?repoKey=dist-release-local&path=groovy-zips%252F${GROOVY_ZIP_FILE_NAME}&isNativeBrowsing=true"
+
+groovy_download_func() {
+    smi-download ${GROOVY_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GROOVY_ZIP_FILE_NAME}
+}
+
+groovy_install_func() {
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${GROOVY_ZIP_FILE_NAME} -d /opt
+    sudo ln -sf /opt/${GROOVY_DIR_NAME} /opt/groovy
+}

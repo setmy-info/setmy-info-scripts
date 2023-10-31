@@ -12,6 +12,6 @@ tomcat_download_func() {
 
 tomcat_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${TOMCAT_TAR_GZ_FILE_NAME} -C /opt
-    sudo ln -sf /opt/${TOMCAT_DIR_NAME} /opt/tomcat
+    makeOptLink /opt/tomcat /opt/${TOMCAT_DIR_NAME}
     # TODO : gie correct rights to sub folders
 }

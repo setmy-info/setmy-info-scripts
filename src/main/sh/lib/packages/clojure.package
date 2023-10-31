@@ -1,12 +1,12 @@
 CLOJURE_NAME=clojure
-CLOJURE_FILE_NAME=lein
-CLOJURE_VERSION=2.10.0
-CLOJURE_FILE_URL=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/${LEININGEN_FILE_NAME}
+CLOJURE_FILE_URL=https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
 
 clojure_download_func() {
-    return
+    smi-download ${CLOJURE_FILE_URL} ${HOME_PACKAGES_DIR}/posix-install.sh
+    chmod a+x ${HOME_PACKAGES_DIR}/posix-install.sh
 }
 
 clojure_install_func() {
-    return
+    sudo rm -rf  /opt/${CLOJURE_NAME}
+    sudo ${HOME_PACKAGES_DIR}/posix-install.sh --prefix /opt/${CLOJURE_NAME}
 }

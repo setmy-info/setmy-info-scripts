@@ -5,6 +5,7 @@ SMI_GIT_URL=https://github.com/setmy-info/${SMI_NAME}.git
 smi_download_func() {
     CUR_DIR=$(pwd)
     cd "$(smi-home-packages-location)"
+    rm -rf ${SMI_NAME}
     git clone ${SMI_GIT_URL}
     cd ${SMI_NAME}
     ./configure release && make clean && make all test package

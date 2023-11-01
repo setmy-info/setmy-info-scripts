@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include packages.sh)
+. $(smi-include selenium.sh)
+includePackage selenium
+
+runSeleniumHub
+
+exit 0

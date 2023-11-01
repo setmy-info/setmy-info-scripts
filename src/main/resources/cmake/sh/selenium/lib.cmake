@@ -1,0 +1,6 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- selenium lib.cmake")
+
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/selenium.sh" DESTINATION lib)
+
+# PLACEHOLDER-END #

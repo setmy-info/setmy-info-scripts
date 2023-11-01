@@ -1,0 +1,15 @@
+FIREFOX_NAME=firefox
+FIREFOX_VERSION=119.0
+FIREFOX_FILE_NAME=${FIREFOX_NAME}
+FIREFOX_TAR_FILE_NAME=${FIREFOX_NAME}-${FIREFOX_VERSION}.tar
+FIREFOX_BZ2_FILE_NAME=${FIREFOX_TAR_FILE_NAME}.bz2
+FIREFOX_FILE_URL=https://download-installer.cdn.mozilla.net/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/${FIREFOX_BZ2_FILE_NAME}
+
+firefox_download_func() {
+    smi-download ${FIREFOX_FILE_URL} ${HOME_PACKAGES_DIR}/${FIREFOX_BZ2_FILE_NAME}
+}
+
+firefox_install_func() {
+    sudo rm -Rf /opt/${FIREFOX_NAME}
+    sudo tar --overwrite -xvjf ${HOME_PACKAGES_DIR}/${FIREFOX_BZ2_FILE_NAME} -C /opt
+}

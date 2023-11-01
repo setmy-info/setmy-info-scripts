@@ -1,0 +1,15 @@
+THUNDERBIRD_NAME=thunderbird
+THUNDERBIRD_VERSION=115.4.1
+THUNDERBIRD_FILE_NAME=${THUNDERBIRD_NAME}
+THUNDERBIRD_TAR_FILE_NAME=${THUNDERBIRD_NAME}-${THUNDERBIRD_VERSION}.tar
+THUNDERBIRD_BZ2_FILE_NAME=${THUNDERBIRD_TAR_FILE_NAME}.bz2
+THUNDERBIRD_FILE_URL=https://download-installer.cdn.mozilla.net/pub/thunderbird/releases/${THUNDERBIRD_VERSION}/linux-x86_64/en-US/${THUNDERBIRD_BZ2_FILE_NAME}
+
+thunderbird_download_func() {
+    smi-download ${THUNDERBIRD_FILE_URL} ${HOME_PACKAGES_DIR}/${THUNDERBIRD_BZ2_FILE_NAME}
+}
+
+thunderbird_install_func() {
+    sudo rm -Rf /opt/${THUNDERBIRD_NAME}
+    sudo tar --overwrite -xvjf ${HOME_PACKAGES_DIR}/${THUNDERBIRD_BZ2_FILE_NAME} -C /opt
+}

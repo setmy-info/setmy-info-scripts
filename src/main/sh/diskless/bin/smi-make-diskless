@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
+
+if [ $# -lt 3 ]; then
+    echo "Usage: ${0} DISKLESS_NAME SERVER_IP"
+    exit 1
+fi
+
+DISKLESS_NAME=${1}
+SERVER_IP=${2}
+
+. $(smi-include diskless.sh)
+
+do_diskless_isntall ${DISKLESS_NAME} ${SERVER_IP}
+
+exit 0

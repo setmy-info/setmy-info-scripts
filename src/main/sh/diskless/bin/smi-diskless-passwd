@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
+
+if [ $# -lt 3 ]; then
+    echo "Usage: ${0} DISKLESS_NAME USER_NAME"
+    exit 1
+fi
+
+DISKLESS_NAME=${1}
+USER_NAME=${2}
+
+. $(smi-include diskless.sh)
+
+diskless_passwd ${DISKLESS_NAME} ${USER_NAME}
+
+exit 0

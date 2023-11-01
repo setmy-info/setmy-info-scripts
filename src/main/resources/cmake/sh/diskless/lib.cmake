@@ -1,0 +1,6 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- diskless lib.cmake")
+
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/diskless.sh" DESTINATION lib)
+
+# PLACEHOLDER-END #

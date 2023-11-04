@@ -44,18 +44,10 @@ tryToOpenXterm() {
 executeTerminal() {
     if [ "$DISPLAY" = ":0.0" ]
     then
-        # Inside Windowing systems
         loadProfiles ${*}
         findTerminal
-
-        # For testing
-        #term-activate ${*}
-        #/bin/sh $(smi-bin-location)/term-activate ${*}
-        #/bin/sh -i -s $(smi-bin-location)/term-activate ${*}
     else
-        # TUI console only
         term-activate ${*}
-        #/bin/sh loadProfiles ${*}
     fi
 }
 

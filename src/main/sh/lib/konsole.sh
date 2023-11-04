@@ -1,5 +1,5 @@
-function tryToOpenXfceTerminal() {
-     COMMAND_NAME=xfce4-terminal
+tryToOpenXfceTerminal() {
+    COMMAND_NAME=xfce4-terminal
     if ! command -v ${COMMAND_NAME} &> /dev/null
     then
         echo "${COMMAND_NAME} terminal could not be found"
@@ -9,7 +9,7 @@ function tryToOpenXfceTerminal() {
     fi
 }
 
-function tryToOpenGnomeTerminal() {
+tryToOpenGnomeTerminal() {
     COMMAND_NAME=gnome-terminal
     if ! command -v ${COMMAND_NAME} &> /dev/null
     then
@@ -20,7 +20,7 @@ function tryToOpenGnomeTerminal() {
     fi
 }
 
-function tryToOpenKonsole() {
+tryToOpenKonsole() {
     COMMAND_NAME=konsole
     if ! command -v ${COMMAND_NAME} &> /dev/null
     then
@@ -31,7 +31,7 @@ function tryToOpenKonsole() {
     fi
 }
 
-function tryToOpenXterm() {
+tryToOpenXterm() {
     if ! command -v xterm &> /dev/null
     then
         echo "xterm could not be found"
@@ -41,7 +41,25 @@ function tryToOpenXterm() {
     fi
 }
 
-function findTerminal() {
+executeTerminal() {
+    if [ "$DISPLAY" = ":0.0" ]
+    then
+        # Inside Windowing systems
+        loadProfiles ${*}
+        findTerminal
+
+        # For testing
+        #term-activate ${*}
+        #/bin/sh $(smi-bin-location)/term-activate ${*}
+        #/bin/sh -i -s $(smi-bin-location)/term-activate ${*}
+    else
+        # TUI console only
+        term-activate ${*}
+        #/bin/sh loadProfiles ${*}
+    fi
+}
+
+findTerminal() {
      tryToOpenXfceTerminal
      tryToOpenGnomeTerminal
      tryToOpenKonsole

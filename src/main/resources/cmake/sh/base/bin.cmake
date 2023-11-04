@@ -3,6 +3,7 @@ MESSAGE("-- base bin.cmake")
 
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/hgrep"                      DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/term"                       DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/term-activate"              DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-location"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-bin-location"           DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-lib-location"           DESTINATION bin)

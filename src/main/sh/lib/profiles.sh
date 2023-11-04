@@ -23,5 +23,4 @@ loadProfiles() {
             loadProfiles ${PROFILES}
         fi
     done
-    return
 }

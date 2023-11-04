@@ -2,7 +2,8 @@
 
 # Copyright (C) 2019, 2020, 2021 Imre Tabur <imre.tabur@mail.ee>
 
-COMMAND_NAME=`basename ${0}`
+FILE_NAME_WITH_PATH=${0}
+COMMAND_NAME="${FILE_NAME_WITH_PATH##*/}"
 COMMAND_HOME_FOLDER=${HOME}/.${COMMAND_NAME}
 SYSTEM_PROFILES_DIR=$(smi-lib-location)/profiles
 
@@ -10,7 +11,6 @@ SYSTEM_PROFILES_DIR=$(smi-lib-location)/profiles
 . $(smi-include profiles.sh)
 
 createHomeTermFolder
-loadProfiles ${*}
-findTerminal
+executeTerminal ${*}
 
 exit 0

@@ -10,6 +10,5 @@ grails_download_func() {
 
 grails_install_func() {
     sudo unzip -o ${HOME_PACKAGES_DIR}/${GRAILS_ZIP_FILE_NAME} -d /opt
-    sudo rm -f /opt/${GRAILS_NAME}
-    sudo ln -sf /opt/${GRAILS_DIR_NAME} /opt/${GRAILS_NAME}
+    makeOptLink /opt/${GRAILS_NAME} /opt/${GRAILS_DIR_NAME}
 }

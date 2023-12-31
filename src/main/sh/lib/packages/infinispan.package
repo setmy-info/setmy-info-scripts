@@ -10,5 +10,5 @@ infinispan_download_func() {
 
 infinispan_install_func() {
     sudo unzip -o ${HOME_PACKAGES_DIR}/${INFINISPAN_ZIP_FILE_NAME} -d /opt
-    sudo ln -sf /opt/${INFINISPAN_DIR_NAME} /opt/infinispan
+    makeOptLink /opt/${INFINISPAN_NAME} /opt/${INFINISPAN_DIR_NAME}
 }

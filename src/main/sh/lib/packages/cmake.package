@@ -11,5 +11,5 @@ cmake_download_func() {
 
 cmake_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${CMAKE_TAR_GZ_FILE_NAME} -C /opt
-    sudo ln -sf /opt/${CMAKE_DIR_NAME} /opt/cmake
+    makeOptLink /opt/cmake /opt/${CMAKE_DIR_NAME}
 }

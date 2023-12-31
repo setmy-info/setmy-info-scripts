@@ -10,5 +10,5 @@ hsqldb_download_func() {
 
 hsqldb_install_func() {
     sudo unzip -o ${HOME_PACKAGES_DIR}/${HSQLDB_ZIP_FILE_NAME} -d /opt
-    sudo ln -sf /opt/${HSQLDB_DIR_NAME} /opt/hsqldb
+    makeOptLink /opt/hsqldb /opt/${HSQLDB_DIR_NAME}
 }

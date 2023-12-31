@@ -11,5 +11,5 @@ node_download_func() {
 
 node_install_func() {
     sudo tar --overwrite -xvJf ${HOME_PACKAGES_DIR}/${NODE_TAR_XZ_FILE_NAME} -C /opt
-    sudo ln -sf /opt/${NODE_DIR_NAME} /opt/node
+    makeOptLink /opt/node /opt/${NODE_DIR_NAME}
 }

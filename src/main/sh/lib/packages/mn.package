@@ -10,8 +10,6 @@ mn_download_func() {
 
 mn_install_func() {
     sudo unzip -o ${HOME_PACKAGES_DIR}/${MN_ZIP_FILE_NAME} -d /opt
-    sudo rm -f /opt/micronaut
-    sudo rm -f /opt/mn
-    sudo ln -sf /opt/${MN_DIR_NAME} /opt/micronaut
-    sudo ln -sf /opt/${MN_DIR_NAME} /opt/mn
+    makeOptLink /opt/micronaut /opt/${MN_DIR_NAME}
+    makeOptLink /opt/mn        /opt/${MN_DIR_NAME}
 }

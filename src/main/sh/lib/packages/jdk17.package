@@ -14,5 +14,5 @@ jdk17_download_func() {
 
 jdk17_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK17_TAR_GZ_FILE_NAME} -C /opt
-    sudo ln -sf /opt/${JDK17_DIR_NAME} /opt/jdk17
+    makeOptLink /opt/jdk17 /opt/${JDK17_DIR_NAME}
 }

@@ -11,5 +11,5 @@ groovy_download_func() {
 
 groovy_install_func() {
     sudo unzip -o ${HOME_PACKAGES_DIR}/${GROOVY_ZIP_FILE_NAME} -d /opt
-    sudo ln -sf /opt/${GROOVY_DIR_NAME} /opt/groovy
+    makeOptLink /opt/groovy /opt/${GROOVY_DIR_NAME}
 }

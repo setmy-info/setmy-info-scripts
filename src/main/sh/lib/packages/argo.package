@@ -12,7 +12,6 @@ argocli_install_func() {
     CURRENT_DIR=$(pwd)
     cd /opt
     sudo gunzip ${HOME_PACKAGES_DIR}/${ARGOCLI_GZ_FILE_NAME}
-    sudo rm -f /opt/${ARGOCLI_NAME}
-    sudo ln -sf /opt/${ARGOCLI_DIR_NAME} /opt/${ARGOCLI_NAME}
+    makeOptLink /opt/${ARGOCLI_NAME} /opt/${ARGOCLI_DIR_NAME}
     cd ${CURRENT_DIR}
 }

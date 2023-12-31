@@ -12,5 +12,5 @@ zulu_download_func() {
 
 zulu_install_func() {
     sudo unzip -o ${HOME_PACKAGES_DIR}/${ZULU_JDK17_ZIP_FILE_NAME} -d /opt
-    sudo ln -sf /opt/${ZULU_JDK17_DIR_NAME} /opt/zulu-jdk17
+    makeOptLink /opt/zulu-jdk17 /opt/${ZULU_JDK17_DIR_NAME}
 }

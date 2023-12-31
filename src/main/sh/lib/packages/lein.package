@@ -5,6 +5,7 @@ LEININGEN_FILE_URL=https://raw.githubusercontent.com/technomancy/leiningen/stabl
 
 lein_download_func() {
     smi-download ${LEININGEN_FILE_URL} ${HOME_PACKAGES_DIR}/${LEININGEN_FILE_NAME}
+    smi-download https://github.com/technomancy/leiningen/releases/download/${LEININGEN_VERSION}/leiningen-${LEININGEN_VERSION}-standalone.jar ${HOME_PACKAGES_DIR}/leiningen-${LEININGEN_VERSION}-standalone.jar
 }
 
 lein_install_func() {
@@ -12,6 +13,7 @@ lein_install_func() {
     sudo mkdir -p /opt/leiningen/lib
     sudo mkdir -p /opt/leiningen/self-installs
     sudo cp ${HOME_PACKAGES_DIR}/${LEININGEN_FILE_NAME} /opt/leiningen/bin
+    sudo cp ${HOME_PACKAGES_DIR}/leiningen-${LEININGEN_VERSION}-standalone.jar /opt/leiningen/self-installs
     sudo chmod ugo+x /opt/leiningen/bin/lein
     sudo /opt/leiningen/bin/lein self-install
 }

@@ -1,5 +1,5 @@
 DVC_NAME=dvc
-DVC_VERSION=3.26.0
+DVC_VERSION=3.36.1
 DVC_DIR_NAME=dvc-${DVC_VERSION}-1.x86_64
 DVC_RPM_FILE_NAME=${DVC_DIR_NAME}.rpm
 DVC_RPM_FILE_URL=https://s3-us-east-2.amazonaws.com/dvc-s3-repo/rpm/${DVC_RPM_FILE_NAME}

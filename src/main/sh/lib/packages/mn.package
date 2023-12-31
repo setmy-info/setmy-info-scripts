@@ -1,5 +1,5 @@
 MN_NAME=micronaut
-MN_VERSION=4.1.4
+MN_VERSION=4.2.2
 MN_DIR_NAME=micronaut-cli-${MN_VERSION}
 MN_ZIP_FILE_NAME=${MN_DIR_NAME}.zip
 MN_ZIP_FILE_URL=https://github.com/micronaut-projects/micronaut-starter/releases/download/v${MN_VERSION}/${MN_ZIP_FILE_NAME}

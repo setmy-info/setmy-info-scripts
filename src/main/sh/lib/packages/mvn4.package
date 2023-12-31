@@ -12,5 +12,5 @@ mvn4_download_func() {
 
 mvn4_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${MAVEN4_TAR_GZ_FILE_NAME} -C /opt
-    makeOptLink /opt/maven /opt/${MAVEN4_DIR_NAME}
+    makeOptLink /opt/maven4 /opt/${MAVEN4_DIR_NAME}
 }

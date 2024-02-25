@@ -2,7 +2,6 @@ docker_download_func() {
     return
 }
 
-
 docker_install_func() {
     sudo dnf remove -y --setopt=obsoletes=1 docker \
                       docker-client \

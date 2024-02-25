@@ -1,11 +1,11 @@
 LEININGEN_NAME=lein
 LEININGEN_FILE_NAME=lein
-LEININGEN_VERSION=2.10.0
+LEININGEN_VERSION=2.11.2
 LEININGEN_FILE_URL=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/${LEININGEN_FILE_NAME}
 
 lein_download_func() {
     smi-download ${LEININGEN_FILE_URL} ${HOME_PACKAGES_DIR}/${LEININGEN_FILE_NAME}
-    smi-download https://github.com/technomancy/leiningen/releases/download/${LEININGEN_VERSION}/leiningen-${LEININGEN_VERSION}-standalone.jar ${HOME_PACKAGES_DIR}/leiningen-${LEININGEN_VERSION}-standalone.jar
+    smi-download https://codeberg.org/leiningen/leiningen/releases/download/${LEININGEN_VERSION}/leiningen-${LEININGEN_VERSION}-standalone.jar ${HOME_PACKAGES_DIR}/leiningen-${LEININGEN_VERSION}-standalone.jar
 }
 
 lein_install_func() {

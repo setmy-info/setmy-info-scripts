@@ -19,7 +19,7 @@ node --version
 echo ######################
 java --version
 echo ######################
-py -0
+python -0
 echo ######################
 kubectl version
 echo ######################

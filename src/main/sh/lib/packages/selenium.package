@@ -9,7 +9,7 @@ selenium_download_func() {
     smi-download https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz ${HOME_PACKAGES_DIR}/geckodriver-v0.34.0-linux64.tar.gz
     smi-download https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip ${HOME_PACKAGES_DIR}/chromedriver_linux64.zip
 
-    tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/geckodriver-v0.33.0-linux64.tar.gz -C ${HOME_PACKAGES_DIR}
+    tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/geckodriver-v0.34.0-linux64.tar.gz -C ${HOME_PACKAGES_DIR}
     unzip -o ${HOME_PACKAGES_DIR}/chromedriver_linux64.zip -d ${HOME_PACKAGES_DIR}
 }
 

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Copyright (C) 2024 Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include base.sh)
+
+echo java -Dlogging.file.name=/var/opt/has/microservice/log/microservice.log \
+          -Dspring.profiles.active=live \
+          -Dspring.config.additional-location=optional:/opt/has/etc/optional.application.yaml \
+          -jar /opt/has/lib/microservice.jar \
+          com.has.microservice.AnotherApplication
+
+exit ${?}

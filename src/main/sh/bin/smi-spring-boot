@@ -2,18 +2,21 @@
 
 # Copyright (C) 2024 Imre Tabur <imre.tabur@mail.ee>
 
-. $(smi-include base.sh)
+# Input as environment variables:
+# MICROSERVICE_LOG_DIR_PATH=
+# MICROSERVICE_LOG_FILE_NAME=
+# MICROSERVICE_PROFILES=
+# MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH=
+# MICROSERVICE_JAR_FILE_PATH=
+# MICROSERVICE_CLASS_NAME=
 
-MICROSERVICE_LOG_DIR_PATH=
-MICROSERVICE_LOG_FILE_NAME=
-MICROSERVICE_PROFILES=
-MICROSERVICE_JAR_FILE_NAME=
-MICROSERVICE_OPTIONAL_CONFIG_FILE_NAME=
-
-echo java -Dlogging.file.name=/var/opt/setmy.info/microservice/log/microservice.log \
-          -Dspring.profiles.active=live \
-          -Dspring.config.additional-location=optional:/opt/setmy.info/etc/optional.application.yaml \
-          -jar /opt/setmy.info/lib/microservice.jar \
-          setmy.info.microservice.Application
+# https://docs.spring.io/spring-boot/appendix/application-properties/index.html
+java    -Dlogging.file.path=${MICROSERVICE_LOG_DIR_PATH} \
+        -Dlogging.file.name=${MICROSERVICE_LOG_FILE_NAME} \
+        -Dspring.profiles.active=${MICROSERVICE_PROFILES} \
+        -Dspring.config.additional-location=optional:${MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH} \
+        -cp ${MICROSERVICE_JAR_FILE_PATH} \
+        ${MICROSERVICE_CLASS_NAME} \
+        ${*}
 
 exit ${?}

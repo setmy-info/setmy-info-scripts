@@ -4,10 +4,16 @@
 
 . $(smi-include base.sh)
 
-echo java -Dlogging.file.name=/var/opt/has/microservice/log/microservice.log \
+MICROSERVICE_LOG_DIR_PATH=
+MICROSERVICE_LOG_FILE_NAME=
+MICROSERVICE_PROFILES=
+MICROSERVICE_JAR_FILE_NAME=
+MICROSERVICE_OPTIONAL_CONFIG_FILE_NAME=
+
+echo java -Dlogging.file.name=/var/opt/setmy.info/microservice/log/microservice.log \
           -Dspring.profiles.active=live \
-          -Dspring.config.additional-location=optional:/opt/has/etc/optional.application.yaml \
-          -jar /opt/has/lib/microservice.jar \
-          com.has.microservice.AnotherApplication
+          -Dspring.config.additional-location=optional:/opt/setmy.info/etc/optional.application.yaml \
+          -jar /opt/setmy.info/lib/microservice.jar \
+          setmy.info.microservice.Application
 
 exit ${?}

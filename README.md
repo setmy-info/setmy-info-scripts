@@ -26,6 +26,8 @@ All in single line:
 SCRIPTS_VERSION=0.74.0 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 ```
 
+Also change **smi.package** file **SMI_VERSION=0.74.0** 
+
 ### Build options
 
 **./configure** options

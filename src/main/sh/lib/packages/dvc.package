@@ -6,6 +6,10 @@ DVC_RPM_FILE_URL=https://s3-us-east-2.amazonaws.com/dvc-s3-repo/rpm/${DVC_RPM_FI
 
 dvc_download_func() {
     smi-download ${DVC_RPM_FILE_URL} ${HOME_PACKAGES_DIR}/${DVC_RPM_FILE_NAME}
+    # sudo wget https://dvc.org/rpm/dvc.repo -O /etc/yum.repos.d/dvc.repo
+    # sudo rpm --import https://dvc.org/rpm/iterative.asc
+    # sudo yum update
+    # sudo yum install dvc
 }
 
 dvc_install_func() {

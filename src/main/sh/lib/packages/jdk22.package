@@ -1,0 +1,20 @@
+JDK22_NAME=jdk22
+JDK22_VERSION=22.0.1
+JDK22_HASH_PART=c7ec1332f7bb44aeba2eb341ae18aca4
+JDK22_NUMERIC_PART=8
+JDK22_DIR_NAME=jdk-${JDK22_VERSION}
+JDK22_NAME_PREFIX=openjdk-${JDK22_VERSION}
+JDK22_TAR_FILE_NAME=${JDK22_NAME_PREFIX}_linux-x64_bin.tar
+JDK22_TAR_GZ_FILE_NAME=${JDK22_TAR_FILE_NAME}.gz
+JDK22_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK22_VERSION}/${JDK22_HASH_PART}/${JDK22_NUMERIC_PART}/GPL/${JDK22_TAR_GZ_FILE_NAME}
+
+# https://download.java.net/java/GA/jdk22.0.1/c7ec1332f7bb44aeba2eb341ae18aca4/8/GPL/openjdk-22.0.1_linux-x64_bin.tar.gz
+
+jdk22_download_func() {
+    smi-download ${JDK22_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK22_TAR_GZ_FILE_NAME}
+}
+jdk22_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK22_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/jdk22 /opt/${JDK22_DIR_NAME}
+}
+

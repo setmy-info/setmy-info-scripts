@@ -8,6 +8,8 @@ JDK21_TAR_FILE_NAME=${JDK21_NAME_PREFIX}_linux-x64_bin.tar
 JDK21_TAR_GZ_FILE_NAME=${JDK21_TAR_FILE_NAME}.gz
 JDK21_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK21_VERSION}/${JDK21_HASH_PART}/${JDK21_NUMERIC_PART}/GPL/${JDK21_TAR_GZ_FILE_NAME}
 
+# https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz
+
 jdk21_download_func() {
     smi-download ${JDK21_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK21_TAR_GZ_FILE_NAME}
 }

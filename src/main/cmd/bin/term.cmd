@@ -3,9 +3,9 @@
 REM C:\pub\term\term.cmd
 
 REM windows symbolic link target as:
-REM C:\Windows\System32\cmd.exe /k C:\pub\term\bin\term.cmd latest
+REM C:\Windows\System32\cmd.exe /k C:\pub\setmy.info\bin\term.cmd latest
 REM or
-REM C:\Windows\System32\cmd.exe /k C:\pub\term\bin\term.cmd jdk17 mvn ant gradle node groovy mn grails jfx python smi leiningen cmake
+REM C:\Windows\System32\cmd.exe /k C:\pub\setmy.info\bin\term.cmd jdk17 mvn ant gradle node groovy mn grails jfx python smi leiningen cmake
 REM Start in: C:\sources
 
 set PATH_BACKUP=%PATH%

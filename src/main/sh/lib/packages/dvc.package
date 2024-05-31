@@ -1,17 +1,14 @@
 DVC_NAME=dvc
-DVC_VERSION=3.48.4
-DVC_DIR_NAME=dvc-${DVC_VERSION}-1.x86_64
-DVC_RPM_FILE_NAME=${DVC_DIR_NAME}.rpm
-DVC_RPM_FILE_URL=https://s3-us-east-2.amazonaws.com/dvc-s3-repo/rpm/${DVC_RPM_FILE_NAME}
+DVC_REPO_FILE_NAME=${DVC_NAME}.repo
+DVC_REPO_FILE_URL=https://dvc.org/rpm/${DVC_REPO_FILE_NAME}
 
 dvc_download_func() {
-    smi-download ${DVC_RPM_FILE_URL} ${HOME_PACKAGES_DIR}/${DVC_RPM_FILE_NAME}
-    # sudo wget https://dvc.org/rpm/dvc.repo -O /etc/yum.repos.d/dvc.repo
-    # sudo rpm --import https://dvc.org/rpm/iterative.asc
-    # sudo yum update
-    # sudo yum install dvc
+    smi-download ${DVC_REPO_FILE_URL} ${HOME_PACKAGES_DIR}/${DVC_REPO_FILE_NAME}
 }
 
 dvc_install_func() {
-    sudo rpm -Uvh ${HOME_PACKAGES_DIR}/${DVC_RPM_FILE_NAME}
+    sudo install ${HOME_PACKAGES_DIR}/${DVC_REPO_FILE_NAME} /etc/yum.repos.d
+    sudo rpm --import https://dvc.org/rpm/iterative.asc
+    sudo dnf update
+    sudo dnf install dvc
 }

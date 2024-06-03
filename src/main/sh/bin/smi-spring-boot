@@ -10,10 +10,12 @@
 # MICROSERVICE_JAR_FILE_PATH=
 
 # https://docs.spring.io/spring-boot/appendix/application-properties/index.html
-java    -Dlogging.file.path=${MICROSERVICE_LOG_DIR_PATH} \
-        -Dlogging.file.name=${MICROSERVICE_LOG_FILE_NAME} \
-        -Dspring.profiles.active=${MICROSERVICE_PROFILES} \
-        -Dspring.config.additional-location=optional:${MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH} \
-        -jar ${MICROSERVICE_JAR_FILE_PATH}
+java  -Dlogging.file.path=${MICROSERVICE_LOG_DIR_PATH} \
+      -Dlogging.file.name=${MICROSERVICE_LOG_FILE_NAME} \
+      -Dspring.profiles.active=${MICROSERVICE_PROFILES} \
+      -Dspring.config.additional-location=optional:${MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH} \
+      -cp ${MICROSERVICE_JAR_FILE_PATH} \
+      org.springframework.boot.loader.launch.JarLauncher \
+      ${*}
 
 exit ${?}

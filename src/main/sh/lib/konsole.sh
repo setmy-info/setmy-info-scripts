@@ -20,6 +20,17 @@ tryToOpenGnomeTerminal() {
     fi
 }
 
+tryToOpenMateTerminal() {
+    COMMAND_NAME=mate-terminal
+    if ! command -v ${COMMAND_NAME} &> /dev/null
+    then
+        echo "${COMMAND_NAME} terminal could not be found"
+    else
+        ${COMMAND_NAME} --working-directory=${PWD} &
+        exit 0
+    fi
+}
+
 tryToOpenKonsole() {
     COMMAND_NAME=konsole
     if ! command -v ${COMMAND_NAME} &> /dev/null

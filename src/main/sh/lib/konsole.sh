@@ -65,6 +65,7 @@ executeTerminal() {
 findTerminal() {
      tryToOpenXfceTerminal
      tryToOpenGnomeTerminal
+     tryToOpenMateTerminal
      tryToOpenKonsole
      tryToOpenXterm
 }

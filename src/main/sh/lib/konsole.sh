@@ -53,8 +53,7 @@ tryToOpenXterm() {
 }
 
 executeTerminal() {
-    # Add: OR ":0"
-    if [ "$DISPLAY" = ":0.0" ]
+    if [ "$DISPLAY" = ":0.0" ] || [ "$DISPLAY" = ":0" ]
     then
         loadProfiles ${*}
         findTerminal

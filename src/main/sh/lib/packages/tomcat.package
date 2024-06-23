@@ -1,12 +1,12 @@
 TOMCAT_NAME=apache-tomcat
 TOMCAT_MAJOR_VERSION=10
-TOMCAT_VERSION=${TOMCAT_MAJOR_VERSION}.1.24
+TOMCAT_VERSION=${TOMCAT_MAJOR_VERSION}.1.25
 TOMCAT_DIR_NAME=apache-tomcat-${TOMCAT_VERSION}
 TOMCAT_TAR_FILE_NAME=${TOMCAT_DIR_NAME}.tar
 TOMCAT_TAR_GZ_FILE_NAME=${TOMCAT_TAR_FILE_NAME}.gz
 TOMCAT_TAR_GZ_FILE_URL=https://dlcdn.apache.org/tomcat/tomcat-${TOMCAT_MAJOR_VERSION}/v${TOMCAT_VERSION}/bin/${TOMCAT_TAR_GZ_FILE_NAME}
 
-# https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.24/bin/apache-tomcat-10.1.24.tar.gz
+# https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.25/bin/apache-tomcat-10.1.25.tar.gz
 
 tomcat_download_func() {
     smi-download ${TOMCAT_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${TOMCAT_TAR_GZ_FILE_NAME}

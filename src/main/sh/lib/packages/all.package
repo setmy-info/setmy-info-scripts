@@ -1,8 +1,8 @@
 
 all_download_func() {
-    downloadPackages sbcl jdk zulu jdk17 jdk21 jdk22 tomcat zeebe infinispan hsqldb hsqldb node mvn mvn4 gradle cmake julia go janet dvc jenkins jenkins_home groovy mn grails clojure lein kubectl k3s docker nginx firefox thunderbird selenium smi
+    downloadPackages sbcl jdk zulu jdk17 jdk21 jdk22 tomcat zeebe infinispan hsqldb hsqldb node mvn mvn4 gradle cmake julia go janet dvc jenkins jenkins_home groovy mn grails clojure lein kubectl k3s docker nginx firefox thunderbird selenium smi netbeans
 }
 
 all_install_func() {
-    installPackages sbcl jdk zulu jdk17 jdk21 jdk22 tomcat zeebe infinispan hsqldb hsqldb node mvn mvn4 gradle cmake julia go janet dvc jenkins jenkins_home groovy mn grails clojure lein kubectl k3s docker nginx firefox thunderbird selenium smi
+    installPackages sbcl jdk zulu jdk17 jdk21 jdk22 tomcat zeebe infinispan hsqldb hsqldb node mvn mvn4 gradle cmake julia go janet dvc jenkins jenkins_home groovy mn grails clojure lein kubectl k3s docker nginx firefox thunderbird selenium smi netbeans
 }

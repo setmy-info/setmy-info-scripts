@@ -1,0 +1,20 @@
+NETBEANS_NAME=netbeans
+NETBEANS_VERSION=22
+NETBEANS_DIR_NAME=${NETBEANS_NAME}-${NETBEANS_VERSION}
+NETBEANS_ZIP_FILE_NAME=${NETBEANS_DIR_NAME}-bin.zip
+NETBEANS_ZIP_FILE_URL=https://dlcdn.apache.org/${NETBEANS_NAME}/${NETBEANS_NAME}/${NETBEANS_VERSION}/${NETBEANS_ZIP_FILE_NAME}
+
+# https://dlcdn.apache.org/netbeans/netbeans/22/netbeans-22-bin.zip
+
+netbeans_download_func() {
+    smi-download ${NETBEANS_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${NETBEANS_ZIP_FILE_NAME}
+}
+
+netbeans_install_func() {
+    sudo rm -Rf /opt/${NETBEANS_NAME}
+    sudo rm -Rf /opt/${NETBEANS_DIR_NAME}
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${NETBEANS_ZIP_FILE_NAME} -d /opt
+    sudo sh -c 'echo "netbeans_jdkhome=\"/opt/jdk\"" >> /opt/netbeans/etc/netbeans.conf'
+    sudo mv /opt/${NETBEANS_NAME}/ /opt/${NETBEANS_DIR_NAME}
+    makeOptLink /opt/${NETBEANS_NAME} /opt/${NETBEANS_DIR_NAME}
+}

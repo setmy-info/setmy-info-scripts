@@ -12,6 +12,9 @@ go_download_func() {
 }
 
 go_install_func() {
+    sudo rm -Rf /opt/${GO_NAME}
+    sudo rm -Rf /opt/${GO_NAME}-${GO_VERSION}
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${GO_TAR_GZ_FILE_NAME} -C /opt
-    makeOptLink /opt/go /opt/${GO_DIR_NAME}
+    sudo mv /opt/${GO_NAME}/ /opt/${GO_NAME}-${GO_VERSION}
+    makeOptLink /opt/${GO_NAME} /opt/${GO_NAME}-${GO_VERSION}
 }

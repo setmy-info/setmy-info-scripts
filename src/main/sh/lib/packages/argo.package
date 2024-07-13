@@ -1,8 +1,10 @@
 ARGOCLI_NAME=argo
-ARGOCLI_VERSION=3.5.4
+ARGOCLI_VERSION=3.5.8
 ARGOCLI_DIR_NAME=${ARGOCLI_NAME}-linux-amd64
 ARGOCLI_GZ_FILE_NAME=${ARGOCLI_DIR_NAME}.gz
 ARGOCLI_GZ_FILE_URL=https://github.com/argoproj/argo-workflows/releases/download/v${ARGOCLI_VERSION}/${ARGOCLI_GZ_FILE_NAME}
+
+# https://github.com/argoproj/argo-workflows/releases/download/v3.5.8/argo-linux-amd64.gz
 
 argocli_download_func() {
     smi-download ${ARGOCLI_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ARGOCLI_GZ_FILE_NAME}

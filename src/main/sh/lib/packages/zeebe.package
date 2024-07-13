@@ -1,11 +1,11 @@
 ZEEBE_NAME=camunda-zeebe
-ZEEBE_VERSION=8.5.3
+ZEEBE_VERSION=8.5.5
 ZEEBE_DIR_NAME=camunda-zeebe-${ZEEBE_VERSION}
 ZEEBE_TAR_FILE_NAME=${ZEEBE_DIR_NAME}.tar
 ZEEBE_TAR_GZ_FILE_NAME=${ZEEBE_TAR_FILE_NAME}.gz
 ZEEBE_TAR_GZ_FILE_URL=https://github.com/camunda/camunda/releases/download/${ZEEBE_VERSION}/${ZEEBE_TAR_GZ_FILE_NAME}
 
-# https://github.com/camunda/camunda/releases/download/8.5.3/camunda-zeebe-8.5.3.tar.gz
+# https://github.com/camunda/camunda/releases/download/8.5.5/camunda-zeebe-8.5.5.tar.gz
 
 zeebe_download_func() {
     smi-download ${ZEEBE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ZEEBE_TAR_GZ_FILE_NAME}

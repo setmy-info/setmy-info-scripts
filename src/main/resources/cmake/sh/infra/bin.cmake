@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- infra bin.cmake")
+
+# PLACEHOLDER-END #

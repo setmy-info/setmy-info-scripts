@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- cloud etc.cmake")
+
+# PLACEHOLDER-END #

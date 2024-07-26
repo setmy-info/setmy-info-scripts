@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- cloud lib.cmake")
+
+# PLACEHOLDER-END #

@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- tools man.cmake")
+
+# PLACEHOLDER-END #

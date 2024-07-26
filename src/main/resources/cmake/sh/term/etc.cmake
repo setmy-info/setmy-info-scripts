@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- term etc.cmake")
+
+# PLACEHOLDER-END #

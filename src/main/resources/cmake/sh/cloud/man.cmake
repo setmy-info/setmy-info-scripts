@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- cloud man.cmake")
+
+# PLACEHOLDER-END #

@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- pki man.cmake")
+
+# PLACEHOLDER-END #

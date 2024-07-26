@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- crm man.cmake")
+
+# PLACEHOLDER-END #

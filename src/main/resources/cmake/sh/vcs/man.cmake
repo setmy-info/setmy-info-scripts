@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- vcs man.cmake")
+
+# PLACEHOLDER-END #

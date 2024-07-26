@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- pki var.cmake")
+
+# PLACEHOLDER-END #

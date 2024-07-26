@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- cpp etc.cmake")
+
+# PLACEHOLDER-END #

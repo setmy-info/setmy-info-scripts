@@ -16,4 +16,7 @@ function(INCLUDE_DIRECTORIES_WINDOWS)
     ENDIF()
 endfunction()
 
+INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/functions.cmake)
+INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/functions.cmake)
+
 # PLACEHOLDER-END #

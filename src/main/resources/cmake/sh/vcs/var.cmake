@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- vcs var.cmake")
+
+# PLACEHOLDER-END #

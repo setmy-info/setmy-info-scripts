@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- cpp man.cmake")
+
+# PLACEHOLDER-END #

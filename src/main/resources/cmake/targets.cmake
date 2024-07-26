@@ -14,8 +14,8 @@ ADD_CUSTOM_TARGET(clearPkg            rm -rf ./${PROJECT_NAME}*.tar.gz ./${PROJE
 ADD_CUSTOM_TARGET(clearCmake          rm -rf ./*.cmake ./_CPack_Packages install_manifest.cmake CMakeCache.cmake)
 ADD_CUSTOM_TARGET(site)
 
-INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/targets.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/targets.cmake)
+INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/targets.cmake)
 INCLUDE_CMAKE_FILE(${TEST_CMAKE_PATH}/targets.cmake)
 
 # PLACEHOLDER-END #

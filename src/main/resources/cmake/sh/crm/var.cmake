@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- crm var.cmake")
+
+# PLACEHOLDER-END #

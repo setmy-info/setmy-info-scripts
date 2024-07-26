@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- jail var.cmake")
+
+# PLACEHOLDER-END #

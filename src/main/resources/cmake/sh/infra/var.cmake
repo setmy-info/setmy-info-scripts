@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- infra var.cmake")
+
+# PLACEHOLDER-END #

@@ -1,7 +1,7 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- configure.cmake")
 
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/configure.cmake)
-INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/cpp/configure.cmake)
+INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/configure.cmake)
+INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/configure.cmake)
 
 # PLACEHOLDER-END #

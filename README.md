@@ -5,6 +5,7 @@
 Development terminal preparations
 
 ## stealer
+
 Stealing (actually borrowing) as a function. Collect code from different locations, apply changes, add your code and get
 working solution - .stealer folder as an input and working solution as an output.
 Decrease code repeating and increase development efficiency.
@@ -26,7 +27,7 @@ All in single line:
 SCRIPTS_VERSION=0.80.1 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 ```
 
-Also change **smi.package** file **SMI_VERSION=0.80.1** 
+Also change **smi.package** file **SMI_VERSION=0.80.1**
 
 and for SMI Rocky Linux Docker
 
@@ -52,7 +53,12 @@ verification (unit tests, integration tests incl. valgrind tests), release (no d
 
 # TODO
 
-* sh separate into subdirectories (common/base, devel, server, software, desktop (devel. workstation), AWS, Google, K8S, git, ...):
+## PCMake variables problem
+
+Function usage is a problem. CMame doesn't have global variables. Only function or parent ... (directory, ... ?).
+
+* sh separate into subdirectories (common/base, devel, server, software, desktop (devel. workstation), AWS, Google, K8S,
+  git, ...):
     * common or **base**
         * time
         * string

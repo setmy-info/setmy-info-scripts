@@ -16,6 +16,8 @@ SET (PROJECT_MAINTAINER                 "Imre Tabur <imre.tabur@mail.ee>")
 SET (PROJECT_WWW                        "https://setmy.info")
 SET (PROJECT_LICENSE                    "MIT")
 
+enable_testing()
+
 INCLUDE(./src/main/resources/cmake/functions.cmake)
 INCLUDE(./src/main/resources/cmake/variables.cmake)
 INCLUDE(./src/main/resources/cmake/sources.cmake)

@@ -1,8 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- cpp etc.cmake")
-
-#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/javah/etc.cmake)
-#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/library/etc.cmake)
-#INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/main/etc.cmake)
-
-# PLACEHOLDER-END #

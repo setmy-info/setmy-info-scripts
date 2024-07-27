@@ -1,4 +1,0 @@
-# PLACEHOLDER-BEGIN #
-MESSAGE("-- cpp var.cmake")
-
-# PLACEHOLDER-END #

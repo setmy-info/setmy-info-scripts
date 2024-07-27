@@ -4,8 +4,4 @@ MESSAGE("-- bin.cmake")
 INCLUDE_CMAKE_FILE(${MAIN_CPP_CMAKE_PATH}/bin.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/bin.cmake)
 
-IF (WIN32)
-    # TODO : Win32/Win64 things
-ENDIF()
-
 # PLACEHOLDER-END #

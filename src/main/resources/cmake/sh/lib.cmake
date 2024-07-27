@@ -19,4 +19,8 @@ INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/vcs/lib.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/virtualization/lib.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/workstation/lib.cmake)
 
+IF(DISTRIBUTION STREQUAL "FreeBSD")
+    INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/freebsd.sh"                DESTINATION lib)
+ENDIF()
+
 # PLACEHOLDER-END #

@@ -9,6 +9,6 @@ dvc_download_func() {
 dvc_install_func() {
     sudo install ${HOME_PACKAGES_DIR}/${DVC_REPO_FILE_NAME} /etc/yum.repos.d
     sudo rpm --import https://dvc.org/rpm/iterative.asc
-    sudo dnf update
+    sudo dnf update -y
     sudo dnf install -y dvc
 }

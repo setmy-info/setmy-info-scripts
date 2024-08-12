@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- python bin.cmake")
 
+#INSTALL(PROGRAMS "${BINARY_OUTPUT_PATH}/smi-python-build" DESTINATION bin)
+
 # PLACEHOLDER-END #

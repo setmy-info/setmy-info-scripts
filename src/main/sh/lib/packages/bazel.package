@@ -1,0 +1,16 @@
+BAZEL_NAME=bazel
+BAZEL_VERSION=7.2.1
+BAZEL_DIR_NAME=${BAZEL_NAME}-${BAZEL_VERSION}
+BAZEL_ZIP_FILE_NAME=${BAZEL_DIR_NAME}-dist.zip
+BAZEL_ZIP_FILE_URL=https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/${BAZEL_ZIP_FILE_NAME}
+
+# https://github.com/bazelbuild/bazel/releases/download/7.2.1/bazel-7.2.1-dist.zip
+
+bazel_download_func() {
+    #smi-download ${BAZEL_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${BAZEL_ZIP_FILE_NAME}
+}
+
+bazel_install_func() {
+    #sudo unzip -o ${HOME_PACKAGES_DIR}/${BAZEL_ZIP_FILE_NAME} -d /opt/${BAZEL_NAME}
+    #makeOptLink /opt/${BAZEL_NAME} /opt/${BAZEL_DIR_NAME}
+}

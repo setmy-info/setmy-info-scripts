@@ -1,0 +1,27 @@
+PYTHON311_NAME=python
+PYTHON311_VERSION=3.11.9
+PYTHON311_NAME_VERSION=${PYTHON311_NAME}-${PYTHON311_VERSION}
+PYTHON311_OPT_DIR_NAME=/opt/${PYTHON311_NAME_VERSION}
+PYTHON311_DIR_NAME=Python-${PYTHON311_VERSION}
+PYTHON311_TGZ_GZ_FILE_NAME=${PYTHON311_DIR_NAME}.tgz
+PYTHON311_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON311_VERSION}/${PYTHON311_TGZ_GZ_FILE_NAME}
+
+# https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz
+
+python311_download_func() {
+    CUR_DIR=$(pwd)
+    smi-download ${PYTHON311_TGZ_FILE_URL} ${HOME_PACKAGES_DIR}/${PYTHON311_TGZ_GZ_FILE_NAME}
+    tar xvzf ${HOME_PACKAGES_DIR}/${PYTHON311_TGZ_GZ_FILE_NAME} -C ${HOME_PACKAGES_DIR}
+    cd ${HOME_PACKAGES_DIR}/${PYTHON311_DIR_NAME}
+    ./configure --prefix=${PYTHON311_OPT_DIR_NAME} --exec-prefix=${PYTHON311_OPT_DIR_NAME}
+    make
+    cd ${CUR_DIR}
+}
+
+python311_install_func() {
+    CUR_DIR=$(pwd)
+    cd ${HOME_PACKAGES_DIR}/${PYTHON310_DIR_NAME}
+    sudo make install
+    makeOptLink /opt/${PYTHON311_NAME}311 ${PYTHON311_OPT_DIR_NAME}
+    cd ${CUR_DIR}
+}

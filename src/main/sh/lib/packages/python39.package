@@ -1,0 +1,27 @@
+PYTHON39_NAME=python
+PYTHON39_VERSION=3.9.19
+PYTHON39_NAME_VERSION=${PYTHON39_NAME}-${PYTHON39_VERSION}
+PYTHON39_OPT_DIR_NAME=/opt/${PYTHON39_NAME_VERSION}
+PYTHON39_DIR_NAME=Python-${PYTHON39_VERSION}
+PYTHON39_TGZ_GZ_FILE_NAME=${PYTHON39_DIR_NAME}.tgz
+PYTHON39_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON39_VERSION}/${PYTHON39_TGZ_GZ_FILE_NAME}
+
+# https://www.python.org/ftp/python/3.9.19/Python-3.9.19.tgz
+
+python39_download_func() {
+    CUR_DIR=$(pwd)
+    smi-download ${PYTHON39_TGZ_FILE_URL} ${HOME_PACKAGES_DIR}/${PYTHON39_TGZ_GZ_FILE_NAME}
+    tar xvzf ${HOME_PACKAGES_DIR}/${PYTHON39_TGZ_GZ_FILE_NAME} -C ${HOME_PACKAGES_DIR}
+    cd ${HOME_PACKAGES_DIR}/${PYTHON39_DIR_NAME}
+    ./configure --prefix=${PYTHON39_OPT_DIR_NAME} --exec-prefix=${PYTHON39_OPT_DIR_NAME}
+    make
+    cd ${CUR_DIR}
+}
+
+python39_install_func() {
+    CUR_DIR=$(pwd)
+    cd ${HOME_PACKAGES_DIR}/${PYTHON39_DIR_NAME}
+    sudo make install
+    makeOptLink /opt/${PYTHON39_NAME}39 ${PYTHON39_OPT_DIR_NAME}
+    cd ${CUR_DIR}
+}

@@ -10,6 +10,13 @@ Stealing (actually borrowing) as a function. Collect code from different locatio
 working solution - .stealer folder as an input and working solution as an output.
 Decrease code repeating and increase development efficiency.
 
+## Prepare
+
+```sh
+# TO build python
+sudo dnf install -y openssl-dev
+```
+
 ## Build
 
 ```sh

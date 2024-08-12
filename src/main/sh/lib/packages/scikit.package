@@ -10,6 +10,6 @@ scikit_download_func() {
 scikit_install_func() {
     CUR_DIR=$(pwd)
     smi-venv-command pip install scikit-learn
-    smi-venv-command pip install matplotlib numpy pandas pyarrow
+    smi-venv-command pip install numpy pandas pyarrow
     cd ${CUR_DIR}
 }

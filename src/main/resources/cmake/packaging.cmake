@@ -9,7 +9,7 @@ IF(MACHINE_BINARY_PROJECT)
     SET(DEBIAN_ARCH_TYPE_SUFFIX "all")
 ELSE ()
     SET(ARCH_TYPE_SUFFIX "noarch")
-    SET(DEBIAN_ARCH_TYPE_SUFFIX "all")
+    SET(DEBIAN_ARCH_TYPE_SUFFIX "all")# or "any" - https://www.debian.org/doc/debian-policy/ch-customized-programs.html#s-arch-spec
 ENDIF()
 
 # https://cmake.org/cmake/help/v3.26/manual/cpack-generators.7.html
@@ -49,6 +49,7 @@ SET(CPACK_DEBIAN_PACKAGE_VERSION          "${CPACK_PACKAGE_VERSION}")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER       "${PROJECT_MAINTAINER}")
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY         "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION          "libs")
+SET(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA    "${DEB_INSTALL_SCRIPTS_PATH}/preinst" "${DEB_INSTALL_SCRIPTS_PATH}/prerm" "${DEB_INSTALL_SCRIPTS_PATH}/postinst" "${DEB_INSTALL_SCRIPTS_PATH}/postrm")
 SET(CPACK_DEBIAN_ARCHITECTURE             "${DEBIAN_ARCH_TYPE_SUFFIX}")
 #SET(CPACK_DEBIAN_PACKAGE_DEPENDS          "some-else (>= 1.0.0)")
 

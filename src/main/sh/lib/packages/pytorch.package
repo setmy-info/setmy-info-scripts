@@ -1,0 +1,15 @@
+TENSORFLOW_NAME=tensorflow
+TENSORFLOW_VERSION=2.15.1
+SYSTEM_PROFILES_DIR=$(smi-lib-location)/profiles
+
+tensorflow_download_func() {
+    CUR_DIR=$(pwd)
+    cd ${CUR_DIR}
+}
+
+tensorflow_install_func() {
+    CUR_DIR=$(pwd)
+    smi-venv-command pip install torch torchaudio torchtext torchvision
+    smi-venv-command pip install numpy pandas pyarrow matplotlib
+    cd ${CUR_DIR}
+}

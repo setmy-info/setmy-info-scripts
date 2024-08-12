@@ -1,0 +1,17 @@
+TENSORFLOW_NAME=tensorflow
+TENSORFLOW_VERSION=2.15.1
+SYSTEM_PROFILES_DIR=$(smi-lib-location)/profiles
+
+tensorflow_download_func() {
+    CUR_DIR=$(pwd)
+    cd ${CUR_DIR}
+}
+
+tensorflow_install_func() {
+    CUR_DIR=$(pwd)
+    smi-prepare-venv ${SYSTEM_PROFILES_DIR}/tensorflow-requirements.txt
+    #smi-venv-command pip install tensorflow tensorflow-transform tfds-nightly tensorboard tensorflow-datasets tensorflow-estimator
+    #smi-venv-command pip install numpy pandas pyarrow matplotlib
+    #smi-venv-command pip install imageio
+    cd ${CUR_DIR}
+}

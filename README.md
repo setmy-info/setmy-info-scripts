@@ -20,7 +20,7 @@ sudo dnf install -y openssl-dev
 ## Build
 
 ```sh
-SCRIPTS_VERSION=0.81.0
+SCRIPTS_VERSION=0.82.0
 ./configure release
 make clean
 make all test package
@@ -31,7 +31,7 @@ sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 All in single line:
 
 ```sh
-SCRIPTS_VERSION=0.81.0 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
+SCRIPTS_VERSION=0.82.0 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 ```
 
 Also change **smi.package** file **SMI_VERSION=0.80.1**

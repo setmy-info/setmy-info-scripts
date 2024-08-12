@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- test lib.cmake")
+
+# PLACEHOLDER-END #

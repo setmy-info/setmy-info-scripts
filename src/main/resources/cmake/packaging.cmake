@@ -27,6 +27,7 @@ SET(CPACK_PACKAGING_INSTALL_PREFIX        ${CMAKE_INSTALL_PREFIX})
 SET(CPACK_PACKAGE_RELOCATABLE             TRUE)
 
 # https://cmake.org/cmake/help/v3.26/cpack_gen/rpm.html
+SET(CPACK_RPM_PACKAGE_NAME                ${PROJECT_NAME})
 SET(CPACK_RPM_PACKAGE_DESCRIPTION         "${PROJECT_DESCRIPTION}")
 SET(CPACK_RPM_PACKAGE_LICENSE             "MIT")
 SET(CPACK_RPM_PACKAGE_DEBUG               true)
@@ -35,21 +36,21 @@ SET(CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE   "${RPM_INSTALL_SCRIPTS_PATH}/pre.unins
 SET(CPACK_RPM_POST_INSTALL_SCRIPT_FILE    "${RPM_INSTALL_SCRIPTS_PATH}/post.install.sh")
 SET(CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE  "${RPM_INSTALL_SCRIPTS_PATH}/post.uninstall.sh")
 SET(CPACK_RPM_PACKAGE_SUMMARY             "Summary")
-SET(CPACK_RPM_PACKAGE_NAME                ${PROJECT_NAME})
 SET(CPACK_RPM_CHANGELOG_FILE              ${CHANGE_LOG_FILE_NAME})
+SET(CPACK_RPM_PACKAGE_ARCHITECTURE        ${ARCH_TYPE_SUFFIX})
 # SET(CPACK_RPM_PACKAGE_REQUIRES            "some-else >= 1.0.0")
 
 # https://cmake.org/cmake/help/v3.26/cpack_gen/deb.html
 # http://www.debian.org/doc/debian-policy/ch-controlfields.html
 # https://wiki.ubuntu.com/PackagingGuide/Basic?action=show&redirect=HowToBuildDebianPackagesFromScratch/
 SET(CPACK_DEBIAN_PACKAGE_NAME             "${PROJECT_NAME}")
+SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION      "${PROJECT_DESCRIPTION}")
 SET(CPACK_DEBIAN_PACKAGE_VERSION          "${CPACK_PACKAGE_VERSION}")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER       "${PROJECT_MAINTAINER}")
-SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION      "${PROJECT_DESCRIPTION}")
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS          "some-else (>= 1.0.0)")
 SET(CPACK_DEBIAN_PACKAGE_PRIORITY         "optional")
 SET(CPACK_DEBIAN_PACKAGE_SECTION          "libs")
 SET(CPACK_DEBIAN_ARCHITECTURE             "${DEBIAN_ARCH_TYPE_SUFFIX}")
+#SET(CPACK_DEBIAN_PACKAGE_DEPENDS          "some-else (>= 1.0.0)")
 
 # https://cmake.org/cmake/help/v3.26/cpack_gen/freebsd.html
 SET(CPACK_FREEBSD_PACKAGE_NAME            "${PROJECT_NAME}")

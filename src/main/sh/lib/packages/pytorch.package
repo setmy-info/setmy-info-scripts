@@ -1,6 +1,5 @@
 PYTORCH_NAME=pytorch
-PYTORCH_VERSION=2.15.1
-SYSTEM_PROFILES_DIR=$(smi-lib-location)/profiles
+SYSTEM_PROFILES_DIR=$(smi-lib-location)/packages
 
 pytorch_download_func() {
     CUR_DIR=$(pwd)

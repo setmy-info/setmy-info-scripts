@@ -19,6 +19,8 @@ if [ "$#" -gt 0 ]; then
     PROJECT_REQUIREMENTS="$*"
 fi
 
+echo "Prepare venv params: ${*}"
+
 REQUIREMENTS_TXT_FILES=""
 for REQUIREMENTS_FILE in ${PROJECT_REQUIREMENTS}; do
     if [ -e "${REQUIREMENTS_FILE}" ]; then
@@ -26,11 +28,6 @@ for REQUIREMENTS_FILE in ${PROJECT_REQUIREMENTS}; do
     fi
 done
 
-if [ ! -d "./.venv" ]; then
-    smi-create-venv
-fi
-. ./.venv/bin/activate
-execute pip install ${REQUIREMENTS_TXT_FILES}
-deactivate
+smi-venv-command pip install ${REQUIREMENTS_TXT_FILES}
 
 exit 0

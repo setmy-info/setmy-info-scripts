@@ -1,11 +1,13 @@
 #!/bin/sh
 
+. $(smi-include commons.sh)
+
 if [ ! -d "./.venv" ]; then
-    smi-prepare-venv
+    smi-create-venv
 fi
 
 . ./.venv/bin/activate
-python3 "$@"
+execute python "$@"
 RESULT_CODE=${?}
 deactivate
 

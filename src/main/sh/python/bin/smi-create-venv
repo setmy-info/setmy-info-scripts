@@ -1,6 +1,16 @@
 #!/bin/sh
 
+. $(smi-include base.sh)
 . $(smi-include commons.sh)
+. $(smi-include packages.sh)
+
+if [ $# -eq 1 ]; then
+    PYTHON_NAME=${1}
+    includePackage ${PYTHON_NAME}
+    PYTHON_HOME=/opt/python-${PYTHON_VERSION}
+    PYTHON_BIN_DIR=${PYTHON_HOME}/bin
+    export PATH=${PYTHON_BIN_DIR}:${PATH}
+fi
 
 python3 -m venv ./.venv
 . ./.venv/bin/activate

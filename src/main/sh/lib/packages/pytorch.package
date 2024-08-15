@@ -8,7 +8,8 @@ pytorch_download_func() {
 
 pytorch_install_func() {
     CUR_DIR=$(pwd)
-    smi-venv-command pip install torch torchaudio torchtext torchvision
-    smi-venv-command pip install numpy pandas pyarrow
+    smi-prepare-venv ${SYSTEM_PROFILES_DIR}/${PYTORCH_NAME}-requirements.txt
+    #smi-venv-command pip install torch torchaudio torchtext torchvision
+    #smi-venv-command pip install numpy pandas pyarrow
     cd ${CUR_DIR}
 }

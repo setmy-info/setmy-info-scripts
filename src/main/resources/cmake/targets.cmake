@@ -15,6 +15,5 @@ ADD_CUSTOM_TARGET(clearCmake          rm -rf ./*.cmake ./_CPack_Packages install
 ADD_CUSTOM_TARGET(site)
 
 INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/targets.cmake)
-INCLUDE_CMAKE_FILE(${TEST_CMAKE_PATH}/targets.cmake)
 
 # PLACEHOLDER-END #

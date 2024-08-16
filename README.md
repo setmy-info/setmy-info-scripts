@@ -10,10 +10,17 @@ Stealing (actually borrowing) as a function. Collect code from different locatio
 working solution - .stealer folder as an input and working solution as an output.
 Decrease code repeating and increase development efficiency.
 
+## Prepare
+
+```sh
+# TO build python
+sudo dnf install -y openssl-devel sqlite sqlite-devel
+```
+
 ## Build
 
 ```sh
-SCRIPTS_VERSION=0.80.1
+SCRIPTS_VERSION=0.84.0
 ./configure release
 make clean
 make all test package
@@ -24,7 +31,7 @@ sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 All in single line:
 
 ```sh
-SCRIPTS_VERSION=0.80.1 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
+SCRIPTS_VERSION=0.84.0 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 ```
 
 Also change **smi.package** file **SMI_VERSION=0.80.1**

@@ -1,0 +1,27 @@
+PYTHON310_NAME=python
+PYTHON_VERSION=3.10.14
+PYTHON310_NAME_VERSION=${PYTHON310_NAME}-${PYTHON_VERSION}
+PYTHON310_OPT_DIR_NAME=/opt/${PYTHON310_NAME_VERSION}
+PYTHON310_DIR_NAME=Python-${PYTHON_VERSION}
+PYTHON310_TGZ_GZ_FILE_NAME=${PYTHON310_DIR_NAME}.tgz
+PYTHON310_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON_VERSION}/${PYTHON310_TGZ_GZ_FILE_NAME}
+
+# https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz
+
+python310_download_func() {
+    CUR_DIR=$(pwd)
+    smi-download ${PYTHON310_TGZ_FILE_URL} ${HOME_PACKAGES_DIR}/${PYTHON310_TGZ_GZ_FILE_NAME}
+    tar xvzf ${HOME_PACKAGES_DIR}/${PYTHON310_TGZ_GZ_FILE_NAME} -C ${HOME_PACKAGES_DIR}
+    cd ${HOME_PACKAGES_DIR}/${PYTHON310_DIR_NAME}
+    ./configure --prefix=${PYTHON310_OPT_DIR_NAME} --exec-prefix=${PYTHON310_OPT_DIR_NAME}
+    make
+    cd ${CUR_DIR}
+}
+
+python310_install_func() {
+    CUR_DIR=$(pwd)
+    cd ${HOME_PACKAGES_DIR}/${PYTHON310_DIR_NAME}
+    sudo make install
+    makeOptLink /opt/${PYTHON310_NAME}310 ${PYTHON310_OPT_DIR_NAME}
+    cd ${CUR_DIR}
+}

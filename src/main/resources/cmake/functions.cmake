@@ -1,19 +1,19 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- functions.cmake")
 
-function(INCLUDE_CMAKE_FILE)
+macro(INCLUDE_CMAKE_FILE)
     IF(EXISTS ${ARGV0})
         MESSAGE("INCLUDING: ${ARGV0}")
         INCLUDE(${ARGV0})
     ELSE()
-        MESSAGE("NOT INCLUDING: ${ARGV0} - FILE DOESNT EXIST")
+        MESSAGE("NOT INCLUDING: ${ARGV0} - FILE DOESN'T EXIST")
     ENDIF()
-endfunction()
+endmacro()
 
-function(INCLUDE_DIRECTORIES_WINDOWS)
+macro(INCLUDE_DIRECTORIES_WINDOWS)
     IF (WIN32)
         INCLUDE_DIRECTORIES(${ARGV0})
     ENDIF()
-endfunction()
+endmacro()
 
 # PLACEHOLDER-END #

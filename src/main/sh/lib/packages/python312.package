@@ -1,0 +1,28 @@
+PYTHON312_NAME=python
+PYTHON_VERSION=3.12.5
+PYTHON312_NAME_VERSION=${PYTHON312_NAME}-${PYTHON_VERSION}
+PYTHON312_OPT_DIR_NAME=/opt/${PYTHON312_NAME_VERSION}
+PYTHON312_DIR_NAME=Python-${PYTHON_VERSION}
+PYTHON312_TGZ_GZ_FILE_NAME=${PYTHON312_DIR_NAME}.tgz
+PYTHON312_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON_VERSION}/${PYTHON312_TGZ_GZ_FILE_NAME}
+
+# https://www.python.org/ftp/python/3.12.5/Python-3.12.5.tgz
+
+python312_download_func() {
+    CUR_DIR=$(pwd)
+    smi-download ${PYTHON312_TGZ_FILE_URL} ${HOME_PACKAGES_DIR}/${PYTHON312_TGZ_GZ_FILE_NAME}
+    tar xvzf ${HOME_PACKAGES_DIR}/${PYTHON312_TGZ_GZ_FILE_NAME} -C ${HOME_PACKAGES_DIR}
+    cd ${HOME_PACKAGES_DIR}/${PYTHON312_DIR_NAME}
+    ./configure --prefix=${PYTHON312_OPT_DIR_NAME} --exec-prefix=${PYTHON312_OPT_DIR_NAME}
+    make
+    cd ${CUR_DIR}
+}
+
+python312_install_func() {
+    CUR_DIR=$(pwd)
+    cd ${HOME_PACKAGES_DIR}/${PYTHON312_DIR_NAME}
+    sudo make install
+    makeOptLink /opt/${PYTHON312_NAME}312 ${PYTHON312_OPT_DIR_NAME}
+    #makeOptLink /opt/${PYTHON312_NAME}    ${PYTHON312_OPT_DIR_NAME}
+    cd ${CUR_DIR}
+}

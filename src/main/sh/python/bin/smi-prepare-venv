@@ -4,7 +4,9 @@
 
 # PROJECT_REQUIREMENTS=requirements.txt requirements2.txt
 # Default installs
-. ./project
+if [ -f ./project ]; then
+    . ./project
+fi
 
 # export SMI_PROJECT_REQUIREMENTS="requirements.txt requirements2.txt"
 # Have parameters on environment variable, use these - rewrite variable
@@ -17,6 +19,8 @@ if [ "$#" -gt 0 ]; then
     PROJECT_REQUIREMENTS="$*"
 fi
 
+echo "Prepare venv params: ${*}"
+
 REQUIREMENTS_TXT_FILES=""
 for REQUIREMENTS_FILE in ${PROJECT_REQUIREMENTS}; do
     if [ -e "${REQUIREMENTS_FILE}" ]; then
@@ -24,9 +28,6 @@ for REQUIREMENTS_FILE in ${PROJECT_REQUIREMENTS}; do
     fi
 done
 
-smi-create-venv
-. ./.venv/bin/activate
-execute pip install ${REQUIREMENTS_TXT_FILES}
-deactivate
+smi-venv-command pip install ${REQUIREMENTS_TXT_FILES}
 
 exit 0

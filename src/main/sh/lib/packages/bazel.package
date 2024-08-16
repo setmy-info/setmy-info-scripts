@@ -1,0 +1,18 @@
+BAZEL_NAME=bazel
+BAZEL_VERSION=7.2.1
+BAZEL_DIR_NAME=${BAZEL_NAME}-${BAZEL_VERSION}
+BAZEL_COMMAND_FILE_NAME=${BAZEL_NAME}_nojdk-${BAZEL_VERSION}-linux-x86_64
+BAZEL_ZIP_FILE_URL=https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/${BAZEL_COMMAND_FILE_NAME}
+
+# https://github.com/bazelbuild/bazel/releases/download/7.2.1/bazel_nojdk-7.2.1-linux-x86_64
+
+bazel_download_func() {
+    smi-download ${BAZEL_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${BAZEL_COMMAND_FILE_NAME}
+}
+
+bazel_install_func() {
+    sudo mkdir -p /opt/${BAZEL_DIR_NAME}/bin
+    sudo cp ${HOME_PACKAGES_DIR}/${BAZEL_COMMAND_FILE_NAME} /opt/${BAZEL_DIR_NAME}/bin/${BAZEL_NAME}
+    sudo chmod oag+x /opt/${BAZEL_DIR_NAME}/bin/${BAZEL_NAME}
+    makeOptLink /opt/${BAZEL_NAME} /opt/${BAZEL_DIR_NAME}
+}

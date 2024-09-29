@@ -1,3 +1,3 @@
-set GRAILS_HOME=%PUB_DIR%\grails-6.1.2
+set GRAILS_HOME=%PUB_DIR%\grails-6.2.0
 set GRAILS_BIN_DIR=%GRAILS_HOME%\bin
 set PATH=%GRAILS_BIN_DIR%;%PATH%

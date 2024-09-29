@@ -1,3 +1,3 @@
-set JULIA_HOME=%PUB_DIR%\julia-1.10.1
+set JULIA_HOME=%PUB_DIR%\julia-1.10.5
 set JULIA_BIN_DIR=%JULIA_HOME%\bin
 set PATH=%JULIA_BIN_DIR%;%PATH%

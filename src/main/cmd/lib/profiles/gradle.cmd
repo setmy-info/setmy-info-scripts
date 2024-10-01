@@ -1,3 +1,5 @@
-set GRADLE_HOME=%PUB_DIR%\gradle-8.6
+set GRADLE_HOME=%PUB_DIR%\gradle-8.10.2
 set GRADLE_BIN_DIR=%GRADLE_HOME%\bin
 set PATH=%GRADLE_BIN_DIR%;%PATH%
+
+

@@ -1,3 +1,4 @@
-set JAVA_HOME=%PUB_DIR%\jdk-21.0.2
+set JAVA_HOME=%PUB_DIR%\zulu21.36.17-ca-jdk21.0.4-win_x64
+REM set JAVA_HOME=%PUB_DIR%\jdk-21.0.2
 set JAVA_BIN_DIR=%JAVA_HOME%\bin
 set PATH=%JAVA_BIN_DIR%;%PATH%

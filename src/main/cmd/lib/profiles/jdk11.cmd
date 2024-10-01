@@ -1,3 +1,4 @@
+REM set JAVA_HOME=%PUB_DIR%\zulu11.68.17-ca-jdk11.0.21-win_x64
 set JAVA_HOME=%PUB_DIR%\jdk-11.0.2
 set JAVA_BIN_DIR=%JAVA_HOME%\bin
 set PATH=%JAVA_BIN_DIR%;%PATH%

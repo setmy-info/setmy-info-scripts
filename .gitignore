@@ -40,4 +40,5 @@ _deps
 .settings/
 CPackConfig.cmake
 CPackSourceConfig.cmake
-
+.venv
+.ipynb_checkpoints

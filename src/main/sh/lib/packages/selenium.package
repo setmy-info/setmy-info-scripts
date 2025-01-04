@@ -23,6 +23,6 @@ selenium_install_func() {
     DESTINATION_FILE_NAME=${DESTINATION_DIR}/${SELENIUM_JAR_FILE_NAME}
     sudo rm -f ${DESTINATION_DIR}/${SELENIUM_NAME}-server-*.jar
     sudo cp ${HOME_PACKAGES_DIR}/${SELENIUM_JAR_FILE_NAME} ${DESTINATION_FILE_NAME}
-    sudo cp -f ${HOME_PACKAGES_DIR}/chromedriver ${DRIVERS_LOCATION}/chromedriver
+    sudo cp -f ${HOME_PACKAGES_DIR}/chromedriver-linux64/chromedriver ${DRIVERS_LOCATION}/chromedriver
     sudo cp -f ${HOME_PACKAGES_DIR}/geckodriver  ${DRIVERS_LOCATION}/geckodriver
 }

@@ -3,8 +3,7 @@ GROOVY_VERSION=4.0.24
 GROOVY_DIR_NAME=${GROOVY_NAME}-${GROOVY_VERSION}
 GROOVY_FILE_NAME=apache-groovy-sdk-${GROOVY_VERSION}
 GROOVY_ZIP_FILE_NAME=${GROOVY_FILE_NAME}.zip
-#GROOVY_ZIP_FILE_URL="https://groovy.jfrog.io/ui/api/v1/download?repoKey=dist-release-local&path=groovy-zips%252F${GROOVY_ZIP_FILE_NAME}&isNativeBrowsing=true"
-GROOVY_ZIP_FILE_URL="https://groovy.jfrog.io/ui/native/dist-release-local/groovy-zips/${GROOVY_ZIP_FILE_NAME}"
+GROOVY_ZIP_FILE_URL="https://groovy.jfrog.io/ui/api/v1/download?repoKey=dist-release-local&path=groovy-zips%252F${GROOVY_ZIP_FILE_NAME}&isNativeBrowsing=true"
 
 # https://groovy.jfrog.io/ui/native/dist-release-local/groovy-zips/apache-groovy-sdk-4.0.24.zip
 

@@ -1,12 +1,12 @@
 PYTHON312_NAME=python
-PYTHON_VERSION=3.12.5
+PYTHON_VERSION=3.12.8
 PYTHON312_NAME_VERSION=${PYTHON312_NAME}-${PYTHON_VERSION}
 PYTHON312_OPT_DIR_NAME=/opt/${PYTHON312_NAME_VERSION}
 PYTHON312_DIR_NAME=Python-${PYTHON_VERSION}
 PYTHON312_TGZ_GZ_FILE_NAME=${PYTHON312_DIR_NAME}.tgz
 PYTHON312_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON_VERSION}/${PYTHON312_TGZ_GZ_FILE_NAME}
 
-# https://www.python.org/ftp/python/3.12.5/Python-3.12.5.tgz
+# https://www.python.org/ftp/python/3.12.8/Python-3.12.8.tgz
 
 python312_download_func() {
     CUR_DIR=$(pwd)

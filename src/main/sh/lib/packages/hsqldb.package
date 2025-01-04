@@ -1,10 +1,10 @@
 HSQLDB_NAME=hsqldb
-HSQLDB_VERSION=2.7.3
+HSQLDB_VERSION=2.7.4
 HSQLDB_DIR_NAME=hsqldb-${HSQLDB_VERSION}
 HSQLDB_ZIP_FILE_NAME=${HSQLDB_DIR_NAME}.zip
 HSQLDB_ZIP_FILE_URL=https://altushost-swe.dl.sourceforge.net/project/hsqldb/hsqldb/hsqldb_2_7/${HSQLDB_ZIP_FILE_NAME}
 
-# https://deac-swe.dl.sourceforge.net/project/hsqldb/hsqldb/hsqldb_2_7/hsqldb-2.7.3.zip
+# https://altushost-swe.dl.sourceforge.net/project/hsqldb/hsqldb/hsqldb_2_7/hsqldb-2.7.4.zip
 
 hsqldb_download_func() {
     smi-download ${HSQLDB_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${HSQLDB_ZIP_FILE_NAME}

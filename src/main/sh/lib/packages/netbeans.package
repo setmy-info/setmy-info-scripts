@@ -1,10 +1,10 @@
 NETBEANS_NAME=netbeans
-NETBEANS_VERSION=22
+NETBEANS_VERSION=24
 NETBEANS_DIR_NAME=${NETBEANS_NAME}-${NETBEANS_VERSION}
 NETBEANS_ZIP_FILE_NAME=${NETBEANS_DIR_NAME}-bin.zip
 NETBEANS_ZIP_FILE_URL=https://dlcdn.apache.org/${NETBEANS_NAME}/${NETBEANS_NAME}/${NETBEANS_VERSION}/${NETBEANS_ZIP_FILE_NAME}
 
-# https://dlcdn.apache.org/netbeans/netbeans/22/netbeans-22-bin.zip
+# https://dlcdn.apache.org/netbeans/netbeans/24/netbeans-24-bin.zip
 
 netbeans_download_func() {
     smi-download ${NETBEANS_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${NETBEANS_ZIP_FILE_NAME}

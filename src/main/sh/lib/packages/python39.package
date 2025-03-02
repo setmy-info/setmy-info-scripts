@@ -1,12 +1,12 @@
 PYTHON39_NAME=python
-PYTHON_VERSION=3.9.19
+PYTHON_VERSION=3.9.21
 PYTHON39_NAME_VERSION=${PYTHON39_NAME}-${PYTHON_VERSION}
 PYTHON39_OPT_DIR_NAME=/opt/${PYTHON39_NAME_VERSION}
 PYTHON39_DIR_NAME=Python-${PYTHON_VERSION}
 PYTHON39_TGZ_GZ_FILE_NAME=${PYTHON39_DIR_NAME}.tgz
 PYTHON39_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON_VERSION}/${PYTHON39_TGZ_GZ_FILE_NAME}
 
-# https://www.python.org/ftp/python/3.9.19/Python-3.9.19.tgz
+# https://www.python.org/ftp/python/3.9.21/Python-3.9.21.tgz
 
 python39_download_func() {
     CUR_DIR=$(pwd)

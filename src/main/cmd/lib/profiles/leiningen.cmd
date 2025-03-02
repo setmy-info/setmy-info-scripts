@@ -1,5 +1,5 @@
 set LEININGEN_HOME=%PUB_DIR%\leiningen
 set LEININGEN_BIN_DIR=%LEININGEN_HOME%\bin
 set LEININGEN_LIB_DIR=%LEININGEN_HOME%\lib
-set LEIN_JAR=%LEININGEN_LIB_DIR%\leiningen-2.9.10-standalone.jar
+set LEIN_JAR=%LEININGEN_LIB_DIR%\leiningen-2.11.2-standalone.jar
 set PATH=%LEININGEN_BIN_DIR%;%PATH%

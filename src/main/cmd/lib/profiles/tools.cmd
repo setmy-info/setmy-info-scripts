@@ -21,6 +21,8 @@ call %LOADER_CMD% bazel
 call %LOADER_CMD% postgres
 call %LOADER_CMD% argo
 call %LOADER_CMD% selenium
-call %LOADER_CMD% bazel
+call %LOADER_CMD% graphviz
+call %LOADER_CMD% k8ssealed
+call %LOADER_CMD% sapling
 
 if exist %USERPROFILE%\.term\profiles\tools.cmd (call %USERPROFILE%\.term\profiles\tools.cmd)

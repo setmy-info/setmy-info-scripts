@@ -8,6 +8,8 @@ lein_download_func() {
     smi-download https://codeberg.org/leiningen/leiningen/releases/download/${LEININGEN_VERSION}/leiningen-${LEININGEN_VERSION}-standalone.jar ${HOME_PACKAGES_DIR}/leiningen-${LEININGEN_VERSION}-standalone.jar
 }
 
+# https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+
 lein_install_func() {
     sudo mkdir -p /opt/leiningen/bin
     sudo mkdir -p /opt/leiningen/lib

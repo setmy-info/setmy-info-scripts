@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export PATH=/opt/cmake/bin:$PATH
-export PROJECT_VERSION="0.83.0"
+export PROJECT_VERSION="0.86.0"
 
 make --version
 g++ --version

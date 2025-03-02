@@ -1,11 +1,11 @@
 GO_NAME=go
-GO_VERSION=1.22.5
+GO_VERSION=1.23.4
 GO_DIR_NAME=${GO_NAME}
 GO_TAR_FILE_NAME=${GO_DIR_NAME}${GO_VERSION}.linux-amd64.tar
 GO_TAR_GZ_FILE_NAME=${GO_TAR_FILE_NAME}.gz
 GO_TAR_GZ_FILE_URL=https://go.dev/dl/${GO_TAR_GZ_FILE_NAME}
 
-# https://go.dev/dl/go1.22.5.linux-amd64.tar.gz
+# https://go.dev/dl/go1.23.4.linux-amd64.tar.gz
 
 go_download_func() {
     smi-download ${GO_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${GO_TAR_GZ_FILE_NAME}

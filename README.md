@@ -14,7 +14,7 @@ Decrease code repeating and increase development efficiency.
 
 ```sh
 # TO build python
-sudo dnf install -y openssl-devel sqlite sqlite-devel
+sudo dnf install -y openssl-devel sqlite sqlite-devel libffi-devel
 ```
 
 ## Build

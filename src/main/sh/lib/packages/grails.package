@@ -1,8 +1,10 @@
 GRAILS_NAME=grails
-GRAILS_VERSION=6.2.0
+GRAILS_VERSION=6.2.3
 GRAILS_DIR_NAME=${GRAILS_NAME}-${GRAILS_VERSION}
 GRAILS_ZIP_FILE_NAME=${GRAILS_DIR_NAME}.zip
 GRAILS_ZIP_FILE_URL=https://github.com/grails/grails-core/releases/download/v${GRAILS_VERSION}/${GRAILS_ZIP_FILE_NAME}
+
+# https://github.com/grails/grails-forge/releases/download/v6.2.3/grails-cli-6.2.3.zip
 
 grails_download_func() {
     smi-download ${GRAILS_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GRAILS_ZIP_FILE_NAME}

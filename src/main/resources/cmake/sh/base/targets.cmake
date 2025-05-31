@@ -28,6 +28,5 @@ ADD_CUSTOM_TARGET(buildLibShells       cp ${MAIN_SH_SOURCES_PATH}/lib/*.sh ${LIB
 ADD_CUSTOM_TARGET(buildShellScripts    cp ${MAIN_SH_SOURCES_PATH}/bin/* ${BINARY_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildServiceScripts  cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/*.service ${ETC_SYSTEM_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/environment.conf ${ETC_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildYumReposScripts cp ${MAIN_SH_SOURCES_PATH}/etc/yum.repos.d/*.repo ${ETC_YUM_REPOS_PATH})
-ADD_CUSTOM_TARGET(buildProfiles        cp -R ${MAIN_SH_SOURCES_PATH}/lib/profiles/* ${LIBRARY_OUTPUT_PATH}/profiles)
 
 # PLACEHOLDER-END #

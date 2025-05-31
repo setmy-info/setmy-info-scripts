@@ -1,0 +1,20 @@
+JDK24_NAME=jdk24
+JDK24_VERSION=24.0.1
+JDK24_HASH_PART=24a58e0e276943138bf3e963e6291ac2
+JDK24_NUMERIC_PART=9
+JDK24_DIR_NAME=jdk-${JDK24_VERSION}
+JDK24_NAME_PREFIX=openjdk-${JDK24_VERSION}
+JDK24_TAR_FILE_NAME=${JDK24_NAME_PREFIX}_linux-x64_bin.tar
+JDK24_TAR_GZ_FILE_NAME=${JDK24_TAR_FILE_NAME}.gz
+JDK24_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK24_VERSION}/${JDK24_HASH_PART}/${JDK24_NUMERIC_PART}/GPL/${JDK24_TAR_GZ_FILE_NAME}
+
+# https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_linux-x64_bin.tar.gz
+
+jdk24_download_func() {
+    smi-download ${JDK24_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK24_TAR_GZ_FILE_NAME}
+}
+jdk24_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK24_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/jdk24 /opt/${JDK24_DIR_NAME}
+}
+

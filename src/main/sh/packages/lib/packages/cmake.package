@@ -1,11 +1,11 @@
 CMAKE_NAME=cmake
-CMAKE_VERSION=3.31.6
+CMAKE_VERSION=4.0.2
 CMAKE_DIR_NAME=cmake-${CMAKE_VERSION}-linux-x86_64
 CMAKE_TAR_FILE_NAME=${CMAKE_DIR_NAME}.tar
 CMAKE_TAR_GZ_FILE_NAME=${CMAKE_TAR_FILE_NAME}.gz
 CMAKE_TAR_GZ_FILE_URL=https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/${CMAKE_TAR_GZ_FILE_NAME}
 
-# https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-x86_64.tar.gz
+# https://github.com/Kitware/CMake/releases/download/v4.0.2/cmake-4.0.2-linux-x86_64.tar.gz
 
 cmake_download_func() {
     smi-download ${CMAKE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${CMAKE_TAR_GZ_FILE_NAME}

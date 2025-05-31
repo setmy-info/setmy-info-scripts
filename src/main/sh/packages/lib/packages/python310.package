@@ -1,12 +1,12 @@
 PYTHON310_NAME=python
-PYTHON_VERSION=3.10.16
+PYTHON_VERSION=3.10.17
 PYTHON310_NAME_VERSION=${PYTHON310_NAME}-${PYTHON_VERSION}
 PYTHON310_OPT_DIR_NAME=/opt/${PYTHON310_NAME_VERSION}
 PYTHON310_DIR_NAME=Python-${PYTHON_VERSION}
 PYTHON310_TGZ_GZ_FILE_NAME=${PYTHON310_DIR_NAME}.tgz
 PYTHON310_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON_VERSION}/${PYTHON310_TGZ_GZ_FILE_NAME}
 
-# https://www.python.org/ftp/python/3.10.16/Python-3.10.16.tgz
+# https://www.python.org/ftp/python/3.10.17/Python-3.10.17.tgz
 
 python310_download_func() {
     CUR_DIR=$(pwd)

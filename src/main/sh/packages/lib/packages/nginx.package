@@ -1,4 +1,8 @@
-NGINX_VERSION=1.26.3
+NGINX_VERSION=1.28.0-1
+
+# https://nginx.org/en/download.html
+# https://nginx.org/en/linux_packages.html
+# https://nginx.org/en/linux_packages.html#RHEL
 
 nginx_download_func() {
     return

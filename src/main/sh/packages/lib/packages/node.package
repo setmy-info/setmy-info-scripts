@@ -1,11 +1,11 @@
 NODE_NAME=node
-NODE_VERSION=22.14.0
+NODE_VERSION=22.16.0
 NODE_DIR_NAME=node-v${NODE_VERSION}-linux-x64
 NODE_TAR_FILE_NAME=${NODE_DIR_NAME}.tar
 NODE_TAR_XZ_FILE_NAME=${NODE_TAR_FILE_NAME}.xz
 NODE_TAR_XZ_FILE_URL=https://nodejs.org/dist/v${NODE_VERSION}/${NODE_TAR_XZ_FILE_NAME}
 
-# https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz
+# https://nodejs.org/dist/v22.16.0/node-v22.16.0-linux-x64.tar.xz
 
 node_download_func() {
     smi-download ${NODE_TAR_XZ_FILE_URL} ${HOME_PACKAGES_DIR}/${NODE_TAR_XZ_FILE_NAME}

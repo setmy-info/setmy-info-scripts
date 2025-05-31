@@ -1,0 +1,17 @@
+MAVEN_DAEMON_NAME=mvnd
+MAVEN_DAEMON_VERSION=1.0.2
+MAVEN_DAEMON_DIR_NAME=maven-${MAVEN_DAEMON_NAME}-${MAVEN_DAEMON_VERSION}-linux-amd64
+MAVEN_DAEMON_TAR_FILE_NAME=${MAVEN_DAEMON_DIR_NAME}.tar
+MAVEN_DAEMON_TAR_GZ_FILE_NAME=${MAVEN_DAEMON_TAR_FILE_NAME}.gz
+MAVEN_DAEMON_TAR_GZ_FILE_URL=https://dlcdn.apache.org/maven/mvnd/${MAVEN_DAEMON_VERSION}/maven-mvnd-1.0.2-linux-amd64.tar.gz
+
+# https://dlcdn.apache.org/maven/mvnd/1.0.2/maven-mvnd-1.0.2-linux-amd64.tar.gz
+
+mvnd_download_func() {
+    smi-download ${MAVEN_DAEMON_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MAVEN_DAEMON_TAR_GZ_FILE_NAME}
+}
+
+mvnd_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${MAVEN_DAEMON_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/${MAVEN_DAEMON_NAME} /opt/${MAVEN_DAEMON_DIR_NAME}
+}

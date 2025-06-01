@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
 
+// EXPERIMENT!!!
+
 // chmod +x checkUpdates.groovy
 // ./checkUpdates.groovy
 
@@ -14,8 +16,6 @@ echo "New mvnd: $latest_mvnd"
 @Grab('org.yaml:snakeyaml:2.2')
 import org.yaml.snakeyaml.Yaml
 import groovy.json.JsonSlurper
-import java.util.regex.*
-import java.net.HttpURLConnection
 
 def yaml = new Yaml()
 def config = yaml.load(new File('tools.yaml').text)

@@ -1,27 +1,32 @@
 #!/usr/bin/env groovy
 import org.openqa.selenium.By
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.firefox.FirefoxOptions
+import org.yaml.snakeyaml.Yaml
+import picocli.CommandLine
+import picocli.CommandLine.Option
+
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-api', version = '4.33.0')
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-http', version = '4.33.0')
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-support', version = '4.33.0')
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-firefox-driver', version = '4.33.0')
 @Grab(group = 'org.yaml', module = 'snakeyaml', version = '2.4')
 @Grab(group = 'com.google.errorprone', module = 'error_prone_annotations', version = '2.38.0')
-@Grab(group='info.picocli', module='picocli', version='4.7.7')
+@Grab(group = 'info.picocli', module = 'picocli', version = '4.7.7')
 //@Grab(group = 'org.seleniumhq.selenium', module = 'selenium-java', version = '4.33.0')
 
-import picocli.CommandLine
-import picocli.CommandLine.Option
-import org.openqa.selenium.WebDriver
-import org.yaml.snakeyaml.Yaml
-import org.openqa.selenium.firefox.FirefoxDriver
-import org.openqa.selenium.firefox.FirefoxOptions
 
 // ./seleniumVersionChecker.sh --input seleniumVersionChecker.yaml --output seleniumVersionChecker.csv
 class CliArgs {
-    @Option(names = ["--input"], description = "YAML config file", required = true)
+
+    @Option(names = ["--name"], description = "Package name", required = false)
+    String packageName
+
+    @Option(names = ["--input"], description = "YAML config file", required = false)
     String configFile
 
-    @Option(names = ["--output"], description = "Output CSV file", required = true)
+    @Option(names = ["--output"], description = "Output CSV file", required = false)
     String outputFile
 }
 

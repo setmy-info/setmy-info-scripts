@@ -6,22 +6,42 @@ import org.openqa.selenium.By
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-firefox-driver', version = '4.33.0')
 @Grab(group = 'org.yaml', module = 'snakeyaml', version = '2.4')
 @Grab(group = 'com.google.errorprone', module = 'error_prone_annotations', version = '2.38.0')
+@Grab(group='info.picocli', module='picocli', version='4.7.7')
 //@Grab(group = 'org.seleniumhq.selenium', module = 'selenium-java', version = '4.33.0')
 
+import picocli.CommandLine
+import picocli.CommandLine.Option
 import org.openqa.selenium.WebDriver
+import org.yaml.snakeyaml.Yaml
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxOptions
 
-// EXPERIMENT!!!
+// ./seleniumVersionChecker.sh --input seleniumVersionChecker.yaml --output seleniumVersionChecker.csv
+class CliArgs {
+    @Option(names = ["--input"], description = "YAML config file", required = true)
+    String configFile
 
-// C:\pub\setmy.info\lib
-// geckodriver.exe
+    @Option(names = ["--output"], description = "Output CSV file", required = true)
+    String outputFile
+}
 
 class InputData {
 
 }
 
 static void main(String[] args) {
+    def cliArgs = new CliArgs()
+    new CommandLine(cliArgs).parseArgs(args)
+
+    def yaml = new Yaml()
+    def config = yaml.load(new File(cliArgs.configFile).text)
+    /*
+    def url = config.url ?: "https://maven.apache.org/download.cgi"
+    def packageExtension = config.extension ?: ".tar.gz"
+    def includePattern = config.includePattern ?: "apache-maven-"
+    def excludePattern = config.excludePattern ?: "rc"
+    */
+
     def osName = System.getProperty("os.name").toLowerCase()
     def geckoDriverPath = ""
     def firefoxBinaryPath = ""

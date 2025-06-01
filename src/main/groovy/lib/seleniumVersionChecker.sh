@@ -1,1 +1,1 @@
-groovy seleniumVersionChecker.groovy %*
+groovy seleniumVersionChecker.groovy $*

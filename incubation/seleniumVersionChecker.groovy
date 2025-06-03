@@ -8,6 +8,8 @@ import picocli.CommandLine.Option
 
 import java.lang.System
 
+import static java.util.Objects.requireNonNull
+
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-api', version = '4.33.0')
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-http', version = '4.33.0')
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-support', version = '4.33.0')
@@ -47,13 +49,15 @@ interface Name {
 }
 
 class OperatingSystem implements Name {
-    String getName() {
-        return System.getProperty("os.name").toLowerCase()
-    }
+    String name = System.getProperty("os.name").toLowerCase()
 }
 
 interface Init {
     void init()
+}
+
+interface Close {
+    void close()
 }
 
 interface FilePath {
@@ -83,7 +87,7 @@ class GeckoDriver implements FilePath, Init {
     }
 }
 
-class Firefox implements FilePath, Init {
+class Firefox implements FilePath, Init, Close {
     OperatingSystem operatingSystem
     FirefoxOptions options
     @Delegate
@@ -108,6 +112,12 @@ class Firefox implements FilePath, Init {
         options = new FirefoxOptions(binary: getPath())
         driver = new FirefoxDriver(options)
     }
+
+    @Override
+    void close() {
+        options = new FirefoxOptions(binary: getPath())
+        driver = new FirefoxDriver(options)
+    }
 }
 
 class RulesRegister {
@@ -128,14 +138,14 @@ interface DriverExecute {
 
 abstract class DriverExecuteBase {
     static final List<String> packageExtensions = [
-            ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz", ".tar.Z",
-            ".zip", ".gz", ".bz2", ".xz", ".7z",
-            ".deb", ".rpm",
-            ".run", ".sh", ".bin",
-            ".appimage",
-            ".jar",
-            ".dmg",
-            ".exe"
+        ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz", ".tar.Z",
+        ".zip", ".gz", ".bz2", ".xz", ".7z",
+        ".deb", ".rpm",
+        ".run", ".sh", ".bin",
+        ".appimage",
+        ".jar",
+        ".dmg",
+        ".exe"
     ]
 }
 
@@ -190,8 +200,6 @@ class MavenDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
 
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
-        } finally {
-            driver.quit()
         }
     }
 
@@ -212,12 +220,17 @@ static void main(String[] args) {
     def config = yaml.load(new File(cliArgs.configFile).text)
     */
 
-    geckoDriver.init()
-    firefox.init()
-    println "Package name: ${cliArgs.getPackageName()}"
-    def rule = rulesRegister[cliArgs.getPackageName()]
-    println "Found rule: ${(rule as Name).getName()}"
-    rule.execute(firefox)
+    try {
+        geckoDriver.init()
+        firefox.init()
+        println "Package name: ${cliArgs.getPackageName()}"
+        def rule = requireNonNull(rulesRegister[cliArgs.getPackageName()], "❌ Missing rule: '${cliArgs.getPackageName()}'")
+        rule.execute(firefox)
+    } catch (Exception exception) {
+        println "❌ Error: ${e.message}"
+    } finally {
+        firefox.quit()
+    }
 }
 
 static RulesRegister fillWithRules(RulesRegister rulesRegister) {

@@ -6,8 +6,6 @@ import org.openqa.selenium.firefox.FirefoxOptions
 import picocli.CommandLine
 import picocli.CommandLine.Option
 
-import java.lang.System
-
 import static java.util.Objects.requireNonNull
 
 @Grab(group = 'org.seleniumhq.selenium', module = 'selenium-api', version = '4.33.0')
@@ -30,26 +28,9 @@ curl 'https://search.maven.org/solrsearch/select?q=g:org.apache.maven+AND+a:mave
 */
 
 // ./seleniumVersionChecker.sh --input seleniumVersionChecker.yaml --output seleniumVersionChecker.csv
-class CliArgs {
-
-    @Option(names = ["--name"], description = "Package name", required = false)
-    String packageName
-
-    CommandLine commandLine
-
-    CliArgs parseArgs(String[] args) {
-        commandLine = new CommandLine(this)
-        commandLine.parseArgs(args)
-        this
-    }
-}
 
 interface Name {
     String getName()
-}
-
-class OperatingSystem implements Name {
-    String name = System.getProperty("os.name").toLowerCase()
 }
 
 interface Init {
@@ -64,6 +45,28 @@ interface FilePath {
     String getPath()
 }
 
+interface DriverExecute {
+    void execute(WebDriver driver)
+}
+
+class CliArgs {
+
+    @Option(names = ["--name"], description = "Package name", required = false)
+    String packageName
+
+    CommandLine commandLine
+
+    CliArgs parseArgs(String[] args) {
+        commandLine = new CommandLine(this)
+        commandLine.parseArgs(args)
+        this
+    }
+}
+
+class OperatingSystem implements Name {
+    String name = System.getProperty("os.name").toLowerCase()
+}
+
 class GeckoDriver implements FilePath, Init {
     OperatingSystem operatingSystem
 
@@ -71,7 +74,7 @@ class GeckoDriver implements FilePath, Init {
     String getPath() {
         def osName = operatingSystem.getName()
         if (osName.contains("win")) {
-            "C:\\pub\\setmy.info\\lib\\geckodriver.exe"
+            "C:\\pub\\setmy.info\\bin\\geckodriver.exe"
         } else if (osName.contains("mac")) {
             "/usr/local/bin/geckodriver"
         } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
@@ -90,7 +93,6 @@ class GeckoDriver implements FilePath, Init {
 class Firefox implements FilePath, Init, Close {
     OperatingSystem operatingSystem
     FirefoxOptions options
-    @Delegate
     WebDriver driver
 
     @Override
@@ -115,8 +117,7 @@ class Firefox implements FilePath, Init, Close {
 
     @Override
     void close() {
-        options = new FirefoxOptions(binary: getPath())
-        driver = new FirefoxDriver(options)
+        driver.close()
     }
 }
 
@@ -132,20 +133,16 @@ class RulesRegister {
     }
 }
 
-interface DriverExecute {
-    void execute(WebDriver driver)
-}
-
 abstract class DriverExecuteBase {
     static final List<String> packageExtensions = [
-        ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz", ".tar.Z",
-        ".zip", ".gz", ".bz2", ".xz", ".7z",
-        ".deb", ".rpm",
-        ".run", ".sh", ".bin",
-        ".appimage",
-        ".jar",
-        ".dmg",
-        ".exe"
+            ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2", ".tar.xz", ".txz", ".tar.Z",
+            ".zip", ".gz", ".bz2", ".xz", ".7z",
+            ".deb", ".rpm",
+            ".run", ".sh", ".bin",
+            ".appimage",
+            ".jar",
+            ".dmg",
+            ".exe"
     ]
 }
 
@@ -157,7 +154,7 @@ class MavenDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
         try {
             def url = "https://maven.apache.org/download.cgi"
             driver.get(url)
-            println "✅ Page loaded: ${url}"
+            //println "✅ Page loaded: ${url}"
 
             def links = driver.findElements(By.tagName("a"))
             def hrefs = links.collect { it.getAttribute("href") }.findAll { it != null }
@@ -168,36 +165,33 @@ class MavenDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
                     hrefLowerCase.endsWith(ext)
                 }
             }
-
-            println "🔗 Found links:"
-            filteredHrefs.each { println it }
-
+            //println "🔗 Found links:"
+            //filteredHrefs.each { println it }
             def finalFiltered = filteredHrefs.findAll { href ->
                 href = href.toLowerCase()
                 if (!href.endsWith(".tar.gz")) return false
                 if (!href.contains("apache-maven-")) return false
                 if (href.contains("rc")) return false
 
-                def versionPattern = ~/(?<![a-zA-Z0-9])(\d+\.\d+\.\d+)(?![a-zA-Z0-9])/
-                def matcher = (href =~ versionPattern)
-                if (!matcher.find()) return false
-                def version = matcher.group(1)
-                println "🔗 Version: ${version}"
-
                 return true
             }
 
-            println "🔗 Version and package extension links:"
-            finalFiltered.each { println it }
+            //println "🔗 Version and package extension links:"
+            //finalFiltered.each { println it }
 
             def sortedByUrl = finalFiltered.sort { a, b -> a <=> b }
+            //println "🔗 Sorted links:"
+            //sortedByUrl.each { println it }
 
-            println "🔗 Sorted links:"
-            sortedByUrl.each { println it }
+            def lastItem = sortedByUrl.last()
+            def versionPattern = ~/(?<![a-zA-Z0-9])(\d+\.\d+\.\d+)(?![a-zA-Z0-9])/
+            def matcher = (lastItem =~ versionPattern)
+            if (matcher.find()) {
+                def version = matcher.group(1)
+                println " ${version}"
+            }
 
-            println "🔗 Last"
-            println "${sortedByUrl.last()}"
-
+            println "${lastItem}"
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }
@@ -225,11 +219,11 @@ static void main(String[] args) {
         firefox.init()
         println "Package name: ${cliArgs.getPackageName()}"
         def rule = requireNonNull(rulesRegister[cliArgs.getPackageName()], "❌ Missing rule: '${cliArgs.getPackageName()}'")
-        rule.execute(firefox)
+        rule.execute(firefox.getDriver())
     } catch (Exception exception) {
-        println "❌ Error: ${e.message}"
+        println "❌ Error: ${exception.message}"
     } finally {
-        firefox.quit()
+        (firefox as Close).close()
     }
 }
 

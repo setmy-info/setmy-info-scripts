@@ -1,2 +1,2 @@
 @echo off
-call groovy seleniumVersionChecker.groovy %*
+call groovy seleniumVersionChecker.groovy %*%

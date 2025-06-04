@@ -188,7 +188,7 @@ class MavenDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
             def matcher = (lastItem =~ versionPattern)
             if (matcher.find()) {
                 def version = matcher.group(1)
-                println " ${version}"
+                println "${version}"
             }
 
             println "${lastItem}"
@@ -217,7 +217,7 @@ static void main(String[] args) {
     try {
         geckoDriver.init()
         firefox.init()
-        println "Package name: ${cliArgs.getPackageName()}"
+        //println "Package name: ${cliArgs.getPackageName()}"
         def rule = requireNonNull(rulesRegister[cliArgs.getPackageName()], "❌ Missing rule: '${cliArgs.getPackageName()}'")
         rule.execute(firefox.getDriver())
     } catch (Exception exception) {

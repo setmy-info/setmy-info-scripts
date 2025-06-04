@@ -435,6 +435,56 @@ class GroovyDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     }
 }
 
+class FirefoxDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+            def spanElement = driver.findElements(cssSelector("span.c-release-version"))
+            spanElement = spanElement.first()
+            def version = spanElement.getText()
+            println version
+            // CSS selector span.c-release-version - text
+            //https://download-installer.cdn.mozilla.net/pub/firefox/releases/139.0.1/linux-x86_64/en-US/firefox-139.0.1.tar.xz
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://www.mozilla.org/en-US/firefox/139.0.1/releasenotes/"
+    }
+
+    @Override
+    String getName() {
+        return "firefox"
+    }
+}
+
+class ThunderbirdDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://groovy.apache.org/download.html"
+    }
+
+    @Override
+    String getName() {
+        return "thunderbird"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -467,6 +517,8 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new CmakeDriverExecute(), rulesRegister)
     fillWithRules(new NodeDriverExecute(), rulesRegister)
     fillWithRules(new GroovyDriverExecute(), rulesRegister)
+    fillWithRules(new FirefoxDriverExecute(), rulesRegister)
+    fillWithRules(new ThunderbirdDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

@@ -385,14 +385,10 @@ class NodeDriverExecute extends DriverExecuteBase implements DriverExecute, Name
                 if (!href.endsWith(".tar.xz")) return false
                 if (!href.contains("-linux")) return false
                 if (!href.contains("-x64")) return false
-                //if (href.contains("-rc")) return false
                 return true
             }
             finalFiltered = finalFiltered.sort { a, b -> a <=> b }
             finalFiltered.each { println it }
-            /*def lastItem = finalFiltered.last()
-            println lastItem
-            */
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }
@@ -406,6 +402,36 @@ class NodeDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     @Override
     String getName() {
         return "node"
+    }
+}
+
+class GroovyDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            //https://groovy.jfrog.io/ui/native/dist-release-local/groovy-zips/apache-groovy-sdk-4.0.27.zip
+            driver.get(getUrl())
+            def button = driver.findElements(id("big-download-button"))
+            button = button.first()
+            def version = button.getText()
+                .replace("Download ", "")
+            //println version
+            def downloadUrl = "https://groovy.jfrog.io/ui/native/dist-release-local/groovy-zips/apache-groovy-sdk-${version}.zip"
+            println downloadUrl
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://groovy.apache.org/download.html"
+    }
+
+    @Override
+    String getName() {
+        return "groovy"
     }
 }
 
@@ -440,6 +466,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new GradleDriverExecute(), rulesRegister)
     fillWithRules(new CmakeDriverExecute(), rulesRegister)
     fillWithRules(new NodeDriverExecute(), rulesRegister)
+    fillWithRules(new GroovyDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

@@ -190,6 +190,14 @@ abstract class DriverExecuteBase {
         }
         ""
     }
+
+    List<String> getHrefs(WebDriver driver) {
+        def hrefs = driver
+            .findElements(tagName("a"))
+            .collect { it.getAttribute("href") }
+            .findAll { it != null }
+        hrefs
+    }
 }
 
 class MavenDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
@@ -324,6 +332,83 @@ class GradleDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     }
 }
 
+class CmakeDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+            def links = driver.findElements(tagName("a"))
+            def filteredHrefs = packageHrefs(links)
+            def finalFiltered = filteredHrefs.findAll { href ->
+                href = href.toLowerCase()
+                //linux-x86_64.tar.gz
+                if (!href.endsWith(".tar.gz")) return false
+                if (!href.contains("linux")) return false
+                if (!href.contains("x86_64")) return false
+                if (href.contains("-rc")) return false
+                return true
+            }
+            finalFiltered = finalFiltered.sort { a, b -> a <=> b }
+            //finalFiltered.each { println it }
+            def lastItem = finalFiltered.last()
+            println lastItem
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://cmake.org/download/"
+    }
+
+    @Override
+    String getName() {
+        return "cmake"
+    }
+}
+
+class NodeDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+            sleep(1000)
+            def links = driver.findElements(tagName("a"))
+            def filteredHrefs = packageHrefs(links)
+            //filteredHrefs.each { println it }
+            def finalFiltered = filteredHrefs.findAll { href ->
+                href = href.toLowerCase()
+                //https://nodejs.org/dist/v22.16.0/node-v22.16.0-linux-x64.tar.xz
+                if (!href.endsWith(".tar.xz")) return false
+                if (!href.contains("-linux")) return false
+                if (!href.contains("-x64")) return false
+                //if (href.contains("-rc")) return false
+                return true
+            }
+            finalFiltered = finalFiltered.sort { a, b -> a <=> b }
+            finalFiltered.each { println it }
+            /*def lastItem = finalFiltered.last()
+            println lastItem
+            */
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://nodejs.org/en/download"
+    }
+
+    @Override
+    String getName() {
+        return "node"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -353,6 +438,8 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new MavenDriverExecute(), rulesRegister)
     fillWithRules(new JdkDriverExecute(), rulesRegister)
     fillWithRules(new GradleDriverExecute(), rulesRegister)
+    fillWithRules(new CmakeDriverExecute(), rulesRegister)
+    fillWithRules(new NodeDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

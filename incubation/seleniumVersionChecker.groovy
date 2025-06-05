@@ -55,8 +55,11 @@ interface Url {
 
 class CliArgs {
 
-    @Option(names = ["--name"], description = "Package name", required = false)
+    @Option(names = ["--name", "-n"], description = "Package name", required = false)
     List<String> packageNames
+
+    @Option(names = ["--all", "-a"], description = "All packages", defaultValue = false, required = false)
+    boolean all
 
     CommandLine commandLine
 
@@ -468,7 +471,6 @@ class ThunderbirdDriverExecute extends DriverExecuteBase implements DriverExecut
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
-            sleep(3000)
             def downloadButton = driver.findElements(id("download-btn"))
             def version = downloadButton.first().getAttribute("href")
                 .replace("https://download.mozilla.org/?product=thunderbird-", "")
@@ -490,6 +492,259 @@ class ThunderbirdDriverExecute extends DriverExecuteBase implements DriverExecut
     }
 }
 
+class SbclDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class GoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class JuliaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class HsqldbDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class GrailsDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class JenkinsDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class GeckodriverDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class ChromedriverDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class TomcatDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://example.com/"
+    }
+
+    @Override
+    String getName() {
+        return "xxxxxxx"
+    }
+}
+
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -504,9 +759,14 @@ static void main(String[] args) {
         geckoDriver.init()
         firefox.init()
         //println "Package name: ${cliArgs.getPackageName()}"
-        cliArgs.getPackageNames().each {
-            def rule = requireNonNull(rulesRegister[it], "❌ Missing rule: '${it}'")
-            rule.execute(firefox.getDriver())
+        if (!cliArgs.all) {
+            cliArgs.getPackageNames().each {
+                def rule = requireNonNull(rulesRegister[it], "❌ Missing rule: '${it}'")
+                rule.execute(firefox.getDriver())
+            }
+        } else {//All
+            def valuesList = rulesRegister.values()
+            valuesList.each {it.execute(firefox.getDriver())}
         }
     } catch (Exception exception) {
         println "❌ Error: ${exception.message}"
@@ -524,6 +784,20 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new GroovyDriverExecute(), rulesRegister)
     fillWithRules(new FirefoxDriverExecute(), rulesRegister)
     fillWithRules(new ThunderbirdDriverExecute(), rulesRegister)
+    /*
+    fillWithRules(new SbclDriverExecute(), rulesRegister)
+    fillWithRules(new InfinispanDriverExecute(), rulesRegister)
+    fillWithRules(new GoDriverExecute(), rulesRegister)
+    fillWithRules(new JuliaDriverExecute(), rulesRegister)
+    fillWithRules(new HsqldbDriverExecute(), rulesRegister)
+    fillWithRules(new GrailsDriverExecute(), rulesRegister)
+    fillWithRules(new JenkinsDriverExecute(), rulesRegister)
+    fillWithRules(new SeleniumDriverExecute(), rulesRegister)
+    fillWithRules(new GeckodriverDriverExecute(), rulesRegister)
+    fillWithRules(new ChromedriverDriverExecute(), rulesRegister)
+    fillWithRules(new TomcatDriverExecute(), rulesRegister)
+    fillWithRules(new NetbeansDriverExecute(), rulesRegister)
+    */
     return rulesRegister
 }
 

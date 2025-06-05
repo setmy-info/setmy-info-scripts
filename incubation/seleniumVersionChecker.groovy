@@ -58,7 +58,7 @@ class CliArgs {
     @Option(names = ["--name", "-n"], description = "Package name", required = false)
     List<String> packageNames
 
-    @Option(names = ["--all", "-a"], description = "All packages", defaultValue = "false", required = false)
+    @Option(names = ["--all", "-a"], description = "All packages")
     boolean all
 
     CommandLine commandLine
@@ -504,12 +504,12 @@ class SbclDriverExecute extends DriverExecuteBase implements DriverExecute, Name
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://www.sbcl.org/platform-table.html"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "sbcl"
     }
 }
 
@@ -525,12 +525,12 @@ class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://infinispan.org/download/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "infinispan"
     }
 }
 
@@ -546,12 +546,12 @@ class GoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, 
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://go.dev/dl/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "go"
     }
 }
 
@@ -567,12 +567,12 @@ class JuliaDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://julialang.org/downloads/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "julia"
     }
 }
 
@@ -593,7 +593,7 @@ class HsqldbDriverExecute extends DriverExecuteBase implements DriverExecute, Na
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "hsqldb"
     }
 }
 
@@ -609,12 +609,12 @@ class GrailsDriverExecute extends DriverExecuteBase implements DriverExecute, Na
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://grails.org/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "grails"
     }
 }
 
@@ -630,16 +630,17 @@ class JenkinsDriverExecute extends DriverExecuteBase implements DriverExecute, N
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://www.jenkins.io/download/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "jenkins"
     }
 }
 
 class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    // https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.33.0/selenium-server-4.33.0.jar
     @Override
     void execute(WebDriver driver) {
         try {
@@ -651,16 +652,17 @@ class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, 
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://www.selenium.dev/downloads/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "selenium"
     }
 }
 
 class GeckodriverDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    // https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz
     @Override
     void execute(WebDriver driver) {
         try {
@@ -672,16 +674,17 @@ class GeckodriverDriverExecute extends DriverExecuteBase implements DriverExecut
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://github.com/mozilla/geckodriver/releases"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "geckodriver"
     }
 }
 
 class ChromedriverDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    // https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.55/linux64/chrome-linux64.zip
     @Override
     void execute(WebDriver driver) {
         try {
@@ -693,12 +696,12 @@ class ChromedriverDriverExecute extends DriverExecuteBase implements DriverExecu
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://googlechromelabs.github.io/chrome-for-testing/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "chromedriver"
     }
 }
 
@@ -714,12 +717,12 @@ class TomcatDriverExecute extends DriverExecuteBase implements DriverExecute, Na
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://tomcat.apache.org/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "tomcat"
     }
 }
 
@@ -735,12 +738,12 @@ class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, 
 
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://netbeans.apache.org/front/main/download/"
     }
 
     @Override
     String getName() {
-        return "xxxxxxx"
+        return "netbeans"
     }
 }
 
@@ -759,15 +762,14 @@ static void main(String[] args) {
         geckoDriver.init()
         firefox.init()
         //println "Package name: ${cliArgs.getPackageName()}"
-        if (!cliArgs.all) {
+        if (cliArgs.isAll()) {
+            rulesRegister.rulesMap.each { it.value.execute(firefox.getDriver()) }
+        } else {
             cliArgs.getPackageNames().each {
                 def rule = requireNonNull(rulesRegister[it], "❌ Missing rule: '${it}'")
                 rule.execute(firefox.getDriver())
             }
-        }/*else {//All
-            def valuesList = rulesRegister.values()
-            valuesList.each {it.execute(firefox.getDriver())}
-        }*/
+        }
     } catch (Exception exception) {
         println "❌ Error: ${exception.message}"
     } finally {
@@ -784,7 +786,11 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new GroovyDriverExecute(), rulesRegister)
     fillWithRules(new FirefoxDriverExecute(), rulesRegister)
     fillWithRules(new ThunderbirdDriverExecute(), rulesRegister)
-    /*
+
+    fillWithRules(new SeleniumDriverExecute(), rulesRegister)
+    fillWithRules(new GeckodriverDriverExecute(), rulesRegister)
+    fillWithRules(new ChromedriverDriverExecute(), rulesRegister)
+
     fillWithRules(new SbclDriverExecute(), rulesRegister)
     fillWithRules(new InfinispanDriverExecute(), rulesRegister)
     fillWithRules(new GoDriverExecute(), rulesRegister)
@@ -792,12 +798,8 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new HsqldbDriverExecute(), rulesRegister)
     fillWithRules(new GrailsDriverExecute(), rulesRegister)
     fillWithRules(new JenkinsDriverExecute(), rulesRegister)
-    fillWithRules(new SeleniumDriverExecute(), rulesRegister)
-    fillWithRules(new GeckodriverDriverExecute(), rulesRegister)
-    fillWithRules(new ChromedriverDriverExecute(), rulesRegister)
     fillWithRules(new TomcatDriverExecute(), rulesRegister)
     fillWithRules(new NetbeansDriverExecute(), rulesRegister)
-    */
     return rulesRegister
 }
 

@@ -58,7 +58,7 @@ class CliArgs {
     @Option(names = ["--name", "-n"], description = "Package name", required = false)
     List<String> packageNames
 
-    @Option(names = ["--all", "-a"], description = "All packages", defaultValue = false, required = false)
+    @Option(names = ["--all", "-a"], description = "All packages", defaultValue = "false", required = false)
     boolean all
 
     CommandLine commandLine
@@ -764,10 +764,10 @@ static void main(String[] args) {
                 def rule = requireNonNull(rulesRegister[it], "❌ Missing rule: '${it}'")
                 rule.execute(firefox.getDriver())
             }
-        } else {//All
+        }/*else {//All
             def valuesList = rulesRegister.values()
             valuesList.each {it.execute(firefox.getDriver())}
-        }
+        }*/
     } catch (Exception exception) {
         println "❌ Error: ${exception.message}"
     } finally {

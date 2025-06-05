@@ -149,7 +149,7 @@ abstract class DriverExecuteBase {
         ".exe"
     ]
 
-    By tagName(String name) {
+    By tag(String name) {
         By.tagName(name)
     }
 
@@ -193,7 +193,7 @@ abstract class DriverExecuteBase {
 
     List<String> getHrefs(WebDriver driver) {
         def hrefs = driver
-            .findElements(tagName("a"))
+            .findElements(tag("a"))
             .collect { it.getAttribute("href") }
             .findAll { it != null }
         hrefs
@@ -206,7 +206,7 @@ class MavenDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
-            def links = driver.findElements(tagName("a"))
+            def links = driver.findElements(tag("a"))
             def filteredHrefs = packageHrefs(links)
             //filteredHrefs.each { println it }
             def finalFiltered = filteredHrefs.findAll { href ->
@@ -251,7 +251,7 @@ class JdkDriverExecute extends DriverExecuteBase implements DriverExecute, Name,
         try {
             driver.get(getUrl())
             String firstHref = "https://jdk.java.net/"
-            def links = driver.findElements(tagName("a"))
+            def links = driver.findElements(tag("a"))
             def hrefs = links
                 .collect { it.getAttribute("href") }
                 .findAll { it != null }
@@ -261,7 +261,7 @@ class JdkDriverExecute extends DriverExecuteBase implements DriverExecute, Name,
             def jdkDownloadPageUrl = hrefs.first()
             //println "jdkDownloadPageUrl ${jdkDownloadPageUrl}"
             driver.get(jdkDownloadPageUrl)
-            links = driver.findElements(tagName("a"))
+            links = driver.findElements(tag("a"))
             //https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_linux-x64_bin.tar.gz
             def filteredHrefs = packageHrefs(links)
             //filteredHrefs.each { println it }
@@ -296,7 +296,7 @@ class GradleDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
-            def links = driver.findElements(tagName("a"))
+            def links = driver.findElements(tag("a"))
             def hrefs = links
                 .collect { it.getAttribute("href") }
                 .findAll { it != null }
@@ -338,7 +338,7 @@ class CmakeDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
-            def links = driver.findElements(tagName("a"))
+            def links = driver.findElements(tag("a"))
             def filteredHrefs = packageHrefs(links)
             def finalFiltered = filteredHrefs.findAll { href ->
                 href = href.toLowerCase()
@@ -376,7 +376,7 @@ class NodeDriverExecute extends DriverExecuteBase implements DriverExecute, Name
         try {
             driver.get(getUrl())
             sleep(1000)
-            def links = driver.findElements(tagName("a"))
+            def links = driver.findElements(tag("a"))
             def filteredHrefs = packageHrefs(links)
             //filteredHrefs.each { println it }
             def finalFiltered = filteredHrefs.findAll { href ->
@@ -441,12 +441,11 @@ class FirefoxDriverExecute extends DriverExecuteBase implements DriverExecute, N
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
-            def spanElement = driver.findElements(cssSelector("span.c-release-version"))
+            def spanElement = driver.findElements(cssSelector(".c-release-version"))
             spanElement = spanElement.first()
             def version = spanElement.getText()
-            println version
-            // CSS selector span.c-release-version - text
-            //https://download-installer.cdn.mozilla.net/pub/firefox/releases/139.0.1/linux-x86_64/en-US/firefox-139.0.1.tar.xz
+            def downloadUrl = "https://download-installer.cdn.mozilla.net/pub/firefox/releases/139.0.1/linux-x86_64/en-US/firefox-${version}.tar.xz"
+            println downloadUrl
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }
@@ -454,7 +453,7 @@ class FirefoxDriverExecute extends DriverExecuteBase implements DriverExecute, N
 
     @Override
     String getUrl() {
-        return "https://www.mozilla.org/en-US/firefox/139.0.1/releasenotes/"
+        return "https://www.mozilla.org/en-US/firefox/notes/"
     }
 
     @Override
@@ -469,6 +468,12 @@ class ThunderbirdDriverExecute extends DriverExecuteBase implements DriverExecut
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            sleep(3000)
+            def downloadButton = driver.findElements(id("download-btn"))
+            def version = downloadButton.first().getAttribute("href")
+                .replace("https://download.mozilla.org/?product=thunderbird-", "")
+                .replace("-SSL&os=win64&lang=en-US", "");
+            println "https://download-installer.cdn.mozilla.net/pub/thunderbird/releases/${version}/linux-x86_64/en-US/thunderbird-${version}.tar.xz"
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }
@@ -476,7 +481,7 @@ class ThunderbirdDriverExecute extends DriverExecuteBase implements DriverExecut
 
     @Override
     String getUrl() {
-        return "https://groovy.apache.org/download.html"
+        return "https://www.thunderbird.net/en-US/thunderbird/all/"
     }
 
     @Override

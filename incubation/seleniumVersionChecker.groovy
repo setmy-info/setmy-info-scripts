@@ -210,6 +210,10 @@ abstract class DriverExecuteBase {
         sort(hrefs).last()
     }
 
+    String sortAndFirst(List<String> hrefs) {
+        sort(hrefs).first()
+    }
+
     List<String> sort(List<String> hrefs) {
         hrefs.sort { a, b -> a <=> b }
     }
@@ -504,13 +508,24 @@ class ThunderbirdDriverExecute extends DriverExecuteBase implements DriverExecut
     }
 }
 
-class SbclDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class SbclDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            println first
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // http://prdownloads.sourceforge.net/sbcl/sbcl-2.5.5-x86-64-linux-binary.tar.bz2
+            if (!href.contains("/sbcl/sbcl-")) return false
+            if (!href.endsWith("-x86-64-linux-binary.tar.bz2")) return false
+            return true
         }
     }
 
@@ -525,13 +540,25 @@ class SbclDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     }
 }
 
-class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            println first
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/infinispan/infinispan/releases/download/15.2.0.Final/infinispan-server-15.2.0.Final.zip
+            if (!href.contains("/infinispan/infinispan/releases/download/")) return false
+            if (!href.contains("/infinispan-server-")) return false
+            if (!href.endsWith(".Final.zip")) return false
+            return true
         }
     }
 
@@ -546,13 +573,25 @@ class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute
     }
 }
 
-class GoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class GoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            //sleep(3000)
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            println first
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://go.dev/dl/go1.24.4.linux-amd64.tar.gz
+            if (!href.contains(".dev/dl/go")) return false
+            if (!href.endsWith(".linux-amd64.tar.gz")) return false
+            return true
         }
     }
 
@@ -567,13 +606,24 @@ class GoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, 
     }
 }
 
-class JuliaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class JuliaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            println first
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://julialang-s3.julialang.org/bin/linux/x64/1.11/julia-1.11.5-linux-x86_64.tar.gz
+            if (!href.contains("/bin/linux/x64/")) return false
+            if (!href.endsWith("-linux-x86_64.tar.gz")) return false
+            return true
         }
     }
 
@@ -588,13 +638,24 @@ class JuliaDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     }
 }
 
-class HsqldbDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class HsqldbDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            println first
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // xxxxx
+            if (!href.contains("/grails/grails-forge/releases/download/v")) return false
+            if (!href.endsWith(".zip")) return false
+            return true
         }
     }
 
@@ -609,13 +670,24 @@ class HsqldbDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     }
 }
 
-class GrailsDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class GrailsDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            println first
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/grails/grails-forge/releases/download/v6.2.3/grails-cli-6.2.3.zip
+            if (!href.contains("/grails/grails-forge/releases/download/v")) return false
+            if (!href.endsWith(".zip")) return false
+            return true
         }
     }
 
@@ -630,13 +702,24 @@ class GrailsDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     }
 }
 
-class JenkinsDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class JenkinsDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            println first
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://get.jenkins.io/war-stable/2.504.2/jenkins.war
+            if (!href.contains("/war-stable/")) return false
+            if (!href.endsWith("/jenkins.war")) return false
+            return true
         }
     }
 
@@ -656,8 +739,8 @@ class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, 
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
-            def last = getHrefs(driver).findAll(getSearcher()).last()
-            println last
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            println first
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }
@@ -666,8 +749,13 @@ class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, 
     Closure<Boolean> getSearcher() {
         return { href ->
             // https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.33.0/selenium-server-4.33.0.jar
-            href = href.toLowerCase()
-            if (!href.contains("/SeleniumHQ/selenium/releases/download/")) return false
+            if (!href.contains("/SeleniumHQ/selenium/releases/download/selenium-")) return false
+            if (!href.endsWith(".jar")) return false
+            if (!href.contains("selenium-server-")) return false
+            if (href.contains("-alpha")) return false
+            if (href.contains("-beta")) return false
+            if (href.contains("-rc")) return false
+            if (href.contains("selenium-server-standalone-")) return false
             return true
         }
     }
@@ -762,19 +850,32 @@ class TomcatDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     }
 }
 
-class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
+            // https://dlcdn.apache.org/netbeans/netbeans/26/netbeans-26-bin.zip
             driver.get(getUrl())
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            def version = first.split("/apache/netbeans/releases/tag/")[1]
+            println "https://dlcdn.apache.org/netbeans/netbeans/${version}/netbeans-${version}-bin.zip"
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }
     }
 
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            href = href.toLowerCase()
+            if (!href.contains("/apache/netbeans/releases/tag/")) return false
+            if (href.contains("-rc")) return false
+            return true
+        }
+    }
+
     @Override
     String getUrl() {
-        return "https://netbeans.apache.org/front/main/download/"
+        return "https://github.com/apache/netbeans/releases"
     }
 
     @Override
@@ -783,6 +884,42 @@ class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, 
     }
 }
 
+class PythonDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            // https://dlcdn.apache.org/netbeans/netbeans/26/netbeans-26-bin.zip
+            driver.get(getUrl())
+            def first = getHrefs(driver).findAll(getSearcher()).first()
+            //def version = first.split("/apache/netbeans/releases/tag/")[1]
+            //println "https://dlcdn.apache.org/netbeans/netbeans/${version}/netbeans-${version}-bin.zip"
+            println first
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            /*
+            href = href.toLowerCase()
+            if (!href.contains("/apache/netbeans/releases/tag/")) return false
+            if (href.contains("-rc")) return false
+            */
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://www.python.org/ftp/python/"
+    }
+
+    @Override
+    String getName() {
+        return "python"
+    }
+}
 
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
@@ -822,7 +959,6 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new GroovyDriverExecute(), rulesRegister)
     fillWithRules(new FirefoxDriverExecute(), rulesRegister)
     fillWithRules(new ThunderbirdDriverExecute(), rulesRegister)
-
     fillWithRules(new SeleniumDriverExecute(), rulesRegister)
     fillWithRules(new GeckodriverDriverExecute(), rulesRegister)
     fillWithRules(new ChromedriverDriverExecute(), rulesRegister)
@@ -831,11 +967,12 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new InfinispanDriverExecute(), rulesRegister)
     fillWithRules(new GoDriverExecute(), rulesRegister)
     fillWithRules(new JuliaDriverExecute(), rulesRegister)
-    fillWithRules(new HsqldbDriverExecute(), rulesRegister)
+    //fillWithRules(new HsqldbDriverExecute(), rulesRegister)
     fillWithRules(new GrailsDriverExecute(), rulesRegister)
     fillWithRules(new JenkinsDriverExecute(), rulesRegister)
     fillWithRules(new TomcatDriverExecute(), rulesRegister)
     fillWithRules(new NetbeansDriverExecute(), rulesRegister)
+    fillWithRules(new PythonDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

@@ -651,14 +651,24 @@ class JenkinsDriverExecute extends DriverExecuteBase implements DriverExecute, N
     }
 }
 
-class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
-    // https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.33.0/selenium-server-4.33.0.jar
+class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def last = getHrefs(driver).findAll(getSearcher()).last()
+            println last
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.33.0/selenium-server-4.33.0.jar
+            href = href.toLowerCase()
+            if (!href.contains("/SeleniumHQ/selenium/releases/download/")) return false
+            return true
         }
     }
 

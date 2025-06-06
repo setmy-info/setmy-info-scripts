@@ -1034,6 +1034,40 @@ class H2DriverExecute extends DriverExecuteBase implements DriverExecute, Name, 
     }
 }
 
+class ArgoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+            def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+            def version = last.split("argoproj/argo-workflows/releases/tag/v")[1]
+            println "https://github.com/argoproj/argo-workflows/releases/download/v${version}/argo-linux-amd64.gz"
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/argoproj/argo-workflows/releases/tag/v3.6.10
+            href = href.toLowerCase()
+            if (!href.contains("/argoproj/argo-workflows/releases/tag/v")) return false
+            if (href.contains("-rc")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://github.com/argoproj/argo-workflows/releases/"
+    }
+
+    @Override
+    String getName() {
+        return "argo"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1088,6 +1122,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new BazelDriverExecute(), rulesRegister)
     fillWithRules(new JanetDriverExecute(), rulesRegister)
     fillWithRules(new H2DriverExecute(), rulesRegister)
+    fillWithRules(new ArgoDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

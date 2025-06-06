@@ -168,8 +168,8 @@ abstract class DriverExecuteBase {
         By.className(id)
     }
 
-    By cssSelector(String id) {
-        By.cssSelector(id)
+    By cssSelector(String selector) {
+        By.cssSelector(selector)
     }
 
     By xpath(String id) {
@@ -481,19 +481,35 @@ class FirefoxDriverExecute extends DriverExecuteBase implements DriverExecute, N
     }
 }
 
-class ThunderbirdDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class ThunderbirdDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
 
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
-            def downloadButton = driver.findElements(id("download-btn"))
-            def version = downloadButton.first().getAttribute("href")
-                .replace("https://download.mozilla.org/?product=thunderbird-", "")
-                .replace("-SSL&os=win64&lang=en-US", "");
+            def version = getHrefs(driver).findAll(getSearcher()).unique().first()
+                .replaceAll("https://download.mozilla.org/?", "")
+                .replaceAll("lang=en-US", "")
+                .replaceAll("os=linux64", "")
+                .replaceAll("os=win64", "")
+                .replaceAll("-SSL", "")
+                .replaceAll("product=thunderbird-", "")
+                .replaceAll("&", "")
+                .replaceAll("\\?", "")
             println "https://download-installer.cdn.mozilla.net/pub/thunderbird/releases/${version}/linux-x86_64/en-US/thunderbird-${version}.tar.xz"
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://download.mozilla.org/?product=thunderbird-139.0.1-SSL&os=linux64&lang=en-US
+            if (!href.contains("product=thunderbird-")) return false
+            if (!href.contains("download")) return false
+            if (!href.contains("os=linux64")) return false
+            if (!href.contains("lang=en-US")) return false
+            return true
         }
     }
 
@@ -638,30 +654,28 @@ class JuliaDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     }
 }
 
-class HsqldbDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+class HsqldbDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
         try {
+            //html body div#mid_cont div#sb_left.sidebar_home p font a
             driver.get(getUrl())
-            def first = getHrefs(driver).findAll(getSearcher()).first()
-            println first
+            def versions = driver
+                .findElements(cssSelector("div#sb_left.sidebar_home p font a"))
+                .collect { it.getText() }
+                .findAll { it != null && it.contains("latest version ") && it.contains("Download") }
+            versions.each {
+                def cleaned = it.replace("Download latest version ", "").trim()
+                println "https://altushost-swe.dl.sourceforge.net/project/hsqldb/hsqldb/hsqldb_2_7/hsqldb-${cleaned}.zip"
+            }
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }
     }
 
-    Closure<Boolean> getSearcher() {
-        return { href ->
-            // xxxxx
-            if (!href.contains("/grails/grails-forge/releases/download/v")) return false
-            if (!href.endsWith(".zip")) return false
-            return true
-        }
-    }
-
     @Override
     String getUrl() {
-        return "https://example.com/"
+        return "https://hsqldb.org/"
     }
 
     @Override
@@ -804,6 +818,72 @@ class GeckodriverDriverExecute extends DriverExecuteBase implements DriverExecut
     }
 }
 
+class BazelDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+            def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+            def version = last.split("bazelbuild/bazel/releases/tag/")[1]
+            println "https://github.com/bazelbuild/bazel/releases/download/${version}/bazel_nojdk-${version}-linux-x86_64"
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/bazelbuild/bazel/releases/tag/8.2.1
+            href = href.toLowerCase()
+            if (!href.contains("/bazelbuild/bazel/releases/tag/")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://github.com/bazelbuild/bazel/releases"
+    }
+
+    @Override
+    String getName() {
+        return "bazel"
+    }
+}
+
+class JanetDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+            def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+            def version = last.split("janet-lang/janet/releases/tag/v")[1]
+            println "https://github.com/janet-lang/janet/releases/download/v${version}/janet-v${version}-linux-x64.tar.gz"
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/janet-lang/janet/releases/tag/v1.38.0
+            href = href.toLowerCase()
+            if (!href.contains("/janet-lang/janet/releases/tag/v")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://github.com/janet-lang/janet/releases"
+    }
+
+    @Override
+    String getName() {
+        return "janet"
+    }
+}
+
 class ChromedriverDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
@@ -884,16 +964,49 @@ class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, 
     }
 }
 
-class PythonDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+class PythonDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
         try {
-            // https://dlcdn.apache.org/netbeans/netbeans/26/netbeans-26-bin.zip
+            driver.get(getUrl())
+            def allowedPrefixes = ['3.9.', '3.10.', '3.11.', '3.12.', '3.13.', '3.14.', '3.15.', '3.16.']
+            def versions = driver
+                .findElements(cssSelector("li span.release-number a"))
+                .collect { it.getText() }
+                .findAll { it != null }
+                .collect { it.replace('Python ', '') }
+                .take(10)
+
+            def filteredVersions = allowedPrefixes.collect { prefix ->
+                versions.find { v -> v.startsWith(prefix) }
+            }.findAll { it != null }
+            filteredVersions.each {
+                println "https://www.python.org/ftp/python/${it}/Python-${it}.tgz"
+            }
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://www.python.org/downloads/"
+    }
+
+    @Override
+    String getName() {
+        return "python"
+    }
+}
+
+class H2DriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        try {
             driver.get(getUrl())
             def first = getHrefs(driver).findAll(getSearcher()).first()
-            //def version = first.split("/apache/netbeans/releases/tag/")[1]
-            //println "https://dlcdn.apache.org/netbeans/netbeans/${version}/netbeans-${version}-bin.zip"
-            println first
+            def version = first.split("/h2-")[1].replace(".jar", "")
+            println "https://search.maven.org/remotecontent?filepath=com/h2database/h2/${version}/h2-${version}.jar"
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }
@@ -901,23 +1014,23 @@ class PythonDriverExecute extends DriverExecuteBase implements DriverExecute, Na
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            /*
+            // https://search.maven.org/remotecontent?filepath=com/h2database/h2/2.3.232/h2-2.3.232.jar
             href = href.toLowerCase()
-            if (!href.contains("/apache/netbeans/releases/tag/")) return false
-            if (href.contains("-rc")) return false
-            */
+            if (!href.contains("com/h2database/h2/")) return false
+            if (!href.endsWith(".jar")) return false
+            if (!href.startsWith("https://search.maven.org/remotecontent")) return false
             return true
         }
     }
 
     @Override
     String getUrl() {
-        return "https://www.python.org/ftp/python/"
+        return "https://www.h2database.com/html/download.html"
     }
 
     @Override
     String getName() {
-        return "python"
+        return "h2"
     }
 }
 
@@ -962,17 +1075,19 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new SeleniumDriverExecute(), rulesRegister)
     fillWithRules(new GeckodriverDriverExecute(), rulesRegister)
     fillWithRules(new ChromedriverDriverExecute(), rulesRegister)
-
     fillWithRules(new SbclDriverExecute(), rulesRegister)
     fillWithRules(new InfinispanDriverExecute(), rulesRegister)
     fillWithRules(new GoDriverExecute(), rulesRegister)
     fillWithRules(new JuliaDriverExecute(), rulesRegister)
-    //fillWithRules(new HsqldbDriverExecute(), rulesRegister)
+    fillWithRules(new HsqldbDriverExecute(), rulesRegister)
     fillWithRules(new GrailsDriverExecute(), rulesRegister)
     fillWithRules(new JenkinsDriverExecute(), rulesRegister)
     fillWithRules(new TomcatDriverExecute(), rulesRegister)
     fillWithRules(new NetbeansDriverExecute(), rulesRegister)
     fillWithRules(new PythonDriverExecute(), rulesRegister)
+    fillWithRules(new BazelDriverExecute(), rulesRegister)
+    fillWithRules(new JanetDriverExecute(), rulesRegister)
+    fillWithRules(new H2DriverExecute(), rulesRegister)
     return rulesRegister
 }
 

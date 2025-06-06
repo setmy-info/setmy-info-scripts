@@ -53,6 +53,10 @@ interface Url {
     String getUrl()
 }
 
+interface Search {
+    Closure<Boolean> getSearcher()
+}
+
 class CliArgs {
 
     @Option(names = ["--name", "-n"], description = "Package name", required = false)
@@ -200,6 +204,14 @@ abstract class DriverExecuteBase {
             .collect { it.getAttribute("href") }
             .findAll { it != null }
         hrefs
+    }
+
+    String sortAndLast(List<String> hrefs) {
+        sort(hrefs).last()
+    }
+
+    List<String> sort(List<String> hrefs) {
+        hrefs.sort { a, b -> a <=> b }
     }
 }
 
@@ -661,14 +673,25 @@ class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, 
     }
 }
 
-class GeckodriverDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
-    // https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz
+class GeckodriverDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+            def version = last.split("mozilla/geckodriver/releases/tag/v")[1]
+            println "https://github.com/mozilla/geckodriver/releases/download/v${version}/geckodriver-v${version}-linux64.tar.gz"
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/mozilla/geckodriver/releases/tag/v0.36.0
+            href = href.toLowerCase()
+            if (!href.contains("/mozilla/geckodriver/releases/tag/v")) return false
+            return true
         }
     }
 
@@ -684,11 +707,14 @@ class GeckodriverDriverExecute extends DriverExecuteBase implements DriverExecut
 }
 
 class ChromedriverDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
-    // https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.55/linux64/chrome-linux64.zip
     @Override
     void execute(WebDriver driver) {
         try {
             driver.get(getUrl())
+            def version = driver.findElements(cssSelector("html body section#stable.status-ok p code"))//Version label in page
+                .first()
+                .getText()
+            println "https://storage.googleapis.com/chrome-for-testing-public/${version}/linux64/chrome-linux64.zip"
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
         }

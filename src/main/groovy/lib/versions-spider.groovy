@@ -29,7 +29,7 @@ curl 'https://search.maven.org/solrsearch/select?q=g:org.apache.maven+AND+a:mave
 
 */
 
-// smi-versions-spider -n mvn
+// smi-versions-spider -n=mvn
 // smi-versions-spider -a
 
 interface Name {

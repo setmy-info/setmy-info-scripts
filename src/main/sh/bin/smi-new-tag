@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: $0 <version>"
+  exit 1
+fi
+
+VERSION="$1"
+
+if git rev-parse "$VERSION" >/dev/null 2>&1; then
+  echo "❌ Tag $VERSION already exists!"
+  exit 1
+fi
+
+echo "🏷️  Creating tag $VERSION..."
+git tag -a "$VERSION" -m "$VERSION"
+
+echo "🔄 Updating tag 'latest' -> $VERSION"
+git tag -f latest "$VERSION"
+
+echo "🚀 Pushing tags..."
+git push -f origin latest
+git push --tags
+
+echo "✅ Done: $VERSION tagged and pushed."
+
+exit 0

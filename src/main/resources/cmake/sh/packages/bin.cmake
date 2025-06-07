@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- packages bin.cmake")
 
+INSTALL(PROGRAMS "${BINARY_OUTPUT_PATH}/smi-versions-spider" DESTINATION bin)
+
 # PLACEHOLDER-END #

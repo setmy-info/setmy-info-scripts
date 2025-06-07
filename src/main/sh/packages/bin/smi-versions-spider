@@ -1,0 +1,6 @@
+#!/bin/sh
+
+SMI_LIB_DIR=`smi-lib-location`
+groovy ${SMI_LIB_DIR}/versions-spider.groovy "${*}"
+
+exit ${?}

@@ -15,7 +15,8 @@ import static java.util.Objects.requireNonNull
 @Grab(group = 'org.yaml', module = 'snakeyaml', version = '2.4')
 @Grab(group = 'com.google.errorprone', module = 'error_prone_annotations', version = '2.38.0')
 @Grab(group = 'info.picocli', module = 'picocli', version = '4.7.7')
-@Grab(group='org.xerial', module='sqlite-jdbc', version='3.49.1.0')
+
+//@Grab(group='org.xerial', module='sqlite-jdbc', version='3.49.1.0')
 //@Grab(group = 'org.seleniumhq.selenium', module = 'selenium-java', version = '4.33.0')
 /*
 https://search.maven.org/solrsearch/select?q=g:org.apache.maven+AND+a:maven&core=gav&rows=20&wt=json
@@ -28,7 +29,8 @@ curl 'https://search.maven.org/solrsearch/select?q=g:org.apache.maven+AND+a:mave
 
 */
 
-// ./seleniumVersionChecker.sh --input seleniumVersionChecker.yaml --output seleniumVersionChecker.csv
+// smi-versions-spider -n mvn
+// smi-versions-spider -a
 
 interface Name {
     String getName()

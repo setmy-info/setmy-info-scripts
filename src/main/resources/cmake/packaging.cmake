@@ -2,7 +2,8 @@
 MESSAGE("-- packaging.cmake")
 
 # Binary packages or non-binary (scripts, Java, Python) packages.
-SET (MACHINE_BINARY_PROJECT FALSE)
+SET(MACHINE_BINARY_PROJECT FALSE)
+SET(CPACK_RPM_SPEC_MORE_DEFINE "%undefine __brp_mangle_shebangs")
 
 IF(MACHINE_BINARY_PROJECT)
     SET(ARCH_TYPE_SUFFIX "${CMAKE_SYSTEM_PROCESSOR}")

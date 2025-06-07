@@ -1,6 +1,10 @@
 #!/bin/sh
 
-set -euo pipefail
+# POSIX-compatible script to create and push a Git version tag
+# and update a 'latest' lightweight tag to point to it.
+
+# Exit immediately if a command fails or if an unset variable is used
+set -eu
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <version>"

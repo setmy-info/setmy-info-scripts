@@ -1,0 +1,47 @@
+.TH smi-new-tag "1" "June 2025" "SMI Toolset 0.92.0" "SMI Tag Command"
+.SH NAME
+smi-new-tag \- create a versioned Git tag and update the 'latest' tag
+.SH SYNOPSIS
+.B smi-new-tag
+[\fIversion\fR]
+.SH DESCRIPTION
+.PP
+The \fBsmi-new-tag\fR command automates the creation of a versioned Git tag and force-updates the
+\fBlatest\fR tag to point to it. This is useful for maintaining clear version history
+and always having a pointer to the latest stable release.
+.PP
+When run, it performs the following:
+.IP \[bu] 2
+Checks if the given version tag already exists.
+.IP \[bu]
+Creates an annotated tag with the version string as both name and message.
+.IP \[bu]
+Forces the \fBlatest\fR tag to point to the newly created version.
+.IP \[bu]
+Pushes the \fBlatest\fR and all tags to the remote repository.
+.PP
+The command fails if the version tag already exists, or if the version argument is missing.
+.SH OPTIONS
+.PP
+This script takes a single required positional argument:
+.TP
+\fIversion\fR
+The new semantic version number to tag (e.g. \fB0.92.0\fR).
+.SH EXAMPLES
+.PP
+Tag version \fB0.92.0\fR and update \fBlatest\fR tag:
+.PP
+.B smi-new-tag 0.92.0
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.B git-tag(1),
+.B git-push(1)
+.PP
+See also your Git documentation or CI/CD deployment tools that support Git tags.

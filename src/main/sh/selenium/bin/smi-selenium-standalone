@@ -6,8 +6,8 @@
 . $(smi-include selenium.sh)
 includePackage selenium
 
-HUB_URL="${1:-http://localhost:4444}"
+HUB_URL=${1}
 
-runSeleniumNode ${HUB_URL}
+runSeleniumStandalone
 
 exit 0

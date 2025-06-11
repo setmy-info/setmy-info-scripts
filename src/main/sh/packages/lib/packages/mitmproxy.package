@@ -1,0 +1,17 @@
+MITMPROXY_NAME=mitmproxy
+MITMPROXY_VERSION=12.1.1
+MITMPROXY_DIR_NAME=apache-maven-${MITMPROXY_VERSION}
+MITMPROXY_TAR_FILE_NAME=${MITMPROXY_DIR_NAME}-bin.tar
+MITMPROXY_TAR_GZ_FILE_NAME=${MITMPROXY_TAR_FILE_NAME}.gz
+MITMPROXY_TAR_GZ_FILE_URL=https://dlcdn.apache.org/maven/maven-3/${MITMPROXY_VERSION}/binaries/${MITMPROXY_DIR_NAME}-bin.tar.gz
+
+# https://downloads.mitmproxy.org/12.1.1/mitmproxy-12.1.1-linux-x86_64.tar.gz
+
+mvn_download_func() {
+    smi-download ${MITMPROXY_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MITMPROXY_TAR_GZ_FILE_NAME}
+}
+
+mvn_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${MITMPROXY_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/${MITMPROXY_NAME} /opt/${SOLR_DIR_NAME}
+}

@@ -1,2 +1,2 @@
 @echo off
-call groovy versions-spider.groovy %*%
+call groovy %SMI_LIB_DIR%\versions-spider.groovy %*%

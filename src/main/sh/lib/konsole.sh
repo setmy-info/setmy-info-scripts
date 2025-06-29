@@ -9,6 +9,18 @@ tryToOpenXfceTerminal() {
     fi
 }
 
+tryToOpenPtyxisTerminal() {
+    COMMAND_NAME=ptyxis
+    if ! command -v ${COMMAND_NAME} &> /dev/null
+    then
+        echo "${COMMAND_NAME} terminal could not be found"
+    else
+       # TODO : --working-directory=${PWD}
+        ${COMMAND_NAME} --new-window &
+        exit 0
+    fi
+}
+
 tryToOpenGnomeTerminal() {
     COMMAND_NAME=gnome-terminal
     if ! command -v ${COMMAND_NAME} &> /dev/null
@@ -65,6 +77,7 @@ executeTerminal() {
 findTerminal() {
      tryToOpenXfceTerminal
      tryToOpenGnomeTerminal
+     tryToOpenPtyxisTerminal
      tryToOpenMateTerminal
      tryToOpenKonsole
      tryToOpenXterm

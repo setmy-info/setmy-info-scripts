@@ -1071,6 +1071,76 @@ class ArgoDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     }
 }
 
+class MITMProxyDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            driver.get(getUrl())
+            def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+            def version = last.split("downloads/#")[1].replace("/", "")
+            println "https://downloads.mitmproxy.org/${version}/mitmproxy-${version}-linux-x86_64.tar.gz"
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://mitmproxy.org/downloads/#12.1.1/
+            href = href.toLowerCase()
+            if (!href.contains("https://mitmproxy.org/downloads/#")) return false
+            if (!href.endsWith("/")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://mitmproxy.org/downloads/"
+    }
+
+    @Override
+    String getName() {
+        return "mitmproxy"
+    }
+}
+
+class SolrDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            //https://dlcdn.apache.org/solr/solr/9.8.1/solr-9.8.1.tgz
+            driver.get(getUrl())
+            def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+            def version = last.split("downloads/#")[1].replace("/", "")
+            println "https://dlcdn.apache.org/solr/solr/${version}/solr-${version}.tgz"
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://www.apache.org/dyn/closer.lua/solr/solr/9.8.1/solr-9.8.1.tgz?action=download
+            href = href.toLowerCase()
+            if (!href.contains("/solr/solr")) return false
+            if (!href.contains("solr-")) return false
+            if (!href.contains(".tgz")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://solr.apache.org/downloads.html"
+    }
+
+    @Override
+    String getName() {
+        return "solr"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1126,6 +1196,8 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new JanetDriverExecute(), rulesRegister)
     fillWithRules(new H2DriverExecute(), rulesRegister)
     fillWithRules(new ArgoDriverExecute(), rulesRegister)
+    fillWithRules(new MITMProxyDriverExecute(), rulesRegister)
+    fillWithRules(new SolrDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

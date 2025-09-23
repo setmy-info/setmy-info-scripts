@@ -1,11 +1,11 @@
 GROOVY_NAME=groovy
-GROOVY_VERSION=4.0.27
+GROOVY_VERSION=5.0.1
 GROOVY_DIR_NAME=${GROOVY_NAME}-${GROOVY_VERSION}
 GROOVY_FILE_NAME=apache-groovy-sdk-${GROOVY_VERSION}
 GROOVY_ZIP_FILE_NAME=${GROOVY_FILE_NAME}.zip
 GROOVY_ZIP_FILE_URL="https://groovy.jfrog.io/ui/api/v1/download?repoKey=dist-release-local&path=groovy-zips%252F${GROOVY_ZIP_FILE_NAME}&isNativeBrowsing=true"
 
-# https://groovy.jfrog.io/ui/native/dist-release-local/groovy-zips/apache-groovy-sdk-4.0.27.zip
+# https://groovy.jfrog.io/ui/native/dist-release-local/groovy-zips/apache-groovy-sdk-5.0.1.zip
 
 groovy_download_func() {
     smi-download ${GROOVY_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GROOVY_ZIP_FILE_NAME}

@@ -1,11 +1,11 @@
 JENKINS_NAME=jenkins
-JENKINS_VERSION=2.504.2
+JENKINS_VERSION=2.516.3
 JENKINS_DIR_NAME=jenkins
 JENKINS_WAR_FILE_NAME=${JENKINS_DIR_NAME}.war
 #JENKINS_WAR_FILE_URL=https://ftp.halifax.rwth-aachen.de/jenkins/war-stable/${JENKINS_VERSION}/${JENKINS_WAR_FILE_NAME}
 JENKINS_WAR_FILE_URL=https://get.jenkins.io/war-stable/${JENKINS_VERSION}/${JENKINS_WAR_FILE_NAME}
 
-# https://get.jenkins.io/war-stable/2.504.2/jenkins.war
+# https://get.jenkins.io/war-stable/2.516.3/jenkins.war
 
 jenkins_download_func() {
     smi-download ${JENKINS_WAR_FILE_URL} ${HOME_PACKAGES_DIR}/${JENKINS_WAR_FILE_NAME}

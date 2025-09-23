@@ -1,11 +1,11 @@
 THUNDERBIRD_NAME=thunderbird
-THUNDERBIRD_VERSION=139.0
+THUNDERBIRD_VERSION=143.0
 THUNDERBIRD_FILE_NAME=${THUNDERBIRD_NAME}
 THUNDERBIRD_TAR_FILE_NAME=${THUNDERBIRD_NAME}-${THUNDERBIRD_VERSION}.tar
 THUNDERBIRD_XZ_FILE_NAME=${THUNDERBIRD_TAR_FILE_NAME}.xz
 THUNDERBIRD_FILE_URL=https://download-installer.cdn.mozilla.net/pub/thunderbird/releases/${THUNDERBIRD_VERSION}/linux-x86_64/en-US/${THUNDERBIRD_XZ_FILE_NAME}
 
-# https://download-installer.cdn.mozilla.net/pub/thunderbird/releases/139.0/linux-x86_64/en-US/thunderbird-139.0.tar.xz
+# https://download-installer.cdn.mozilla.net/pub/thunderbird/releases/143.0/linux-x86_64/en-US/thunderbird-143.0.tar.xz
 
 thunderbird_download_func() {
     smi-download ${THUNDERBIRD_FILE_URL} ${HOME_PACKAGES_DIR}/${THUNDERBIRD_XZ_FILE_NAME}

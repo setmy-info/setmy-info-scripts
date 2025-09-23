@@ -206,6 +206,7 @@ abstract class DriverExecuteBase {
             .findElements(tag("a"))
             .collect { it.getAttribute("href") }
             .findAll { it != null }
+        //println "🔗: ${hrefs}"
         hrefs
     }
 
@@ -403,11 +404,16 @@ class NodeDriverExecute extends DriverExecuteBase implements DriverExecute, Name
             //filteredHrefs.each { println it }
             def finalFiltered = filteredHrefs.findAll { href ->
                 href = href.toLowerCase()
+                //println "🔗: ${href}"
                 //https://nodejs.org/dist/v22.16.0/node-v22.16.0-linux-x64.tar.xz
-                if (!href.endsWith(".tar.xz")) return false
-                if (!href.contains("-linux")) return false
-                if (!href.contains("-x64")) return false
-                return true
+                //https://nodejs.org/dist/v22.19.0/node-v22.19.0-linux-x64.tar.xz
+                //https://nodejs.org/dist/v22.19.0/node-v22.19.0-win-x64.zip
+                //https://nodejs.org/dist/v22.19.0/node-v22.19.0.tar.gz
+                if (href.endsWith(".tar.xz") && href.contains("-linux") && href.contains("-x64"))
+                    return true
+                if (href.endsWith(".zip") && href.contains("-win") && href.contains("-x64"))
+                    return true
+                return false
             }
             finalFiltered = finalFiltered.sort { a, b -> a <=> b }
             finalFiltered.each { println it }
@@ -466,7 +472,7 @@ class FirefoxDriverExecute extends DriverExecuteBase implements DriverExecute, N
             def spanElement = driver.findElements(cssSelector(".c-release-version"))
             spanElement = spanElement.first()
             def version = spanElement.getText()
-            def downloadUrl = "https://download-installer.cdn.mozilla.net/pub/firefox/releases/139.0.1/linux-x86_64/en-US/firefox-${version}.tar.xz"
+            def downloadUrl = "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${version}/linux-x86_64/en-US/firefox-${version}.tar.xz"
             println downloadUrl
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
@@ -701,8 +707,10 @@ class GrailsDriverExecute extends DriverExecuteBase implements DriverExecute, Na
 
     Closure<Boolean> getSearcher() {
         return { href ->
+            // println "🔗: ${href}"
             // https://github.com/grails/grails-forge/releases/download/v6.2.3/grails-cli-6.2.3.zip
-            if (!href.contains("/grails/grails-forge/releases/download/v")) return false
+            // https://github.com/apache/grails-forge/releases/download/v6.2.3/grails-cli-6.2.3.zip
+            if (!href.contains("/apache/grails-forge/releases/download/v")) return false
             if (!href.endsWith(".zip")) return false
             return true
         }
@@ -710,7 +718,7 @@ class GrailsDriverExecute extends DriverExecuteBase implements DriverExecute, Na
 
     @Override
     String getUrl() {
-        return "https://grails.org/"
+        return "https://grails.apache.org/"
     }
 
     @Override
@@ -839,6 +847,7 @@ class BazelDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
             // https://github.com/bazelbuild/bazel/releases/tag/8.2.1
             href = href.toLowerCase()
             if (!href.contains("/bazelbuild/bazel/releases/tag/")) return false
+            if (href.contains("rc")) return false
             return true
         }
     }
@@ -916,6 +925,7 @@ class TomcatDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     @Override
     void execute(WebDriver driver) {
         try {
+            //TODO
             driver.get(getUrl())
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
@@ -1075,8 +1085,14 @@ class MITMProxyDriverExecute extends DriverExecuteBase implements DriverExecute,
     @Override
     void execute(WebDriver driver) {
         try {
+            // https://downloads.mitmproxy.org/12.1.2/mitmproxy-12.1.2-linux-x86_64.tar.gz
             driver.get(getUrl())
-            def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+            sleep(1000)
+            def hrefs = getHrefs(driver)
+            //println "🔗: ${hrefs}"
+            hrefs = hrefs.findAll(getSearcher())
+            //println "🔗: ${hrefs}"
+            def last = sortAndLast(hrefs)
             def version = last.split("downloads/#")[1].replace("/", "")
             println "https://downloads.mitmproxy.org/${version}/mitmproxy-${version}-linux-x86_64.tar.gz"
         } catch (Exception e) {
@@ -1086,9 +1102,9 @@ class MITMProxyDriverExecute extends DriverExecuteBase implements DriverExecute,
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // https://mitmproxy.org/downloads/#12.1.1/
+            // https://www.mitmproxy.org/downloads/#12.1.2/
             href = href.toLowerCase()
-            if (!href.contains("https://mitmproxy.org/downloads/#")) return false
+            if (!href.contains("mitmproxy.org/downloads/#")) return false
             if (!href.endsWith("/")) return false
             return true
         }
@@ -1096,7 +1112,7 @@ class MITMProxyDriverExecute extends DriverExecuteBase implements DriverExecute,
 
     @Override
     String getUrl() {
-        return "https://mitmproxy.org/downloads/"
+        return "https://www.mitmproxy.org/downloads/"
     }
 
     @Override
@@ -1110,9 +1126,11 @@ class SolrDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     void execute(WebDriver driver) {
         try {
             //https://dlcdn.apache.org/solr/solr/9.8.1/solr-9.8.1.tgz
+            //https://dlcdn.apache.org/solr/solr/9.9.0/solr-9.9.0.tgz
             driver.get(getUrl())
             def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
-            def version = last.split("downloads/#")[1].replace("/", "")
+            //println "🔗: ${last}"
+            def version = last.split("/solr/solr/")[1].split("/")[0]//.replace("/", "")
             println "https://dlcdn.apache.org/solr/solr/${version}/solr-${version}.tgz"
         } catch (Exception e) {
             println "❌ Error: ${e.message}"
@@ -1121,7 +1139,8 @@ class SolrDriverExecute extends DriverExecuteBase implements DriverExecute, Name
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // https://www.apache.org/dyn/closer.lua/solr/solr/9.8.1/solr-9.8.1.tgz?action=download
+            // println "🔗: ${href}"
+            // https://www.apache.org/dyn/closer.lua/solr/solr/9.9.0/solr-9.9.0.tgz?action=download
             href = href.toLowerCase()
             if (!href.contains("/solr/solr")) return false
             if (!href.contains("solr-")) return false

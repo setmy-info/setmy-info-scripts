@@ -1,11 +1,11 @@
 SOLR_NAME=solr
-SOLR_VERSION=9.8.1
+SOLR_VERSION=9.9.0
 SOLR_DIR_NAME=apache-maven-${SOLR_VERSION}
 SOLR_TAR_FILE_NAME=${SOLR_DIR_NAME}-bin.tar
 SOLR_TAR_GZ_FILE_NAME=${SOLR_TAR_FILE_NAME}.gz
 SOLR_TAR_GZ_FILE_URL=https://dlcdn.apache.org/maven/maven-3/${SOLR_VERSION}/binaries/${SOLR_DIR_NAME}-bin.tar.gz
 
-# https://dlcdn.apache.org/solr/solr/9.8.1/solr-9.8.1.tgz
+# https://dlcdn.apache.org/solr/solr/9.9.0/solr-9.9.0.tgz
 
 mvn_download_func() {
     smi-download ${SOLR_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${SOLR_TAR_GZ_FILE_NAME}

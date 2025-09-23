@@ -847,6 +847,7 @@ class BazelDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
             // https://github.com/bazelbuild/bazel/releases/tag/8.2.1
             href = href.toLowerCase()
             if (!href.contains("/bazelbuild/bazel/releases/tag/")) return false
+            if (href.contains("rc2")) return false
             return true
         }
     }

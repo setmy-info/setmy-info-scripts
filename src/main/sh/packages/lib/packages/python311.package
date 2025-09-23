@@ -1,12 +1,12 @@
 PYTHON311_NAME=python
-PYTHON_VERSION=3.11.12
+PYTHON_VERSION=3.11.13
 PYTHON311_NAME_VERSION=${PYTHON311_NAME}-${PYTHON_VERSION}
 PYTHON311_OPT_DIR_NAME=/opt/${PYTHON311_NAME_VERSION}
 PYTHON311_DIR_NAME=Python-${PYTHON_VERSION}
 PYTHON311_TGZ_GZ_FILE_NAME=${PYTHON311_DIR_NAME}.tgz
 PYTHON311_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON_VERSION}/${PYTHON311_TGZ_GZ_FILE_NAME}
 
-# https://www.python.org/ftp/python/3.11.12/Python-3.11.12.tgz
+# https://www.python.org/ftp/python/3.11.13/Python-3.11.13.tgz
 
 python311_download_func() {
     CUR_DIR=$(pwd)

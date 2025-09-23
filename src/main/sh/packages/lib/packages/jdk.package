@@ -1,14 +1,14 @@
 JDK_NAME=jdk
-JDK_VERSION=24.0.1
-JDK_HASH=24a58e0e276943138bf3e963e6291ac2
-JDK_URI_NR_PART=9
+JDK_VERSION=25
+JDK_HASH=bd75d5f9689641da8e1daabeccb5528b
+JDK_URI_NR_PART=36
 JDK_DIR_NAME=jdk-${JDK_VERSION}
 JDK_NAME_PREFIX=openjdk-${JDK_VERSION}
 JDK_TAR_FILE_NAME=${JDK_NAME_PREFIX}_linux-x64_bin.tar
 JDK_TAR_GZ_FILE_NAME=${JDK_TAR_FILE_NAME}.gz
 JDK_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK_VERSION}/${JDK_HASH}/${JDK_URI_NR_PART}/GPL/${JDK_TAR_GZ_FILE_NAME}
 
-# https://download.java.net/java/GA/jdk24.0.1/24a58e0e276943138bf3e963e6291ac2/9/GPL/openjdk-24.0.1_linux-x64_bin.tar.gz
+# https://download.java.net/java/GA/jdk25/bd75d5f9689641da8e1daabeccb5528b/36/GPL/openjdk-25_linux-x64_bin.tar.gz
 
 jdk_download_func() {
     smi-download ${JDK_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK_TAR_GZ_FILE_NAME}

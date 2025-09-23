@@ -1,11 +1,11 @@
 SBCL_NAME=sbcl
-SBCL_VERSION=2.5.4
+SBCL_VERSION=2.5.8
 SBCL_DIR_NAME=${SBCL_NAME}-${SBCL_VERSION}-x86-64-linux
 SBCL_TAR_FILE_NAME=${SBCL_NAME}-${SBCL_VERSION}-x86-64-linux-binary.tar
 SBCL_TAR_BZ2_FILE_NAME=${SBCL_TAR_FILE_NAME}.bz2
 SBCL_TAR_BZ2_FILE_URL=http://prdownloads.sourceforge.net/sbcl/${SBCL_TAR_BZ2_FILE_NAME}
 
-# http://prdownloads.sourceforge.net/sbcl/sbcl-2.5.4-x86-64-linux-binary.tar.bz2
+# http://prdownloads.sourceforge.net/sbcl/sbcl-2.5.8-x86-64-linux-binary.tar.bz2
 
 sbcl_download_func() {
     smi-download ${SBCL_TAR_BZ2_FILE_URL} ${HOME_PACKAGES_DIR}/${SBCL_TAR_BZ2_FILE_NAME}

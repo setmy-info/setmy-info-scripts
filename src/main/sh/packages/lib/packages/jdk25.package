@@ -1,0 +1,20 @@
+JDK25_NAME=jdk25
+JDK25_VERSION=25
+JDK25_HASH_PART=bd75d5f9689641da8e1daabeccb5528b
+JDK25_NUMERIC_PART=36
+JDK25_DIR_NAME=jdk-${JDK25_VERSION}
+JDK25_NAME_PREFIX=openjdk-${JDK25_VERSION}
+JDK25_TAR_FILE_NAME=${JDK25_NAME_PREFIX}_linux-x64_bin.tar
+JDK25_TAR_GZ_FILE_NAME=${JDK25_TAR_FILE_NAME}.gz
+JDK25_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK25_VERSION}/${JDK25_HASH_PART}/${JDK25_NUMERIC_PART}/GPL/${JDK25_TAR_GZ_FILE_NAME}
+
+# https://download.java.net/java/GA/jdk25/bd75d5f9689641da8e1daabeccb5528b/36/GPL/openjdk-25_linux-x64_bin.tar.gz
+
+jdk25_download_func() {
+    smi-download ${JDK25_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK25_TAR_GZ_FILE_NAME}
+}
+jdk25_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK25_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/jdk24 /opt/${JDK25_DIR_NAME}
+}
+

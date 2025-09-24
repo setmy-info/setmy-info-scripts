@@ -1,12 +1,12 @@
 MAVEN4_NAME=maven
 MAVEN4_VERSION=4.0.0
-MAVEN4_BETA_VERSION=rc-3
+MAVEN4_BETA_VERSION=rc-4
 MAVEN4_DIR_NAME=apache-maven-${MAVEN4_VERSION}
 MAVEN4_TAR_FILE_NAME=${MAVEN4_DIR_NAME}-bin.tar
 MAVEN4_TAR_GZ_FILE_NAME=${MAVEN4_TAR_FILE_NAME}.gz
 MAVEN4_TAR_GZ_FILE_URL=https://dlcdn.apache.org/maven/maven-4/${MAVEN4_VERSION}-${MAVEN4_BETA_VERSION}/binaries/apache-maven-${MAVEN4_VERSION}-${MAVEN4_BETA_VERSION}-bin.tar.gz
 
-# https://dlcdn.apache.org/maven/maven-4/4.0.0-rc-3/binaries/apache-maven-4.0.0-rc-3-bin.tar.gz
+# https://dlcdn.apache.org/maven/maven-4/4.0.0-rc-4/binaries/apache-maven-4.0.0-rc-4-bin.tar.gz
 
 mvn4_download_func() {
     smi-download ${MAVEN4_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MAVEN4_TAR_GZ_FILE_NAME}

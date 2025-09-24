@@ -1,10 +1,10 @@
 MN_NAME=micronaut
-MN_VERSION=4.8.2
+MN_VERSION=4.9.3
 MN_DIR_NAME=micronaut-cli-${MN_VERSION}
 MN_ZIP_FILE_NAME=${MN_DIR_NAME}.zip
 MN_ZIP_FILE_URL=https://github.com/micronaut-projects/micronaut-starter/releases/download/v${MN_VERSION}/${MN_ZIP_FILE_NAME}
 
-# https://github.com/micronaut-projects/micronaut-starter/releases/download/v4.8.2/micronaut-cli-4.8.2.zip
+# https://github.com/micronaut-projects/micronaut-starter/releases/download/v4.9.3/micronaut-cli-4.9.3.zip
 
 mn_download_func() {
     smi-download ${MN_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${MN_ZIP_FILE_NAME}

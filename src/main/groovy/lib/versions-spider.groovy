@@ -1160,6 +1160,46 @@ class SolrDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     }
 }
 
+class LibreOfficeDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+
+    @Override
+    void execute(WebDriver driver) {
+        try {
+            //https://www.libreoffice.org/donate/dl/rpm-x86_64/25.8.1/en-US/LibreOffice_25.8.1_Linux_x86-64_rpm.tar.gz
+            driver.get(getUrl())
+            def hrefs = getHrefs(driver)
+            // println "🔗: ${hrefs}"
+            hrefs = hrefs.findAll(getSearcher())
+            def last = sortAndLast(hrefs)
+            // println "🔗: ${last}"
+            def version = last.replace("_Linux_x86-64_rpm.tar.gz", "").split("/LibreOffice_")[1]
+            println "https://www.libreoffice.org/donate/dl/rpm-x86_64/${version}/en-US/LibreOffice_${version}_Linux_x86-64_rpm.tar.gz"
+        } catch (Exception e) {
+            println "❌ Error: ${e.message}"
+        }
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // println "🔗: ${href}"
+            // https://www.libreoffice.org/donate/dl/rpm-x86_64/25.8.1/en-US/LibreOffice_25.8.1_Linux_x86-64_rpm.tar.gz
+            return href.contains("/rpm-x86_64/")
+                && href.contains("/en-US/LibreOffice_")
+                && href.endsWith(".tar.gz")
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://www.libreoffice.org/download/download-libreoffice/"
+    }
+
+    @Override
+    String getName() {
+        return "libreoffice"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1217,6 +1257,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new ArgoDriverExecute(), rulesRegister)
     fillWithRules(new MITMProxyDriverExecute(), rulesRegister)
     fillWithRules(new SolrDriverExecute(), rulesRegister)
+    fillWithRules(new LibreOfficeDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

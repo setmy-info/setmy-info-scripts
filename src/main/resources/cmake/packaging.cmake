@@ -13,7 +13,7 @@ ELSE ()
     SET(DEBIAN_ARCH_TYPE_SUFFIX "all")# or "any" - https://www.debian.org/doc/debian-policy/ch-customized-programs.html#s-arch-spec
 ENDIF()
 
-# https://cmake.org/cmake/help/v3.26/manual/cpack-generators.7.html
+# https://cmake.org/cmake/help/v4.1/manual/cpack-generators.7.html
 SET(CPACK_PACKAGE_NAME                    "${PROJECT_NAME}")
 SET(CPACK_PACKAGE_VENDOR                  "${PROJECT_VENDOR}")
 SET(CPACK_PACKAGE_DESCRIPTION             "${PROJECT_DESCRIPTION}")
@@ -27,7 +27,7 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY       "CPack Component Example")
 SET(CPACK_PACKAGING_INSTALL_PREFIX        ${CMAKE_INSTALL_PREFIX})
 SET(CPACK_PACKAGE_RELOCATABLE             TRUE)
 
-# https://cmake.org/cmake/help/v3.26/cpack_gen/rpm.html
+# https://cmake.org/cmake/help/v4.1/cpack_gen/rpm.html
 SET(CPACK_RPM_PACKAGE_NAME                ${PROJECT_NAME})
 SET(CPACK_RPM_PACKAGE_DESCRIPTION         "${PROJECT_DESCRIPTION}")
 SET(CPACK_RPM_PACKAGE_LICENSE             "MIT")
@@ -41,7 +41,7 @@ SET(CPACK_RPM_CHANGELOG_FILE              ${CHANGE_LOG_FILE_NAME})
 SET(CPACK_RPM_PACKAGE_ARCHITECTURE        ${ARCH_TYPE_SUFFIX})
 # SET(CPACK_RPM_PACKAGE_REQUIRES            "some-else >= 1.0.0")
 
-# https://cmake.org/cmake/help/v3.26/cpack_gen/deb.html
+# https://cmake.org/cmake/help/v4.1/cpack_gen/deb.html
 # http://www.debian.org/doc/debian-policy/ch-controlfields.html
 # https://wiki.ubuntu.com/PackagingGuide/Basic?action=show&redirect=HowToBuildDebianPackagesFromScratch/
 SET(CPACK_DEBIAN_PACKAGE_NAME             "${PROJECT_NAME}")
@@ -54,7 +54,7 @@ SET(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA    "${DEB_INSTALL_SCRIPTS_PATH}/preinst" 
 SET(CPACK_DEBIAN_ARCHITECTURE             "${DEBIAN_ARCH_TYPE_SUFFIX}")
 #SET(CPACK_DEBIAN_PACKAGE_DEPENDS          "some-else (>= 1.0.0)")
 
-# https://cmake.org/cmake/help/v3.26/cpack_gen/freebsd.html
+# https://cmake.org/cmake/help/v4.1/cpack_gen/freebsd.html
 SET(CPACK_FREEBSD_PACKAGE_NAME            "${PROJECT_NAME}")
 SET(CPACK_FREEBSD_PACKAGE_COMMENT         "${PROJECT_DESCRIPTION_SUMMARY}")
 SET(CPACK_FREEBSD_PACKAGE_DESCRIPTION     "${PROJECT_DESCRIPTION}")
@@ -66,13 +66,25 @@ SET(CPACK_FREEBSD_PACKAGE_ORIGIN          "misc/${PROJECT_NAME}")
 SET(CPACK_FREEBSD_PACKAGE_CATEGORIES      "libs")
 SET(CPACK_FREEBSD_PACKAGE_DEPS            "")
 
-# https://cmake.org/cmake/help/v3.26/cpack_gen/nsis.html
+# https://cmake.org/cmake/help/v4.1/cpack_gen/nsis.html
 SET(CPACK_NSIS_DISPLAY_NAME               "NSIS Display name")
 SET(CPACK_NSIS_PACKAGE_NAME               "NSIS Package name")
 SET(CPACK_NSIS_INSTALLED_ICON_NAME        "${APP_LOW_NAME}.ico")
 SET(CPACK_NSIS_HELP_LINK                  ${APP_URL})
 SET(CPACK_NSIS_URL_INFO_ABOUT             ${APP_URL})
 SET(CPACK_NSIS_CONTACT                    ${APP_EMAIL})
+
+# https://cmake.org/cmake/help/v4.1/cpack_gen/dmg.html
+SET(CPACK_DMG_VOLUME_NAME                 "${PROJECT_NAME} Installer")
+SET(CPACK_DMG_FORMAT                      "UDBZ")
+SET(CPACK_DMG_DISABLE_APPLICATIONS_SYMLINK OFF)
+#SET(CPACK_DMG_DS_STORE                    "${CMAKE_BINARY_DIR}/_CPack_Packages/DMG_DS_Store")
+#SET(CPACK_DMG_SLA_LANGUAGES               "English")
+#SET(CPACK_DMG_SLA_USE_RESOURCE_FILE_LICENSE OFF)
+#SET(CPACK_PACKAGE_FILE_NAME               "${PROJECT_NAME}-${PROJECT_VERSION}-macos")
+#SET(CPACK_DMG_BACKGROUND_IMAGE            "${CMAKE_SOURCE_DIR}/assets/dmg-background.png")
+#SET(CPACK_DMG_DS_STORE_SETUP_SCRIPT       "${CMAKE_SOURCE_DIR}/dmg_setup.scpt")
+# SET(CPACK_DMG_APPLE_FILESYSTEM "HFS+")
 
 IF (WIN32)
     SET(CPACK_GENERATOR                       "${DEFAULT_PACKAGES};NSIS")
@@ -87,6 +99,9 @@ IF(DISTRIBUTION STREQUAL "FreeBSD")
     # What is proper value for that?
     #SET(CPACK_GENERATOR                       "${DEFAULT_PACKAGES};FREEBSD")
     SET(CPACK_GENERATOR                       "${DEFAULT_PACKAGES}")
+ENDIF()
+IF(DISTRIBUTION STREQUAL "MacOS")
+    SET(CPACK_GENERATOR                       "${DEFAULT_PACKAGES};DragNDrop")
 ENDIF()
 
 # PLACEHOLDER-PRE-PACK#

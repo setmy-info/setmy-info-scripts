@@ -9,6 +9,8 @@ ELSE ()
         set ( ARCH "64")
 ENDIF ()
 
+# https://cmake.org/cmake/help/v4.1/manual/cmake-variables.7.html
+# WIN32
 IF(EXISTS "/etc/debian_version")
     SET ( DISTRIBUTION "Debian")
 ENDIF()
@@ -17,6 +19,9 @@ IF(EXISTS "/etc/redhat-release")
 ENDIF()
 IF(EXISTS "/bin/freebsd-version")
    SET ( DISTRIBUTION "FreeBSD")
+ENDIF()
+IF(APPLE)
+    SET( DISTRIBUTION "MacOS")
 ENDIF()
 
 IF(${PROJECT_IS_SNAPSHOT})

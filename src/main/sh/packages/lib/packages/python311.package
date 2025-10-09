@@ -23,6 +23,6 @@ python311_install_func() {
     cd ${HOME_PACKAGES_DIR}/${PYTHON311_DIR_NAME}
     sudo make install
     makeOptLink /opt/${PYTHON311_NAME}311 ${PYTHON311_OPT_DIR_NAME}
-    #makeOptLink /opt/${PYTHON311_NAME}    ${PYTHON311_OPT_DIR_NAME}
+    #makeOptLink /opt/${PYTHON311_NAME}   ${PYTHON311_OPT_DIR_NAME}
     cd ${CUR_DIR}
 }

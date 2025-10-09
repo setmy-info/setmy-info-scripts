@@ -23,5 +23,6 @@ python310_install_func() {
     cd ${HOME_PACKAGES_DIR}/${PYTHON310_DIR_NAME}
     sudo make install
     makeOptLink /opt/${PYTHON310_NAME}310 ${PYTHON310_OPT_DIR_NAME}
+    #makeOptLink /opt/${PYTHON310_NAME}   ${PYTHON311_OPT_DIR_NAME}
     cd ${CUR_DIR}
 }

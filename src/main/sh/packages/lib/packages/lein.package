@@ -1,6 +1,6 @@
 LEININGEN_NAME=lein
 LEININGEN_FILE_NAME=lein
-LEININGEN_VERSION=2.11.2
+LEININGEN_VERSION=2.12.0
 LEININGEN_FILE_URL=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/${LEININGEN_FILE_NAME}
 
 lein_download_func() {

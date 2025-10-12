@@ -6,7 +6,7 @@ SELENIUM_FILE_URL=https://github.com/SeleniumHQ/selenium/releases/download/${SEL
 
 # https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.35.0/selenium-server-4.35.0.jar
 # https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz
-# https://storage.googleapis.com/chrome-for-testing-public/137.0.7151.55/linux64/chrome-linux64.zip
+# https://storage.googleapis.com/chrome-for-testing-public/140.0.7339.207/linux64/chrome-linux64.zip
 
 # https://googlechromelabs.github.io/chrome-for-testing/
 

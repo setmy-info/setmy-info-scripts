@@ -22,7 +22,7 @@ python313_install_func() {
     CUR_DIR=$(pwd)
     cd ${HOME_PACKAGES_DIR}/${PYTHON313_DIR_NAME}
     sudo make install
-    makeOptLink /opt/${PYTHON313_NAME}312 ${PYTHON313_OPT_DIR_NAME}
-    #makeOptLink /opt/${PYTHON313_NAME}    ${PYTHON313_OPT_DIR_NAME}
+    makeOptLink /opt/${PYTHON313_NAME}313 ${PYTHON313_OPT_DIR_NAME}
+    makeOptLink /opt/${PYTHON313_NAME}    ${PYTHON313_OPT_DIR_NAME}
     cd ${CUR_DIR}
 }

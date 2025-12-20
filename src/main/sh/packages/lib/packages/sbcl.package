@@ -18,9 +18,13 @@ sbcl_install_func() {
     cd ${HOME_PACKAGES_DIR}/sbcl-${SBCL_VERSION}-x86-64-linux
     sudo INSTALL_ROOT=/opt/sbcl-${SBCL_VERSION}-x86-64-linux sh install.sh
     makeOptLink /opt/${SBCL_NAME} /opt/${SBCL_DIR_NAME}
-    /opt/${SBCL_NAME}/bin/sbcl --no-sysinit --no-userinit --load ${HOME_PACKAGES_DIR}/quicklisp.lisp \
-           --eval '(quicklisp-quickstart:install)' \
-           --eval '(ql:add-to-init-file)' \
-           --quit
+    if [ ! -f "$HOME/quicklisp/setup.lisp" ]; then
+      /opt/${SBCL_NAME}/bin/sbcl \
+        --no-sysinit --no-userinit \
+        --load ${HOME_PACKAGES_DIR}/quicklisp.lisp \
+        --eval '(quicklisp-quickstart:install)' \
+        --eval '(ql:add-to-init-file)' \
+        --quit
+    fi
     cd ${CURRENT_DIR}
 }

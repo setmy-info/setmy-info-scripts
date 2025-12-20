@@ -1,19 +1,19 @@
 SELENIUM_NAME=selenium
-SELENIUM_BASE_VERSION=4.38
+SELENIUM_BASE_VERSION=4.39
 SELENIUM_VERSION=${SELENIUM_BASE_VERSION}.0
 SELENIUM_JAR_FILE_NAME=${SELENIUM_NAME}-server-${SELENIUM_VERSION}.jar
 SELENIUM_FILE_URL=https://github.com/SeleniumHQ/selenium/releases/download/${SELENIUM_NAME}-${SELENIUM_BASE_VERSION}.0/${SELENIUM_JAR_FILE_NAME}
 
-# https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.38.0/selenium-server-4.38.0.jar
+# https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.39.0/selenium-server-4.39.0.jar
 # https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz
-# https://storage.googleapis.com/chrome-for-testing-public/142.0.7444.162/linux64/chrome-linux64.zip
+# https://storage.googleapis.com/chrome-for-testing-public/143.0.7499.169/linux64/chrome-linux64.zip
 
 # https://googlechromelabs.github.io/chrome-for-testing/
 
 selenium_download_func() {
     smi-download ${SELENIUM_FILE_URL} ${HOME_PACKAGES_DIR}/${SELENIUM_JAR_FILE_NAME}
     smi-download https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux64.tar.gz ${HOME_PACKAGES_DIR}/geckodriver-linux64.tar.gz
-    smi-download https://storage.googleapis.com/chrome-for-testing-public/142.0.7444.162/linux64/chrome-linux64.zip ${HOME_PACKAGES_DIR}/chromedriver_linux64.zip
+    smi-download https://storage.googleapis.com/chrome-for-testing-public/143.0.7499.169/linux64/chrome-linux64.zip ${HOME_PACKAGES_DIR}/chromedriver_linux64.zip
 
     tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/geckodriver-linux64.tar.gz -C ${HOME_PACKAGES_DIR}
     unzip -o ${HOME_PACKAGES_DIR}/chromedriver_linux64.zip -d ${HOME_PACKAGES_DIR}

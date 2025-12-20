@@ -6,7 +6,7 @@ PYTHON39_DIR_NAME=Python-${PYTHON39_VERSION}
 PYTHON39_TGZ_GZ_FILE_NAME=${PYTHON39_DIR_NAME}.tgz
 PYTHON39_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON39_VERSION}/${PYTHON39_TGZ_GZ_FILE_NAME}
 
-# hhttps://www.python.org/ftp/python/3.9.25/Python-3.9.25.tgz
+# https://www.python.org/ftp/python/3.9.25/Python-3.9.25.tgz
 
 python39_download_func() {
     CUR_DIR=$(pwd)

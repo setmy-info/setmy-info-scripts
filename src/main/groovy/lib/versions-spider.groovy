@@ -710,8 +710,9 @@ class GrailsDriverExecute extends DriverExecuteBase implements DriverExecute, Na
             // println "🔗: ${href}"
             // https://github.com/grails/grails-forge/releases/download/v6.2.3/grails-cli-6.2.3.zip
             // https://github.com/apache/grails-forge/releases/download/v6.2.3/grails-cli-6.2.3.zip
+            // https://www.apache.org/dyn/closer.lua/grails/core/7.0.4/distribution/apache-grails-7.0.4-bin.zip?action=download
             if (!href.contains("/apache/grails-forge/releases/download/v")) return false
-            if (!href.endsWith(".zip")) return false
+            if (!href.contains("-bin.zip")) return false
             return true
         }
     }

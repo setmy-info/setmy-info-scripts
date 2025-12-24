@@ -67,6 +67,28 @@ pkiDoCertRequest() {
     openssl rsa -in ${CERT_PRIVATE_KEY} -pubout -out ${CERT_PUBLIC_KEY}
     # Gen certificate request
     # TODO : is -addext "subjectAltName... needed? Also is -config ${TANK_CERTS_DIR}/openssl.cfg needed?
+#        [req]
+#        distinguished_name = req_distinguished_name
+#        req_extensions = v3_req
+#        prompt = no
+#
+#        [req_distinguished_name]
+#        C  = EE
+#        ST = Harjumaa
+#        L  = Tallinn
+#        O  = Hear And See Systems LLC
+#        OU = Development
+#        CN = localhost
+#        emailAddress = imre.tabur@hearandseesystems.com
+#
+#        [v3_req]
+#        keyUsage = critical,digitalSignature,keyEncipherment
+#        extendedKeyUsage = serverAuth,clientAuth
+#        subjectAltName = @alt_names
+#
+#        [alt_names]
+#        DNS.1 = localhost
+#        DNS.2 = *.localhost
     openssl req -new -key ${CERT_PRIVATE_KEY} -out ${CERT_REQUEST} -subj "${SUBJECT_STRING}" -addext "subjectAltName = DNS:${DOMAIN_NAME}" -config ${TANK_CERTS_DIR}/openssl.cfg -days 365
 }
 

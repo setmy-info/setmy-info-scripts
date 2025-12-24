@@ -1,1 +1,8 @@
-basicConstraints=CA:TRUE
+# CA marker
+basicConstraints=critical,CA:TRUE
+# Cert signing right
+keyUsage=critical,keyCertSign,cRLSign
+# Subject Key Identifier (hash is standard)
+subjectKeyIdentifier=hash
+# (Optional) Authority Key Identifier
+authorityKeyIdentifier=keyid:always,issuer:always

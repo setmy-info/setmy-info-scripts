@@ -1,8 +1,8 @@
 INFINISPAN_NAME=infinispan
 INFINISPAN_VERSION=16.0.5
-INFINISPAN_DIR_NAME=infinispan-server-${INFINISPAN_VERSION}.Final
+INFINISPAN_DIR_NAME=infinispan-server-${INFINISPAN_VERSION}
 INFINISPAN_ZIP_FILE_NAME=${INFINISPAN_DIR_NAME}.zip
-INFINISPAN_ZIP_FILE_URL=https://github.com/infinispan/infinispan/releases/download/${INFINISPAN_VERSION}.Final/${INFINISPAN_ZIP_FILE_NAME}
+INFINISPAN_ZIP_FILE_URL=https://github.com/infinispan/infinispan/releases/download/${INFINISPAN_VERSION}/${INFINISPAN_ZIP_FILE_NAME}
 
 # https://github.com/infinispan/infinispan/releases/download/16.0.5/infinispan-server-16.0.5.zip
 

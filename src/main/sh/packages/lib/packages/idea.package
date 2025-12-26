@@ -1,0 +1,17 @@
+IDEA_NAME=idea
+IDEA_VERSION=2025.3.1
+IDEA_DIR_NAME=${IDEA_NAME}-IU-253.29346.138
+IDEA_TAR_FILE_NAME=${IDEA_NAME}-${IDEA_VERSION}.tar
+IDEA_TAR_GZ_FILE_NAME=${IDEA_TAR_FILE_NAME}.gz
+IDEA_JAR_FILE_URL=https://download.jetbrains.com/idea/${IDEA_TAR_GZ_FILE_NAME}
+
+# https://download.jetbrains.com/idea/idea-2025.3.1.tar.gz
+
+idea_download_func() {
+    smi-download ${IDEA_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${IDEA_TAR_GZ_FILE_NAME}
+}
+
+idea_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${IDEA_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/${IDEA_NAME} /opt/${IDEA_DIR_NAME}
+}

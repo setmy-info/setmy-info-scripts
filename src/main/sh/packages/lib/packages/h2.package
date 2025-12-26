@@ -1,0 +1,15 @@
+H2_NAME=h2
+H2_VERSION=2.4.240
+H2_DIR_NAME=${H2_NAME}-${H2_VERSION}
+H2_JAR_FILE_NAME=${H2_DIR_NAME}.jar
+H2_JAR_FILE_URL=https://repo1.maven.org/maven2/com/h2database/h2/${H2_VERSION}/${H2_JAR_FILE_NAME}
+
+# https://repo1.maven.org/maven2/com/h2database/h2/2.4.240/h2-2.4.240.jar
+
+h2_download_func() {
+    smi-download ${H2_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${H2_JAR_FILE_NAME}
+}
+
+h2_install_func() {
+    sudo cp -fv ${HOME_PACKAGES_DIR}/${H2_JAR_FILE_NAME} /opt/$(smi-provider)/lib
+}

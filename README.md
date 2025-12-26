@@ -93,7 +93,3 @@ Function usage is a problem. CMame doesn't have global variables. Only function 
     * k8s, **virtualization**, docker
     * **crm**
     * **tools**, helpers
-
-### Donate
-
-* [Set your favorite donation](https://www.paypal.me/imretabur "Donate any amount")

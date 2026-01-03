@@ -18,16 +18,17 @@ camundam_install_func() {
     DESKTOP_FILE="/usr/share/applications/camundam.desktop"
 
     cat <<EOL | sudo tee "${DESKTOP_FILE}" > /dev/null
-    [Desktop Entry]
-    Version=1.0
-    Name=Camunda Modeler
-    Comment=Camunda Modeler
-    Exec=/opt/camunda-modeler/camunda-modeler %U
-    Icon=/opt/camunda-modeler/support/icon_128.png
-    Terminal=false
-    Type=Application
-    Categories=Programming;
-    EOL
+[Desktop Entry]
+Version=1.0
+Name=Camunda Modeler
+Comment=Camunda Modeler
+Exec=/opt/camunda-modeler/camunda-modeler %U
+Icon=/opt/camunda-modeler/support/icon_128.png
+Terminal=false
+Type=Application
+Categories=Development;IDE;Tools;Application;
+EOL
 
-    sudo chmod +x "${DESKTOP_FILE}"
+    sudo chmod 644 "${DESKTOP_FILE}"  # Kui soovite, et fail oleks lugemiseks kergesti kättesaadav
+
 }

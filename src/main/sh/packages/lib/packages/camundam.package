@@ -1,0 +1,17 @@
+CAMUNDA_MODELER_NAME=camunda-modeler
+CAMUNDA_MODELER_VERSION=5.42.0
+CAMUNDA_MODELER_DIR_NAME=${CAMUNDA_MODELER_NAME}-${CAMUNDA_MODELER_VERSION}
+CAMUNDA_MODELER_TAR_FILE_NAME=${CAMUNDA_MODELER_DIR_NAME}-linux-x64.tar
+CAMUNDA_MODELER_TAR_GZ_FILE_NAME=${CAMUNDA_MODELER_TAR_FILE_NAME}.gz
+CAMUNDA_MODELER_TAR_GZ_FILE_URL=https://downloads.camunda.cloud/release/camunda-modeler/${CAMUNDA_MODELER_VERSION}/${CAMUNDA_MODELER_TAR_GZ_FILE_NAME}
+
+# https://downloads.camunda.cloud/release/camunda-modeler/5.42.0/camunda-modeler-5.42.0-linux-x64.tar.gz
+
+camunda-modeler_download_func() {
+    smi-download ${CAMUNDA_MODELER_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${CAMUNDA_MODELER_TAR_GZ_FILE_NAME}
+}
+
+camunda-modeler_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${CAMUNDA_MODELER_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/${CAMUNDA_MODELER_NAME} /opt/${CAMUNDA_MODELER_DIR_NAME}
+}

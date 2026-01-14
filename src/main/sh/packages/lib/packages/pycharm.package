@@ -1,11 +1,11 @@
 PYCHARM_NAME=pycharm
-PYCHARM_VERSION=2025.3.1
+PYCHARM_VERSION=2025.3.1.1
 PYCHARM_DIR_NAME=${PYCHARM_NAME}-${PYCHARM_VERSION}
 PYCHARM_TAR_FILE_NAME=${PYCHARM_NAME}-${PYCHARM_VERSION}.tar
 PYCHARM_TAR_GZ_FILE_NAME=${PYCHARM_TAR_FILE_NAME}.gz
 PYCHARM_JAR_FILE_URL=https://download.jetbrains.com/python/${PYCHARM_TAR_GZ_FILE_NAME}
 
-# https://download.jetbrains.com/python/pycharm-2025.3.1.tar.gz
+# https://download-cdn.jetbrains.com/python/pycharm-2025.3.1.1.tar.gz
 
 pycharm_download_func() {
     smi-download ${PYCHARM_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${PYCHARM_TAR_GZ_FILE_NAME}

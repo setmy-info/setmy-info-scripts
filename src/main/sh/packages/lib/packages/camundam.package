@@ -1,0 +1,34 @@
+CAMUNDA_MODELER_NAME=camunda-modeler
+CAMUNDA_MODELER_VERSION=5.42.0
+CAMUNDA_MODELER_DIR_NAME=${CAMUNDA_MODELER_NAME}-${CAMUNDA_MODELER_VERSION}-linux-x64
+CAMUNDA_MODELER_TAR_FILE_NAME=${CAMUNDA_MODELER_DIR_NAME}.tar
+CAMUNDA_MODELER_TAR_GZ_FILE_NAME=${CAMUNDA_MODELER_TAR_FILE_NAME}.gz
+CAMUNDA_MODELER_TAR_GZ_FILE_URL=https://downloads.camunda.cloud/release/camunda-modeler/${CAMUNDA_MODELER_VERSION}/${CAMUNDA_MODELER_TAR_GZ_FILE_NAME}
+
+# https://downloads.camunda.cloud/release/camunda-modeler/5.42.0/camunda-modeler-5.42.0-linux-x64.tar.gz
+
+camundam_download_func() {
+    smi-download ${CAMUNDA_MODELER_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${CAMUNDA_MODELER_TAR_GZ_FILE_NAME}
+}
+
+camundam_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${CAMUNDA_MODELER_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/${CAMUNDA_MODELER_NAME} /opt/${CAMUNDA_MODELER_DIR_NAME}
+
+    DESKTOP_FILE="/usr/share/applications/camundam.desktop"
+
+    cat <<EOL | sudo tee "${DESKTOP_FILE}" > /dev/null
+[Desktop Entry]
+Version=1.0
+Name=Camunda Modeler
+Comment=Camunda Modeler
+Exec=/opt/camunda-modeler/camunda-modeler %U
+Icon=/opt/camunda-modeler/support/icon_128.png
+Terminal=false
+Type=Application
+Categories=Development;IDE;Tools;Application;
+EOL
+
+    sudo chmod 644 "${DESKTOP_FILE}"  # Kui soovite, et fail oleks lugemiseks kergesti kättesaadav
+
+}

@@ -42,3 +42,7 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 .venv
 .ipynb_checkpoints
+
+# AI related
+TASKLIST.md
+TASKLIST.lisp

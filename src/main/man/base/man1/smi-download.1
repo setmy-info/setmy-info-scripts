@@ -1,0 +1,25 @@
+.TH smi-download "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-download \- Download a file using curl with automatic directory creation
+.SH SYNOPSIS
+.B smi-download
+.I FROM_URL
+.I TO_FILE
+.SH DESCRIPTION
+.PP
+.B smi-download
+downloads a file from \fIFROM_URL\fR and saves it to \fITO_FILE\fR using \fBcurl -L\fR.
+If the parent directory of \fITO_FILE\fR does not exist, it is created automatically.
+If the \fITO_FILE\fR already exists, the download is skipped.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-download bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR curl (1),
+.BR smi-download-package (1)
+

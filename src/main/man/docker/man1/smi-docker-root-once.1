@@ -1,0 +1,23 @@
+﻿.TH smi-docker-root-once "1" "October 2025" "SMI Toolset 0.100.0" "SMI Docker Command"
+.SH NAME
+smi-docker-root-once \- Execute a script as root and remove sudo access
+.SH SYNOPSIS
+.B smi-docker-root-once
+.I USERNAME
+.I SCRIPT
+.SH DESCRIPTION
+.PP
+.B smi-docker-root-once
+is a utility used by \fBsmi-docker-command\fR. It executes the provided \fISCRIPT\fR and then immediately removes \fBsudo\fR access for the system by deleting \fB/etc/sudoers\fR.
+.PP
+This is intended for one-time initialization tasks in containers where administrative access should be permanently revoked after setup.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-docker-root-once bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-docker-command (1)

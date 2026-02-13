@@ -1,0 +1,34 @@
+.TH smi-pki-create-domain-cert "1" "October 2025" "SMI Toolset 0.100.0" "SMI PKI Command"
+.SH NAME
+smi-pki-create-domain-cert \- Create a domain certificate signed by a local CA
+.SH SYNOPSIS
+.B smi-pki-create-domain-cert
+.I DIRECTORY
+.I DOMAIN_NAME
+.SH DESCRIPTION
+.PP
+.B smi-pki-create-domain-cert
+generates a private key and a signed certificate for the specified \fIDOMAIN_NAME\fR.
+It requires that a Root CA has already been initialized in the \fIDIRECTORY\fR (or a parent structure) using \fBsmi-pki-ca-create\fR(1).
+.PP
+The process involves:
+.IP 1.
+Generating a 2048-bit RSA private key and public key for the domain.
+.IP 2.
+Creating a CSR with \fBsubjectAltName\fR set to the domain.
+.IP 3.
+Signing the CSR using the CA certificate and key found in the \fBca\fR subdirectory of the provided directory.
+.IP 4.
+The resulting certificate is valid for 1095 days.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-pki-create-domain-cert bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-pki-ca-create (1),
+.BR openssl (1)
+

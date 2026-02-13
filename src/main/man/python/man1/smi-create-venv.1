@@ -1,0 +1,38 @@
+﻿.TH smi-create-venv "1" "October 2025" "SMI Toolset 0.100.0" "SMI Python Command"
+.SH NAME
+smi-create-venv \- Create and initialize a Python virtual environment
+.SH SYNOPSIS
+.B smi-create-venv
+.RI [ PYTHON_PACKAGE ]
+.SH DESCRIPTION
+.PP
+.B smi-create-venv
+creates a new Python virtual environment in the current directory under \fB./.venv\fR.
+.PP
+If a \fIPYTHON_PACKAGE\fR name is provided (e.g., \fBpython311\fR), the script:
+.IP 1.
+Includes the corresponding SMI package definition to determine the \fBPYTHON_VERSION\fR.
+.IP 2.
+Sets \fBPYTHON_HOME\fR to \fB/opt/python-${PYTHON_VERSION}\fR.
+.IP 3.
+Updates the \fBPATH\fR to use the binary directory of that Python version.
+.PP
+The initialization process involves:
+.IP 1.
+Running \fBpython3 -m venv ./.venv\fR.
+.IP 2.
+Activating the environment.
+.IP 3.
+Upgrading \fBpip\fR to the latest version.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-create-venv bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-prepare-venv (1),
+.BR smi-python (1),
+.BR smi-venv-command (1)

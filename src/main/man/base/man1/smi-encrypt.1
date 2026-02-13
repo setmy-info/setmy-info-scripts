@@ -1,0 +1,26 @@
+.TH smi-encrypt "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-encrypt \- Encrypt a file using AES-256-CBC
+.SH SYNOPSIS
+.B smi-encrypt
+.I FILE
+.SH DESCRIPTION
+.PP
+.B smi-encrypt
+encrypts the specified \fIFILE\fR using OpenSSL with the AES-256-CBC algorithm.
+The command adds a \fB.enc\fR suffix to the encrypted file.
+Upon successful encryption (result code 0 and non-empty output), the original file is removed.
+.PP
+Encryption uses a salt and 10,000 iterations for the key derivation.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-encrypt bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-decrypt (1),
+.BR openssl (1)
+

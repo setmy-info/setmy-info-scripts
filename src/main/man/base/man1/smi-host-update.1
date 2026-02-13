@@ -1,0 +1,39 @@
+.TH smi-host-update "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-host-update \- Update the host operating system packages
+.SH SYNOPSIS
+.B smi-host-update
+.SH DESCRIPTION
+.PP
+.B smi-host-update
+is a wrapper script that performs a system-wide package update. It automatically detects the operating system and uses the appropriate package manager.
+.PP
+On \fBLinux\fR (CentOS/Fedora/Rocky), it executes:
+.IP
+\fBdnf update -y\fR
+.PP
+On \fBFreeBSD\fR, it executes a sequence of commands to update both the base system and installed ports/packages:
+.IP 1.
+\fBfreebsd-update fetch install\fR (Base system)
+.IP 2.
+\fBpkg update -f\fR (Package repository)
+.IP 3.
+\fBpkg upgrade -y\fR (Installed packages)
+.IP 4.
+\fBservice ntpd onefetch\fR (NTP status)
+.PP
+If the current user is not root, the script will attempt to re-execute itself using \fBsudo -i\fR.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-host-update bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-full-update (1),
+.BR dnf (8),
+.BR freebsd-update (8),
+.BR pkg (8)
+

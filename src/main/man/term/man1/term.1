@@ -1,0 +1,28 @@
+.TH term "1" "October 2025" "SMI Toolset 0.100.0" "SMI Terminal Command"
+.SH NAME
+term \- Launch a configured terminal with SMI profiles
+.SH SYNOPSIS
+.B term
+.RI [ PROFILE_NAME... ]
+.SH DESCRIPTION
+.PP
+.B term
+is a smart terminal launcher that integrates with SMI profiles.
+It attempts to find and launch a suitable terminal emulator (xfce4-terminal, gnome-terminal, ptyxis, mate-terminal, konsole, or xterm) in the current working directory.
+.PP
+If a \fBDISPLAY\fR is available, it loads the specified \fIPROFILE_NAME\fR(s) and launches the GUI terminal.
+If no \fBDISPLAY\fR is present, it falls back to \fBterm-activate\fR(1) to start a POSIX shell with the loaded profiles.
+.SH PROFILES
+Profiles are searched for in \fB~/.term/\fR and then in the system profiles directory. They are shell scripts with a \fB.profile\fR suffix.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report term bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR term-activate (1),
+.BR term-profile (1)
+

@@ -1,0 +1,22 @@
+﻿.TH smi-python "1" "October 2025" "SMI Toolset 0.100.0" "SMI Python Command"
+.SH NAME
+smi-python \- Execute python inside the local virtual environment
+.SH SYNOPSIS
+.B smi-python
+.RI [ ARGUMENTS... ]
+.SH DESCRIPTION
+.PP
+.B smi-python
+is a wrapper that executes the \fBpython\fR interpreter within the context of the local \fB./.venv\fR virtual environment.
+If the \fB./.venv\fR directory does not exist, it is automatically created using \fBsmi-create-venv\fR(1) before execution.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-python bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-create-venv (1),
+.BR smi-venv-command (1)

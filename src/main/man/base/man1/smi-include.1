@@ -1,0 +1,32 @@
+.TH smi-include "1" "February 2026" "SMI Toolset" "SMI Include Command"
+.SH NAME
+smi-include \- print the full path for a given library file
+.SH SYNOPSIS
+.B smi-include
+.I BASE_FILE_NAME
+.SH DESCRIPTION
+.PP
+The
+.B smi-include
+command takes a base file name and prints its full path within the SMI library directory.
+This is typically used in shell scripts to source SMI library files.
+.SH OPTIONS
+.TP
+.I BASE_FILE_NAME
+The name of the library file to include (e.g. \fBbase.sh\fR).
+.SH EXAMPLES
+.PP
+Source the base library in a script:
+.PP
+.B . `smi-include base.sh`
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.PP
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIinfo@setmy.info\fR.
+.SH "SEE ALSO"
+.PP
+.BR smi-lib-location (1)

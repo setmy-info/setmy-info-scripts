@@ -1,0 +1,34 @@
+.TH smi-jail-host-config "1" "October 2025" "SMI Toolset 0.100.0" "SMI Jail Command"
+.SH NAME
+smi-jail-host-config \- Configure the host for FreeBSD jails
+.SH SYNOPSIS
+.B smi-jail-host-config
+.SH DESCRIPTION
+.PP
+.B smi-jail-host-config
+generates and updates the host's jail configuration. It creates \fB/etc/jail.conf\fR based on the individual jail configurations found in the SMI \fBetc/jails\fR directory.
+.PP
+The process includes:
+.IP 1.
+Ensuring it is running as root (re-executes with \fBsudo\fR if necessary).
+.IP 2.
+Generating a standard header for \fB/etc/jail.conf\fR (setting start/stop scripts and cleaning environments).
+.IP 3.
+Iterating through all defined jails and appending their configuration (hostname, path, interface, IP, allowed flags, and OS release) to \fB/etc/jail.conf\fR.
+.IP 4.
+Configuring \fB/etc/resolv.conf\fR inside each jail based on global and jail-specific DNS settings.
+.IP 5.
+Enabling jails in \fB/etc/rc.conf\fR (\fBjail_enable=YES\fR) and updating the \fBjail_list\fR.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-jail-host-config bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-jail (1),
+.BR jail.conf (5),
+.BR sysrc (8)
+

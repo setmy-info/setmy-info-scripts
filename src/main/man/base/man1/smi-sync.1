@@ -1,0 +1,25 @@
+.TH smi-sync "1" "October 2025" "SMI Toolset 0.100.0" "SMI Utility Command"
+.SH NAME
+smi-sync \- Synchronize directories using rsync
+.SH SYNOPSIS
+.B smi-sync
+.I SOURCE_DIR
+.I DESTINATION_DIR
+.SH DESCRIPTION
+.PP
+.B smi-sync
+is a simple wrapper for the \fBrsync\fR command. It synchronizes the contents of \fISOURCE_DIR\fR to \fIDESTINATION_DIR\fR using the flags \fB-avu\fR (archive mode, verbose, update) and \fB--ignore-errors\fR. It also excludes \fIlost+found\fR directories.
+.SH EXAMPLES
+.PP
+smi-sync /path/to/source /path/to/destination
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-sync bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR rsync (1)
+

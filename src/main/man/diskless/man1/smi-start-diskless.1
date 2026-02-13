@@ -1,0 +1,26 @@
+﻿.TH smi-start-diskless "1" "October 2025" "SMI Toolset 0.100.0" "SMI Diskless Command"
+.SH NAME
+smi-start-diskless \- Restart all diskless-related servers
+.SH SYNOPSIS
+.B smi-start-diskless
+.SH DESCRIPTION
+.PP
+.B smi-start-diskless
+restarts the host services required for diskless clients to boot and run.
+Specifically, it restarts:
+.IP 1.
+\fBdhcp-server\fR
+.IP 2.
+\fBtftp\fR (Systemd socket/service)
+.IP 3.
+\fBnfs-server\fR
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-start-diskless bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-make-diskless (1)

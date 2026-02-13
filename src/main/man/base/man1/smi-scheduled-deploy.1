@@ -1,0 +1,36 @@
+.TH smi-scheduled-deploy "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-scheduled-deploy \- Automatically deploy tar.gz packages from a source directory
+.SH SYNOPSIS
+.B smi-scheduled-deploy
+.SH DESCRIPTION
+.PP
+.B smi-scheduled-deploy
+is a script used to automate the deployment of software packages provided as \fB.tar.gz\fR files.
+It is typically configured via \fBsmi-scheduled-deploy.sh\fR in the SMI configuration directory.
+.PP
+The deployment process for each package involves:
+.IP 1.
+Locating \fB*.tar.gz\fR files in the \fBFROM_DIR\fR.
+.IP 2.
+Copying the package to the \fBDEPLOY_DIR\fR and setting ownership (\fBDEPLOY_OWNER:DEPLOY_GROUP\fR).
+.IP 3.
+Extracting the package in the \fBDEPLOY_DIR\fR.
+.IP 4.
+Moving the original archive to the \fBHISTORY_DIR\fR with a timestamp prefix (from \fBsmi-timestamp\fR).
+.IP 5.
+Cleaning up the source directory.
+.PP
+The script uses a lock file (\fB/tmp/smi-scheduled-deploy-lock\fR) to prevent concurrent executions.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-scheduled-deploy bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-scheduled (1),
+.BR smi-timestamp (1)
+

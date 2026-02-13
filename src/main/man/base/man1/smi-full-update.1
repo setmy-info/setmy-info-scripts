@@ -1,0 +1,29 @@
+.TH smi-full-update "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-full-update \- Perform a full system and SMI environment update
+.SH SYNOPSIS
+.B smi-full-update
+.SH DESCRIPTION
+.PP
+.B smi-full-update
+is a high-level utility that orchestrates multiple update tasks. It ensures that the host operating system, and all managed environments (like jails), are brought up to date.
+.PP
+The script performs the following actions:
+.IP 1.
+Ensures it is running as root (re-executes with \fBsudo -i\fR if necessary).
+.IP 2.
+Executes \fBsmi-host-update\fR to update the host system.
+.IP 3.
+Executes \fBsmi-jails-update\fR to update all configured FreeBSD jails.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-full-update bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-host-update (1),
+.BR smi-jails-update (1)
+

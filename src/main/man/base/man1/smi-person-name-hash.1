@@ -1,0 +1,25 @@
+.TH smi-person-name-hash "1" "October 2025" "SMI Toolset 0.100.0" "SMI Gintra Command"
+.SH NAME
+smi-person-name-hash \- Generate a hash for a person's name
+.SH SYNOPSIS
+.B smi-person-name-hash
+.I FIRST_NAME
+.I LAST_NAME
+.SH DESCRIPTION
+.PP
+.B smi-person-name-hash
+generates a unique, deterministic hash for a person's name using the provided \fIFIRST_NAME\fR and \fILAST_NAME\fR, combined with a internal salt. The hash is derived from SHA-512 and truncated to a specific length, prefixed with \fBperson_hash_\fR.
+.SH EXAMPLES
+.PP
+smi-person-name-hash John Doe
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-person-name-hash bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-person-location (1)
+

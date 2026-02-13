@@ -13,11 +13,11 @@ and always having a pointer to the latest stable release.
 When run, it performs the following:
 .IP \[bu] 2
 Checks if the given version tag already exists.
-.IP \[bu]
+.IP \[bu] 2
 Creates an annotated tag with the version string as both name and message.
-.IP \[bu]
+.IP \[bu] 2
 Forces the \fBlatest\fR tag to point to the newly created version.
-.IP \[bu]
+.IP \[bu] 2
 Pushes the \fBlatest\fR and all tags to the remote repository.
 .PP
 The command fails if the version tag already exists, or if the version argument is missing.
@@ -41,7 +41,7 @@ Documentation written by Imre Tabur.
 Report bugs to \fIimre.tabur@mail.ee\fR
 .SH "SEE ALSO"
 .PP
-.B git-tag(1),
-.B git-push(1)
+.BR git-tag (1),
+.BR git-push (1)
 .PP
 See also your Git documentation or CI/CD deployment tools that support Git tags.

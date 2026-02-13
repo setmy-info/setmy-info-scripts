@@ -1,0 +1,36 @@
+.TH smi-jail-update "1" "October 2025" "SMI Toolset 0.100.0" "SMI Jail Command"
+.SH NAME
+smi-jail-update \- Update one or more FreeBSD jails
+.SH SYNOPSIS
+.B smi-jail-update
+.I JAIL_NAME...
+.SH DESCRIPTION
+.PP
+.B smi-jail-update
+performs a comprehensive update of the specified FreeBSD \fIJAIL_NAME\fR(s).
+The update process includes both the base operating system and the installed packages within each jail.
+.PP
+For each jail, the following commands are executed:
+.IP 1.
+\fBfreebsd-update fetch\fR (Base system)
+.IP 2.
+\fBfreebsd-update install\fR (Base system)
+.IP 3.
+\fBpkg update -f\fR (Package repository)
+.IP 4.
+\fBpkg upgrade -y\fR (Installed packages)
+.PP
+The script ensures it is running as root (re-executes with \fBsudo\fR if necessary) and uses \fBchroot\fR(8) contexts for the updates.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-jail-update bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-jails-update (1),
+.BR freebsd-update (8),
+.BR pkg (8)
+

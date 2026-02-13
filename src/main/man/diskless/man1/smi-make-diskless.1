@@ -1,0 +1,39 @@
+﻿.TH smi-make-diskless "1" "October 2025" "SMI Toolset 0.100.0" "SMI Diskless Command"
+.SH NAME
+smi-make-diskless \- Setup and install a diskless environment
+.SH SYNOPSIS
+.B smi-make-diskless
+.I DISKLESS_NAME
+.I SERVER_IP
+.SH DESCRIPTION
+.PP
+.B smi-make-diskless
+is an automated tool for setting up a diskless workstation or server environment on Linux (primarily tested on Rocky Linux 9.2).
+.PP
+The command performs a comprehensive setup process:
+.IP 1.
+\fBPrerequisites\fR: Installs \fBdhcp-server\fR, \fBtftp-server\fR, \fBnfs-server\fR, and \fBnfs-utils\fR on the host.
+.IP 2.
+\fBDirectory Structure\fR: Creates the diskless root, home, and var directories under \fB/var/opt/setmy.info/diskless/\fIDISKLESS_NAME\fR.
+.IP 3.
+\fBOS Installation\fR: Uses \fBdnf --installroot\fR to install a base system (@core, kernel, nfs-utils, dbus) into the diskless root directory.
+.IP 4.
+\fBTFTP/PXE Setup\fR: Downloads Rocky Linux PXE boot files (vmlinuz, initrd.img, etc.) to \fB/var/lib/tftpboot\fR and configures \fBpxelinux.0\fR.
+.IP 5.
+\fBClient Configuration\fR: Configures \fB/etc/fstab\fR inside the diskless root to mount home and var via NFS from the \fISERVER_IP\fR. Disables SELinux on the client.
+.IP 6.
+\fBHost Services\fR: Configures the host's NFS exports, DHCP server (\fBdhcpd.conf\fR), and TFTP boot options.
+.IP 7.
+\fBFirewall/Systemd\fR: Enables and starts all required services and opens necessary firewall ports (DHCP, TFTP, NFS).
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-make-diskless bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-start-diskless (1),
+.BR smi-diskless-useradd (1),
+.BR smi-diskless-passwd (1)

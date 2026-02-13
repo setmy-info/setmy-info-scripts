@@ -1,0 +1,29 @@
+.TH smi-jails-update "1" "October 2025" "SMI Toolset 0.100.0" "SMI Jail Command"
+.SH NAME
+smi-jails-update \- Update all configured FreeBSD jails
+.SH SYNOPSIS
+.B smi-jails-update
+.SH DESCRIPTION
+.PP
+.B smi-jails-update
+is a batch utility that iterates through all jail configurations found in the SMI \fBetc/jails\fR directory and performs an update on each using \fBsmi-jail-update\fR(1).
+.PP
+The script:
+.IP 1.
+Ensures it is running as root (re-executes with \fBsudo\fR if necessary).
+.IP 2.
+Loads each jail's configuration to determine its name and path.
+.IP 3.
+Calls \fBsmi-jail-update\fR for each identified jail.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-jails-update bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-jail-update (1),
+.BR smi-full-update (1)
+

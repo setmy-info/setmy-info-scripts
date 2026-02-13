@@ -1,0 +1,26 @@
+.TH smi-person-location "1" "October 2025" "SMI Toolset 0.100.0" "SMI Gintra Command"
+.SH NAME
+smi-person-location \- Print the SMI person directory path
+.SH SYNOPSIS
+.B smi-person-location
+.I FIRST_NAME
+.I LAST_NAME
+.SH DESCRIPTION
+.PP
+.B smi-person-location
+prints the path to a specific person's directory. It calculates a hash based on the \fIFIRST_NAME\fR and \fILAST_NAME\fR (using \fBsmi-person-name-hash\fR) and constructs the path within the persons location.
+.SH EXAMPLES
+.PP
+smi-person-location John Doe
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-person-location bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-persons-location (1),
+.BR smi-person-name-hash (1)
+

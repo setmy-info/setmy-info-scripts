@@ -1,0 +1,24 @@
+.TH smi-install-package "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-install-package \- Install one or more SMI packages
+.SH SYNOPSIS
+.B smi-install-package
+.I PACKAGE_NAME...
+.SH DESCRIPTION
+.PP
+.B smi-install-package
+installs the specified SMI packages.
+It uses the \fBpackages.sh\fR library to locate package definitions (with \fB.package\fR suffix) in either the system or home packages directories and executes their respective install functions.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-install-package bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-download-package (1),
+.BR smi-packages-location (1),
+.BR smi-home-packages-location (1)
+

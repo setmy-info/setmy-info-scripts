@@ -1,0 +1,37 @@
+.TH smi-spring-boot "1" "January 2024" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-spring-boot \- Launch a Spring Boot application with standard properties
+.SH SYNOPSIS
+.B smi-spring-boot
+.RI [ ARGUMENTS ]
+.SH DESCRIPTION
+.PP
+.B smi-spring-boot
+is a utility script to launch a Spring Boot application using \fBjava\fR. it configures several system properties based on environment variables.
+.SH ENVIRONMENT VARIABLES
+.TP
+\fBMICROSERVICE_LOG_DIR_PATH\fR
+Path to the directory where logs should be stored. Sets \fBlogging.file.path\fR.
+.TP
+\fBMICROSERVICE_LOG_FILE_NAME\fR
+Name of the log file. Sets \fBlogging.file.name\fR.
+.TP
+\fBMICROSERVICE_PROFILES\fR
+Active Spring profiles. Sets \fBspring.profiles.active\fR.
+.TP
+\fBMICROSERVICE_OPTIONAL_CONFIG_FILE_PATH\fR
+Path to an optional additional configuration file. Sets \fBspring.config.additional-location\fR.
+.TP
+\fBMICROSERVICE_JAR_FILE_PATH\fR
+Path to the executable Spring Boot JAR file.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-spring-boot bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR microservice (1)
+

@@ -1,0 +1,21 @@
+.TH smi-scheduled "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-scheduled \- Run scheduled SMI maintenance and deployment tasks
+.SH SYNOPSIS
+.B smi-scheduled
+.SH DESCRIPTION
+.PP
+.B smi-scheduled
+is a wrapper script intended to be run by a scheduler (like \fBcron\fR). It sets up the necessary environment by adding the SMI binary directory to the \fBPATH\fR and then executes \fBsmi-scheduled-deploy\fR.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-scheduled bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-scheduled-deploy (1),
+.BR cron (8)
+

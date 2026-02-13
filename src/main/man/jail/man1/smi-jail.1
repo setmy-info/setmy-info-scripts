@@ -1,0 +1,55 @@
+.TH smi-jail "1" "October 2025" "SMI Toolset 0.100.0" "SMI Jail Command"
+.SH NAME
+smi-jail \- Build and manage FreeBSD jails using Jailfiles
+.SH SYNOPSIS
+.B JAIL=name TAG=tag smi-jail
+.SH DESCRIPTION
+.PP
+.B smi-jail
+is a tool for building and managing FreeBSD jails using a DSL defined in a \fBJailfile\fR, similar in concept to Dockerfiles.
+It requires the environment variables \fBJAIL\fR (name of the jail) and \fBTAG\fR (version or tag) to be set.
+.SH JAILFILE COMMANDS
+The \fBJailfile\fR is a shell script containing the following supported DSL commands:
+.TP
+\fBFROM base\fR or \fBFROM jail:tag\fR
+Specifies the base image. \fBbase\fR downloads FreeBSD base and ports. A \fBjail:tag\fR extracts an existing tagged jail.
+.TP
+\fBCOPY src dest\fR
+Copies files from the host to the jail.
+.TP
+\fBRUN command\fR
+Executes a command inside the jail using \fBchroot\fR(8).
+.TP
+\fBINSTALL package...\fR
+Installs FreeBSD packages inside the jail using \fBpkg\fR.
+.TP
+\fBUPDATE\fR
+Updates the \fBpkg\fR repository inside the jail.
+.TP
+\fBFB_UPDATE\fR
+Updates the FreeBSD base system inside the jail using \fBfreebsd-update\fR(8).
+.TP
+\fBUPGRADE\fR
+Upgrades all installed packages inside the jail.
+.TP
+\fBPW command\fR
+Manages users and groups inside the jail using \fBpw\fR(8).
+.TP
+\fBSYSRC command\fR
+Manages \fBrc.conf\fR entries inside the jail using \fBsysrc\fR(8).
+.TP
+\fBPACKAGE\fR
+Creates a compressed \fB.txz\fR archive of the jail in the jails location.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-jail bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-jails-location (1),
+.BR jail (8),
+.BR chroot (8)
+

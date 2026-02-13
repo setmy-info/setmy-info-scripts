@@ -1,0 +1,36 @@
+.TH smi-exec-location "1" "February 2026" "SMI Toolset" "SMI Exec Location Command"
+.SH NAME
+smi-exec-location \- execute a command within a specified directory
+.SH SYNOPSIS
+.B smi-exec-location
+.I DIRECTORY
+.I COMMAND
+[\fIARGUMENTS\fR]...
+.SH DESCRIPTION
+.PP
+The
+.B smi-exec-location
+command ensures that the specified \fIDIRECTORY\fR exists (creating it if necessary),
+changes the current working directory to it, and then executes the given \fICOMMAND\fR with any provided \fIARGUMENTS\fR.
+.SH OPTIONS
+.TP
+.I DIRECTORY
+The directory in which to execute the command.
+.TP
+.I COMMAND
+The command to be executed.
+.TP
+.I ARGUMENTS
+Optional arguments for the command.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.PP
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIinfo@setmy.info\fR.
+.SH "SEE ALSO"
+.PP
+.BR cd (1),
+.BR mkdir (1)

@@ -1,0 +1,37 @@
+.TH smi-pki-ca-create "1" "October 2025" "SMI Toolset 0.100.0" "SMI PKI Command"
+.SH NAME
+smi-pki-ca-create \- Create a self-signed Root Certificate Authority (CA)
+.SH SYNOPSIS
+.B smi-pki-ca-create
+.I DIRECTORY
+.I ROOT_DOMAIN
+.SH DESCRIPTION
+.PP
+.B smi-pki-ca-create
+initializes a Root Certificate Authority (CA) in the specified \fIDIRECTORY\fR for the given \fIROOT_DOMAIN\fR.
+.PP
+The command performs the following steps:
+.IP 1.
+Loads certificate subject information from \fBsubject.sh\fR if it exists in the target directory.
+.IP 2.
+Creates a \fBca\fR subdirectory.
+.IP 3.
+Generates a 2048-bit RSA private key.
+.IP 4.
+Generates a matching public key.
+.IP 5.
+Creates a Certificate Signing Request (CSR) for \fBintranet.\fIROOT_DOMAIN\fR.
+.IP 6.
+Self-signs the request to create a CA certificate valid for 2048 days, using an extension file located in the SMI library.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-pki-ca-create bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-pki-create-domain-cert (1),
+.BR openssl (1)
+

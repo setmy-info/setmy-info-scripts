@@ -1,0 +1,23 @@
+.TH term-activate "1" "October 2025" "SMI Toolset 0.100.0" "SMI Terminal Command"
+.SH NAME
+term-activate \- Activate SMI profiles in a new shell
+.SH SYNOPSIS
+.B term-activate
+.RI [ PROFILE_NAME... ]
+.SH DESCRIPTION
+.PP
+.B term-activate
+is a utility script that loads one or more SMI profiles and then starts a new POSIX-compliant shell (\fB/bin/sh --posix\fR).
+It updates the prompt to indicate that the term environment is active (\fB(term) user@host$ \fR).
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report term-activate bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR term (1),
+.BR term-profile (1)
+

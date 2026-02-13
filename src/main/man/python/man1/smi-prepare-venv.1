@@ -1,0 +1,30 @@
+﻿.TH smi-prepare-venv "1" "October 2025" "SMI Toolset 0.100.0" "SMI Python Command"
+.SH NAME
+smi-prepare-venv \- Install pip requirements into the virtual environment
+.SH SYNOPSIS
+.B smi-prepare-venv
+.RI [ REQUIREMENTS_FILES... ]
+.SH DESCRIPTION
+.PP
+.B smi-prepare-venv
+installs Python dependencies into the local \fB./.venv\fR directory using \fBpip\fR.
+It identifies requirements files in the following order of priority:
+.IP 1.
+Arguments passed on the command line.
+.IP 2.
+The \fBSMI_PROJECT_REQUIREMENTS\fR environment variable.
+.IP 3.
+The \fBPROJECT_REQUIREMENTS\fR variable defined in a local \fB./project\fR file.
+.PP
+The script calls \fBsmi-venv-command pip install -r\fR for each existing requirements file found.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-prepare-venv bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-create-venv (1),
+.BR smi-venv-command (1)

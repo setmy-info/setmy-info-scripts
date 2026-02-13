@@ -1,0 +1,25 @@
+.TH smi-decrypt "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.SH NAME
+smi-decrypt \- Decrypt a file encrypted with smi-encrypt
+.SH SYNOPSIS
+.B smi-decrypt
+.I ENCRYPTED_FILE
+.SH DESCRIPTION
+.PP
+.B smi-decrypt
+decrypts the specified \fIENCRYPTED_FILE\fR (usually with a \fB.enc\fR suffix) using OpenSSL with the AES-256-CBC algorithm.
+Upon successful decryption (result code 0 and non-empty output), the encrypted file is removed and the original file is restored.
+.PP
+Decryption uses 10,000 iterations for key derivation, matching the encryption process.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-decrypt bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-encrypt (1),
+.BR openssl (1)
+

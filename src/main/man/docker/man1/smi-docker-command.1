@@ -1,0 +1,28 @@
+﻿.TH smi-docker-command "1" "October 2025" "SMI Toolset 0.100.0" "SMI Docker Command"
+.SH NAME
+smi-docker-command \- Execute scripts as root and then as user inside a container
+.SH SYNOPSIS
+.B smi-docker-command
+.I AS_ROOT_USER_SCRIPT
+.I AS_RESTRICTED_USER_SCRIPT
+.RI [ ARGUMENTS... ]
+.SH DESCRIPTION
+.PP
+.B smi-docker-command
+is designed to be run inside a Docker container (or similar environment) to manage user privileges during script execution.
+.PP
+The process is:
+.IP 1.
+Executes \fIAS_ROOT_USER_SCRIPT\fR using \fBsudo\fR. This is typically used for administrative tasks like installing packages. It uses \fBsmi-docker-root-once\fR to perform the task and then remove \fBsudo\fR rights.
+.IP 2.
+Executes \fIAS_RESTRICTED_USER_SCRIPT\fR with the remaining \fIARGUMENTS\fR as the current (restricted) user.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-docker-command bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-docker-root-once (1)

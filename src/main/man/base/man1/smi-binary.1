@@ -1,0 +1,30 @@
+.TH smi-binary "1" "October 2025" "SMI Toolset 0.100.0" "SMI Utility Command"
+.SH NAME
+smi-binary \- Wrapper for executing binary files with .bin suffix
+.SH SYNOPSIS
+.B smi-binary
+.RI [ ARGUMENTS ]
+.SH DESCRIPTION
+.PP
+.B smi-binary
+is a wrapper script designed to execute a binary file that has a \fB.bin\fR suffix. It determines the binary to execute based on the name of the script or a symbolic link pointing to it.
+.PP
+For example, if you create a symbolic link named \fBsmi-test\fR that points to \fBsmi-binary\fR, executing \fBsmi-test\fR will cause \fBsmi-binary\fR to look for and execute \fBsmi-test.bin\fR.
+.SH EXAMPLES
+.PP
+If a symbolic link \fBsmi-myapp\fR points to \fBsmi-binary\fR:
+.PP
+\fBsmi-myapp --arg1 value1\fR
+.PP
+This will execute \fBsmi-myapp.bin --arg1 value1\fR.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-binary bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-exec-location (1)
+

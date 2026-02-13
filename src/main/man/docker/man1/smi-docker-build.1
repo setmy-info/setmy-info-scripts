@@ -1,0 +1,47 @@
+﻿.TH smi-docker-build "1" "October 2025" "SMI Toolset 0.100.0" "SMI Docker Command"
+.SH NAME
+smi-docker-build \- Build, tag, and push a Docker image
+.SH SYNOPSIS
+.B smi-docker-build
+.SH DESCRIPTION
+.PP
+.B smi-docker-build
+is an automated Docker build utility. It sources the \fBdocker.sh\fR library and a local \fBbuild.sh\fR script to execute a full build pipeline.
+.PP
+The pipeline includes:
+.IP 1.
+\fBdocker_build\fR: Sourcing local build context.
+.IP 2.
+\fBbuild_image\fR: Running \fBdocker build\fR with \fBVERSION\fR, \fBBUILD_DATE\fR, and \fBVCS_REF\fR build arguments.
+.IP 3.
+\fBbuild_latest_tag\fR: Tagging the image as \fBlatest\fR.
+.IP 4.
+\fBbuild_inspect_latest_tag\fR: Running \fBdocker inspect\fR on the new image.
+.IP 5.
+\fBbuild_show_images\fR: Listing images to verify the result.
+.IP 6.
+\fBbuild_login\fR: Prompting for Docker Hub login.
+.IP 7.
+\fBbuild_push\fR: Pushing both the versioned tag and \fBlatest\fR tag to the registry.
+.SH ENVIRONMENT VARIABLES
+The following variables are used for tagging and build arguments:
+.TP
+\fBDOCKER_ID_ORGANIZATION\fR
+Docker registry organization/user ID.
+.TP
+\fBDOCKER_PROJECT_NAME\fR
+Name of the Docker project/image.
+.TP
+\fBDOCKER_PROJECT_VERSION\fR
+Version tag for the image.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-docker-build bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-docker-prepare (1),
+.BR docker (1)

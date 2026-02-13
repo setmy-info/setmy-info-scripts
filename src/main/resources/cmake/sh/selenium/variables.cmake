@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
-MESSAGE("-- selenium base.cmake")
+MESSAGE("-- selenium variables.cmake")
+
+SET (SELENIUM_MAN_SOURCES_PATH ${MAIN_MAN_SOURCES_PATH}/selenium)
 
 # PLACEHOLDER-END #

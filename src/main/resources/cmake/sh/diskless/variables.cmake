@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
-MESSAGE("-- diskless base.cmake")
+MESSAGE("-- diskless variables.cmake")
+
+SET (DISKLESS_MAN_SOURCES_PATH ${MAIN_MAN_SOURCES_PATH}/diskless)
 
 # PLACEHOLDER-END #

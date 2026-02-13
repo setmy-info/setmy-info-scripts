@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- packages variables.cmake")
 
+SET (PACKAGES_MAN_SOURCES_PATH ${MAIN_MAN_SOURCES_PATH}/packages)
+
 # PLACEHOLDER-END #

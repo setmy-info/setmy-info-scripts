@@ -1,4 +1,13 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- jail bin.cmake")
 
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-location"     DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail-update"        DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail-delete"        DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail-host-config"   DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jails-update"       DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-full-update"        DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/microserviced"          DESTINATION bin)
+
 # PLACEHOLDER-END #

@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
-MESSAGE("-- docker base.cmake")
+MESSAGE("-- docker variables.cmake")
+
+SET (DOCKER_MAN_SOURCES_PATH ${MAIN_MAN_SOURCES_PATH}/docker)
 
 # PLACEHOLDER-END #

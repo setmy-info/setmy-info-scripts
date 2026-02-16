@@ -1,0 +1,28 @@
+.TH venv "1" "February 2026" "SMI Toolset 0.100.0" "SMI Python Command"
+.SH NAME
+venv \- Activate the local virtual environment in the current shell
+.SH SYNOPSIS
+.B . venv
+.SH DESCRIPTION
+.PP
+.B venv
+is a small utility script to activate the local \fB./.venv\fR virtual environment.
+It must be sourced (using the dot or source command) to affect the current shell session.
+If the \fB./.venv\fR directory is not found, it prints an error and exits.
+.SH EXAMPLES
+.PP
+To activate the virtual environment:
+.IP
+.B . venv
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Junie.
+.SH "REPORTING BUGS"
+.PP
+Report venv bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-create-venv (1),
+.BR smi-venv-command (1),
+.BR smi-python (1)

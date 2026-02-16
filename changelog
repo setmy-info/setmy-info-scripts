@@ -1,4 +1,7 @@
 * 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- Migration planning: Refined migration.txt to include only binary items from 'bin' directories. Removed all entries related to *.profile and *.package files to focus on executable script parity.
+- AGENTS.md update: Formally allowed the use of PowerShell (.ps1) for Windows-specific scripting (with exceptions for *.profile and *.package files), removing the previous restriction to .cmd only.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
 - VCS Unix difftools: Added POSIX shell scripts 'difftool', 'difftoolc', and 'difftools' in src/main/sh/vcs/bin/ for Unix systems. Created corresponding man pages in src/main/man/vcs/man1/. Updated VCS CMake configuration (bin.cmake, targets.cmake, man.cmake, dependencies.cmake) to build and install these new commands and documentation.
 * 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
 - AGENTS.md: Updated architectural rules and project guidelines for AI assistants.

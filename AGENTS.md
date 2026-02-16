@@ -20,8 +20,8 @@ This document provides essential context and strict architectural rules for AI a
   dependencies, be independently maintainable, declare dependencies explicitly (CMake or script-level)
 * AI assistants MUST NOT collapse modules into a monolithic structure, introduce hidden cross-module dependencies, mix
   OS-specific logic inside shared modules, bypass the defined structure
-* main production code is in src/main directory
-* test code is in src/test directory
+* the main production code is in the src / main directory
+* test code is in the src / test directory
 * Code is separated by languages cl, cmd, groovy, python, sh. Located as src/main/cl, src/main/cmd, src/main/groovy,
   src/main/python, src/main/sh.
 * Man root is in src/main/man
@@ -38,3 +38,6 @@ This document provides essential context and strict architectural rules for AI a
 * Windows scripts should be in .cmd format, should not be PowerShell scripts.
 * shell scripts are not always in specific form like "smi-*" or "*.sh"
 * Man pages follow the same folder structure like they are modularized.
+* Windows additional software place is in C:\pub
+* Windows related scripts and exes are in C:\pub\setmy.info\bin and importable scripts and libraries in
+  "C:\pub\setmy.info\lib"

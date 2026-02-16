@@ -46,3 +46,4 @@ CPackSourceConfig.cmake
 # AI related
 TASKLIST.md
 TASKLIST.lisp
+.output.txt

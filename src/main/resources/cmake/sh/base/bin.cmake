@@ -69,6 +69,9 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-create-domain-cert" DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/versions"                   DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-spring-boot"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-new-tag"                DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/tab"                        DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/tabs"                       DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/jira"                       DESTINATION bin)
 
 IF(DISTRIBUTION STREQUAL "FreeBSD")
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jail"               DESTINATION bin)

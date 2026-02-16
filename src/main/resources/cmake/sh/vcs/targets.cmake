@@ -1,4 +1,7 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- vcs targets.cmake")
 
+ADD_CUSTOM_TARGET(buildVCSMan cp ${MAIN_MAN_SOURCES_PATH}/vcs/man1/*.1 ${MAN_OUTPUT_PATH}/man1 && gzip -f ${MAN_OUTPUT_PATH}/man1/*.1)
+ADD_CUSTOM_TARGET(buildVCSShellScripts cp ${MAIN_SH_SOURCES_PATH}/vcs/bin/* ${BINARY_OUTPUT_PATH})
+
 # PLACEHOLDER-END #

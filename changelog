@@ -1,4 +1,6 @@
 * 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- VCS Unix difftools: Added POSIX shell scripts 'difftool', 'difftoolc', and 'difftools' in src/main/sh/vcs/bin/ for Unix systems. Created corresponding man pages in src/main/man/vcs/man1/. Updated VCS CMake configuration (bin.cmake, targets.cmake, man.cmake, dependencies.cmake) to build and install these new commands and documentation.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
 - AGENTS.md: Updated architectural rules and project guidelines for AI assistants.
 * 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
 - Python man pages: Added src/main/man/python/man1/venv.1. Updated Python CMake scripts (dependencies.cmake, man.cmake, targets.cmake) to include buildPythonMan in the build process and install generated man pages.

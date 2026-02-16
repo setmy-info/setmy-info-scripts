@@ -44,3 +44,4 @@ This document provides essential context and strict architectural rules for AI a
 * Adding a new script for Uixes, then a man page should be created also
 * Newly added scripts should have # Copyright (C) 20YY Imre Tabur <imre.tabur@mail.ee>
 * Users config files are located in folder named .setmy.info in the user home directory.
+* New scripts should be added into cmake scripts

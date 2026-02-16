@@ -1,0 +1,16 @@
+#!/bin/sh
+
+JIRA_URL_FILE="${HOME}/.setmy.info/jira.url"
+if [ ! -f "${JIRA_URL_FILE}" ]; then
+    echo "Jira URL file not found: ${JIRA_URL_FILE}"
+    echo "Please create it with: JIRA_BASE_URL=https://jira.example.com/browse/"
+    exit 1
+fi
+
+. "${JIRA_URL_FILE}"
+if [ -z "$1" ]; then
+    echo "Usage: jira [TASK_ID]"
+    exit 1
+fi
+
+/opt/firefox/firefox --new-tab "${JIRA_BASE_URL}$1"

@@ -24,3 +24,10 @@ call %LOADER_CMD% selenium
 call %LOADER_CMD% graphviz
 call %LOADER_CMD% k8ssealed
 call %LOADER_CMD% sapling
+call %LOADER_CMD% jasypt
+call %LOADER_CMD% mavend
+call %LOADER_CMD% rabbitmq
+call %LOADER_CMD% mqtt
+call %LOADER_CMD% hugo
+call %LOADER_CMD% nsis
+call %LOADER_CMD% innosetup

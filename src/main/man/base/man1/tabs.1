@@ -1,0 +1,31 @@
+.TH tabs "1" "February 2026" "SMI Toolset 0.100.0" "SMI Workstation Command"
+.SH NAME
+tabs \- Open multiple URLs in Firefox tabs from a configuration file
+.SH SYNOPSIS
+.B tabs
+.SH DESCRIPTION
+.PP
+.B tabs
+reads a list of URLs from a configuration file and opens each in a new Firefox tab using the \fBtab\fR command.
+The configuration file is located at:
+.I ${HOME}/.setmy.info/tabs.conf
+on Unix-like systems or
+.I %USERPROFILE%\\.setmy.info\\tabs.conf
+on Windows.
+.PP
+The configuration file should contain an assignment in the form:
+.IP
+TABS="https://www.google.com https://github.com"
+.SH EXAMPLES
+.B tabs
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Junie.
+.SH "REPORTING BUGS"
+.PP
+Report tabs bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR tab (1),
+.BR firefox (1)

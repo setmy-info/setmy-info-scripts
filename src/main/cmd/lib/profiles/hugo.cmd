@@ -1,0 +1,3 @@
+set HUGO_HOME=%PUB_DIR%\hugo
+set HUGO_BIN_DIR=%HUGO_HOME%
+set PATH=%HUGO_BIN_DIR%;%PATH%

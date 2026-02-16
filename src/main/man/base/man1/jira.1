@@ -1,0 +1,34 @@
+.TH jira "1" "February 2026" "SMI Toolset 0.100.0" "SMI Workstation Command"
+.SH NAME
+jira \- Open a Jira task in Firefox
+.SH SYNOPSIS
+.B jira
+.I TASK_ID
+.SH DESCRIPTION
+.PP
+.B jira
+opens a specified Jira task in a new tab of the Firefox browser.
+It reads the base Jira URL from the configuration file
+.I ${HOME}/.setmy.info/jira.url
+on Unix-like systems or
+.I %USERPROFILE%\\.setmy.info\\jira.url
+on Windows.
+.PP
+The configuration file should contain an assignment in the form:
+.IP
+JIRA_BASE_URL=https://jira.example.com/browse/
+.PP
+If the file does not exist, the command will display an error message and exit.
+.SH EXAMPLES
+.B jira
+.I PROJECT-123
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Junie.
+.SH "REPORTING BUGS"
+.PP
+Report jira bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR firefox (1)

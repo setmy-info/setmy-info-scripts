@@ -41,3 +41,6 @@ This document provides essential context and strict architectural rules for AI a
 * Windows additional software place is in C:\pub
 * Windows related scripts and exes are in C:\pub\setmy.info\bin and importable scripts and libraries in
   "C:\pub\setmy.info\lib"
+* Adding a new script for Uixes, then a man page should be created also
+* Newly added scripts should have # Copyright (C) 20YY Imre Tabur <imre.tabur@mail.ee>
+* Users config files are located in folder named .setmy.info in the user home directory.

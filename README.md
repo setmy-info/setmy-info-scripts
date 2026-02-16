@@ -93,3 +93,8 @@ Function usage is a problem. CMame doesn't have global variables. Only function 
     * k8s, **virtualization**, docker
     * **crm**
     * **tools**, helpers
+
+# Windows
+
+* https://jrsoftware.org/isinfo.php
+* https://sourceforge.net/projects/nsis/

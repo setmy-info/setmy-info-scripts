@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+TABS_CONFIG_FILE="${HOME}/.setmy.info/tabs.conf"
+
+if [ ! -f "${TABS_CONFIG_FILE}" ]; then
+    echo "Tabs configuration file not found: ${TABS_CONFIG_FILE}"
+    echo "Please create it with: TABS=\"google.com example.com\""
+    exit 1
+fi
+
+. "${TABS_CONFIG_FILE}"
+
+for TAB in ${TABS}; do
+    tab "${TAB}"
+done

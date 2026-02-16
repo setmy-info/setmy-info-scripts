@@ -1,3 +1,26 @@
-* Sun Feb 24 2019 Imre Tabur <imre.tabur@mail.ee>
-- Example chagelog file
-- with someting else too
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- AGENTS.md: Updated architectural rules and project guidelines for AI assistants.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- Python man pages: Added src/main/man/python/man1/venv.1. Updated Python CMake scripts (dependencies.cmake, man.cmake, targets.cmake) to include buildPythonMan in the build process and install generated man pages.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- Fixed installation vol2: Minor update to AGENTS.md.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- Fixed installation: Updated src/main/resources/cmake/sh/base/bin.cmake to install 'tab', 'tabs', and 'jira'. Updated src/main/resources/cmake/sh/python/bin.cmake to install 'venv'.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- Merge branch 'feature/ai-package-download' into develop.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- Morning work about NSIS: Added build.cmd, setup.iss, and setup.nsi for Windows packaging. Added Windows scripts: cl.bat, jira.cmd, tab.cmd, tabs.cmd. Added CMD profiles: hugo.cmd, innosetup.cmd, jasypt.cmd.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- CMD based package download: Added Windows scripts for package management: smi-download-package.cmd, smi-home-packages-location.cmd, smi-install-package.cmd, smi-packages-location.cmd, and lib/packages.cmd.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- Some changes: Updated .gitignore and AGENTS.md.
+* 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
+- AI venv commands created: Added src/main/cmd/bin/venv.cmd (Windows) and src/main/sh/python/bin/venv (Unix) for virtual environment activation.
+* 2026-02-13 Imre Tabur <imre.tabur@mail.ee>
+- AI created manuals vol 4: Refined and updated man pages for diskless, docker, jail, packages, pki, and python modules.
+* 2026-02-13 Imre Tabur <imre.tabur@mail.ee>
+- AI created manuals vol 3: Updated base man pages: another.1, example.1, and quicklisp-setup.1.
+* 2026-02-13 Imre Tabur <imre.tabur@mail.ee>
+- AI created manuals vol 2: Added AGENTS-draft.md. Updated a large set of base module man pages (base64, degrees, hgrep, microservice, smi-config, etc.).
+* 2026-02-13 Imre Tabur <imre.tabur@mail.ee>
+- AI created manuals: Initial creation of a comprehensive set of man pages across multiple domains: base, diskless, docker, jail, packages, pki, python, selenium, term, and vcs.

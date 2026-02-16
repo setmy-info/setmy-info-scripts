@@ -45,4 +45,5 @@ This document provides essential context and strict architectural rules for AI a
 * Newly added scripts should have # Copyright (C) 20YY Imre Tabur <imre.tabur@mail.ee>
 * Users config files are located in a folder named .setmy.info in the user home directory.
 * New scripts should be added into cmake scripts
-* Update the changelog file about changes, so it can be tracked in future for testing changes for testings.
+* Update the changelog file about changes in very detailed form, so it can be tracked in the future for testing changes
+  for testings.

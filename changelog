@@ -1,3 +1,7 @@
+* 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
+- AI CMake man pages integration: Updated variables.cmake and targets.cmake across multiple modules (diskless, docker, jail, pki, python, selenium, term, vcs) to define man page source paths and integrate them into the build and installation process.
+* 2026-02-13 Imre Tabur <imre.tabur@mail.ee>
+- AI CMake changes: Initial integration of man pages and binary scripts into the CMake build system for jail, pki, term, and other modules.
 * 2026-02-16 Imre Tabur <imre.tabur@mail.ee>
 - Migration planning: Refined migration.txt to include only binary items from 'bin' directories. Removed all entries related to *.profile and *.package files to focus on executable script parity.
 - AGENTS.md update: Formally allowed the use of PowerShell (.ps1) for Windows-specific scripting (with exceptions for *.profile and *.package files), removing the previous restriction to .cmd only.

@@ -1,4 +1,12 @@
 * 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
+- check-files.sh update: Modified 'check_directory' to be a recursive file counter using 'find'. Updated minimum file count expectations for bin, lib, and man directories.
+* 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
+- Dockerfile update: Added explicit removal of 'setmy-info-scripts' package before installation in the RPM build stage to ensure any existing version is uninstalled.
+* 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
+- Dockerfile update: Added removal of 'odl' package in the RPM build stage to ensure a clean build environment.
+* 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
+- Automated installation verification: Created src/main/sh/build/check-files.sh to verify file presence and counts in bin, lib, and man directories after installation. Integrated this check into the Dockerfile for both Debian and RPM builds. Updated base targets.cmake to include the verification script in the build output.
+* 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
 - AI CMake man pages integration: Updated variables.cmake and targets.cmake across multiple modules (diskless, docker, jail, pki, python, selenium, term, vcs) to define man page source paths and integrate them into the build and installation process.
 * 2026-02-13 Imre Tabur <imre.tabur@mail.ee>
 - AI CMake changes: Initial integration of man pages and binary scripts into the CMake build system for jail, pki, term, and other modules.

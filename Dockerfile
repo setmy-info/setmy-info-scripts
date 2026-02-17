@@ -1,5 +1,7 @@
 FROM debian:latest AS deb_build_image
 
+#docker build --no-cache --progress=plain -f Dockerfile .
+
 RUN apt-get -y update && apt-get -y upgrade && mkdir -p /var/opt/setmy.info/build && \
     apt-get -y install cpp gcc g++ make dos2unix gzip bzip2 xz-utils zip
 
@@ -13,12 +15,13 @@ COPY ./src/ ./src/
 COPY CMakeLists.txt ./
 COPY configure ./
 COPY changelog ./
-RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packages-build.sh &&  chmod ugoa+x ./src/main/sh/build/packages-build.sh
+RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packages-build.sh && dos2unix ./src/main/sh/build/check-files.sh && chmod ugoa+x ./src/main/sh/build/packages-build.sh && chmod ugoa+x ./src/main/sh/build/check-files.sh
 
 RUN ./src/main/sh/build/packages-build.sh
 
 RUN ls -la
-RUN apt install ./setmy-info-scripts-0.100.0.noarch.deb
+RUN apt install -y ./setmy-info-scripts-0.100.0.noarch.deb
+RUN ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info
 
 FROM setmyinfo/setmy-info-rocky:latest AS rpm_build_image
@@ -42,10 +45,12 @@ COPY ./src/ ./src/
 COPY CMakeLists.txt ./
 COPY configure ./
 COPY changelog ./
-RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packages-build.sh &&  chmod ugoa+x ./src/main/sh/build/packages-build.sh
+RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packages-build.sh && dos2unix ./src/main/sh/build/check-files.sh && chmod ugoa+x ./src/main/sh/build/packages-build.sh && chmod ugoa+x ./src/main/sh/build/check-files.sh
 COPY --from=deb_build_image /var/opt/setmy.info/build/setmy-info-scripts-0.100.0.noarch.deb /var/opt/setmy.info/build/setmy-info-scripts-0.100.0.noarch.deb
 
 RUN ./src/main/sh/build/packages-build.sh
 RUN ls -la
-#RUN rpm -i ./setmy-info-scripts-0.100.0.noarch.rpm
-#RUN ls -la /opt/setmy.info
+RUN rpm -e setmy-info-scripts || true
+RUN rpm -i ./setmy-info-scripts-0.100.0.noarch.rpm
+RUN ./src/main/sh/build/check-files.sh
+RUN ls -la /opt/setmy.info

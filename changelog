@@ -1,4 +1,6 @@
 * 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
+- check-files.sh update: Added checks for '/opt/setmy.info/etc', '/etc/profile.d/setmy-info.sh' symlink, and '/var/opt/setmy.info' directory to ensure comprehensive installation verification.
+* 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
 - check-files.sh update: Modified 'check_directory' to be a recursive file counter using 'find'. Updated minimum file count expectations for bin, lib, and man directories.
 * 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
 - Dockerfile update: Added explicit removal of 'setmy-info-scripts' package before installation in the RPM build stage to ensure any existing version is uninstalled.

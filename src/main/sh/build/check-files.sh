@@ -38,6 +38,23 @@ check_directory "$CHECK_DIR/lib" 161 || FAILED=1
 # Check man directory
 check_directory "$CHECK_DIR/man" 70 || FAILED=1
 
+# Check etc directory in /opt
+check_directory "$CHECK_DIR/etc" 5 || FAILED=1
+
+# Check /etc/profile.d symlink
+echo "Checking symlink: /etc/profile.d/setmy-info.sh"
+if [ ! -L "/etc/profile.d/setmy-info.sh" ]; then
+    echo "Error: /etc/profile.d/setmy-info.sh is not a symlink"
+    FAILED=1
+fi
+
+# Check /var/opt/setmy.info directory
+echo "Checking directory: /var/opt/setmy.info"
+if [ ! -d "/var/opt/setmy.info" ]; then
+    echo "Error: /var/opt/setmy.info does not exist"
+    FAILED=1
+fi
+
 if [ $FAILED -ne 0 ]; then
     echo "Verification FAILED"
     exit 1

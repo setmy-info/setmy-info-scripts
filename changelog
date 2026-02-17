@@ -1,4 +1,11 @@
 * 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
+- Inno Setup integration: Added support for creating Windows installers with Inno Setup via CMake. 
+- Renamed 'setup.iss' to 'setup.iss.in' and configured it to use CMake variables.
+- Added 'buildInnoSetup' custom target to run 'ISCC.exe' on Windows if found.
+- Updated 'packaging.cmake' to include Inno Setup logic.
+- Added 'buildCmdScripts' and 'buildCmdLib' targets to copy Windows scripts to the build directory.
+- Added comprehensive installation rules for all Windows '.cmd' scripts in 'bin.cmake'.
+* 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
 - check-files.sh update: Added checks for '/opt/setmy.info/etc', '/etc/profile.d/setmy-info.sh' symlink, and '/var/opt/setmy.info' directory to ensure comprehensive installation verification.
 * 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
 - check-files.sh update: Modified 'check_directory' to be a recursive file counter using 'find'. Updated minimum file count expectations for bin, lib, and man directories.

@@ -1,0 +1,22 @@
+[Setup]
+AppName=@PROJECT_DESCRIPTION_SUMMARY@
+AppVersion=@PROJECT_VERSION@
+DefaultDirName=C:\pub\setmy.info2
+DefaultGroupName=@PROJECT_DESCRIPTION_SUMMARY@
+UninstallDisplayIcon={app}\bin\smi-location.cmd
+Compression=lzma2
+SolidCompression=yes
+OutputDir=.
+OutputBaseFilename=setup-setmy.info
+ArchitecturesInstallIn64BitMode=x64os
+PrivilegesRequired=admin
+
+[Files]
+Source: "target\@CMAKE_BUILD_TYPE@\build\bin\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs
+Source: "target\@CMAKE_BUILD_TYPE@\build\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs
+
+[Registry]
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\@PROJECT_DESCRIPTION_SUMMARY@"; ValueType: string; ValueName: "DisplayName"; ValueData: "@PROJECT_DESCRIPTION_SUMMARY@"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\@PROJECT_DESCRIPTION_SUMMARY@"; ValueType: string; ValueName: "UninstallString"; ValueData: """{app}\unins000.exe"""; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\@PROJECT_DESCRIPTION_SUMMARY@"; ValueType: string; ValueName: "InstallLocation"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\@PROJECT_DESCRIPTION_SUMMARY@"; ValueType: string; ValueName: "Publisher"; ValueData: "setmy.info"; Flags: uninsdeletekey

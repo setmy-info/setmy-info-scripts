@@ -35,7 +35,8 @@ This document provides essential context and strict architectural rules for AI a
 * Cmake files are splited into bin.cmake, lib.cmake, etc.cmake, man.cmake, var.cmake, variables.cmake, sources.cmake,
   targets.cmake, functions.cmake, dependencies.cmake, configuration.cmake.
 * Linux shell scripts should pe POSIX compatible shell scripts. And ready to port to FreeBSD, OpenIndiana, Debian.
-* Windows scripts should be in .cmd or PowerShell (.ps1) format. Previously PowerShell was restricted, but it is now allowed. However, PowerShell is NOT allowed for *.profile and *.package files. PowerShell should be executed from CMD. 
+* Windows scripts should be in .cmd or PowerShell (.ps1) format. Previously PowerShell was restricted, but it is now
+  allowed. However, PowerShell is NOT allowed for *.profile and *.package files. PowerShell should be executed from CMD.
 * shell scripts are not always in specific form like "smi-*" or "*.sh"
 * Man pages follow the same folder structure like they are modularized.
 * Windows additional software place is in C:\pub
@@ -47,3 +48,4 @@ This document provides essential context and strict architectural rules for AI a
 * New scripts should be added into cmake scripts
 * Update the changelog file about changes in very detailed form, so it can be tracked in the future for testing changes
   for testings.
+* Installations should follow FHS standards, especially /opt related part.

@@ -1,7 +1,7 @@
 Unicode True
 Name "setmy.info scripts"
 OutFile "setup-setmy.info.exe"
-InstallDir "C:\pub\setmy.info2"
+InstallDir "C:\pub\setmy.info"
 RequestExecutionLevel admin
 
 Page directory

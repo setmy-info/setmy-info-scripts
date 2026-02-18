@@ -1,7 +1,7 @@
 [Setup]
 AppName=@PROJECT_DESCRIPTION_SUMMARY@
 AppVersion=@PROJECT_VERSION@
-DefaultDirName=C:\pub\setmy.info2
+DefaultDirName=C:\pub\setmy.info
 DefaultGroupName=@PROJECT_DESCRIPTION_SUMMARY@
 UninstallDisplayIcon={app}\bin\smi-location.cmd
 Compression=lzma2

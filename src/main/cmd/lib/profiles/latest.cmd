@@ -12,6 +12,7 @@ call %LOADER_CMD% smi
 call %LOADER_CMD% leiningen
 call %LOADER_CMD% clojurescript
 call %LOADER_CMD% cmake
+call %LOADER_CMD% ninja
 call %LOADER_CMD% 7zip
 call %LOADER_CMD% julia
 call %LOADER_CMD% go

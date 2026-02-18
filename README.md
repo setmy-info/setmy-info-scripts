@@ -96,5 +96,29 @@ Function usage is a problem. CMame doesn't have global variables. Only function 
 
 # Windows
 
-* https://jrsoftware.org/isinfo.php
-* https://sourceforge.net/projects/nsis/
+* [Inno Setup](https://jrsoftware.org/isinfo.php)
+* [NSIS](https://sourceforge.net/projects/nsis/)
+
+### Build with CMake and NSIS
+
+To build the project and generate the NSIS installation executable (choose one generator):
+
+```cmd
+# Using Ninja (if installed)
+call src\main\cmd\lib\profiles\ninja.cmd
+cmake -B cmake-build-release -S . -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build cmake-build-release --target package
+```
+
+The resulting installer will be located in the `cmake-build-release` directory.
+
+### Manual build
+
+Alternatively, you can build the installers manually if the scripts are already prepared:
+
+```cmd
+makensis setup.nsi
+ISCC.exe setup.iss
+REM or
+build.cmd
+```

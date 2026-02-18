@@ -47,3 +47,6 @@ CPackSourceConfig.cmake
 TASKLIST.md
 TASKLIST.lisp
 .output.txt
+
+# Windows
+*.exe

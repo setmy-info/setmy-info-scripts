@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 3.25.2)
 
 # PLACEHOLDER-BEGIN #
 
-PROJECT (setmy-info-scripts)
-#PROJECT (setmy-info-scripts LANGUAGES NONE)
+#PROJECT (setmy-info-scripts)
+PROJECT (setmy-info-scripts LANGUAGES NONE)
 
 SET (PROJECT_VERSION_MAJOR              0)
 SET (PROJECT_VERSION_MINOR              100)

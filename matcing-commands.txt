@@ -32,7 +32,5 @@ smi-persons-location
 smi-profiles-location
 smi-services-location
 smi-temp-location
-smi-timestamp
 smi-var-location
 smi-version
-uuid

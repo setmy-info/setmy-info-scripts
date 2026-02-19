@@ -30,3 +30,5 @@ term
 term-activate
 term-profile
 versions
+uuid
+smi-timestamp

@@ -1,3 +1,13 @@
+* 2026-02-19 Imre Tabur <imre.tabur@mail.ee>
+- check-files.sh update: Added line ending verification for `bin` and `lib` directories to ensure all scripts have correct (LF) line endings in the installed environment.
+- check-files.sh update: Expanded functional testing to include almost all matching commands from `matcing-commands.txt`. Added tests for:
+    - Location scripts: `smi-bin-location`, `smi-etc-location`, `smi-lib-location`, `smi-man-location`, `smi-var-location`, `smi-temp-location`, `smi-home-location`, `smi-home-packages-location`, `smi-gintra-location`, `smi-gintra-mount-location`, `smi-jails-location`, `smi-organizations-location`, `smi-persons-location`, `smi-packages-location`, `smi-profiles-location`.
+    - Helper scripts: `smi-include`, `smi-version`.
+    - Deprecated location scripts: `smi-config`, `smi-localhost-location`, `smi-net-location`, `smi-nics-location`, `smi-nodes-location`, `smi-services-location`.
+    - Parameterized scripts: `smi-organization-location`, `smi-organization-dir-location`, `smi-person-name-hash`, `smi-person-location`.
+    - History search: `hgrep` (with mocked `.bash_history`).
+- check-files.sh update: Added functional testing for matching commands (`base64encode`, `base64decode`, `degrees`, `radians`) to verify their output against expected values.
+- Categorization update: Moved non-idempotent commands (`uuid`, `smi-timestamp`) from `matcing-commands.txt` to a new `avoided-commands.txt` file as per `TASKLIST.lisp` requirements.
 * 2026-02-17 Imre Tabur <imre.tabur@mail.ee>
 - Inno Setup integration: Added support for creating Windows installers with Inno Setup via CMake. 
 - Renamed 'setup.iss' to 'setup.iss.in' and configured it to use CMake variables.

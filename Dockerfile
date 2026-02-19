@@ -3,7 +3,7 @@ FROM debian:latest AS deb_build_image
 #docker build --no-cache --progress=plain -f Dockerfile .
 
 RUN apt-get -y update && apt-get -y upgrade && mkdir -p /var/opt/setmy.info/build && \
-    apt-get -y install cpp gcc g++ make dos2unix gzip bzip2 xz-utils zip
+    apt-get -y install cpp gcc g++ make dos2unix gzip bzip2 xz-utils zip grep coreutils
 
 WORKDIR /opt
 ADD https://github.com/Kitware/CMake/releases/download/v3.30.2/cmake-3.30.2-linux-x86_64.tar.gz /opt
@@ -20,8 +20,7 @@ RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packag
 RUN ./src/main/sh/build/packages-build.sh
 
 RUN ls -la
-RUN apt install -y ./setmy-info-scripts-0.101.0.noarch.deb
-RUN ./src/main/sh/build/check-files.sh
+RUN apt install -y ./setmy-info-scripts-0.101.0.noarch.deb && ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info
 
 FROM setmyinfo/setmy-info-rocky:latest AS rpm_build_image
@@ -33,7 +32,7 @@ RUN dnf install -y epel-release && \
     dnf config-manager --set-enabled rt && \
     dnf update -y && \
     mkdir -p /var/opt/setmy.info/build && \
-    dnf install -y cpp gcc g++ boost-test make dos2unix yum-utils rpmdevtools rpm-build rpm rpmlint
+    dnf install -y cpp gcc g++ boost-test make dos2unix yum-utils rpmdevtools rpm-build rpm rpmlint grep coreutils-single
 
 WORKDIR /opt
 ADD https://github.com/Kitware/CMake/releases/download/v3.30.2/cmake-3.30.2-linux-x86_64.tar.gz /opt
@@ -51,6 +50,5 @@ COPY --from=deb_build_image /var/opt/setmy.info/build/setmy-info-scripts-0.101.0
 RUN ./src/main/sh/build/packages-build.sh
 RUN ls -la
 RUN rpm -e setmy-info-scripts || true
-RUN rpm -i ./setmy-info-scripts-0.101.0.noarch.rpm
-RUN ./src/main/sh/build/check-files.sh
+RUN rpm -i ./setmy-info-scripts-0.101.0.noarch.rpm && ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info

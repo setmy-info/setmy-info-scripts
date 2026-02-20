@@ -16,6 +16,8 @@ import static java.util.Objects.requireNonNull
 @Grab(group = 'com.google.errorprone', module = 'error_prone_annotations', version = '2.38.0')
 @Grab(group = 'info.picocli', module = 'picocli', version = '4.7.7')
 
+// TODO: MITM , h2, Netbeans, LibreOffice, Infinispan, mvnd are broken.
+
 //@Grab(group='org.xerial', module='sqlite-jdbc', version='3.49.1.0')
 //@Grab(group = 'org.seleniumhq.selenium', module = 'selenium-java', version = '4.33.0')
 /*

@@ -49,3 +49,6 @@ This document provides essential context and strict architectural rules for AI a
 * Update the changelog file about changes in very detailed form, so it can be tracked in the future for testing changes
   for testings.
 * Installations should follow FHS standards, especially /opt related part.
+* Java is located at C:\pub\jdk* and /opt/jdk
+* Node is located at C:\pub\node* and /opt/node
+* Groovy is located at C:\pub\groovy* and /opt/groovy

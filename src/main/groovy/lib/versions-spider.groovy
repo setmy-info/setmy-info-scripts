@@ -344,13 +344,15 @@ class GradleDriverExecute extends DriverExecuteBase implements DriverExecute, Na
         }
 
         //https://gradle.org/next-steps/?version=8.14.1&format=bin
+        //https://gradle.org/releases/#9.3.1
+        //https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
         if (!finalFiltered) {
             throw new RuntimeException("No gradle download links found at ${getUrl()}")
         }
         def gradleDownloadPageUrl = finalFiltered.first()
         def version = gradleDownloadPageUrl
-            .replace("https://gradle.org/next-steps/?version=", "")
-            .replace("&format=bin", "")
+            .replace("https://services.gradle.org/distributions/gradle-", "")
+            .replace("-bin.zip", "")
         //println gradleDownloadPageUrl
         //println version
         // https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
@@ -421,10 +423,12 @@ class NodeDriverExecute extends DriverExecuteBase implements DriverExecute, Name
             //https://nodejs.org/dist/v22.19.0/node-v22.19.0-linux-x64.tar.xz
             //https://nodejs.org/dist/v22.19.0/node-v22.19.0-win-x64.zip
             //https://nodejs.org/dist/v22.19.0/node-v22.19.0.tar.gz
+            //https://nodejs.org/dist/v24.13.1/node-v24.13.1-linux-x64.tar.xz
+            //Works on Linux correctly.
             if (href.endsWith(".tar.xz") && href.contains("-linux") && href.contains("-x64"))
                 return true
-            if (href.endsWith(".zip") && href.contains("-win") && href.contains("-x64"))
-                return true
+            /*if (href.endsWith(".zip") && href.contains("-win") && href.contains("-x64"))
+                return true*/
             return false
         }
         finalFiltered = finalFiltered.sort { a, b -> a <=> b }
@@ -907,11 +911,11 @@ class TomcatDriverExecute extends DriverExecuteBase implements DriverExecute, Na
 class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
-        // https://dlcdn.apache.org/netbeans/netbeans/26/netbeans-26-bin.zip
+        // https://dlcdn.apache.org/netbeans/netbeans/28/netbeans-28-bin.zip
         // https://netbeans.apache.org/front/main/download/nb28
         driver.get(getUrl())
         def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
-        def version = first.split("/apache/netbeans/releases/tag/")[1]
+        def version = first.split("/download/nb")[1]
         println "https://dlcdn.apache.org/netbeans/netbeans/${version}/netbeans-${version}-bin.zip"
     }
 
@@ -926,7 +930,7 @@ class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, 
 
     @Override
     String getUrl() {
-        return "https://github.com/apache/netbeans/releases"
+        return "https://netbeans.apache.org/front/main/index.html"
     }
 
     @Override
@@ -977,7 +981,7 @@ class H2DriverExecute extends DriverExecuteBase implements DriverExecute, Name, 
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // https://search.maven.org/remotecontent?filepath=com/h2database/h2/2.3.232/h2-2.3.232.jar
+            // https://search.maven.org/remotecontent?filepath=com/h2database/h2/2.4.240/h2-2.4.240.jar
             href = href.toLowerCase()
             if (!href.contains("com/h2database/h2/")) return false
             if (!href.endsWith(".jar")) return false
@@ -988,7 +992,7 @@ class H2DriverExecute extends DriverExecuteBase implements DriverExecute, Name, 
 
     @Override
     String getUrl() {
-        return "https://www.h2database.com/html/download.html"
+        return "https://h2database.com/html/download.html"
     }
 
     @Override
@@ -1030,7 +1034,7 @@ class ArgoDriverExecute extends DriverExecuteBase implements DriverExecute, Name
 class MITMProxyDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
-        // https://downloads.mitmproxy.org/12.1.2/mitmproxy-12.1.2-linux-x86_64.tar.gz
+        // https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-x86_64.tar.gz
         driver.get(getUrl())
         sleep(1000)
         def hrefs = getHrefs(driver)
@@ -1044,7 +1048,7 @@ class MITMProxyDriverExecute extends DriverExecuteBase implements DriverExecute,
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // https://www.mitmproxy.org/downloads/#12.1.2/
+            // https://www.mitmproxy.org/downloads/#12.2.1/
             href = href.toLowerCase()
             if (!href.contains("mitmproxy.org/downloads/#")) return false
             if (!href.endsWith("/")) return false
@@ -1117,10 +1121,10 @@ class LibreOfficeDriverExecute extends DriverExecuteBase implements DriverExecut
         return { href ->
             // println "🔗: ${href}"
             // https://www.libreoffice.org/donate/dl/win-x86_64/26.2.0/en-US/LibreOffice_26.2.0_Win_x86-64.msi
-            // https://www.libreoffice.org/donate/dl/rpm-x86_64/25.8.1/en-US/LibreOffice_25.8.1_Linux_x86-64_rpm.tar.gz
-            return (href.contains("/rpm-x86_64/") || href.contains("/win-x86_64/"))
+            // https://www.libreoffice.org/donate/dl/rpm-x86_64/26.2.0/en-US/LibreOffice_26.2.0_Linux_x86-64_rpm.tar.gz
+            return href.contains("/rpm-x86_64/")
                 && href.contains("/en-US/LibreOffice_")
-                && (href.endsWith(".tar.gz") || href.endsWith(".msi"))
+                && href.endsWith(".tar.gz")
         }
     }
 
@@ -1143,12 +1147,12 @@ class MvndDriverExecute extends DriverExecuteBase implements DriverExecute, Name
         def filtered = hrefs.findAll(getSearcher())
         if (!filtered) {
              // Fallback if full URLs are not present (GitHub sometimes uses relative links)
-             filtered = hrefs.findAll { it.contains("/apache/maven-mvnd/releases/tag/") }.collect { it.startsWith("/") ? "https://github.com" + it : it }.findAll(getSearcher())
+             filtered = hrefs.findAll { it.contains("/maven/mvnd/") && it.contains("maven-mvnd-") && it.endsWith("-linux-amd64.tar.gz") }.collect { it.startsWith("/") ? "https://dlcdn.apache.org" + it : it }.findAll(getSearcher())
         }
         def last = sortAndLast(filtered)
-        def version = last.split("maven-mvnd/releases/tag/")[1]
-        // https://github.com/apache/maven-mvnd/releases/download/1.0.3/maven-mvnd-1.0.3-linux-amd64.tar.gz
-        println "https://github.com/apache/maven-mvnd/releases/download/${version}/maven-mvnd-${version}-linux-amd64.tar.gz"
+        def version = last.split("/maven/mvnd/")[1].split("/maven-mvnd-")[0]
+        // https://dlcdn.apache.org/maven/mvnd/1.0.3/maven-mvnd-1.0.3-linux-amd64.tar.gz
+        println "https://dlcdn.apache.org/maven/mvnd/${version}/maven-mvnd-${version}-linux-amd64.tar.gz"
     }
 
     Closure<Boolean> getSearcher() {
@@ -1163,7 +1167,7 @@ class MvndDriverExecute extends DriverExecuteBase implements DriverExecute, Name
 
     @Override
     String getUrl() {
-        return "https://github.com/apache/maven-mvnd/releases"
+        return "https://maven.apache.org/download.cgi"
     }
 
     @Override
@@ -1217,7 +1221,6 @@ class GitFlowNextDriverExecute extends DriverExecuteBase implements DriverExecut
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // "https://github.com/gittower/git-flow-next/tag/0.4.0
             // https://github.com/gittower/git-flow-next/releases/download/v1.0.0/git-flow-next-v1.0.0-linux-amd64.tar.gz
             if (!href.contains("/gittower/git-flow-next/releases/tag/")) return false
             return true
@@ -1264,20 +1267,15 @@ class GraphvizDriverExecute extends DriverExecuteBase implements DriverExecute, 
     }
 }
 
-class InnosetupDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+class InnosetupDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
+        sleep(5000)
+        def elements = driver.findElements(tag("td")).findAll { it.getAttribute("nowrap") == "nowrap" && it.text.contains("innosetup-") && it.text.endsWith(".exe") }
+        def texts = elements.collect { it.text }
+        def first = sortAndFirst(texts)
         println first
-    }
-
-    Closure<Boolean> getSearcher() {
-        return { href ->
-            // https://jrsoftware.org/download.php/is.exe
-            if (href.endsWith("is.exe")) return true
-            return false
-        }
     }
 
     @Override

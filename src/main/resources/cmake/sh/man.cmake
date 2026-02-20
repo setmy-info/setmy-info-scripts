@@ -18,5 +18,6 @@ INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/tools/man.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/vcs/man.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/virtualization/man.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/workstation/man.cmake)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/ai/man.cmake)
 
 # PLACEHOLDER-END #

@@ -1,0 +1,65 @@
+." Manpage for ai
+.TH ai 1 "February 2026" "setmy.info" "User Commands"
+.SH NAME
+ai \- print Markdown bullet lists from AI profiles and groups
+.SH SYNOPSIS
+.B ai
+.I [PROFILE|GROUP]...
+.SH DESCRIPTION
+The
+.B ai
+command prints a Markdown bullet list composed from lines contained in
+profile files and/or groups located under
+.I $(smi-lib-location)/ai
+on Linux systems.
+.PP
+Arguments can be either:
+.IP \(bu 2
+Profiles: files named
+.I <name>.md
+whose non-empty lines are printed prefixed with "- ".
+.IP \(bu 2
+Groups: files named
+.I <name>.group
+that contain a list of profile or group names. Groups are expanded
+recursively, allowing groups to include other groups or profiles.
+.PP
+If an argument does not match a profile or a group, an error is printed to
+stderr in the form:
+.I "Profile or group not found: <name>"
+.SH EXAMPLES
+Print contents of two profiles:
+.PP
+.nf
+ai java maven
+.fi
+.PP
+Print a group (that expands to multiple profiles/groups):
+.PP
+.nf
+ai tools
+.fi
+.PP
+Combine a group with an extra profile:
+.PP
+.nf
+ai tools node
+.fi
+.SH FILES
+.TP
+.I /opt/setmy.info/lib/ai/*.md
+System-wide AI profile files (Markdown).
+.TP
+.I /opt/setmy.info/lib/ai/*.group
+System-wide AI group definitions.
+.TP
+.I ~/.setmy.info/lib/ai (if used in future)
+User overrides are not currently used by default, but the layout mirrors
+system locations.
+.SH SEE ALSO
+.BR term (1),
+.BR smi-lib-location (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>
+.SH COPYRIGHT
+Copyright (C) 2026 Hear And See Systems LLC. Licensed under the MIT License.

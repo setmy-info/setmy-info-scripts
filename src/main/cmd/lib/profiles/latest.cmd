@@ -33,3 +33,4 @@ call %LOADER_CMD% hugo
 call %LOADER_CMD% nsis
 call %LOADER_CMD% innosetup
 call %LOADER_CMD% git-flow-next
+call %LOADER_CMD% claude

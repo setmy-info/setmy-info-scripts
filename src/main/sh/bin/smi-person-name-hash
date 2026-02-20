@@ -9,7 +9,8 @@ LAST_NAME=$2
 
 NAME_COMBINED="${FIRST_NAME} ${LAST_NAME} ${PERON_NAME_SALT}"
 FULL_HASH=$(echo -n "${NAME_COMBINED}" | sha512sum | cut -d ' ' -f 1)
-USER_HASH="person_hash_${FULL_HASH:0:$USER_HASH_LENGTH}"
+USER_HASH_PART=$(echo -n "${FULL_HASH}" | cut -c 1-"${USER_HASH_LENGTH}")
+USER_HASH="person_hash_${USER_HASH_PART}"
 echo "$USER_HASH"
 
 exit ${?}

@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- ai var.cmake")
+
+# PLACEHOLDER-END #

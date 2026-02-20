@@ -1,0 +1,2 @@
+set CLAUDE_BIN_DIR=%USERPROFILE%\.local\bin\
+set PATH=%CLAUDE_BIN_DIR%;%PATH%

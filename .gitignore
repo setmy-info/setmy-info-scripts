@@ -46,6 +46,7 @@ CPackSourceConfig.cmake
 # AI related
 TASKLIST.md
 TASKLIST.lisp
+TASKLIST.sexp
 .output.txt
 
 # Windows

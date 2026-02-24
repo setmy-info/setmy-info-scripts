@@ -1,27 +1,10 @@
 #!/bin/sh
 
-AI_LIB_DIR="$(smi-lib-location 2>/dev/null || echo /opt/setmy.info/lib)/ai"
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
 
-process_arg() {
-    local arg="$1"
-    local ai_file="${AI_LIB_DIR}/${arg}.md"
-    local group_file="${AI_LIB_DIR}/${arg}.group"
+. $(smi-include ai-profiles.sh)
 
-    if [ -f "${ai_file}" ]; then
-        while IFS= read -r line; do
-            [ -z "$line" ] && continue
-            echo "- $line"
-        done < "${ai_file}"
-    elif [ -f "${group_file}" ]; then
-        while IFS= read -r group_arg; do
-            [ -z "$group_arg" ] && continue
-            process_arg "$group_arg"
-        done < "${group_file}"
-    else
-        echo "Profile or group not found: ${arg}" >&2
-    fi
-}
+createHomeAiFolder
+executeAis ${*}
 
-for arg in "$@"; do
-    process_arg "$arg"
-done
+exit 0

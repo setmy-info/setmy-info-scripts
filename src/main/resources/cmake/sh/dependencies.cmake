@@ -18,5 +18,6 @@ INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/tools/dependencies.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/vcs/dependencies.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/virtualization/dependencies.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/workstation/dependencies.cmake)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/ai/dependencies.cmake)
 
 # PLACEHOLDER-END #

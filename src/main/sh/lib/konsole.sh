@@ -65,7 +65,7 @@ tryToOpenXterm() {
 }
 
 executeTerminal() {
-    if [ "$DISPLAY" = ":0.0" ] || [ "$DISPLAY" = ":0" ]
+    if [ -n "${DISPLAY}" ] || [ -n "${WAYLAND_DISPLAY}" ]
     then
         loadProfiles ${*}
         findTerminal

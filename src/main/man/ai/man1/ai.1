@@ -10,7 +10,7 @@ The
 .B ai
 command prints a Markdown bullet list composed from lines contained in
 profile files and/or groups located under
-.I $(smi-lib-location)/ai
+.I $(smi-lib-location)/profiles/ai
 on Linux systems.
 .PP
 Arguments can be either:
@@ -34,7 +34,7 @@ Print contents of two profiles:
 ai java maven
 .fi
 .PP
-Print a group (that expands to multiple profiles/groups):
+Print a group (that expands to multiple profiles/groups) recursively:
 .PP
 .nf
 ai tools
@@ -47,10 +47,10 @@ ai tools node
 .fi
 .SH FILES
 .TP
-.I /opt/setmy.info/lib/ai/*.md
+.I /opt/setmy.info/lib/profiles/ai/*.md
 System-wide AI profile files (Markdown).
 .TP
-.I /opt/setmy.info/lib/ai/*.group
+.I /opt/setmy.info/lib/profiles/ai/*.group
 System-wide AI group definitions.
 .TP
 .I ~/.setmy.info/lib/ai (if used in future)
@@ -58,7 +58,8 @@ User overrides are not currently used by default, but the layout mirrors
 system locations.
 .SH SEE ALSO
 .BR term (1),
-.BR smi-lib-location (1)
+.BR smi-lib-location (1),
+.BR ai-profiles-location (1)
 .SH AUTHOR
 Imre Tabur <imre.tabur@mail.ee>
 .SH COPYRIGHT

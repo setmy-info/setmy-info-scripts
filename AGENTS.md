@@ -43,7 +43,7 @@ This document provides essential context and strict architectural rules for AI a
 * Windows related scripts and exes are in C:\pub\setmy.info\bin and importable scripts and libraries in
   "C:\pub\setmy.info\lib"
 * Adding a new script for Uixes, then a man page should be created also
-* Newly added scripts should have # Copyright (C) 20YY Imre Tabur <imre.tabur@mail.ee>
+* Newly added scripts should have in for # Copyright (C) YYYY Imre Tabur <imre.tabur@mail.ee>
 * Users config files are located in a folder named .setmy.info in the user home directory.
 * New scripts should be added into cmake scripts
 * Update the changelog file about changes in very detailed form, so it can be tracked in the future for testing changes

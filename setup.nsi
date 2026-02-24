@@ -18,6 +18,10 @@ Section "Main"
     File /r "src\main\python\lib\*"
     File /r "src\main\groovy\lib\*"
     
+    ; Include shared AI profiles used by Linux and Windows
+    SetOutPath "$INSTDIR\lib\profiles\ai"
+    File /r "src\main\sh\ai\lib\profiles\*"
+    
     WriteUninstaller "$INSTDIR\uninstall.exe"
     
     ; Optional: Add registry keys for Add/Remove Programs

@@ -1,1 +1,1 @@
-- Need to write
+- Linux is Rocky Linux 9.x or 10.x or Latest Fedora Linux

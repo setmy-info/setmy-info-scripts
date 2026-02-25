@@ -1,2 +1,2 @@
-Node.js is an open-source, cross-platform JavaScript runtime environment.
-NPM is the default package manager for Node.js.
+- node is located at /opt/node or /opt/node-v24.13.1-linux-x64 when working on Unixes
+- node is located at C:\pub\node-v24.13.1-win-x64 when working on Windows machines

@@ -1,1 +1,1 @@
-- Need to write
+- Maven frontend-maven-plugin plugin to build an angular project when the project is maven packaged project

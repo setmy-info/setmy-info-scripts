@@ -1,0 +1,1 @@
+- Mapstruct is required to be used for mapping DTOs and other objects

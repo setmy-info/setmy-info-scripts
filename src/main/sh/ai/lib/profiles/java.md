@@ -1,2 +1,8 @@
-Java is a high-level, class-based, object-oriented programming language.
-JVM stands for Java Virtual Machine.
+- Java JDK 25
+- JUnit 5, AssertJ, Mockito need to be used as test frameworks
+- Unit test files end with Test.java
+- Integration tests end with IT.java
+- E2E tests end with E2ET.java
+- E2E tests are executed with maven profile e2e
+- Java JDK is located at /opt/jdk or /opt/jdk-25.0.2 when working on Unixes
+- Java JDK is located at C:\pub\jdk-25.0.2 when working on Windows machines

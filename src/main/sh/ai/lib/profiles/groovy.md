@@ -1,1 +1,2 @@
-- Need to write
+- Groovy is located at /opt/groovy or /opt/groovy-5.0.4 when working on Unixes
+- Groovy is located at C:\pub\groovy-5.0.4 when working on Windows machines

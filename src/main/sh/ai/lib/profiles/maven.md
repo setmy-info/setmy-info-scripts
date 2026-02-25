@@ -1,2 +1,9 @@
-Apache Maven is a software project management and comprehension tool.
-POM stands for Project Object Model.
+- Maven wrapper in the monorepo root folder
+- Maven maven-surefire-plugin plugin is used for unit tests
+- Maven maven-failsafe-plugin plugin is used for integration and end-to-end tests
+- Maven is located at /opt/maven or /opt/apache-maven-3.9.12 when working on Unixes
+- Maven is located at C:\pub\apache-maven-3.9.12 when working on Windows machines
+- Maven profile s are local, ci, dev, test, prelive, live
+- local profile is by default
+- local profile is for developers local machines
+- Grepping for .m2 folder is forbidden

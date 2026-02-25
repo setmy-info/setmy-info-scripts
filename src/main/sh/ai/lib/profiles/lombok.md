@@ -1,0 +1,3 @@
+- Lombok need to be used
+- Lombok builder pattern have to be used in form of @Builder(toBuilder = true)
+- Lombok @Accessors(chain = true) should be used for models

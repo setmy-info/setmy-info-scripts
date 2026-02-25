@@ -1,1 +1,1 @@
-- Need to write
+- Shell scripts should be POSIX compliant and should be executable, Bash need to be scipped.

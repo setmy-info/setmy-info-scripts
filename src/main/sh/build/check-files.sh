@@ -156,8 +156,8 @@ check_command_output "smi-include" "base.sh" "$CHECK_DIR/lib/base.sh" || FAILED=
 
 # SMI Version and Provider (from base.sh)
 # Note: These values should match what is in src/main/sh/lib/base.sh (or target/Release/build/lib/base.sh)
-# Based on previous inspection, PROVIDER=setmy.info and VERSION=0.101.0
-check_command_output "smi-version" "" "0.101.0" || FAILED=1
+# Based on previous inspection, PROVIDER=setmy.info and VERSION=0.102.0
+check_command_output "smi-version" "" "0.102.0" || FAILED=1
 
 # Deprecated location scripts
 check_command_output "smi-config" "" "/opt/setmy.info/etc/localhost/config" || FAILED=1

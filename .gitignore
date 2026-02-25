@@ -44,10 +44,10 @@ CPackSourceConfig.cmake
 .ipynb_checkpoints
 
 # AI related
-TASKLIST.md
-TASKLIST.lisp
-TASKLIST.sexp
-.output.txt
+**/TASKLIST*.md
+**/TASKLIST*.lisp
+**/TASKLIST*.sexp
+**/.output.txt
 
 # Windows
 *.exe

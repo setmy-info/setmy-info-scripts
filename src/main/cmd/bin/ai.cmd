@@ -20,7 +20,7 @@ set AI_FILE=!AI_PROFILES_DIR!\!ARG!.md
 
 if exist "!AI_FILE!" (
     for /f "usebackq tokens=*" %%l in ("!AI_FILE!") do (
-        if not "%%l"=="" echo - %%l
+        if not "%%l"=="" echo %%l
     )
 ) else (
     echo Profile not found: !ARG! >&2

@@ -1,3 +1,4 @@
-- Spring boot 3.5.7
+- Spring boot 3.x
 - application.yaml for properties and by spring profiles application-local.yaml, application-ci.yaml,
   application-dev.yaml, application-test.yaml, application-live.yaml
+- Sensitive values should be overridable via environment variables (e.g., ${ZVT_SERVER_PASSWORD:123456})

@@ -1,0 +1,5 @@
+
+# TASKLIST
+
+- [] Upgrade by DOWNLOAD.txt src/main/sh/packages/lib/packages folder files. Files are siffixed with `.package`. URLs starting with https://release-assets.githubusercontent.com/github-production-release-asset, should not replace .package file URL-s., because these are forwarded files, .package file URL-s are short and before worward. Forwarded urls can be used as different data for placeholders and variable values and fill or produce short URL-s. If possible, try to check, are URL-s downloadable with curl or wget, just first bytes, not full file. Only src/main/sh/packages/lib/packages folder is allowed to change. Outside that folder no changes are allowed with in current task. For missing .profile create it. Create for Windows also.
+- [] Fix src/main/groovy/lib/versions-spider.groovy, because some URL-s are broken. Try download dovnload page versions, grep from there texts and relevant URL-s or information to produce dowload URL. First of all test the script is able to download scrap the page.

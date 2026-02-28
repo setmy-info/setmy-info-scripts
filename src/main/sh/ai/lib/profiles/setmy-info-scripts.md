@@ -39,4 +39,3 @@
 - New scripts should be added into cmake scripts
 - Update the changelog file about changes in very detailed form, so it can be tracked in the future for testing changes
   for testings.
-- Installations should follow FHS standards, especially /opt related part.

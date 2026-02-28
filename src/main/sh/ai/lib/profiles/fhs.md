@@ -1,0 +1,1 @@
+- Installations should follow FHS version 3.0 standards, especially /opt related rules for /etc, /var part. FHS <PARTNAME> is setmy.info. bin  and lib directoreis should be under /opt related directories.

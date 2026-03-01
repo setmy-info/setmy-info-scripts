@@ -1,0 +1,2 @@
+
+- [] Task: Refactor ai profiles this way, that these files are threated as bourn shell scripts part, thous should be imported. Before import in current folder checks ai.sh existance and when present imports that first. Current folder is software projects folders. Imported ai.sh can contain variable values for next step. Next step is evaluate profile .md files, those can contain variables, thos should be replaced. For example java.md have Java versions, thes should be as variables ${JAVA} and ${JAVA_VERSION}. Values are defined in ai.sh - JAVA=25 and JAVA_VERSION=25.0.2

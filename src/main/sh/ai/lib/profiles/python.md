@@ -1,0 +1,1 @@
+- Python projects should have .venv folder wih installed libraries and python interpreter. .venv is created with Python internal tool venv. 

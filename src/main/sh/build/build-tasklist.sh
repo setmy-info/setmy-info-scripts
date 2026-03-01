@@ -8,6 +8,9 @@ echo "" >> TASKLIST.md
 echo "## Tasklist" >> TASKLIST.md
 echo "" >> TASKLIST.md
 # TODO: parameter instad TASKLIST-CONTENT.md
-cat TASKLIST-CONTENT.md >> TASKLIST.md
+cat src/main/resources/tasklist/0-AI-BUILD-SCRIPT.md >> TASKLIST.md
+cat src/main/resources/tasklist/1-UPDATE-PROFILES.md >> TASKLIST.md
+cat src/main/resources/tasklist/2-FIX-VERSIONS-SPIDER.md >> TASKLIST.md
+cat src/main/resources/tasklist/3-AI-BUILD-SCRIPT.md >> TASKLIST.md
 
 exit 0

@@ -1,2 +1,7 @@
 
-- [] Task: Fix src/main/groovy/lib/versions-spider.groovy, because some URL-s are broken. Try download dovnload page versions, grep from there texts and relevant URL-s or information to produce dowload URL. First of all test the script is able to download scrap the page. Broken are Infinispan, xxxx and described in src/main/resources/tasklist/BROKEN-LINES.txt. Others should not be investigated and changes in that file. Orher files should not be changed.
+- [] Task: Fix src/main/groovy/lib/versions-spider.groovy, because some URL-s are broken.
+  Try to download page versions, grep from their texts and relevant URL-s or information to produce download URL.
+  First, test the script is able to download scrap the page. Broken are files and described in
+  src/main/resources/tasklist/BROKEN-LINES.txt. Re check are some downloads relevant, somehow, short curling or
+  something. Others should not be investigated and changes in that file. Other files
+  should not be changed.

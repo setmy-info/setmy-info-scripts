@@ -1,0 +1,16 @@
+NEO4J_NAME=neo4j
+NEO4J_VERSION=2026.01.4
+NEO4J_DIR_NAME=${NEO4J_NAME}-community-${NEO4J_VERSION}
+NEO4J_TAR_GZ_FILE_NAME=${NEO4J_DIR_NAME}-unix.tar.gz
+NEO4J_TAR_GZ_FILE_URL=https://dist.neo4j.org/${NEO4J_TAR_GZ_FILE_NAME}
+
+# https://dist.neo4j.org/neo4j-community-2026.01.4-unix.tar.gz
+
+neo4j_download_func() {
+    smi-download ${NEO4J_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${NEO4J_TAR_GZ_FILE_NAME}
+}
+
+neo4j_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${NEO4J_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/${NEO4J_NAME} /opt/${NEO4J_DIR_NAME}
+}

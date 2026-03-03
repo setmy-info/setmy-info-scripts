@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull
 @Grab(group = 'com.google.errorprone', module = 'error_prone_annotations', version = '2.38.0')
 @Grab(group = 'info.picocli', module = 'picocli', version = '4.7.7')
 
-// TODO: MITM , h2, Netbeans, LibreOffice, Infinispan, mvnd are broken.
+// TODO: h2 scraping may need review.
 
 //@Grab(group='org.xerial', module='sqlite-jdbc', version='3.49.1.0')
 //@Grab(group = 'org.seleniumhq.selenium', module = 'selenium-java', version = '4.33.0')
@@ -578,17 +578,17 @@ class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
-        println first
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
     }
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // https://github.com/infinispan/infinispan/releases/download/15.2.0.Final/infinispan-server-15.2.0.Final.zip
             // https://github.com/infinispan/infinispan/releases/download/16.1.0/infinispan-server-16.1.0.zip
             if (!href.contains("/infinispan/infinispan/releases/download/")) return false
             if (!href.contains("/infinispan-server-")) return false
             if (!href.endsWith(".zip")) return false
+            if (href.contains("/download//")) return false
             return true
         }
     }
@@ -608,16 +608,27 @@ class GoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, 
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        //sleep(3000)
-        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
-        println first
+        def filtered = getHrefs(driver).findAll(getSearcher())
+        def sorted = filtered.sort { a, b ->
+            def vA = a.replaceAll(".*/go", "").replaceAll("\\.linux.*", "").split("\\.").collect { it.toInteger() }
+            def vB = b.replaceAll(".*/go", "").replaceAll("\\.linux.*", "").split("\\.").collect { it.toInteger() }
+            for (int i = 0; i < Math.max(vA.size(), vB.size()); i++) {
+                def ai = i < vA.size() ? vA[i] : 0
+                def bi = i < vB.size() ? vB[i] : 0
+                if (ai != bi) return ai <=> bi
+            }
+            return 0
+        }
+        println sorted.last()
     }
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // https://go.dev/dl/go1.24.4.linux-amd64.tar.gz
+            // https://go.dev/dl/go1.26.0.linux-amd64.tar.gz
             if (!href.contains(".dev/dl/go")) return false
             if (!href.endsWith(".linux-amd64.tar.gz")) return false
+            def version = href.replaceAll(".*/go", "").replaceAll("\\.linux.*", "")
+            if (version.contains("rc") || version.contains("beta")) return false
             return true
         }
     }
@@ -752,8 +763,8 @@ class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, 
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
-        println first
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
     }
 
     Closure<Boolean> getSearcher() {
@@ -816,7 +827,7 @@ class BazelDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
         driver.get(getUrl())
         def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
         def version = last.split("bazelbuild/bazel/releases/tag/")[1]
-        println "https://github.com/bazelbuild/bazel/releases/download/${version}/bazel_nojdk-${version}-linux-x86_64"
+        println "https://github.com/bazelbuild/bazel/releases/download/${version}/bazel-${version}-linux-x86_64"
     }
 
     Closure<Boolean> getSearcher() {
@@ -913,26 +924,28 @@ class TomcatDriverExecute extends DriverExecuteBase implements DriverExecute, Na
 class NetbeansDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
-        // https://dlcdn.apache.org/netbeans/netbeans/28/netbeans-28-bin.zip
-        // https://netbeans.apache.org/front/main/download/nb28
+        // https://dlcdn.apache.org/netbeans/netbeans/29/netbeans-29-bin.zip
         driver.get(getUrl())
-        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
-        def version = first.split("/download/nb")[1]
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        def version = last.split("/apache/netbeans/releases/tag/")[1]
         println "https://dlcdn.apache.org/netbeans/netbeans/${version}/netbeans-${version}-bin.zip"
     }
 
     Closure<Boolean> getSearcher() {
         return { href ->
+            // https://github.com/apache/netbeans/releases/tag/29
             href = href.toLowerCase()
             if (!href.contains("/apache/netbeans/releases/tag/")) return false
             if (href.contains("-rc")) return false
+            def tag = href.split("/tag/").last()
+            if (!tag.isInteger()) return false
             return true
         }
     }
 
     @Override
     String getUrl() {
-        return "https://netbeans.apache.org/front/main/index.html"
+        return "https://github.com/apache/netbeans/releases"
     }
 
     @Override
@@ -1038,29 +1051,23 @@ class MITMProxyDriverExecute extends DriverExecuteBase implements DriverExecute,
     void execute(WebDriver driver) {
         // https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-x86_64.tar.gz
         driver.get(getUrl())
-        sleep(1000)
-        def hrefs = getHrefs(driver)
-        //println "🔗: ${hrefs}"
-        hrefs = hrefs.findAll(getSearcher())
-        //println "🔗: ${hrefs}"
-        def last = sortAndLast(hrefs)
-        def version = last.split("downloads/#")[1].replace("/", "")
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        def version = last.split("/mitmproxy/mitmproxy/releases/tag/v")[1]
         println "https://downloads.mitmproxy.org/${version}/mitmproxy-${version}-linux-x86_64.tar.gz"
     }
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // https://www.mitmproxy.org/downloads/#12.2.1/
+            // https://github.com/mitmproxy/mitmproxy/releases/tag/v12.2.1
             href = href.toLowerCase()
-            if (!href.contains("mitmproxy.org/downloads/#")) return false
-            if (!href.endsWith("/")) return false
+            if (!href.contains("/mitmproxy/mitmproxy/releases/tag/v")) return false
             return true
         }
     }
 
     @Override
     String getUrl() {
-        return "https://www.mitmproxy.org/downloads/"
+        return "https://github.com/mitmproxy/mitmproxy/releases"
     }
 
     @Override
@@ -1145,14 +1152,8 @@ class MvndDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        def hrefs = getHrefs(driver)
-        def filtered = hrefs.findAll(getSearcher())
-        if (!filtered) {
-             // Fallback if full URLs are not present (GitHub sometimes uses relative links)
-             filtered = hrefs.findAll { it.contains("/maven/mvnd/") && it.contains("maven-mvnd-") && it.endsWith("-linux-amd64.tar.gz") }.collect { it.startsWith("/") ? "https://dlcdn.apache.org" + it : it }.findAll(getSearcher())
-        }
-        def last = sortAndLast(filtered)
-        def version = last.split("/maven/mvnd/")[1].split("/maven-mvnd-")[0]
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        def version = last.split("/apache/maven-mvnd/releases/tag/")[1]
         // https://dlcdn.apache.org/maven/mvnd/1.0.3/maven-mvnd-1.0.3-linux-amd64.tar.gz
         println "https://dlcdn.apache.org/maven/mvnd/${version}/maven-mvnd-${version}-linux-amd64.tar.gz"
     }
@@ -1162,14 +1163,14 @@ class MvndDriverExecute extends DriverExecuteBase implements DriverExecute, Name
             // https://github.com/apache/maven-mvnd/releases/tag/1.0.3
             if (!href.contains("/apache/maven-mvnd/releases/tag/")) return false
             def lower = href.toLowerCase()
-            if (lower.contains("-m") || lower.contains("-alpha") || lower.contains("-beta") || lower.contains("-rc")) return false
+            if (lower =~ /-m\d/ || lower.contains("-alpha") || lower.contains("-beta") || lower.contains("-rc")) return false
             return true
         }
     }
 
     @Override
     String getUrl() {
-        return "https://maven.apache.org/download.cgi"
+        return "https://github.com/apache/maven-mvnd/releases"
     }
 
     @Override
@@ -1269,15 +1270,22 @@ class GraphvizDriverExecute extends DriverExecuteBase implements DriverExecute, 
     }
 }
 
-class InnosetupDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+class InnosetupDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
         sleep(5000)
-        def elements = driver.findElements(tag("td")).findAll { it.getAttribute("nowrap") == "nowrap" && it.text.contains("innosetup-") && it.text.endsWith(".exe") }
-        def texts = elements.collect { it.text }
-        def first = sortAndFirst(texts)
-        println first
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/jrsoftware/issrc/releases/download/is-6_7_1/innosetup-6.7.1.exe
+            if (!href.toLowerCase().contains("innosetup-")) return false
+            if (!href.toLowerCase().endsWith(".exe")) return false
+            return true
+        }
     }
 
     @Override

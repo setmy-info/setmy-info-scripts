@@ -16,13 +16,20 @@ executeAis() {
 }
 
 executeAi() {
-    PRINTABLE_AI_PROFILE=${*}
+    PRINTABLE_AI_PROFILE=${1}
     AI_PROFILE_NAME=${PRINTABLE_AI_PROFILE}.${AI_PROFILE_SUFFIX}
     HOME_AI_PROFILE_FILE_NAME="${HOME_AI_DIR}/${AI_PROFILE_NAME}"
     SYSTEM_AI_PROFILE_FILE_NAME="${SYSTEM_AI_PROFILES_DIR}/${AI_PROFILE_NAME}"
+
+    if [ -f "./ai.sh" ]; then
+        set -a
+        . ./ai.sh
+        set +a
+    fi
+
     if [ -f "${HOME_AI_PROFILE_FILE_NAME}" ]; then
-          cat "${HOME_AI_PROFILE_FILE_NAME}"
+        envsubst < "${HOME_AI_PROFILE_FILE_NAME}"
     elif [ -f "${SYSTEM_AI_PROFILE_FILE_NAME}" ]; then
-          cat "${SYSTEM_AI_PROFILE_FILE_NAME}"
+        envsubst < "${SYSTEM_AI_PROFILE_FILE_NAME}"
     fi
 }

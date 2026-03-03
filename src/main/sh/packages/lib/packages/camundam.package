@@ -1,11 +1,11 @@
 CAMUNDA_MODELER_NAME=camunda-modeler
-CAMUNDA_MODELER_VERSION=5.42.0
+CAMUNDA_MODELER_VERSION=5.44.0
 CAMUNDA_MODELER_DIR_NAME=${CAMUNDA_MODELER_NAME}-${CAMUNDA_MODELER_VERSION}-linux-x64
 CAMUNDA_MODELER_TAR_FILE_NAME=${CAMUNDA_MODELER_DIR_NAME}.tar
 CAMUNDA_MODELER_TAR_GZ_FILE_NAME=${CAMUNDA_MODELER_TAR_FILE_NAME}.gz
 CAMUNDA_MODELER_TAR_GZ_FILE_URL=https://downloads.camunda.cloud/release/camunda-modeler/${CAMUNDA_MODELER_VERSION}/${CAMUNDA_MODELER_TAR_GZ_FILE_NAME}
 
-# https://downloads.camunda.cloud/release/camunda-modeler/5.42.0/camunda-modeler-5.42.0-linux-x64.tar.gz
+# https://downloads.camunda.cloud/release/camunda-modeler/5.44.0/camunda-modeler-5.44.0-linux-x64.tar.gz
 
 camundam_download_func() {
     smi-download ${CAMUNDA_MODELER_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${CAMUNDA_MODELER_TAR_GZ_FILE_NAME}

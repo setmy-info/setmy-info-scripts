@@ -889,7 +889,7 @@ class ChromedriverDriverExecute extends DriverExecuteBase implements DriverExecu
             throw new RuntimeException("Stable version code element not found at ${getUrl()}")
         }
         def version = elements.first().getText()
-        println "https://storage.googleapis.com/chrome-for-testing-public/${version}/linux64/chrome-linux64.zip"
+        println "https://storage.googleapis.com/chrome-for-testing-public/${version}/linux64/chromedriver-linux64.zip"
     }
 
     @Override

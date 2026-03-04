@@ -1,6 +1,6 @@
 // Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
 // Usage: groovy ai-profile-render.groovy <profile1> [profile2] ...
-// Variable overrides: ai.properties in current directory (KEY=VALUE)
+// Variable overrides: ai.sh in current directory (KEY=VALUE)
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -12,11 +12,20 @@ def homeProfilesDir   = new File("${homeDir}${File.separator}.setmy.info${File.s
 
 def vars = new LinkedHashMap<String, String>(System.getenv())
 
-def propsFile = new File('ai.properties')
-if (propsFile.exists()) {
-    def props = new Properties()
-    propsFile.withInputStream { props.load(it) }
-    props.each { k, v -> vars[k as String] = v as String }
+def shFile = new File('ai.sh')
+if (shFile.exists()) {
+    shFile.eachLine { line ->
+        def trimmed = line.trim()
+        if (trimmed && !trimmed.startsWith('#')) {
+            def assignment = trimmed.replaceFirst(/^export\s+/, '')
+            def eq = assignment.indexOf('=')
+            if (eq > 0) {
+                def key = assignment.substring(0, eq).trim()
+                def val = assignment.substring(eq + 1).trim().replaceAll(/^(['"])(.*)\1$/, '$2')
+                vars[key] = val
+            }
+        }
+    }
 }
 
 def varPattern = Pattern.compile(/\$\{([A-Za-z_][A-Za-z0-9_]*)\}/)

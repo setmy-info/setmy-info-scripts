@@ -331,35 +331,20 @@ class JdkDriverExecute extends DriverExecuteBase implements DriverExecute, Name,
 
 class GradleDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
 
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
+            if (!href.contains("services.gradle.org/distributions/gradle-")) return false
+            if (!href.endsWith("-bin.zip")) return false
+            return true
+        }
+    }
+
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        def links = driver.findElements(tag("a"))
-        def hrefs = links
-            .collect { it.getAttribute("href") }
-            .findAll { it != null }
-
-        def finalFiltered = hrefs.findAll { href ->
-            href = href.toLowerCase()
-            if (!href.endsWith("bin.zip")) return false
-            return true
-        }
-
-        //https://gradle.org/next-steps/?version=8.14.1&format=bin
-        //https://gradle.org/releases/#9.3.1
-        //https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
-        if (!finalFiltered) {
-            throw new RuntimeException("No gradle download links found at ${getUrl()}")
-        }
-        def gradleDownloadPageUrl = finalFiltered.first()
-        def version = gradleDownloadPageUrl
-            .replace("https://services.gradle.org/distributions/gradle-", "")
-            .replace("-bin.zip", "")
-        //println gradleDownloadPageUrl
-        //println version
-        // https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
-        def downloadUrl = "https://services.gradle.org/distributions/gradle-${version}-bin.zip"
-        println downloadUrl
+        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
+        println first
     }
 
     @Override
@@ -595,7 +580,7 @@ class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute
 
     @Override
     String getUrl() {
-        return "https://infinispan.org/download/"
+        return "https://github.com/infinispan/infinispan/releases"
     }
 
     @Override

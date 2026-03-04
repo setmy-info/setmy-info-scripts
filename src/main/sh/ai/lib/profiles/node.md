@@ -1,2 +1,2 @@
-- node is located at /opt/node or /opt/node-v${NODE_VERSION:-24.14.0}-linux-x64 when working on Unixes
-- node is located at C:\pub\node-v${NODE_VERSION:-24.14.0}-win-x64 when working on Windows machines
+- node is located at /opt/node or /opt/node-v${NODE_VERSION}-linux-x64 when working on Unixes
+- node is located at C:\pub\node-v${NODE_VERSION}-win-x64 when working on Windows machines

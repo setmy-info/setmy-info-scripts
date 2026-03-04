@@ -19,21 +19,11 @@ if (propsFile.exists()) {
     props.each { k, v -> vars[k as String] = v as String }
 }
 
-def defaultPattern = Pattern.compile(/\$\{([A-Za-z_][A-Za-z0-9_]*):-([^}]*)\}/)
-def simplePattern  = Pattern.compile(/\$\{([A-Za-z_][A-Za-z0-9_]*)\}/)
+def varPattern = Pattern.compile(/\$\{([A-Za-z_][A-Za-z0-9_]*)\}/)
 
 def renderContent = { String content ->
-    def m = defaultPattern.matcher(content)
+    def m = varPattern.matcher(content)
     def sb = new StringBuffer()
-    while (m.find()) {
-        def val = (vars.containsKey(m.group(1)) && vars[m.group(1)]) ? vars[m.group(1)] : m.group(2)
-        m.appendReplacement(sb, Matcher.quoteReplacement(val as String))
-    }
-    m.appendTail(sb)
-    content = sb.toString()
-
-    m = simplePattern.matcher(content)
-    sb = new StringBuffer()
     while (m.find()) {
         def val = vars.containsKey(m.group(1)) ? vars[m.group(1)] : m.group(0)
         m.appendReplacement(sb, Matcher.quoteReplacement(val as String))

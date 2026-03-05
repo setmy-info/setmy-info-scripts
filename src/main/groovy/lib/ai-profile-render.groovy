@@ -49,13 +49,10 @@ if (args.length == 0) {
 args.each { profileName ->
     def homeFile   = new File(homeProfilesDir, "${profileName}.md")
     def systemFile = new File(systemProfilesDir, "${profileName}.md")
-    def found = false
     if (homeFile.exists()) {
         print renderContent(homeFile.text)
-        found = true
     }
     if (systemFile.exists()) {
         print renderContent(systemFile.text)
-        found = true
     }
 }

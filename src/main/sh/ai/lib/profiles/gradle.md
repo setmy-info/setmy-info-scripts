@@ -1,2 +1,1 @@
-- Gradle is located at /opt/gradle or /opt/gradle-${GRADLE_VERSION} when working on Unixes
-- Gradle is located at C:\pub\gradle-${GRADLE_VERSION} when working on Windows machines
+- Gradle is located at /opt/gradle or {GRADLE_HOME} depending on OS

@@ -1,2 +1,1 @@
-- Groovy is located at /opt/groovy or /opt/groovy-${GROOVY_VERSION} when working on Unixes
-- Groovy is located at C:\pub\groovy-${GROOVY_VERSION} when working on Windows machines
+- Groovy is located at /opt/groovy or ${GROOVY_HOME} depending on OS

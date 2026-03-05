@@ -1,8 +1,8 @@
-- Java JDK 25
+- Java JDK ${JAVA}
 - JUnit 5, AssertJ, Mockito need to be used as test frameworks
 - Unit test files end with Test.java
 - Integration tests end with IT.java
 - E2E tests end with E2ET.java
 - E2E tests are executed with maven profile e2e
-- Java JDK is located at /opt/jdk or /opt/jdk-25.0.2 when working on Unixes
-- Java JDK is located at C:\pub\jdk-25.0.2 when working on Windows machines
+- Java JDK is located at /opt/jdk or /opt/jdk-${JAVA_VERSION} when working on Unixes
+- Java JDK is located at C:\pub\jdk-${JAVA_VERSION} when working on Windows machines

@@ -1,11 +1,11 @@
 CLION_NAME=clion
-CLION_VERSION=2025.3.1.1
+CLION_VERSION=2025.3.3
 CLION_DIR_NAME=${CLION_NAME}-${CLION_VERSION}
 CLION_TAR_FILE_NAME=CLion-${CLION_VERSION}.tar
 CLION_TAR_GZ_FILE_NAME=${CLION_TAR_FILE_NAME}.gz
 CLION_JAR_FILE_URL=https://download.jetbrains.com/cpp/${CLION_TAR_GZ_FILE_NAME}
 
-# https://download-cdn.jetbrains.com/cpp/CLion-2025.3.1.1.tar.gz
+# https://download-cdn.jetbrains.com/cpp/CLion-2025.3.3.tar.gz
 
 clion_download_func() {
     smi-download ${CLION_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${CLION_TAR_GZ_FILE_NAME}

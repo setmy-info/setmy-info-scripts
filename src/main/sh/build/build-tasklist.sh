@@ -1,6 +1,10 @@
 #!/bin/sh
 
-# ./src/main/sh/build/build-tasklist.sh in root folder
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+# Usage: ./src/main/sh/build/build-tasklist.sh [file1.md file2.md ...]
+# If no files given, defaults to TASKLIST-CONTENT.md
+
+TASKLIST_CONTENT=${1:-TASKLIST-CONTENT.md}
 
 TASKLIST_CONTENT=${1:-TASKLIST-CONTENT.md}
 
@@ -10,13 +14,12 @@ echo "" >> TASKLIST.md
 echo "## Tasklist" >> TASKLIST.md
 echo "" >> TASKLIST.md
 
-if [ -f "src/main/resources/tasklist/${TASKLIST_CONTENT}" ]; then
-  cat "src/main/resources/tasklist/${TASKLIST_CONTENT}" >> TASKLIST.md
+if [ $# -eq 0 ]; then
+    cat TASKLIST-CONTENT.md >> TASKLIST.md
 else
-  cat src/main/resources/tasklist/0-AI-BUILD-SCRIPT.md >> TASKLIST.md
-  cat src/main/resources/tasklist/1-UPDATE-PROFILES.md >> TASKLIST.md
-  cat src/main/resources/tasklist/2-FIX-VERSIONS-SPIDER.md >> TASKLIST.md
-  cat src/main/resources/tasklist/3-AI-BUILD-SCRIPT.md >> TASKLIST.md
+    for FILE in "$@"; do
+        cat "${FILE}" >> TASKLIST.md
+    done
 fi
 
 exit 0

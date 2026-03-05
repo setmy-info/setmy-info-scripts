@@ -16,11 +16,11 @@ executeAis() {
 }
 
 executeAi() {
-    PRINTABLE_AI_PROFILE=${*}
+    PRINTABLE_AI_PROFILE=${1}
     AI_PROFILE_NAME=${PRINTABLE_AI_PROFILE}.${AI_PROFILE_SUFFIX}
     HOME_AI_PROFILE_FILE_NAME="${HOME_AI_DIR}/${AI_PROFILE_NAME}"
     SYSTEM_AI_PROFILE_FILE_NAME="${SYSTEM_AI_PROFILES_DIR}/${AI_PROFILE_NAME}"
-    
+
     # 1. Check for ai.sh in current folder and import if present
     if [ -f "ai.sh" ]; then
         . ./ai.sh

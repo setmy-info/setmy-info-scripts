@@ -1,4 +1,7 @@
 - `setmy-info-scripts` is a modular development environment preparation and system configuration project.
+- `setmy-info-scripts` cloned code resides usually at C:\sources\setmy.info\submodules\setmy-info-scripts for Windows
+  machines and in   ~/sources/components/setmy.info/submodules/setmy-info-scripts folder for Unixes. Investigate what is
+  there and use as supposed in new scripts in any other projects. Expecting, that OS have that software installed.
 - Prepare and configure development terminals
 - Support Linux and Windows environments
 - Provide structured Docker-based workflows
@@ -22,7 +25,7 @@
 - Module have module related cmake files, per language and domain in form
   src/main/resources/cmake/<LANGUAGE>/<DOMAIN or MODULE>
 - Not all modules are already modularized. Some still remain in the src/main/sh/bin,src/main/sh/lib, src/main/sh/in,
-  src/main/sh/bin. Same with CMake files directly in in src/main/resources/cmake/sh/.
+  src/main/sh/bin. Same with CMake files directly in src/main/resources/cmake/sh/.
 - Cmake files are splited into bin.cmake, lib.cmake, etc.cmake, man.cmake, var.cmake, variables.cmake, sources.cmake,
   targets.cmake, functions.cmake, dependencies.cmake, configuration.cmake.
 - Linux shell scripts should pe POSIX compatible shell scripts. And ready to port to FreeBSD, OpenIndiana, Debian.
@@ -31,9 +34,11 @@
 - shell scripts are not always in specific form like "smi-*" or "*.sh"
 - Man pages follow the same folder structure like they are modularized.
 - Windows additional software place is in C:\pub
-- Windows related scripts and exes are in C:\pub\setmy.info\bin and importable scripts and libraries in
-  "C:\pub\setmy.info\lib"
-- Adding a new script for Uixes, then a man page should be created also
+- `setmy-info-scripts` Windows related scripts and exes are in C:\pub\setmy.info\bin and importable scripts and
+  libraries in "C:\pub\setmy.info\lib"
+- `setmy-info-scripts` Unixes related scripts and exes are in /opt/setmy.info/bin and importable scripts and libraries
+  in "C:\pub\setmy.info\lib".
+- Adding a new script for Unixes, then a man page should be created also
 - Newly added scripts should have in for # Copyright (C) YYYY Imre Tabur <imre.tabur@mail.ee>
 - Users config files are located in a folder named .setmy.info in the user home directory.
 - New scripts should be added into cmake scripts

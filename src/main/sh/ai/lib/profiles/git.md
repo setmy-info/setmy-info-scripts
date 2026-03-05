@@ -5,5 +5,5 @@
 - Git reset is not allowed
 - Git checkout is not allowed
 - Git Merge is not allowed
-- Git pull reguest are not allowed
+- Git pull request are not allowed
 - AI agent should not delete branches, tags, commits

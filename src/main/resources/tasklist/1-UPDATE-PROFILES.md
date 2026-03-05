@@ -1,9 +1,0 @@
-
-- [] Task: Upgrade by src/main/resources/tasklist/DOWNLOAD.txt src/main/sh/packages/lib/packages folder files.
-  Files are siffixed with `.package`. URLs starting
-  with https://release-assets.githubusercontent.com/github-production-release-asset  should not replace .package file
-  URL-s., because these are forwarded files, .package file URL-s are short and before forward. Forwarded urls can be
-  used as different data for placeholders and variable values and fill or produce short URL-s. If possible, try to
-  check, are URL-s downloadable with curl or wget, just first bytes, not full file. Only
-  src/main/sh/packages/lib/packages the folder is allowed to change. Outside that folder, no changes are allowed with in
-  the current task. For missing .profile create it. Create for Windows also.

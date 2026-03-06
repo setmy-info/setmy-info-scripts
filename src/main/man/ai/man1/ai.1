@@ -1,66 +1,66 @@
 ." Manpage for ai
 .TH ai 1 "February 2026" "setmy.info" "User Commands"
 .SH NAME
-ai \- print Markdown bullet lists from AI profiles and groups
+ai \- print AI profiles with environment variable substitution
 .SH SYNOPSIS
 .B ai
-.I [PROFILE|GROUP]...
+.I [PROFILE]...
 .SH DESCRIPTION
 The
 .B ai
-command prints a Markdown bullet list composed from lines contained in
-profile files and/or groups located under
-.I $(smi-lib-location)/profiles/ai
-on Linux systems.
+command prints Markdown content from AI profile files located in the system-wide
+directory or the user's home directory.
 .PP
-Arguments can be either:
-.IP \(bu 2
-Profiles: files named
-.I <name>.md
-whose non-empty lines are printed prefixed with "- ".
-.IP \(bu 2
-Groups: files named
-.I <name>.group
-that contain a list of profile or group names. Groups are expanded
-recursively, allowing groups to include other groups or profiles.
+Arguments are profile names. For each
+.I PROFILE
+provided, the command looks for a file named
+.I <PROFILE>.md
+in the following locations (in order):
+.IP 1. 2
+User home directory:
+.I $(smi-home-location)/ai/<PROFILE>.md
+.IP 2. 2
+System-wide directory:
+.I $(ai-profiles-location)/<PROFILE>.md
 .PP
-If an argument does not match a profile or a group, an error is printed to
-stderr in the form:
-.I "Profile or group not found: <name>"
+If a profile file is found in either location, its content is processed through
+.BR envsubst (1)
+to substitute environment variables and then printed to standard output.
+.PP
+Additionally, for each profile processed, the command checks for a file named
+.I ai.sh
+in the current working directory. If it exists, it is sourced before processing the
+profile, allowing for local environment variable definitions or script-based
+customizations.
 .SH EXAMPLES
-Print contents of two profiles:
+Print contents of a single profile:
 .PP
 .nf
-ai java maven
+ai java
 .fi
 .PP
-Print a group (that expands to multiple profiles/groups) recursively:
+Print multiple profiles:
 .PP
 .nf
-ai tools
-.fi
-.PP
-Combine a group with an extra profile:
-.PP
-.nf
-ai tools node
+ai java maven springboot
 .fi
 .SH FILES
 .TP
-.I /opt/setmy.info/lib/profiles/ai/*.md
+.I $(ai-profiles-location)/*.md
 System-wide AI profile files (Markdown).
 .TP
-.I /opt/setmy.info/lib/profiles/ai/*.group
-System-wide AI group definitions.
+.I ~/.setmy.info/ai/*.md
+User-specific AI profile files (Markdown).
 .TP
-.I ~/.setmy.info/lib/ai (if used in future)
-User overrides are not currently used by default, but the layout mirrors
-system locations.
+.I ./ai.sh
+Local script sourced for environment variable definitions.
 .SH SEE ALSO
-.BR term (1),
-.BR smi-lib-location (1),
+.BR envsubst (1),
+.BR smi-home-location (1),
 .BR ai-profiles-location (1)
 .SH AUTHOR
 Imre Tabur <imre.tabur@mail.ee>
 .SH COPYRIGHT
-Copyright (C) 2026 Hear And See Systems LLC. Licensed under the MIT License.
+Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+.PP
+Licensed under the MIT License.

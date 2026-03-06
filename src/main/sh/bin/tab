@@ -3,8 +3,10 @@
 # Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
 
 if [ -z "$1" ]; then
-    echo "Usage: tab [URL]"
+    echo "Usage: tab [URL] [URL] ..."
     exit 1
 fi
 
-/opt/firefox/firefox --new-tab "$1"
+for URL in "$@"; do
+    /opt/firefox/firefox --new-tab "$URL"
+done

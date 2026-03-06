@@ -1,0 +1,62 @@
+." Manpage for smi-build-tasklist
+.TH smi-build-tasklist 1 "March 2026" "setmy.info" "User Commands"
+.SH NAME
+smi-build-tasklist \- build a TASKLIST.md file from components
+.SH SYNOPSIS
+.B smi-build-tasklist
+.I [CONTENT_FILE]...
+.SH DESCRIPTION
+The
+.B smi-build-tasklist
+command generates a
+.I TASKLIST.md
+file in the current directory. It combines an introduction, AI-generated profiles, and content sections.
+.PP
+The process follows these steps:
+.IP 1. 2
+If
+.I AGENTS-INTRO.md
+exists in the current directory, it is used as the starting content for
+.IR TASKLIST.md .
+Otherwise,
+.I TASKLIST.md
+is started as an empty file.
+.IP 2. 2
+If
+.I ai.profiles
+exists in the current directory, its content is read as a list of profiles. The
+.BR ai (1)
+command is then called with these profiles, and the output is appended to
+.IR TASKLIST.md .
+.IP 3. 2
+A "## Tasklist" header is appended to
+.IR TASKLIST.md .
+.IP 4. 2
+If arguments are provided, each
+.I CONTENT_FILE
+is appended to
+.IR TASKLIST.md .
+If no arguments are provided, the command looks for
+.I TASKLIST-CONTENT.md
+and appends it if found.
+.SH FILES
+.TP
+.I AGENTS-INTRO.md
+Introduction section for the tasklist.
+.TP
+.I ai.profiles
+Space-separated list of AI profiles to include.
+.TP
+.I TASKLIST-CONTENT.md
+Default content section if no arguments are provided.
+.TP
+.I TASKLIST.md
+The generated output file.
+.SH SEE ALSO
+.BR ai (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>
+.SH COPYRIGHT
+Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+.PP
+Licensed under the MIT License.

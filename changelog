@@ -1,3 +1,16 @@
+* 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
+- Updated `tab` and `tab.cmd` to support opening multiple URLs in new Firefox tabs.
+- Updated `tab.1` man page to reflect multiple URL support.
+* 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
+- Moved `smi-build-tasklist` from `tools` to `ai` module.
+- Renamed Linux `smi-build-tasklist.sh` to `smi-build-tasklist` and moved it to `src/main/sh/ai/bin/`.
+- Updated `src/main/resources/cmake/sh/ai/bin.cmake` to install `smi-build-tasklist` and `smi-build-tasklist.cmd`.
+- Updated `src/main/resources/cmake/sh/tools/bin.cmake` (removed script installation).
+- Moved man page to `src/main/man/ai/man1/smi-build-tasklist.1`.
+* 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
+- Updated man pages for `ai` and `ai-profiles-location` to reflect current implementation:
+    - `ai.1`: Updated description to include multiple profile support, `envsubst` processing, user-specific profiles in `~/.setmy.info/ai`, and local `ai.sh` sourcing. Removed incorrect claims about `.group` files and recursive expansion.
+    - `ai-profiles-location.1`: Updated copyright and formatting.
 * 2026-02-25 Imre Tabur <imre.tabur@mail.ee>
 - Version bump to 0.102.0: Updated PROJECT_VERSION_MINOR to 102 in CMakeLists.txt.
 - Version bump to 0.102.0: Updated PROJECT_VERSION to "0.102.0" in src/main/sh/build/packages-build.sh.

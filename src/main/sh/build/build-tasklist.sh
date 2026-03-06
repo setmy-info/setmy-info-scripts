@@ -5,7 +5,7 @@
 # If no files given, defaults to TASKLIST-CONTENT.md
 
 cat src/main/resources/tasklist/AGENTS-INTRO.md > TASKLIST.md
-ai setmy-info-scripts cmake groovy git cleancode bottom-up fhs >> TASKLIST.md
+ai sh linux setmy-info-scripts cmake groovy git cleancode bottom-up fhs >> TASKLIST.md
 echo "" >> TASKLIST.md
 echo "## Tasklist" >> TASKLIST.md
 echo "" >> TASKLIST.md

@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+# Usage: smi-build-tasklist [file1.md file2.md ...]
+# If no files given, defaults to TASKLIST-CONTENT.md
+# Reads AGENTS-INTRO.md if present.
+# Reads profiles from ai.profiles if present.
+
+TARGET_FILE="TASKLIST.md"
+INTRO_FILE="AGENTS-INTRO.md"
+PROFILES_FILE="ai.profiles"
+DEFAULT_CONTENT_FILE="TASKLIST-CONTENT.md"
+
+# Clear or create the target file
+if [ -f "${INTRO_FILE}" ]; then
+    cat "${INTRO_FILE}" > "${TARGET_FILE}"
+else
+    # Start fresh if no intro
+    : > "${TARGET_FILE}"
+fi
+
+# Add AI profiles if the file exists
+if [ -f "${PROFILES_FILE}" ]; then
+    PROFILES=$(cat "${PROFILES_FILE}")
+    if [ -n "${PROFILES}" ]; then
+        # Ensure ai command is available, or use absolute path if necessary
+        # In this project, ai is usually in the path after installation.
+        # For now, we assume 'ai' is in the PATH.
+        ai ${PROFILES} >> "${TARGET_FILE}"
+    fi
+fi
+
+echo "" >> "${TARGET_FILE}"
+echo "## Tasklist" >> "${TARGET_FILE}"
+echo "" >> "${TARGET_FILE}"
+
+# Append content files
+if [ $# -eq 0 ]; then
+    if [ -f "${DEFAULT_CONTENT_FILE}" ]; then
+        cat "${DEFAULT_CONTENT_FILE}" >> "${TARGET_FILE}"
+    fi
+else
+    for FILE in "$@"; do
+        if [ -f "${FILE}" ]; then
+            cat "${FILE}" >> "${TARGET_FILE}"
+        fi
+    done
+fi
+
+exit 0

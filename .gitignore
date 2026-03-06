@@ -51,3 +51,5 @@ CPackSourceConfig.cmake
 
 # Windows
 *.exe
+install.log
+setup-setmy.info.log

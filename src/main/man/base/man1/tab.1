@@ -1,18 +1,24 @@
 .TH tab "1" "February 2026" "SMI Toolset 0.100.0" "SMI Workstation Command"
 .SH NAME
-tab \- Open a URL in a new Firefox tab
+tab \- Open one or more URLs in new Firefox tabs
 .SH SYNOPSIS
 .B tab
-.I URL
+.I URL...
 .SH DESCRIPTION
 .PP
 .B tab
-opens a specified URL in a new tab of the Firefox browser.
+opens the specified URL(s) in new tabs of the Firefox browser.
+.PP
+If multiple URLs are provided, each will be opened in its own new tab.
+.PP
 On Unix-like systems, it calls \fI/opt/firefox/firefox\fR.
 On Windows, it calls \fI"C:\\Program Files\\Mozilla Firefox\\firefox.exe"\fR.
 .SH EXAMPLES
 .B tab
 .I https://www.google.com
+.PP
+.B tab
+.I https://www.google.com https://www.github.com
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.

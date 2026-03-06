@@ -7,6 +7,8 @@ ADD_DEPENDENCIES(buildPythonScripts makeDirectories)
 ADD_DEPENDENCIES(buildCLScripts     makeDirectories)
 ADD_DEPENDENCIES(clear clearCmake clearBuild clearPkg)
 
-INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/dependencies.cmake)
+IF (NOT WIN32)
+    INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/dependencies.cmake)
+ENDIF()
 
 # PLACEHOLDER-END #

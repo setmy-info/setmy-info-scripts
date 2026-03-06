@@ -1,4 +1,9 @@
 * 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
+- Separated Linux and Windows build logic in CMake to allow Windows builds to succeed.
+- Wrapped inclusions of Linux-specific `sh` CMake files in `IF (NOT WIN32)` blocks across `src/main/resources/cmake/` and `src/test/resources/cmake/`.
+- Updated `src/main/resources/cmake/targets.cmake` to use portable `${CMAKE_COMMAND} -E` commands (`copy_directory`, `rm`, `make_directory`) instead of platform-specific `cp`, `rm`, and `mkdir`.
+- Defined a portable `makeDirectories` target in the root `src/main/resources/cmake/targets.cmake` to satisfy target dependencies on all platforms.
+* 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
 - Updated `ninja.package` and `ninja.profile` to set Ninja installation directory and `NINJA_HOME` to `/opt/ninja/bin`.
 * 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
 - Added `ninja.package` for automated Ninja build tool download and installation on Linux.

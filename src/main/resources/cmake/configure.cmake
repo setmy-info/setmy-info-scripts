@@ -1,6 +1,8 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- configure.cmake")
 
-INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/configure.cmake)
+IF (NOT WIN32)
+    INCLUDE_CMAKE_FILE(${MAIN_SH_CMAKE_PATH}/configure.cmake)
+ENDIF()
 
 # PLACEHOLDER-END #

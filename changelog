@@ -1,4 +1,9 @@
 * 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
+- Updated `tabs` and `tabs.cmd` to support opening 1-N tabs configuration files.
+- Added support for specifying configuration file prefixes as arguments (defaulting to `tabs`).
+- Updated `tabs.1` man page to reflect multi-file configuration support.
+- Added copyright header to `tabs.cmd`.
+* 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
 - Updated `tab` and `tab.cmd` to support opening multiple URLs in new Firefox tabs.
 - Updated `tab.1` man page to reflect multiple URL support.
 * 2026-03-06 Imre Tabur <imre.tabur@mail.ee>

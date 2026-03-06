@@ -1,27 +1,35 @@
-.TH tabs "1" "February 2026" "SMI Toolset 0.100.0" "SMI Workstation Command"
+.TH tabs "1" "March 2026" "SMI Toolset 0.100.0" "SMI Workstation Command"
 .SH NAME
-tabs \- Open multiple URLs in Firefox tabs from a configuration file
+tabs \- Open multiple URLs in Firefox tabs from configuration files
 .SH SYNOPSIS
 .B tabs
+.RI [ config_prefix ...]
 .SH DESCRIPTION
 .PP
 .B tabs
-reads a list of URLs from a configuration file and opens each in a new Firefox tab using the \fBtab\fR command.
-The configuration file is located at:
-.I ${HOME}/.setmy.info/tabs.conf
+reads lists of URLs from one or more configuration files and opens each in a new Firefox tab using the \fBtab\fR command.
+If no configuration file prefix is provided, it defaults to \fBtabs\fR.
+For each prefix \fIP\fR provided, the command looks for a configuration file named \fIP.conf\fR in:
+.I ${HOME}/.setmy.info/
 on Unix-like systems or
-.I %USERPROFILE%\\.setmy.info\\tabs.conf
+.I %USERPROFILE%\\.setmy.info\\
 on Windows.
 .PP
-The configuration file should contain an assignment in the form:
+Example:
+.B tabs tabs work
+will look for \fBtabs.conf\fR and \fBwork.conf\fR in the aforementioned directory.
+.PP
+The configuration files should contain an assignment in the form:
 .IP
 TABS="https://www.google.com https://github.com"
 .SH EXAMPLES
 .B tabs
+.PP
+.B tabs tabs work leisure
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
-Documentation written by Junie.
+Documentation updated by Junie.
 .SH "REPORTING BUGS"
 .PP
 Report tabs bugs to \fIinfo@setmy.info\fR

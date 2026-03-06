@@ -2,16 +2,24 @@
 
 # Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
 
-TABS_CONFIG_FILE="${HOME}/.setmy.info/tabs.conf"
-
-if [ ! -f "${TABS_CONFIG_FILE}" ]; then
-    echo "Tabs configuration file not found: ${TABS_CONFIG_FILE}"
-    echo "Please create it with: TABS=\"google.com example.com\""
-    exit 1
+CONFIG_PREFIXES="$@"
+if [ -z "${CONFIG_PREFIXES}" ]; then
+    CONFIG_PREFIXES="tabs"
 fi
 
-. "${TABS_CONFIG_FILE}"
-
-for TAB in ${TABS}; do
-    tab "${TAB}"
+for PREFIX in ${CONFIG_PREFIXES}; do
+    TABS_CONFIG_FILE="${HOME}/.setmy.info/${PREFIX}.conf"
+    if [ -f "${TABS_CONFIG_FILE}" ]; then
+        TABS=""
+        . "${TABS_CONFIG_FILE}"
+        if [ -n "${TABS}" ]; then
+            for TAB in ${TABS}; do
+                tab "${TAB}"
+            done
+        else
+            echo "TABS variable not found in ${TABS_CONFIG_FILE}"
+        fi
+    else
+        echo "Tabs configuration file not found: ${TABS_CONFIG_FILE}"
+    fi
 done

@@ -1,0 +1,15 @@
+NINJA_NAME=ninja
+NINJA_VERSION=1.13.1
+NINJA_ZIP_FILE_NAME=${NINJA_NAME}-linux.zip
+NINJA_ZIP_FILE_URL=https://github.com/ninja-build/ninja/releases/download/v${NINJA_VERSION}/${NINJA_ZIP_FILE_NAME}
+
+# https://github.com/ninja-build/ninja/releases/download/v1.13.1/ninja-linux.zip
+
+ninja_download_func() {
+    smi-download ${NINJA_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${NINJA_ZIP_FILE_NAME}
+}
+
+ninja_install_func() {
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${NINJA_ZIP_FILE_NAME} -d /opt/ninja/bin
+    sudo chmod +x /opt/ninja/bin/ninja
+}

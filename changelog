@@ -1,4 +1,8 @@
 * 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
+- Updated `ninja.package` and `ninja.profile` to set Ninja installation directory and `NINJA_HOME` to `/opt/ninja/bin`.
+* 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
+- Added `ninja.package` for automated Ninja build tool download and installation on Linux.
+* 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
 - Updated `tabs` and `tabs.cmd` to support opening 1-N tabs configuration files.
 - Added support for specifying configuration file prefixes as arguments (defaulting to `tabs`).
 - Updated `tabs.1` man page to reflect multi-file configuration support.

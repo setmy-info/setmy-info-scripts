@@ -1,1 +1,1 @@
-sh linux setmy-info-scripts cmake groovy git cleancode bottom-up fhs
+sh linux setmy-info-scripts cmake groovy git cleancode bottom-up fhs ninja

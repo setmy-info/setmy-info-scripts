@@ -32,8 +32,8 @@ if [ -f "${PROFILES_FILE}" ]; then
 fi
 
 echo "" >> "${TARGET_FILE}"
-echo "## Tasklist" >> "${TARGET_FILE}"
-echo "" >> "${TARGET_FILE}"
+#echo "## Tasklist" >> "${TARGET_FILE}"
+#echo "" >> "${TARGET_FILE}"
 
 # Append content files
 if [ $# -eq 0 ]; then

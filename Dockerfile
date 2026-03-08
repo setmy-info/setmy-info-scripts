@@ -20,7 +20,7 @@ RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packag
 RUN ./src/main/sh/build/packages-build.sh
 
 RUN ls -la
-RUN apt install -y ./setmy-info-scripts-0.102.0.noarch.deb && ./src/main/sh/build/check-files.sh
+RUN apt install -y ./setmy-info-scripts-0.104.0.noarch.deb && ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info
 
 FROM setmyinfo/setmy-info-rocky:latest AS rpm_build_image
@@ -45,10 +45,10 @@ COPY CMakeLists.txt ./
 COPY configure ./
 COPY changelog ./
 RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packages-build.sh && dos2unix ./src/main/sh/build/check-files.sh && chmod ugoa+x ./src/main/sh/build/packages-build.sh && chmod ugoa+x ./src/main/sh/build/check-files.sh
-COPY --from=deb_build_image /var/opt/setmy.info/build/setmy-info-scripts-0.102.0.noarch.deb /var/opt/setmy.info/build/setmy-info-scripts-0.102.0.noarch.deb
+COPY --from=deb_build_image /var/opt/setmy.info/build/setmy-info-scripts-0.104.0.noarch.deb /var/opt/setmy.info/build/setmy-info-scripts-0.104.0.noarch.deb
 
 RUN ./src/main/sh/build/packages-build.sh
 RUN ls -la
 RUN rpm -e setmy-info-scripts || true
-RUN rpm -i ./setmy-info-scripts-0.102.0.noarch.rpm && ./src/main/sh/build/check-files.sh
+RUN rpm -i ./setmy-info-scripts-0.104.0.noarch.rpm && ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info

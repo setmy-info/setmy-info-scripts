@@ -1,4 +1,10 @@
 * 2026-03-08 Imre Tabur <imre.tabur@mail.ee>
+- Version bump to 0.104.0: Updated PROJECT_VERSION_MINOR to 104 in CMakeLists.txt.
+- Version bump to 0.104.0: Updated PROJECT_VERSION to "0.104.0" in src/main/sh/build/packages-build.sh.
+- Version bump to 0.104.0: Updated PROJECT_NUMBER to 0.104.0 in Doxyfile.
+- Version bump to 0.104.0: Updated all package filename references from setmy-info-scripts-0.102.0 to setmy-info-scripts-0.104.0 in Dockerfile (deb install, deb copy, rpm install).
+- Version bump to 0.104.0: Updated SCRIPTS_VERSION references from 0.102.0 to 0.104.0 in README.md.
+* 2026-03-08 Imre Tabur <imre.tabur@mail.ee>
 - Replaced direct `firefox` call in `jira` (Linux) with `tab` command for opening Jira ticket URLs.
 - Replaced direct `firefox.exe` call in `jira.cmd` (Windows) with `tab.cmd` command for opening Jira ticket URLs.
 * 2026-03-06 Imre Tabur <imre.tabur@mail.ee>

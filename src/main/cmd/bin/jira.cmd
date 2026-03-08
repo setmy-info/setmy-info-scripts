@@ -19,4 +19,4 @@ if "%1"=="" (
     exit /b 1
 )
 
-start "" "C:\Program Files\Mozilla Firefox\firefox.exe" --new-tab %JIRA_BASE_URL%%1
+call tab.cmd %JIRA_BASE_URL%%1

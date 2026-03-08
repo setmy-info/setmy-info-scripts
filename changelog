@@ -1,3 +1,6 @@
+* 2026-03-08 Imre Tabur <imre.tabur@mail.ee>
+- Replaced direct `firefox` call in `jira` (Linux) with `tab` command for opening Jira ticket URLs.
+- Replaced direct `firefox.exe` call in `jira.cmd` (Windows) with `tab.cmd` command for opening Jira ticket URLs.
 * 2026-03-06 Imre Tabur <imre.tabur@mail.ee>
 - Updated `ninja.package` and `ninja.profile` to set Ninja installation directory and `NINJA_HOME` to `/opt/ninja/bin`.
 * 2026-03-06 Imre Tabur <imre.tabur@mail.ee>

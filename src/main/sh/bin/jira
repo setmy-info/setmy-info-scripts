@@ -13,4 +13,4 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-/opt/firefox/firefox --new-tab "${JIRA_BASE_URL}$1"
+tab "${JIRA_BASE_URL}$1"

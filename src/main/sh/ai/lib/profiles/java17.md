@@ -1,0 +1,2 @@
+- Java JDK 17 (LTS)
+- Java 17 JDK is located at /opt/jdk17 or ${JAVA_HOME} depending on OS

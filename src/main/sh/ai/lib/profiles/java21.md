@@ -1,0 +1,2 @@
+- Java JDK 21 (LTS)
+- Java 21 JDK is located at /opt/jdk21 or ${JAVA_HOME} depending on OS

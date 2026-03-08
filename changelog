@@ -1,4 +1,8 @@
 * 2026-03-08 Imre Tabur <imre.tabur@mail.ee>
+- Added version-specific AI profile files: java17.md, java21.md, java25.md, cmake3.md, cmake4.md in src/main/sh/ai/lib/profiles/.
+- Separated version-specific content from java.md: removed "Java JDK ${JAVA}" line, moved version/path specifics to java17.md, java21.md, java25.md. Generic content (test framework requirements, naming conventions, JDK location pattern) remains in java.md.
+- Separated version-specific content from cmake.md: removed cmake-4.2.3 version-specific paths, replaced with generic CMake location. Version-specific paths moved to cmake3.md (3.x) and cmake4.md (4.x, including cmake-4.2.3).
+* 2026-03-08 Imre Tabur <imre.tabur@mail.ee>
 - Version bump to 0.104.0: Updated PROJECT_VERSION_MINOR to 104 in CMakeLists.txt.
 - Version bump to 0.104.0: Updated PROJECT_VERSION to "0.104.0" in src/main/sh/build/packages-build.sh.
 - Version bump to 0.104.0: Updated PROJECT_NUMBER to 0.104.0 in Doxyfile.

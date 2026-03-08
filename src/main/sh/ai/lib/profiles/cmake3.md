@@ -1,0 +1,3 @@
+- CMake 3.x is used
+- CMake 3.x is located at /opt/cmake or /opt/cmake-3.x.x-linux-x86_64 when working on Unixes
+- CMake 3.x is located at C:\pub\cmake-3.x.x-windows-x86_64 when working on Windows machines

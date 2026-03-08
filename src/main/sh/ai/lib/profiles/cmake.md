@@ -1,2 +1,2 @@
-- Cmake is located at /opt/cmake or /opt/cmake-4.2.3-linux-x86_64 when working on Unixes
-- Cmake is located at C:\pub\cmake-4.2.3-windows-x86_64 when working on Windows machines
+- CMake build system generator is used
+

@@ -4,5 +4,4 @@
 
 In implementing the tasklist below, need to hold these constraints:
 
-- To start new version development, the version number should be updated in the following files:
-  src/main/sh/build/packages-build.sh, CMakeLists.txt, Dockerfile, Doxyfile, README.md. 
+- Version Upgrade files list is listed in `Version upgrade` section. 

@@ -36,8 +36,6 @@ if not "%PROFILES%"=="" (
 
 :after_ai
 echo.>> "%TARGET_FILE%"
-REM echo ## Tasklist >> "%TARGET_FILE%"
-REM echo.>> "%TARGET_FILE%"
 
 REM Append content files
 if "%~1"=="" (

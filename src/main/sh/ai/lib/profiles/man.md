@@ -1,0 +1,5 @@
+- Provide documentation via man pages where applicable
+- Man root directory is located in `src/main/man`.
+- Man pages are part of the public interface.
+- Man pages MUST reflect actual CLI behavior.
+- Man pages MUST be updated when CLI changes.

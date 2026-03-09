@@ -7,7 +7,6 @@
 - Provide structured Docker-based workflows
 - Maintain strict modular architecture
 - Use CMake where build logic is required
-- Provide documentation via man pages where applicable
 - Keep binaries, libraries, scripts, and documentation clearly separated
 - This repository is NOT a single monolithic application. It is a structured tooling ecosystem. It is modulith.
 - Each functional domain MUST be isolated, Have a clearly defined responsibility, avoid tight coupling, avoid circular
@@ -44,3 +43,4 @@
 - New scripts should be added into cmake scripts
 - Update the changelog file about changes in very detailed form, so it can be tracked in the future for testing changes
   for testings.
+- FHS <PARTNAME> is setmy.info. bin  and lib directories should be under /opt related directories.

@@ -1,0 +1,1 @@
+- Read differences from AGENTS.md and apply these too as mandatory over other rules.

@@ -72,6 +72,7 @@ docker build --no-cache --progress=plain -f Dockerfile .
 * ./CMakeLists.txt
 * ./src/main/sh/build/packages-build.sh
 * ./src/main/sh/build/check-files.sh (smi-version output test)
+* ./setup.iss
 
 # TODO
 

@@ -1,0 +1,2 @@
+- Code should be ready for FreeSD also
+- Used FreeBSD is FreeBSD 15.0 or latest FreeBSD

@@ -1,0 +1,1 @@
+- `setmy-info-scripts` tools are installed

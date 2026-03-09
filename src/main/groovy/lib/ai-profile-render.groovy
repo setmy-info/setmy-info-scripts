@@ -6,9 +6,9 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 def smiLibDir         = System.getenv('SMI_LIB_DIR') ?: 'C:\\pub\\setmy.info\\lib'
-def systemProfilesDir = new File("${smiLibDir}${File.separator}ai")
+def systemProfilesDir = new File("${smiLibDir}${File.separator}profiles${File.separator}ai")
 def homeDir           = System.getenv('USERPROFILE') ?: System.getenv('HOME') ?: '.'
-def homeProfilesDir   = new File("${homeDir}${File.separator}.setmy.info${File.separator}ai")
+def homeProfilesDir   = new File("${homeDir}${File.separator}.setmy.info${File.separator}profiles${File.separator}ai")
 
 def vars = new LinkedHashMap<String, String>(System.getenv())
 

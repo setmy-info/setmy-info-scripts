@@ -20,7 +20,8 @@ RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packag
 RUN ./src/main/sh/build/packages-build.sh
 
 RUN ls -la
-RUN apt install -y ./setmy-info-scripts-0.104.0.noarch.deb && ./src/main/sh/build/check-files.sh
+RUN apt install -y ./setmy-info-scripts-0.104.0.noarch.deb
+RUN ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info
 
 FROM setmyinfo/setmy-info-rocky:latest AS rpm_build_image
@@ -50,5 +51,6 @@ COPY --from=deb_build_image /var/opt/setmy.info/build/setmy-info-scripts-0.104.0
 RUN ./src/main/sh/build/packages-build.sh
 RUN ls -la
 RUN rpm -e setmy-info-scripts || true
-RUN rpm -i ./setmy-info-scripts-0.104.0.noarch.rpm && ./src/main/sh/build/check-files.sh
+RUN rpm -i ./setmy-info-scripts-0.104.0.noarch.rpm
+RUN ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info

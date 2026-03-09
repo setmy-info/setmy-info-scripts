@@ -56,6 +56,14 @@ verification (unit tests, integration tests incl. valgrind tests), release (no d
 ./configure [ci/release | release]
 ```
 
+# Verification
+
+With Docker
+
+```sh
+docker build --no-cache --progress=plain -f Dockerfile .
+```
+
 # Version upgrade
 
 * ./README.md
@@ -63,6 +71,7 @@ verification (unit tests, integration tests incl. valgrind tests), release (no d
 * ./Dockerfile
 * ./CMakeLists.txt
 * ./src/main/sh/build/packages-build.sh
+* ./src/main/sh/build/check-files.sh (smi-version output test)
 
 # TODO
 

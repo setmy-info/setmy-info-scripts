@@ -6,8 +6,8 @@ RUN apt-get -y update && apt-get -y upgrade && mkdir -p /var/opt/setmy.info/buil
     apt-get -y install cpp gcc g++ make dos2unix gzip bzip2 xz-utils zip grep coreutils
 
 WORKDIR /opt
-ADD https://github.com/Kitware/CMake/releases/download/v3.30.2/cmake-3.30.2-linux-x86_64.tar.gz /opt
-RUN tar xvzf cmake-3.30.2-linux-x86_64.tar.gz && ln -s /opt/cmake-3.30.2-linux-x86_64 /opt/cmake && ls -la
+ADD https://github.com/Kitware/CMake/releases/download/v4.2.3/cmake-4.2.3-linux-x86_64.tar.gz /opt
+RUN tar xvzf cmake-4.2.3-linux-x86_64.tar.gz && ln -s /opt/cmake-4.2.3-linux-x86_64 /opt/cmake && ls -la
 
 WORKDIR /var/opt/setmy.info/build
 
@@ -35,8 +35,8 @@ RUN dnf install -y epel-release && \
     dnf install -y cpp gcc g++ boost-test make dos2unix yum-utils rpmdevtools rpm-build rpm rpmlint grep coreutils-single
 
 WORKDIR /opt
-ADD https://github.com/Kitware/CMake/releases/download/v3.30.2/cmake-3.30.2-linux-x86_64.tar.gz /opt
-RUN tar xvzf cmake-3.30.2-linux-x86_64.tar.gz && ln -s /opt/cmake-3.30.2-linux-x86_64 /opt/cmake && ls -la
+ADD https://github.com/Kitware/CMake/releases/download/v4.2.3/cmake-4.2.3-linux-x86_64.tar.gz /opt
+RUN tar xvzf cmake-4.2.3-linux-x86_64.tar.gz && ln -s /opt/cmake-4.2.3-linux-x86_64 /opt/cmake && ls -la
 
 WORKDIR /var/opt/setmy.info/build
 

@@ -1,19 +1,17 @@
 ARGOCLI_NAME=argo
-ARGOCLI_VERSION=3.7.6
+ARGOCLI_VERSION=4.0.2
 ARGOCLI_DIR_NAME=${ARGOCLI_NAME}-linux-amd64
 ARGOCLI_GZ_FILE_NAME=${ARGOCLI_DIR_NAME}.gz
 ARGOCLI_GZ_FILE_URL=https://github.com/argoproj/argo-workflows/releases/download/v${ARGOCLI_VERSION}/${ARGOCLI_GZ_FILE_NAME}
 
-# https://github.com/argoproj/argo-workflows/releases/download/v3.7.6/argo-linux-amd64.gz
+# https://github.com/argoproj/argo-workflows/releases/download/v4.0.2/argo-linux-amd64.gz
 
-argocli_download_func() {
+argo_download_func() {
     smi-download ${ARGOCLI_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ARGOCLI_GZ_FILE_NAME}
 }
 
-argocli_install_func() {
-    CURRENT_DIR=$(pwd)
-    cd /opt
-    sudo gunzip ${HOME_PACKAGES_DIR}/${ARGOCLI_GZ_FILE_NAME}
-    makeOptLink /opt/${ARGOCLI_NAME} /opt/${ARGOCLI_DIR_NAME}
-    cd ${CURRENT_DIR}
+argo_install_func() {
+    sudo mkdir -p /opt/${ARGOCLI_NAME}/bin
+    sudo cp ${HOME_PACKAGES_DIR}/${ARGOCLI_DIR_NAME} /opt/${ARGOCLI_NAME}/bin/${ARGOCLI_NAME}
+    sudo chmod +x /opt/${ARGOCLI_NAME}/bin/${ARGOCLI_NAME}
 }

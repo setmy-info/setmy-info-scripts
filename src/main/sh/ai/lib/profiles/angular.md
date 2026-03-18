@@ -1,1 +1,1 @@
-- Maven frontend-maven-plugin plugin to build an angular project when the project is maven packaged project
+- Use the Maven `frontend-maven-plugin` to build an Angular project when the project is a Maven-packaged project.

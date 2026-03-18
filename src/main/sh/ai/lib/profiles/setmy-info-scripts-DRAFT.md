@@ -21,7 +21,7 @@ This document provides essential context and strict architectural rules for AI a
 * Keep binaries, libraries, scripts, configuration and documentation clearly separated.
 * This repository is NOT a single monolithic application.
 * It is a structured tooling ecosystem.
-* It is modulith.
+* It is a modulith.
 
 * Each functional domain MUST be isolated.
 * Each functional domain MUST have a clearly defined responsibility.
@@ -103,7 +103,7 @@ This document provides essential context and strict architectural rules for AI a
 * Legacy flat shell layout MUST NOT be expanded.
 * New shell logic MUST follow modular domain structure.
 
-* Shell scripts MUST be POSIX compatible.
+* Shell scripts MUST be POSIX-compliant.
 * Shell scripts MUST be portable to FreeBSD.
 * Shell scripts MUST be portable to OpenIndiana.
 * Shell scripts MUST be portable to Debian.

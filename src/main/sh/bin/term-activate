@@ -9,6 +9,4 @@ SYSTEM_PROFILES_DIR=$(smi-lib-location)/profiles
 
 loadProfiles ${*}
 
-/bin/sh --posix
-
-exit 0
+exec /bin/sh --posix

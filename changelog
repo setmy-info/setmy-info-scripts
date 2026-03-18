@@ -1,3 +1,24 @@
+* 2026-03-18 Imre Tabur <imre.tabur@mail.ee>
+- Added empty AI profile files: `camunda.md`, `bpmn.md`, `tensorflow.md`, `pytorch.md`, and `firefox.md` in `src/main/sh/ai/lib/profiles/`.
+- Added empty AI profile file: `selenium.md` in `src/main/sh/ai/lib/profiles/`.
+- Added initial content for the `specification.md` AI profile, describing specification-driven development.
+- Added empty AI profile file: `specification.md` in `src/main/sh/ai/lib/profiles/`.
+- Added initial content for the `jhipster.md` AI profile, describing the JHipster development platform.
+- Added empty AI profile file: `jhipster.md` in `src/main/sh/ai/lib/profiles/`.
+- Added initial content for the `mcp.md` AI profile, describing the Model Context Protocol architecture and purpose.
+- Added empty AI profile file: `mcp.md` in `src/main/sh/ai/lib/profiles/`.
+- Added initial content for `hexagonal-architecture.md` and `onion-architecture.md` AI profiles.
+- Added empty AI profile files: `hexagonal-architecture.md` and `onion-architecture.md` in `src/main/sh/ai/lib/profiles/`.
+- Added empty AI profile file: `gherkin.md` in `src/main/sh/ai/lib/profiles/`.
+- Added empty AI profile file: `venv.md` in `src/main/sh/ai/lib/profiles/`.
+- Added empty AI profile files: `term.md` and `stealer.md` in `src/main/sh/ai/lib/profiles/`.
+- Added initial content for the `gintra.md` AI profile, describing its structure, locations, and ZFS/container strategies.
+- Added empty AI profile file: `gintra.md` in `src/main/sh/ai/lib/profiles/`.
+- Added empty AI profile file: `mermaid.md` in `src/main/sh/ai/lib/profiles/`.
+- Added empty AI profile files: `class-diagram.md` and `sequence-diagram.md` in `src/main/sh/ai/lib/profiles/`.
+- Added empty AI profile files: `python314.md`, `python312.md`, and `fastapi.md` in `src/main/sh/ai/lib/profiles/`.
+- Added `environments.md` profile in `src/main/sh/ai/lib/profiles/` to describe `local`, `ci`, `dev`, `test`, and `live` environment/Maven profile meanings.
+- Corrected English grammar and misspellings in multiple AI profile files: `angular.md`, `bottom-up.md`, `cleancode.md`, `fhs.md`, `lombok.md`, `maven.md`, `python.md`, `sh.md`, `springboot.md`, `setmy-info-scripts.md`, and `setmy-info-scripts-DRAFT.md`.
 * 2026-03-08 Imre Tabur <imre.tabur@mail.ee>
 - Added version-specific AI profile files: java17.md, java21.md, java25.md, cmake3.md, cmake4.md in src/main/sh/ai/lib/profiles/.
 - Separated version-specific content from java.md: removed "Java JDK ${JAVA}" line, moved version/path specifics to java17.md, java21.md, java25.md. Generic content (test framework requirements, naming conventions, JDK location pattern) remains in java.md.

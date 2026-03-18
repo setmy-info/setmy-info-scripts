@@ -1,0 +1,11 @@
+- gintra means group Intranet.
+- Gintra is a structured data storage system for organizations and persons.
+- The administrative root for Gintra on the host is `/var/opt/setmy.info/gintra`
+- The physical ZFS mount point for Gintra on the host is usually `/mnt/gintra`
+- In containerized environments (e.g., Kubernetes), organization-specific NFS shares should be mounted at `/mnt/gintra`.
+- The directory structure within Gintra includes:
+  - `organizations`: Root for all organization-related data.
+  - `persons`: Root for all person-related data (using name hashes).
+- Use `smi-organizations-location` and `smi-persons-location` to retrieve these base paths.
+- Use `smi-organization-location` and `smi-person-location` for specific entity paths.
+- Host-side scripts use the administrative path, while containerized applications use the `/mnt/gintra` mount point.

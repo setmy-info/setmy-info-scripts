@@ -8,7 +8,7 @@
 - Maintain strict modular architecture
 - Use CMake where build logic is required
 - Keep binaries, libraries, scripts, and documentation clearly separated
-- This repository is NOT a single monolithic application. It is a structured tooling ecosystem. It is modulith.
+- This repository is NOT a single monolithic application. It is a structured tooling ecosystem. It is a modulith.
 - Each functional domain MUST be isolated, Have a clearly defined responsibility, avoid tight coupling, avoid circular
   dependencies, be independently maintainable, declare dependencies explicitly (CMake or script-level)
 - AI assistants MUST NOT collapse modules into a monolithic structure, introduce hidden cross-module dependencies, mix
@@ -27,7 +27,7 @@
   src/main/sh/bin. Same with CMake files directly in src/main/resources/cmake/sh/.
 - Cmake files are splited into bin.cmake, lib.cmake, etc.cmake, man.cmake, var.cmake, variables.cmake, sources.cmake,
   targets.cmake, functions.cmake, dependencies.cmake, configuration.cmake.
-- Linux shell scripts should pe POSIX compatible shell scripts. And ready to port to FreeBSD, OpenIndiana, Debian.
+- Linux shell scripts should be POSIX-compatible shell scripts. And ready to port to FreeBSD, OpenIndiana, Debian.
 - Windows scripts should be in .cmd or PowerShell (.ps1) format. Previously PowerShell was restricted, but it is now
   allowed. However, PowerShell is NOT allowed for *.profile and *.package files. PowerShell should be executed from CMD.
 - shell scripts are not always in specific form like "smi-*" or "*.sh"
@@ -41,6 +41,5 @@
 - Newly added scripts should have in for # Copyright (C) YYYY Imre Tabur <imre.tabur@mail.ee>
 - Users config files are located in a folder named .setmy.info in the user home directory.
 - New scripts should be added into cmake scripts
-- Update the changelog file about changes in very detailed form, so it can be tracked in the future for testing changes
-  for testings.
+- Update the changelog file about changes in very detailed form, so it can be tracked in the future for tracking and testing changes.
 - FHS <PARTNAME> is setmy.info. bin  and lib directories should be under /opt related directories.

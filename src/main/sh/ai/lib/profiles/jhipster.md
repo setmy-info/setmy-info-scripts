@@ -1,0 +1,8 @@
+- Use JHipster Domain Language (JDL) for entity and application definitions
+- Use MapStruct for mapping between entities and DTOs
+- DTO classes must be defined separately from entity classes (use `dto * with mapstruct` in JDL)
+- Use service layer for business logic (use `service * with serviceImpl` or `service * with serviceClass`)
+- Pagination should be enabled for entities where appropriate (use `paginate * with pagination` or `paginate * with infinite-scroll`)
+- Define clear relationships between entities (OneToOne, OneToMany, ManyToOne, ManyToMany)
+- Use validation rules in JDL (e.g., `required`, `minlength`, `maxlength`, `pattern`)
+- Group entities into microservices if applicable using the `microservice` keyword

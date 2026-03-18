@@ -1,4 +1,11 @@
 * 2026-03-18 Imre Tabur <imre.tabur@mail.ee>
+- Version bump to 0.105.0: Updated PROJECT_VERSION_MINOR to 105 in CMakeLists.txt.
+- Version bump to 0.105.0: Updated PROJECT_VERSION to "0.105.0" in src/main/sh/build/packages-build.sh.
+- Version bump to 0.105.0: Updated PROJECT_NUMBER to 0.105.0 in Doxyfile.
+- Version bump to 0.105.0: Updated all package filename references from setmy-info-scripts-0.104.0 to setmy-info-scripts-0.105.0 in Dockerfile (deb install, deb copy, rpm install).
+- Version bump to 0.105.0: Updated SCRIPTS_VERSION references from 0.104.0 to 0.105.0 in README.md.
+- Version bump to 0.105.0: Updated smi-version expectation in src/main/sh/build/check-files.sh.
+* 2026-03-18 Imre Tabur <imre.tabur@mail.ee>
 - Added empty AI profile files: `camunda.md`, `bpmn.md`, `tensorflow.md`, `pytorch.md`, and `firefox.md` in `src/main/sh/ai/lib/profiles/`.
 - Added empty AI profile file: `selenium.md` in `src/main/sh/ai/lib/profiles/`.
 - Added initial content for the `specification.md` AI profile, describing specification-driven development.

@@ -2,7 +2,11 @@
 
 # Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
 
-SMI_PROVIDER_NAME=$(smi-provider)
-echo "${HOME}/.${SMI_PROVIDER_NAME}"
+if [ -z "${SMI_HOME_DIR}" ]; then
+    SMI_PROVIDER_NAME=$(smi-provider)
+    SMI_HOME_DIR="${HOME}/.${SMI_PROVIDER_NAME}"
+fi
+
+echo "${SMI_HOME_DIR}"
 
 exit 0

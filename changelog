@@ -1,3 +1,7 @@
+* 2026-03-20 Imre Tabur <imre.tabur@mail.ee>
+- Added empty AI profile files `python-service.md` and `logging.md` in `src/main/sh/ai/lib/profiles/`.
+- Added `terraform.md` in `src/main/sh/ai/lib/profiles/` describing Kubernetes service exposure strategies with IP whitelisting for AWS and Google Cloud.
+- Added `mcp.package` and `mcp-requirements.txt` in `src/main/sh/packages/lib/packages/` for automated Model Context Protocol (MCP) package installation.
 * 2026-03-18 Imre Tabur <imre.tabur@mail.ee>
 - Version bump to 0.105.0: Updated PROJECT_VERSION_MINOR to 105 in CMakeLists.txt.
 - Version bump to 0.105.0: Updated PROJECT_VERSION to "0.105.0" in src/main/sh/build/packages-build.sh.

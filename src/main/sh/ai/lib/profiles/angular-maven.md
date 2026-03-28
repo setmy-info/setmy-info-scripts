@@ -1,0 +1,1 @@
+- Use the Maven `frontend-maven-plugin` to build an Angular project when the project is a Maven-packaged project.

@@ -1,9 +1,0 @@
-- Git push is not allowed
-- Git forced push is not allowed
-- Git should stay unstaged. Adding and committing is not allowed.
-- Git rebase is not allowed
-- Git reset is not allowed
-- Git checkout is not allowed
-- Git Merge is not allowed
-- Git pull requests are not allowed
-- AI agent should not delete branches, tags, commits

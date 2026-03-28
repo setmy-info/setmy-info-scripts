@@ -1,8 +1,0 @@
-- Maven wrapper in the monorepo root folder
-- Maven maven-surefire-plugin plugin is used for unit tests
-- Maven maven-failsafe-plugin plugin is used for integration and end-to-end tests
-- Maven is located at /opt/maven or ${MAVEN_HOME} depending on OS
-- Maven profiles are: local, ci, dev, test, prelive, live
-- local profile is by default
-- The local profile is for developers' local machines
-- Grepping for .m2 folder is forbidden

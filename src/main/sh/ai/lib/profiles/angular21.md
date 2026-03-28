@@ -1,1 +1,0 @@
-- Angular is used as SPA

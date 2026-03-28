@@ -1,1 +1,0 @@
-- AssertJ assertThat(x).is * should be used instead of JUnit assertions

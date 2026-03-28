@@ -1,1 +1,0 @@
-- ningja build tool is located at /opt/ninja or ${NINJA_HOME} depending on OS

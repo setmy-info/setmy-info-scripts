@@ -1,5 +1,0 @@
-- JUnit 5, AssertJ, Mockito need to be used as test frameworks
-- Unit test files end with Test.java
-- Integration tests end with IT.java
-- E2E tests end with E2ET.java
-- E2E tests are executed with maven profile e2e

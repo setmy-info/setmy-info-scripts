@@ -1,1 +1,0 @@
-- Installations should follow FHS version 3.0 standards, especially /opt-related rules for the /etc and /var parts. The bin and lib directories should be under /opt-related directories.

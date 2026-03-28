@@ -1,3 +1,0 @@
-- CMake 4.x is used
-- CMake 4.x is located at /opt/cmake or /opt/cmake-4.2.3-linux-x86_64 when working on Unixes
-- CMake 4.x is located at C:\pub\cmake-4.2.3-windows-x86_64 when working on Windows machines

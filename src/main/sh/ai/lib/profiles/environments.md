@@ -1,6 +1,0 @@
-- Environment and Maven profile meanings:
-  - `local`: Developer's local environment for individual development and testing.
-  - `ci`: Continuous Integration environment for automated building and testing on every code change.
-  - `dev`: Shared development environment for team integration and feature testing.
-  - `test`: Testing and Quality Assurance environment for thorough validation and bug finding.
-  - `live`: Production environment where the software is deployed for end-users.

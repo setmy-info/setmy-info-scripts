@@ -1,8 +1,0 @@
-- All C code should follow a maximum ISO C17 standard
-- C++ code should follow a maximum ISO C++23 standard
-- Standards should be followed pedantically, like `-pedantic` option
-- Compiling should be done with all warnings switched on, like `-Wall -Wextra -Werror`
-- All unit and integration tests should be validated also with memory leak test tool like valgrind
-- Should use cyclomatic test tools
-- Test code standard tool is boost-test
-- Include guard should use both include-based guard (#ifndef MY_HEADER_H ... #define MY_HEADER_H ... #endif) and #pragma once

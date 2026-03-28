@@ -1,1 +1,0 @@
-- Shell scripts should be POSIX-compliant and executable; Bash should be skipped.

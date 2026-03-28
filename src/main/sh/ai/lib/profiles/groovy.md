@@ -1,1 +1,0 @@
-- Groovy is located at /opt/groovy or ${GROOVY_HOME} depending on OS

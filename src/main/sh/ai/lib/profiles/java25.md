@@ -1,2 +1,0 @@
-- Java JDK 25 (LTS)
-- Java 25 JDK is located at /opt/jdk25 or ${JAVA_HOME} depending on OS

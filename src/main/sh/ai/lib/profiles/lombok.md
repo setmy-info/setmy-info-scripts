@@ -1,5 +1,0 @@
-- Lombok needs to be used
-- The Lombok builder pattern must be used in the form of @Builder(toBuilder = true)
-- Lombok @Accessors(chain = true) should be used for models
-- Entity model classes should not use the Lombok @Data, @ToString, @EqualsAndHashCode and @AllArgsConstructor annotations
-- Entity model classes should have @NoArgsConstructor, @Getter and @Setter annotations

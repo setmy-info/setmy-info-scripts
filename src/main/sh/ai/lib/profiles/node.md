@@ -1,1 +1,0 @@
-- node is located at /opt/node or ${NODE_HOME} depending on OS

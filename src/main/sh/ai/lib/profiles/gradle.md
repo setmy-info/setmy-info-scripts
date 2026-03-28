@@ -1,1 +1,0 @@
-- Gradle is located at /opt/gradle or {GRADLE_HOME} depending on OS

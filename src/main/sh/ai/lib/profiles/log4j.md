@@ -1,1 +1,0 @@
-- Log4j2 is used as a logging framework

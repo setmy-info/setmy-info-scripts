@@ -1,14 +1,15 @@
 // Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
 // Usage: groovy ai-profile-render.groovy <profile1> [profile2] ...
+// Profile format: name or name:cat1,cat2
+// Requires JWT_TOKEN environment variable for authentication.
 // Variable overrides: ai.sh in current directory (KEY=VALUE)
+// Env: AI_KNOWLEDGE_APP_URL (default: http://localhost:8800)
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-def smiLibDir         = System.getenv('SMI_LIB_DIR') ?: 'C:\\pub\\setmy.info\\lib'
-def systemProfilesDir = new File("${smiLibDir}${File.separator}profiles${File.separator}ai")
-def homeDir           = System.getenv('USERPROFILE') ?: System.getenv('HOME') ?: '.'
-def homeProfilesDir   = new File("${homeDir}${File.separator}.setmy.info${File.separator}profiles${File.separator}ai")
+def knowledgeAppUrl = System.getenv('AI_KNOWLEDGE_APP_URL') ?: 'http://localhost:8800'
+def jwtToken = System.getenv('JWT_TOKEN') ?: ''
 
 def vars = new LinkedHashMap<String, String>(System.getenv())
 
@@ -41,18 +42,56 @@ def renderContent = { String content ->
     return sb.toString()
 }
 
+def fetchProfile = { String profileName, List<String> categories ->
+    def profileEntry
+    if (categories) {
+        def catsJson = categories.collect { "\"${it}\"" }.join(',')
+        profileEntry = "{\"name\":\"${profileName}\",\"categories\":[${catsJson}]}"
+    } else {
+        profileEntry = "{\"name\":\"${profileName}\"}"
+    }
+    def requestBody = "{\"ai\":[${profileEntry}]}"
+
+    def url = new URL("${knowledgeAppUrl}/api/ai")
+    def connection = url.openConnection() as HttpURLConnection
+    connection.setRequestMethod('POST')
+    connection.setDoOutput(true)
+    connection.setRequestProperty('Content-Type', 'application/json')
+    connection.setRequestProperty('Accept', 'text/markdown, */*')
+    if (jwtToken) {
+        connection.setRequestProperty('Authorization', "Bearer ${jwtToken}")
+    }
+
+    connection.outputStream.withWriter('UTF-8') { writer ->
+        writer.write(requestBody)
+    }
+
+    def responseCode = connection.responseCode
+    if (responseCode == 200) {
+        return connection.inputStream.getText('UTF-8')
+    } else {
+        System.err.println("ERROR: Failed to fetch profile '${profileName}': HTTP ${responseCode}")
+        return ''
+    }
+}
+
 if (args.length == 0) {
     System.err.println 'Usage: ai-profile-render <profile1> [profile2] ...'
     System.exit(1)
 }
 
-args.each { profileName ->
-    def homeFile   = new File(homeProfilesDir, "${profileName}.md")
-    def systemFile = new File(systemProfilesDir, "${profileName}.md")
-    if (homeFile.exists()) {
-        print renderContent(homeFile.text)
-    }
-    if (systemFile.exists()) {
-        print renderContent(systemFile.text)
+if (!jwtToken) {
+    System.err.println 'ERROR: JWT_TOKEN environment variable is not set'
+    System.exit(1)
+}
+
+args.each { profileArg ->
+    def parts = profileArg.split(':', 2)
+    def profileName = parts[0]
+    def categories = parts.length > 1 ? parts[1].split(',').toList() : []
+
+    def content = fetchProfile(profileName, categories)
+    if (content) {
+        print renderContent(content)
     }
 }

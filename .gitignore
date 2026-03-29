@@ -24,6 +24,7 @@ test/package.json
 test/.stealer/clone/
 test/.stealer/copy/
 .idea/
+.idea_clion/
 *.iml
 target
 /src/main/resources/cmake/developer.txt
@@ -48,8 +49,11 @@ CPackSourceConfig.cmake
 **/TASKLIST*.lisp
 **/TASKLIST*.sexp
 **/.output.txt
+.claude
 
 # Windows
 *.exe
 install.log
 setup-setmy.info.log
+
+out

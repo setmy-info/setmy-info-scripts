@@ -1,63 +1,75 @@
 ." Manpage for ai
-.TH ai 1 "February 2026" "setmy.info" "User Commands"
+.TH ai 1 "March 2026" "setmy.info" "User Commands"
 .SH NAME
-ai \- print AI profiles with environment variable substitution
+ai \- fetch AI profiles from the knowledge app and print them
 .SH SYNOPSIS
 .B ai
 .I [PROFILE]...
 .SH DESCRIPTION
 The
 .B ai
-command prints Markdown content from AI profile files located in the system-wide
-directory or the user's home directory.
+command fetches Markdown content for one or more AI profiles from the remote
+knowledge app and prints it to standard output.
 .PP
-Arguments are profile names. For each
+Each
 .I PROFILE
-provided, the command looks for a file named
-.I <PROFILE>.md
-in the following locations (in order):
-.IP 1. 2
-User home directory:
-.I $(smi-home-location)/ai/<PROFILE>.md
-.IP 2. 2
-System-wide directory:
-.I $(ai-profiles-location)/<PROFILE>.md
+argument may be a plain profile name or use the
+.B name:cat1,cat2
+syntax to request specific categories of that profile.
 .PP
-If a profile file is found in either location, its content is processed through
+Profiles are retrieved via
+.BR curl (1)
+by sending an HTTP POST request to
+.I ${AI_KNOWLEDGE_APP_URL}/api/ai
+(default:
+.IR http://localhost:8800/api/ai ).
+Authentication is performed using the
+.B JWT_TOKEN
+environment variable as a Bearer token.
+.PP
+The fetched content is processed through
 .BR envsubst (1)
-to substitute environment variables and then printed to standard output.
+to substitute environment variables before being printed.
 .PP
-Additionally, for each profile processed, the command checks for a file named
+If a file named
 .I ai.sh
-in the current working directory. If it exists, it is sourced before processing the
-profile, allowing for local environment variable definitions or script-based
-customizations.
+exists in the current working directory, it is sourced before processing each
+profile, allowing local environment variable definitions to be used during
+substitution.
+.SH ENVIRONMENT
+.TP
+.B JWT_TOKEN
+Required. Bearer token for authenticating with the knowledge app.
+.TP
+.B AI_KNOWLEDGE_APP_URL
+Base URL of the knowledge app. Defaults to
+.IR http://localhost:8800 .
 .SH EXAMPLES
-Print contents of a single profile:
+Fetch a single profile:
 .PP
 .nf
 ai java
 .fi
 .PP
-Print multiple profiles:
+Fetch multiple profiles:
 .PP
 .nf
 ai java maven springboot
 .fi
+.PP
+Fetch specific categories of a profile:
+.PP
+.nf
+ai java:requirement,task
+.fi
 .SH FILES
 .TP
-.I $(ai-profiles-location)/*.md
-System-wide AI profile files (Markdown).
-.TP
-.I ~/.setmy.info/ai/*.md
-User-specific AI profile files (Markdown).
-.TP
 .I ./ai.sh
-Local script sourced for environment variable definitions.
+Optional local script sourced for environment variable definitions used in substitution.
 .SH SEE ALSO
 .BR envsubst (1),
-.BR smi-home-location (1),
-.BR ai-profiles-location (1)
+.BR curl (1),
+.BR smi-build-tasklist (1)
 .SH AUTHOR
 Imre Tabur <imre.tabur@mail.ee>
 .SH COPYRIGHT

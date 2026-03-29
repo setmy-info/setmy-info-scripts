@@ -16,7 +16,6 @@ Source: "src\main\cmd\bin\*"; DestDir: "{app}\bin"; Flags: ignoreversion recurse
 Source: "src\main\cmd\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs
 Source: "src\main\python\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs
 Source: "src\main\groovy\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs
-Source: "src\main\sh\ai\lib\profiles\*"; DestDir: "{app}\lib\profiles\ai"; Flags: ignoreversion recursesubdirs
 
 [Registry]
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\setmy.info scripts"; ValueType: string; ValueName: "DisplayName"; ValueData: "setmy.info scripts"; Flags: uninsdeletekey

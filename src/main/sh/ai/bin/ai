@@ -4,7 +4,6 @@
 
 . $(smi-include ai-profiles.sh)
 
-createHomeAiFolder
 executeAis ${*}
 
 exit 0

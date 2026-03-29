@@ -26,12 +26,13 @@ If
 .I ai.profiles
 exists in the current directory, its content is read as a list of profiles. The
 .BR ai (1)
-command is then called with these profiles, and the output is appended to
+command is then called with these profiles, fetching them from the remote knowledge
+app, and the output is appended to
 .IR TASKLIST.md .
+Profile names may use the
+.B name:cat1,cat2
+syntax to request specific categories.
 .IP 3. 2
-A "## Tasklist" header is appended to
-.IR TASKLIST.md .
-.IP 4. 2
 If arguments are provided, each
 .I CONTENT_FILE
 is appended to

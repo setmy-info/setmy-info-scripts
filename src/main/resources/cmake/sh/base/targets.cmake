@@ -14,7 +14,6 @@ ADD_CUSTOM_TARGET(makeDirectories
     mkdir -p ${MAN_OUTPUT_PATH}/man9 &&
     mkdir -p ${INFO_OUTPUT_PATH} &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/profiles &&
-    mkdir -p ${LIBRARY_OUTPUT_PATH}/profiles/ai &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/packages &&
     mkdir -p ${ETC_PROFILED_OUTPUT_PATH} &&
     mkdir -p ${INCLUDE_OUTPUT_PATH} &&

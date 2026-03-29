@@ -1,42 +1,52 @@
 ." Manpage for smi-build-tasklist
 .TH smi-build-tasklist 1 "March 2026" "setmy.info" "User Commands"
 .SH NAME
-smi-build-tasklist \- build a TASKLIST.md file from components
+smi-build-tasklist \- build a tasklist file from components
 .SH SYNOPSIS
 .B smi-build-tasklist
-.I [CONTENT_FILE]...
+.RB [ \-\-output
+.IR OUTPUT_FILE ]
+.RI [ CONTENT_FILE ]...
 .SH DESCRIPTION
 The
 .B smi-build-tasklist
-command generates a
-.I TASKLIST.md
-file in the current directory. It combines an introduction, AI-generated profiles, and content sections.
+command generates a tasklist Markdown file in the current directory.
+It combines an introduction, AI-generated profiles, and content sections.
+.PP
+Multiple independent tasklists can be generated in the same directory by
+specifying different
+.B \-\-output
+file names, each with its own content file. This enables parallel agent
+execution (e.g. Argo Workflows) where each agent receives its own tasklist
+while sharing the same working directory.
+.SS Options
+.TP
+.BI \-\-output \ OUTPUT_FILE
+Write the generated tasklist to
+.I OUTPUT_FILE
+instead of the default
+.IR TASKLIST.md .
 .PP
 The process follows these steps:
 .IP 1. 2
 If
 .I AGENTS-INTRO.md
-exists in the current directory, it is used as the starting content for
-.IR TASKLIST.md .
-Otherwise,
-.I TASKLIST.md
-is started as an empty file.
+exists in the current directory, it is used as the starting content for the output file.
+Otherwise, the output file is started empty.
 .IP 2. 2
 If
 .I ai.profiles
 exists in the current directory, its content is read as a list of profiles. The
 .BR ai (1)
 command is then called with these profiles, fetching them from the remote knowledge
-app, and the output is appended to
-.IR TASKLIST.md .
+app, and the output is appended to the output file.
 Profile names may use the
 .B name:cat1,cat2
 syntax to request specific categories.
 .IP 3. 2
 If arguments are provided, each
 .I CONTENT_FILE
-is appended to
-.IR TASKLIST.md .
+is appended to the output file.
 If no arguments are provided, the command looks for
 .I TASKLIST-CONTENT.md
 and appends it if found.
@@ -52,7 +62,8 @@ Space-separated list of AI profiles to include.
 Default content section if no arguments are provided.
 .TP
 .I TASKLIST.md
-The generated output file.
+Default generated output file (overridden by
+.BR \-\-output ).
 .SH SEE ALSO
 .BR ai (1)
 .SH AUTHOR

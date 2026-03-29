@@ -2,7 +2,7 @@
 
 # Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
 
-# Usage: smi-build-tasklist [file1.md file2.md ...]
+# Usage: smi-build-tasklist [--output OUTPUT_FILE] [CONTENT_FILE...]
 # If no files given, defaults to TASKLIST-CONTENT.md
 # Reads AGENTS-INTRO.md if present.
 # Reads profiles from ai.profiles if present.
@@ -11,6 +11,19 @@ TARGET_FILE="TASKLIST.md"
 INTRO_FILE="AGENTS-INTRO.md"
 PROFILES_FILE="ai.profiles"
 DEFAULT_CONTENT_FILE="TASKLIST-CONTENT.md"
+
+# Parse options
+while [ $# -gt 0 ]; do
+    case "${1}" in
+        --output)
+            TARGET_FILE="${2}"
+            shift 2
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
 
 # Clear or create the target file
 if [ -f "${INTRO_FILE}" ]; then

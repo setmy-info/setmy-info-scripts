@@ -2,7 +2,7 @@
 
 REM Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
 
-REM Usage: smi-build-tasklist [file1.md file2.md ...]
+REM Usage: smi-build-tasklist [--output OUTPUT_FILE] [CONTENT_FILE...]
 REM If no files given, defaults to TASKLIST-CONTENT.md
 REM Reads AGENTS-INTRO.md if present.
 REM Reads profiles from ai.profiles if present.
@@ -11,6 +11,13 @@ set TARGET_FILE=TASKLIST.md
 set INTRO_FILE=AGENTS-INTRO.md
 set PROFILES_FILE=ai.profiles
 set DEFAULT_CONTENT_FILE=TASKLIST-CONTENT.md
+
+REM Parse --output option
+if "%~1"=="--output" (
+    set TARGET_FILE=%~2
+    shift
+    shift
+)
 
 REM Clear or create the target file
 if exist "%INTRO_FILE%" (

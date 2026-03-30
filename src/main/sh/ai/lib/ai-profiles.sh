@@ -1,9 +1,25 @@
+_AI_ETC_CONF="$(smi-etc-location)/ai.conf"
+_AI_HOME_CONF="$(smi-home-location)/ai.conf"
+if [ -f "${_AI_ETC_CONF}" ]; then
+    . "${_AI_ETC_CONF}"
+fi
+if [ -f "${_AI_HOME_CONF}" ]; then
+    . "${_AI_HOME_CONF}"
+fi
+unset _AI_ETC_CONF _AI_HOME_CONF
 AI_KNOWLEDGE_APP_URL="${AI_KNOWLEDGE_APP_URL:-http://localhost:8800}"
 
 executeAis() {
+    DEFAULT_INCLUDED=0
     for PRINTABLE_AI_PROFILE in ${*}; do
         executeAi ${PRINTABLE_AI_PROFILE}
+        if [ "${PRINTABLE_AI_PROFILE%%:*}" = "default" ]; then
+            DEFAULT_INCLUDED=1
+        fi
     done
+    if [ ${DEFAULT_INCLUDED} -eq 0 ]; then
+        executeAi default
+    fi
 }
 
 _buildCategoriesJson() {

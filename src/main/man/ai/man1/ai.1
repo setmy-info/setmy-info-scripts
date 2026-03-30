@@ -36,14 +36,23 @@ If a file named
 exists in the current working directory, it is sourced before processing each
 profile, allowing local environment variable definitions to be used during
 substitution.
+.PP
+The
+.B default
+profile is always fetched and appended last, unless it was explicitly listed
+in the arguments. This ensures baseline agent instructions are always present
+at the end of the output, where they are least likely to be lost from the
+agent context window.
 .SH ENVIRONMENT
 .TP
 .B JWT_TOKEN
 Required. Bearer token for authenticating with the knowledge app.
 .TP
 .B AI_KNOWLEDGE_APP_URL
-Base URL of the knowledge app. Defaults to
-.IR http://localhost:8800 .
+Base URL of the knowledge app. Overrides any value set in the config files.
+Defaults to
+.IR http://localhost:8800
+if not set in environment or config files.
 .SH EXAMPLES
 Fetch a single profile:
 .PP
@@ -63,6 +72,14 @@ Fetch specific categories of a profile:
 ai java:requirement,task
 .fi
 .SH FILES
+.TP
+.I $(smi-etc-location)/ai.conf
+Optional system-wide config file. Sets
+.B AI_KNOWLEDGE_APP_URL
+and other variables.
+.TP
+.I $(smi-home-location)/ai.conf
+Optional user config file. Overrides the system config file.
 .TP
 .I ./ai.sh
 Optional local script sourced for environment variable definitions used in substitution.

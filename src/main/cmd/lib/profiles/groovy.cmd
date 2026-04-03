@@ -1,3 +1,3 @@
-set GROOVY_HOME=%PUB_DIR%\groovy-5.0.4
+set GROOVY_HOME=%PUB_DIR%\groovy-5.0.5
 set GROOVY_BIN_DIR=%GROOVY_HOME%\bin
 set PATH=%GROOVY_BIN_DIR%;%PATH%

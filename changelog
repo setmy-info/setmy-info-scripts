@@ -1,3 +1,13 @@
+* 2026-04-03 Imre Tabur <imre.tabur@mail.ee>
+- Created Windows JDK 26 profile: `src/main/cmd/lib/profiles/jdk26.cmd`.
+- Created Linux JDK 26 package and profile: `src/main/sh/packages/lib/packages/jdk26.package` and `src/main/sh/term/lib/profiles/jdk26.profile`.
+- Updated `src/main/sh/packages/lib/packages/all.package` to include JDK 26.
+- Upgraded Linux package versions:
+    - Node.js to 24.14.1
+    - CMake to 4.3.1
+    - Maven to 3.9.14
+    - Groovy to 5.0.5
+    - Gradle to 9.4.1
 * 2026-03-20 Imre Tabur <imre.tabur@mail.ee>
 - Added empty AI profile files `python-service.md` and `logging.md` in `src/main/sh/ai/lib/profiles/`.
 - Added `terraform.md` in `src/main/sh/ai/lib/profiles/` describing Kubernetes service exposure strategies with IP whitelisting for AWS and Google Cloud.

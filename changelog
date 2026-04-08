@@ -1,3 +1,7 @@
+* 2026-04-08 Imre Tabur <imre.tabur@mail.ee>
+- Fixed terminal detachment regression in `src/main/sh/lib/konsole.sh`: replaced `exec` with `setsid ... & exit 0` for all graphical terminal functions (`tryToOpenXfceTerminal`, `tryToOpenPtyxisTerminal`, `tryToOpenGnomeTerminal`, `tryToOpenMateTerminal`, `tryToOpenKonsole`, `tryToOpenXterm`).
+- Root cause: commit d467e5b changed `& exit 0` to `exec` for all terminals, which made the launched terminal a child of the calling process (e.g., xterm). Closing the calling terminal then killed the newly opened one via SIGHUP.
+- Fix uses `setsid` to place each terminal in its own session, fully detaching it from the caller. Closing xterm (or any parent terminal) no longer affects the opened terminal on any desktop (GNOME, Xfce, KDE, MATE).
 * 2026-04-03 Imre Tabur <imre.tabur@mail.ee>
 - Created Windows JDK 26 profile: `src/main/cmd/lib/profiles/jdk26.cmd`.
 - Created Linux JDK 26 package and profile: `src/main/sh/packages/lib/packages/jdk26.package` and `src/main/sh/term/lib/profiles/jdk26.profile`.

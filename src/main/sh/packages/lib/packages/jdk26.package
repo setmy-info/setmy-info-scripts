@@ -1,0 +1,20 @@
+JDK26_NAME=jdk26
+JDK26_VERSION=26
+JDK26_HASH_PART=c3cc523845074aa0af4f5e1e1ed4151d
+JDK26_NUMERIC_PART=35
+JDK26_DIR_NAME=jdk-${JDK26_VERSION}
+JDK26_NAME_PREFIX=openjdk-${JDK26_VERSION}
+JDK26_TAR_FILE_NAME=${JDK26_NAME_PREFIX}_linux-x64_bin.tar
+JDK26_TAR_GZ_FILE_NAME=${JDK26_TAR_FILE_NAME}.gz
+JDK26_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK26_VERSION}/${JDK26_HASH_PART}/${JDK26_NUMERIC_PART}/GPL/${JDK26_TAR_GZ_FILE_NAME}
+
+# https://download.java.net/java/GA/jdk26/c3cc523845074aa0af4f5e1e1ed4151d/35/GPL/openjdk-26_linux-x64_bin.tar.gz
+
+jdk26_download_func() {
+    smi-download ${JDK26_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK26_TAR_GZ_FILE_NAME}
+}
+
+jdk26_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK26_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/jdk25 /opt/${JDK26_DIR_NAME}
+}

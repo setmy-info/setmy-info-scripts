@@ -1,10 +1,10 @@
 GRAILS_NAME=grails
-GRAILS_VERSION=7.0.7
+GRAILS_VERSION=7.0.10
 GRAILS_DIR_NAME=apache-${GRAILS_NAME}-${GRAILS_VERSION}
 GRAILS_ZIP_FILE_NAME=${GRAILS_DIR_NAME}-bin.zip
 GRAILS_ZIP_FILE_URL=https://dlcdn.apache.org/grails/core/${GRAILS_VERSION}/distribution/${GRAILS_ZIP_FILE_NAME}
 
-# https://dlcdn.apache.org/grails/core/7.0.7/distribution/apache-grails-7.0.7-bin.zip
+# https://dlcdn.apache.org/grails/core/7.0.10/distribution/apache-grails-7.0.10-bin.zip
 
 grails_download_func() {
     smi-download ${GRAILS_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GRAILS_ZIP_FILE_NAME}

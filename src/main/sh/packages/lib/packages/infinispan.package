@@ -1,10 +1,10 @@
 INFINISPAN_NAME=infinispan
-INFINISPAN_VERSION=16.1.0
+INFINISPAN_VERSION=16.1.3
 INFINISPAN_DIR_NAME=infinispan-server-${INFINISPAN_VERSION}
 INFINISPAN_ZIP_FILE_NAME=${INFINISPAN_DIR_NAME}.zip
 INFINISPAN_ZIP_FILE_URL=https://github.com/infinispan/infinispan/releases/download/${INFINISPAN_VERSION}/${INFINISPAN_ZIP_FILE_NAME}
 
-# https://github.com/infinispan/infinispan/releases/download/16.1.0/infinispan-server-16.1.0.zip
+# https://github.com/infinispan/infinispan/releases/download/16.1.3/infinispan-server-16.1.3.zip
 
 infinispan_download_func() {
     smi-download ${INFINISPAN_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${INFINISPAN_ZIP_FILE_NAME}

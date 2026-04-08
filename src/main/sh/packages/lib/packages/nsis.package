@@ -1,0 +1,14 @@
+NSIS_NAME=nsis
+NSIS_VERSION=3.11
+NSIS_EXE_FILE_NAME=${NSIS_NAME}-${NSIS_VERSION}-setup.exe
+NSIS_EXE_FILE_URL=https://sourceforge.net/projects/nsis/files/NSIS%203/${NSIS_VERSION}/${NSIS_EXE_FILE_NAME}/download
+
+# https://sourceforge.net/projects/nsis/files/NSIS%203/3.11/nsis-3.11-setup.exe/download
+
+nsis_download_func() {
+    smi-download ${NSIS_EXE_FILE_URL} ${HOME_PACKAGES_DIR}/${NSIS_EXE_FILE_NAME}
+}
+
+nsis_install_func() {
+    return
+}

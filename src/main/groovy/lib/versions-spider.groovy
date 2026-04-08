@@ -1294,10 +1294,11 @@ class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name
 
     Closure<Boolean> getSearcher() {
         return { href ->
+            // https://sourceforge.net/projects/nsis/files/NSIS%203/3.11/nsis-3.11-setup.exe/download?use_mirror=deac-ams&download
             // https://prdownloads.sourceforge.net/nsis/nsis-3.11-setup.exe?download
             // https://unlimited.dl.sourceforge.net/project/nsis/NSIS%203/3.11/nsis-3.11-setup.exe?viasf=1
-            if (!href.toLowerCase().contains("/nsis/nsis-")) return false
-            if (!href.toLowerCase().endsWith("-setup.exe?download")) return false
+            if (!href.toLowerCase().contains("nsis-")) return false
+            if (!href.toLowerCase().contains("-setup.exe")) return false
             return true
         }
     }

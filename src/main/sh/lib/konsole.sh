@@ -4,7 +4,8 @@ tryToOpenXfceTerminal() {
     then
         echo "${COMMAND_NAME} terminal could not be found"
     else
-        exec ${COMMAND_NAME} --title=${COMMAND_NAME} --working-directory=${PWD} --disable-server
+        ${COMMAND_NAME} --title=${COMMAND_NAME} --working-directory=${PWD} --disable-server &
+        exit 0
     fi
 }
 
@@ -15,7 +16,8 @@ tryToOpenPtyxisTerminal() {
         echo "${COMMAND_NAME} terminal could not be found"
     else
        # TODO : --working-directory=${PWD}
-        exec ${COMMAND_NAME} --new-window
+        ${COMMAND_NAME} --new-window &
+        exit 0
     fi
 }
 
@@ -25,7 +27,8 @@ tryToOpenGnomeTerminal() {
     then
         echo "${COMMAND_NAME} terminal could not be found"
     else
-        exec ${COMMAND_NAME} --working-directory=${PWD}
+        ${COMMAND_NAME} --working-directory=${PWD} &
+        exit 0
     fi
 }
 
@@ -35,7 +38,8 @@ tryToOpenMateTerminal() {
     then
         echo "${COMMAND_NAME} terminal could not be found"
     else
-        exec ${COMMAND_NAME} --working-directory=${PWD}
+        ${COMMAND_NAME} --working-directory=${PWD} &
+        exit 0
     fi
 }
 
@@ -45,7 +49,8 @@ tryToOpenKonsole() {
     then
         echo "${COMMAND_NAME} terminal could not be found"
     else
-        exec ${COMMAND_NAME} --workdir ${PWD}
+        ${COMMAND_NAME} --workdir ${PWD} &
+        exit 0
     fi
 }
 
@@ -54,7 +59,8 @@ tryToOpenXterm() {
     then
         echo "xterm could not be found"
     else
-        exec xterm -title xterm
+        xterm -title xterm &
+        exit 0
     fi
 }
 

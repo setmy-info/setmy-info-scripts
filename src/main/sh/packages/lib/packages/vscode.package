@@ -1,0 +1,16 @@
+VSCODE_NAME=code
+VSCODE_VERSION=1.115.0
+VSCODE_BUILD=1775600402
+VSCODE_COMMIT=41dd792b5e652393e7787322889ed5fdc58bd75b
+VSCODE_RPM_FILE_NAME=${VSCODE_NAME}-${VSCODE_VERSION}-${VSCODE_BUILD}.el8.x86_64.rpm
+VSCODE_RPM_FILE_URL=https://vscode.download.prss.microsoft.com/dbazure/download/stable/${VSCODE_COMMIT}/${VSCODE_RPM_FILE_NAME}
+
+# https://vscode.download.prss.microsoft.com/dbazure/download/stable/41dd792b5e652393e7787322889ed5fdc58bd75b/code-1.115.0-1775600402.el8.x86_64.rpm
+
+vscode_download_func() {
+    smi-download ${VSCODE_RPM_FILE_URL} ${HOME_PACKAGES_DIR}/${VSCODE_RPM_FILE_NAME}
+}
+
+vscode_install_func() {
+    sudo rpm -Uvh ${HOME_PACKAGES_DIR}/${VSCODE_RPM_FILE_NAME}
+}

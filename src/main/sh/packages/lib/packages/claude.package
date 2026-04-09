@@ -1,0 +1,13 @@
+CLAUDE_NAME=claude
+CLAUDE_INSTALL_SCRIPT_NAME=${CLAUDE_NAME}-install.sh
+CLAUDE_INSTALL_SCRIPT_URL=https://claude.ai/install.sh
+
+# https://claude.ai/install.sh
+
+claude_download_func() {
+    smi-download ${CLAUDE_INSTALL_SCRIPT_URL} ${HOME_PACKAGES_DIR}/${CLAUDE_INSTALL_SCRIPT_NAME}
+}
+
+claude_install_func() {
+    bash ${HOME_PACKAGES_DIR}/${CLAUDE_INSTALL_SCRIPT_NAME}
+}

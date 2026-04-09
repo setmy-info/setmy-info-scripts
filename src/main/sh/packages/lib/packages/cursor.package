@@ -1,0 +1,13 @@
+CURSOR_NAME=cursor
+CURSOR_INSTALL_SCRIPT_NAME=${CURSOR_NAME}-install.sh
+CURSOR_INSTALL_SCRIPT_URL=https://cursor.com/install
+
+# https://cursor.com/install
+
+cursor_download_func() {
+    smi-download ${CURSOR_INSTALL_SCRIPT_URL} ${HOME_PACKAGES_DIR}/${CURSOR_INSTALL_SCRIPT_NAME}
+}
+
+cursor_install_func() {
+    bash ${HOME_PACKAGES_DIR}/${CURSOR_INSTALL_SCRIPT_NAME}
+}

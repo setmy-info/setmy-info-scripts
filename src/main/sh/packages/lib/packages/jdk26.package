@@ -16,5 +16,5 @@ jdk26_download_func() {
 
 jdk26_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK26_TAR_GZ_FILE_NAME} -C /opt
-    makeOptLink /opt/jdk25 /opt/${JDK26_DIR_NAME}
+    makeOptLink /opt/jdk26 /opt/${JDK26_DIR_NAME}
 }

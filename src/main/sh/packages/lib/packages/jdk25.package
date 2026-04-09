@@ -13,8 +13,8 @@ JDK25_TAR_GZ_FILE_URL=https://download.java.net/java/GA/jdk${JDK25_VERSION}/${JD
 jdk25_download_func() {
     smi-download ${JDK25_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${JDK25_TAR_GZ_FILE_NAME}
 }
+
 jdk25_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK25_TAR_GZ_FILE_NAME} -C /opt
     makeOptLink /opt/jdk24 /opt/${JDK25_DIR_NAME}
 }
-

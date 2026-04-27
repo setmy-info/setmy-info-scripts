@@ -56,22 +56,28 @@ executeAi() {
         . ./ai.sh
     fi
 
-    if [ -z "${JWT_TOKEN}" ]; then
-        echo "ERROR: JWT_TOKEN environment variable is not set" >&2
-        return 1
-    fi
+    # Fetch profile from remote knowledge app (REST first)
+    if [ -n "${JWT_TOKEN}" ]; then
+        # Build JSON request body
+        if [ -n "${PROFILE_CATS}" ]; then
+            CATS_JSON=$(_buildCategoriesJson "${PROFILE_CATS}")
+            REQUEST_BODY="{\"ai\": [{\"name\": \"${PROFILE_NAME}\", \"categories\": ${CATS_JSON}}]}"
+        else
+            REQUEST_BODY="{\"ai\": [{\"name\": \"${PROFILE_NAME}\"}]}"
+        fi
 
-    # Build JSON request body
-    if [ -n "${PROFILE_CATS}" ]; then
-        CATS_JSON=$(_buildCategoriesJson "${PROFILE_CATS}")
-        REQUEST_BODY="{\"ai\": [{\"name\": \"${PROFILE_NAME}\", \"categories\": ${CATS_JSON}}]}"
+        curl -s -X POST "${AI_KNOWLEDGE_APP_URL}/api/ai" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${JWT_TOKEN}" \
+            -d "${REQUEST_BODY}" | envsubst
     else
-        REQUEST_BODY="{\"ai\": [{\"name\": \"${PROFILE_NAME}\"}]}"
+        echo "WARNING: JWT_TOKEN not set, skipping remote knowledge app" >&2
     fi
 
-    # Fetch profile from remote knowledge app and apply variable substitution
-    curl -s -X POST "${AI_KNOWLEDGE_APP_URL}/api/ai" \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Bearer ${JWT_TOKEN}" \
-        -d "${REQUEST_BODY}" | envsubst
+    # Load local profile from user home ai folder
+    _AI_LOCAL_FILE="${HOME}/.setmy.info/profiles/ai/${PROFILE_NAME}.md"
+    if [ -f "${_AI_LOCAL_FILE}" ]; then
+        envsubst < "${_AI_LOCAL_FILE}"
+    fi
+    unset _AI_LOCAL_FILE
 }

@@ -104,9 +104,11 @@ if (args.length == 0) {
 }
 
 if (!jwtToken) {
-    System.err.println 'ERROR: JWT_TOKEN environment variable is not set'
-    System.exit(1)
+    System.err.println 'WARNING: JWT_TOKEN environment variable is not set, skipping remote knowledge app'
 }
+
+def userHome = System.getProperty('user.home') ?: System.getenv('USERPROFILE') ?: System.getenv('HOME')
+def localAiDir = userHome ? new File("${userHome}/.setmy.info/profiles/ai") : null
 
 def defaultRequested = args.any { it.split(':', 2)[0] == 'default' }
 
@@ -115,15 +117,37 @@ args.each { profileArg ->
     def profileName = parts[0]
     def categories = parts.length > 1 ? parts[1].split(',').toList() : []
 
-    def content = fetchProfile(profileName, categories)
-    if (content) {
-        print renderContent(content)
+    // REST first
+    if (jwtToken) {
+        def content = fetchProfile(profileName, categories)
+        if (content) {
+            print renderContent(content)
+        }
+    }
+
+    // Local home folder profile
+    if (localAiDir) {
+        def localFile = new File(localAiDir, "${profileName}.md")
+        if (localFile.exists()) {
+            print renderContent(localFile.text)
+        }
     }
 }
 
 if (!defaultRequested) {
-    def content = fetchProfile('default', [])
-    if (content) {
-        print renderContent(content)
+    // REST first
+    if (jwtToken) {
+        def content = fetchProfile('default', [])
+        if (content) {
+            print renderContent(content)
+        }
+    }
+
+    // Local home folder default profile
+    if (localAiDir) {
+        def localFile = new File(localAiDir, 'default.md')
+        if (localFile.exists()) {
+            print renderContent(localFile.text)
+        }
     }
 }

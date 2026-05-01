@@ -2,7 +2,11 @@
 
 # Copyright (C) 2023 Imre Tabur <imre.tabur@mail.ee>
 
-SMI_HOME_LOCATION=$(smi-home-location)
-echo "${SMI_HOME_LOCATION}/packages"
+if [ -z "${SMI_HOME_PACKAGES_DIR}" ]; then
+    SMI_HOME_LOCATION=$(smi-home-location)
+    SMI_HOME_PACKAGES_DIR="${SMI_HOME_LOCATION}/packages"
+fi
+
+echo "${SMI_HOME_PACKAGES_DIR}"
 
 exit 0

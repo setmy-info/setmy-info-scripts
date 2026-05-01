@@ -1,4 +1,4 @@
-.TH smi-download-package "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.TH smi-download-package "1" "April 2026" "SMI Toolset" "SMI Base Command"
 .SH NAME
 smi-download-package \- Download one or more SMI packages
 .SH SYNOPSIS
@@ -7,12 +7,20 @@ smi-download-package \- Download one or more SMI packages
 .SH DESCRIPTION
 .PP
 .B smi-download-package
-downloads the specified SMI packages to the user's home packages folder (see \fBsmi-home-packages-location\fR(1)).
+downloads the specified SMI packages to the packages download directory (see \fBsmi-home-packages-location\fR(1)).
 It uses the \fBpackages.sh\fR library to locate package definitions (with \fB.package\fR suffix) in either the system or home packages directories and executes their respective download functions.
+.PP
+The download directory defaults to \fB~/.setmy.info/packages\fR but can be overridden by setting the
+\fBSMI_HOME_PACKAGES_DIR\fR environment variable before invoking this command.
+.SH ENVIRONMENT
+.TP
+.B SMI_HOME_PACKAGES_DIR
+Overrides the default packages download directory.
+See \fBsmi-home-packages-location\fR(1) for details.
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
-Documentation written by Junie.
+Documentation written by Imre Tabur.
 .SH "REPORTING BUGS"
 .PP
 Report smi-download-package bugs to \fIinfo@setmy.info\fR

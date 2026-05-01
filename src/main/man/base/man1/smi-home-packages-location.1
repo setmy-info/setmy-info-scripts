@@ -1,4 +1,4 @@
-.TH smi-home-packages-location "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.TH smi-home-packages-location "1" "April 2026" "SMI Toolset" "SMI Base Command"
 .SH NAME
 smi-home-packages-location \- Print the user's SMI packages directory location
 .SH SYNOPSIS
@@ -6,16 +6,27 @@ smi-home-packages-location \- Print the user's SMI packages directory location
 .SH DESCRIPTION
 .PP
 .B smi-home-packages-location
-prints the absolute path to the \fBpackages\fR directory within the user's SMI home directory (see \fBsmi-home-location\fR(1)).
+prints the absolute path to the packages download directory used by SMI tools.
+.PP
+By default this is the \fBpackages\fR subdirectory within the user's SMI home directory (see \fBsmi-home-location\fR(1)),
+typically \fB~/.setmy.info/packages\fR.
+If the environment variable \fBSMI_HOME_PACKAGES_DIR\fR is set, its value is used instead of the default.
+.SH ENVIRONMENT
+.TP
+.B SMI_HOME_PACKAGES_DIR
+Overrides the default packages download directory.
+When set, \fBsmi-home-packages-location\fR prints this value without consulting \fBsmi-home-location\fR(1).
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
-Documentation written by Junie.
+Documentation written by Imre Tabur.
 .SH "REPORTING BUGS"
 .PP
 Report smi-home-packages-location bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
 .BR smi-home-location (1),
-.BR smi-packages-location (1)
+.BR smi-packages-location (1),
+.BR smi-download-package (1),
+.BR smi-install-package (1)
 

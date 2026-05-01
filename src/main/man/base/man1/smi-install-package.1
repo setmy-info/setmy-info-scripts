@@ -1,4 +1,4 @@
-.TH smi-install-package "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.TH smi-install-package "1" "April 2026" "SMI Toolset" "SMI Base Command"
 .SH NAME
 smi-install-package \- Install one or more SMI packages
 .SH SYNOPSIS
@@ -9,10 +9,17 @@ smi-install-package \- Install one or more SMI packages
 .B smi-install-package
 installs the specified SMI packages.
 It uses the \fBpackages.sh\fR library to locate package definitions (with \fB.package\fR suffix) in either the system or home packages directories and executes their respective install functions.
+The package archives are read from the packages download directory (see \fBsmi-home-packages-location\fR(1)),
+which defaults to \fB~/.setmy.info/packages\fR and can be overridden via \fBSMI_HOME_PACKAGES_DIR\fR.
+.SH ENVIRONMENT
+.TP
+.B SMI_HOME_PACKAGES_DIR
+Overrides the default packages download directory used when locating downloaded archives.
+See \fBsmi-home-packages-location\fR(1) for details.
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
-Documentation written by Junie.
+Documentation written by Imre Tabur.
 .SH "REPORTING BUGS"
 .PP
 Report smi-install-package bugs to \fIinfo@setmy.info\fR

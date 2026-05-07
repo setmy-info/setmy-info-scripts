@@ -1,9 +1,9 @@
 MITMPROXY_NAME=mitmproxy
-MITMPROXY_VERSION=12.2.1
+MITMPROXY_VERSION=12.2.2
 MITMPROXY_TAR_GZ_FILE_NAME=${MITMPROXY_NAME}-${MITMPROXY_VERSION}-linux-x86_64.tar.gz
 MITMPROXY_TAR_GZ_FILE_URL=https://downloads.mitmproxy.org/${MITMPROXY_VERSION}/${MITMPROXY_TAR_GZ_FILE_NAME}
 
-# https://downloads.mitmproxy.org/12.2.1/mitmproxy-12.2.1-linux-x86_64.tar.gz
+# https://downloads.mitmproxy.org/12.2.2/mitmproxy-12.2.2-linux-x86_64.tar.gz
 
 mitmproxy_download_func() {
     smi-download ${MITMPROXY_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MITMPROXY_TAR_GZ_FILE_NAME}

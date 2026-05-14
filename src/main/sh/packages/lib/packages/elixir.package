@@ -1,0 +1,19 @@
+ELIXIR_NAME=elixir
+ELIXIR_VERSION=1.19.5
+ELIXIR_OTP_VERSION=27
+ELIXIR_DIR_NAME=${ELIXIR_NAME}-${ELIXIR_VERSION}
+ELIXIR_ZIP_FILE_NAME=${ELIXIR_NAME}-otp-${ELIXIR_OTP_VERSION}.zip
+ELIXIR_ZIP_FILE_URL=https://github.com/elixir-lang/elixir/releases/download/v${ELIXIR_VERSION}/${ELIXIR_ZIP_FILE_NAME}
+
+# https://github.com/elixir-lang/elixir/releases/download/v1.19.5/elixir-otp-27.zip
+
+elixir_download_func() {
+    smi-download ${ELIXIR_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${ELIXIR_ZIP_FILE_NAME}
+}
+
+elixir_install_func() {
+    sudo rm -Rf /opt/${ELIXIR_DIR_NAME}
+    sudo mkdir -p /opt/${ELIXIR_DIR_NAME}
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${ELIXIR_ZIP_FILE_NAME} -d /opt/${ELIXIR_DIR_NAME}
+    makeOptLink /opt/${ELIXIR_NAME} /opt/${ELIXIR_DIR_NAME}
+}

@@ -1284,6 +1284,36 @@ class InnosetupDriverExecute extends DriverExecuteBase implements DriverExecute,
     }
 }
 
+class ElixirDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        driver.get(getUrl())
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        def version = last.split("elixir-lang/elixir/releases/tag/v")[1]
+        println "https://github.com/elixir-lang/elixir/releases/download/v${version}/elixir-otp-27.zip"
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/elixir-lang/elixir/releases/tag/v1.19.5
+            href = href.toLowerCase()
+            if (!href.contains("/elixir-lang/elixir/releases/tag/v")) return false
+            if (href.contains("-rc")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://github.com/elixir-lang/elixir/releases"
+    }
+
+    @Override
+    String getName() {
+        return "elixir"
+    }
+}
+
 class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
@@ -1391,6 +1421,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new GitFlowNextDriverExecute(), rulesRegister)
     fillWithRules(new GraphvizDriverExecute(), rulesRegister)
     fillWithRules(new InnosetupDriverExecute(), rulesRegister)
+    fillWithRules(new ElixirDriverExecute(), rulesRegister)
     fillWithRules(new NsisDriverExecute(), rulesRegister)
     return rulesRegister
 }

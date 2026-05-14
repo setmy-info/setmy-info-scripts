@@ -3,11 +3,17 @@
 echo ######################
 mvn --version
 echo ######################
+mvnd --version
+echo ######################
 gradle --version
 echo ######################
 cmake --version
 echo ######################
+ant -version
+echo ######################
 lein --version
+echo ######################
+clojure --version
 echo ######################
 groovy --version
 echo ######################
@@ -15,11 +21,23 @@ go version
 echo ######################
 julia --version
 echo ######################
+janet --version
+echo ######################
+sbcl --version
+echo ######################
+bazel version
+echo ######################
 node --version
+echo ######################
+npm --version
+echo ######################
+yarn --version
 echo ######################
 java --version
 echo ######################
-python -0
+python --version
+echo ######################
+docker --version
 echo ######################
 kubectl version
 echo ######################
@@ -27,7 +45,11 @@ mn --version
 echo ######################
 grails --version
 echo ######################
+git flow version
+echo ######################
 argo version
+echo ######################
+elixir --version
 echo ######################
 
 exit 0

@@ -1,0 +1,34 @@
+ERLANG_NAME=erlang
+ERLANG_GIT_URL=https://github.com/erlang/otp.git
+ERLANG_GIT_DIR=${HOME_PACKAGES_DIR}/erlang-git
+
+# Version is detected at runtime from git tags (OTP-x.y.z, no -rc)
+# https://github.com/erlang/otp/releases
+
+erlang_download_func() {
+    CUR_DIR=$(pwd)
+    if [ -d "${ERLANG_GIT_DIR}/.git" ]; then
+        git -C "${ERLANG_GIT_DIR}" fetch --tags
+    else
+        git clone ${ERLANG_GIT_URL} ${ERLANG_GIT_DIR}
+    fi
+    LATEST_TAG=$(git -C "${ERLANG_GIT_DIR}" tag --sort=-version:refname | grep '^OTP-' | grep -v -- '-rc' | head -n 1)
+    ERLANG_VERSION=${LATEST_TAG#OTP-}
+    echo "Latest OTP tag: ${LATEST_TAG} (${ERLANG_VERSION})"
+    git -C "${ERLANG_GIT_DIR}" checkout "${LATEST_TAG}"
+    cd ${ERLANG_GIT_DIR}
+    export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et --without-javac"
+    ./configure --prefix=/opt/${ERLANG_NAME}-${ERLANG_VERSION} --without-wx --without-debugger --without-observer --without-et --without-javac
+    make
+    cd ${CUR_DIR}
+}
+
+erlang_install_func() {
+    CUR_DIR=$(pwd)
+    LATEST_TAG=$(git -C "${ERLANG_GIT_DIR}" tag --sort=-version:refname | grep '^OTP-' | grep -v -- '-rc' | head -n 1)
+    ERLANG_VERSION=${LATEST_TAG#OTP-}
+    cd ${ERLANG_GIT_DIR}
+    sudo make install
+    makeOptLink /opt/${ERLANG_NAME} /opt/${ERLANG_NAME}-${ERLANG_VERSION}
+    cd ${CUR_DIR}
+}

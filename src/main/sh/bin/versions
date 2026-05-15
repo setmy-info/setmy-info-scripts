@@ -9,8 +9,6 @@ gradle --version
 echo ######################
 cmake --version
 echo ######################
-ant -version
-echo ######################
 lein --version
 echo ######################
 clojure --version
@@ -31,21 +29,15 @@ node --version
 echo ######################
 npm --version
 echo ######################
-yarn --version
-echo ######################
 java --version
 echo ######################
 python --version
-echo ######################
-docker --version
 echo ######################
 kubectl version
 echo ######################
 mn --version
 echo ######################
 grails --version
-echo ######################
-git flow version
 echo ######################
 argo version
 echo ######################

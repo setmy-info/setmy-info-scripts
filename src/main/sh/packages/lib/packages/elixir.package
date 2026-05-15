@@ -1,19 +1,43 @@
 ELIXIR_NAME=elixir
-ELIXIR_VERSION=1.19.5
-ELIXIR_OTP_VERSION=27
-ELIXIR_DIR_NAME=${ELIXIR_NAME}-${ELIXIR_VERSION}
-ELIXIR_ZIP_FILE_NAME=${ELIXIR_NAME}-otp-${ELIXIR_OTP_VERSION}.zip
-ELIXIR_ZIP_FILE_URL=https://github.com/elixir-lang/elixir/releases/download/v${ELIXIR_VERSION}/${ELIXIR_ZIP_FILE_NAME}
+ELIXIR_GIT_URL=https://github.com/elixir-lang/elixir.git
+ELIXIR_GIT_DIR=${HOME_PACKAGES_DIR}/elixir-git
 
-# https://github.com/elixir-lang/elixir/releases/download/v1.19.5/elixir-otp-27.zip
+# Version is detected at runtime from git tags (v*, no -rc/-alpha/-beta)
+# https://github.com/elixir-lang/elixir/releases
 
 elixir_download_func() {
-    smi-download ${ELIXIR_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${ELIXIR_ZIP_FILE_NAME}
+    CUR_DIR=$(pwd)
+    if [ -d "${ELIXIR_GIT_DIR}/.git" ]; then
+        git -C "${ELIXIR_GIT_DIR}" fetch --tags
+    else
+        git clone ${ELIXIR_GIT_URL} ${ELIXIR_GIT_DIR}
+    fi
+    LATEST_TAG=$(git -C "${ELIXIR_GIT_DIR}" tag --sort=-version:refname \
+        | grep '^v' \
+        | grep -v -- '-rc' \
+        | grep -v -- '-alpha' \
+        | grep -v -- '-beta' \
+        | head -n 1)
+    ELIXIR_VERSION=${LATEST_TAG#v}
+    echo "Latest Elixir stable tag: ${LATEST_TAG} (${ELIXIR_VERSION})"
+    git -C "${ELIXIR_GIT_DIR}" checkout "${LATEST_TAG}"
+    cd ${ELIXIR_GIT_DIR}
+    make clean compile
+    cd ${CUR_DIR}
 }
 
 elixir_install_func() {
-    sudo rm -Rf /opt/${ELIXIR_DIR_NAME}
-    sudo mkdir -p /opt/${ELIXIR_DIR_NAME}
-    sudo unzip -o ${HOME_PACKAGES_DIR}/${ELIXIR_ZIP_FILE_NAME} -d /opt/${ELIXIR_DIR_NAME}
-    makeOptLink /opt/${ELIXIR_NAME} /opt/${ELIXIR_DIR_NAME}
+    CUR_DIR=$(pwd)
+    LATEST_TAG=$(git -C "${ELIXIR_GIT_DIR}" tag --sort=-version:refname \
+        | grep '^v' \
+        | grep -v -- '-rc' \
+        | grep -v -- '-alpha' \
+        | grep -v -- '-beta' \
+        | head -n 1)
+    ELIXIR_VERSION=${LATEST_TAG#v}
+    sudo rm -Rf /opt/${ELIXIR_NAME}-${ELIXIR_VERSION}
+    sudo mkdir -p /opt/${ELIXIR_NAME}-${ELIXIR_VERSION}
+    sudo cp -r ${ELIXIR_GIT_DIR}/. /opt/${ELIXIR_NAME}-${ELIXIR_VERSION}
+    makeOptLink /opt/${ELIXIR_NAME} /opt/${ELIXIR_NAME}-${ELIXIR_VERSION}
+    cd ${CUR_DIR}
 }

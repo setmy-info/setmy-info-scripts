@@ -1,3 +1,11 @@
+* 2026-05-17 Imre Tabur <imre.tabur@mail.ee>
+- Version bump to 0.106.0: Updated PROJECT_VERSION_MINOR to 106 in CMakeLists.txt.
+- Version bump to 0.106.0: Updated PROJECT_VERSION to "0.106.0" in src/main/sh/build/packages-build.sh.
+- Version bump to 0.106.0: Updated PROJECT_NUMBER to 0.106.0 in Doxyfile.
+- Version bump to 0.106.0: Updated all package filename references from setmy-info-scripts-0.105.0 to setmy-info-scripts-0.106.0 in Dockerfile (deb install, deb copy, rpm install).
+- Version bump to 0.106.0: Updated SCRIPTS_VERSION references from 0.105.0 to 0.106.0 in README.md.
+- Version bump to 0.106.0: Updated smi-version expectation in src/main/sh/build/check-files.sh.
+- Version bump to 0.106.0: Updated AppVersion to 0.106.0 in setup.iss.
 * 2026-04-08 Imre Tabur <imre.tabur@mail.ee>
 - Fixed terminal detachment regression in `src/main/sh/lib/konsole.sh`: replaced `exec` with `setsid ... & exit 0` for all graphical terminal functions (`tryToOpenXfceTerminal`, `tryToOpenPtyxisTerminal`, `tryToOpenGnomeTerminal`, `tryToOpenMateTerminal`, `tryToOpenKonsole`, `tryToOpenXterm`).
 - Root cause: commit d467e5b changed `& exit 0` to `exec` for all terminals, which made the launched terminal a child of the calling process (e.g., xterm). Closing the calling terminal then killed the newly opened one via SIGHUP.

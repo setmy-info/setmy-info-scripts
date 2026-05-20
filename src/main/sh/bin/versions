@@ -43,5 +43,7 @@ argo version
 echo ######################
 elixir --version
 echo ######################
+aws --version
+echo ######################
 
 exit 0

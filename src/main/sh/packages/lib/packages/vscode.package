@@ -12,5 +12,5 @@ vscode_download_func() {
 }
 
 vscode_install_func() {
-    sudo rpm -Uvh ${HOME_PACKAGES_DIR}/${VSCODE_RPM_FILE_NAME}
+    sudo dnf install -y ${HOME_PACKAGES_DIR}/${VSCODE_RPM_FILE_NAME}
 }

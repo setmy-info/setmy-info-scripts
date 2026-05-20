@@ -1,0 +1,16 @@
+AWSCLI_NAME=awscli
+AWSCLI_ZIP_FILE_NAME=awscliv2.zip
+AWSCLI_ZIP_FILE_URL=https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+
+awscli_download_func() {
+    smi-download ${AWSCLI_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${AWSCLI_ZIP_FILE_NAME}
+    unzip -o ${HOME_PACKAGES_DIR}/${AWSCLI_ZIP_FILE_NAME} -d ${HOME_PACKAGES_DIR}/awscli-unpack
+}
+
+awscli_install_func() {
+    if [ -d /usr/local/aws-cli ]; then
+        sudo ${HOME_PACKAGES_DIR}/awscli-unpack/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+    else
+        sudo ${HOME_PACKAGES_DIR}/awscli-unpack/aws/install
+    fi
+}

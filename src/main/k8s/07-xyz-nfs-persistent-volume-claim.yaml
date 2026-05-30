@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: xyz-nfs-persistent-volume-claim
+    namespace: xyz-dev
+spec:
+    accessModes:
+        - ReadWriteMany
+    storageClassName: nfs
+    resources:
+        requests:
+            storage: 1Gi

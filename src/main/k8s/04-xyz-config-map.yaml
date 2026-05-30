@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: xyz-config-map
+    namespace: xyz-dev
+data:
+    variable: "Value in quotations"
+immutable: true

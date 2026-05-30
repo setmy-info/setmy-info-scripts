@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: xyz-service
+    namespace: xyz-dev
+spec:
+    selector:
+        app: xyz-deployment
+    ports:
+        -   protocol: TCP
+            # Port where Ingress forwards to
+            port: 80
+            # Deployment or POD port in container port
+            #targetPort: 8080
+            targetPort: xyz-port

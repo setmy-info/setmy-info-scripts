@@ -1,0 +1,19 @@
+# K3S-specific: PersistentVolumeClaim bound to the static NFS PersistentVolume.
+# Pair with 01-k3s-nfs-persistent-volume.yaml which must be applied first.
+#
+# storageClassName: "" prevents K3S default local-path provisioner from
+# interfering and forces binding to the static PV defined in 01.
+# volumeName pins the claim to exactly that PV.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: generator-nfs-persistent-volume-claim
+    namespace: generator
+spec:
+    accessModes:
+        - ReadWriteMany
+    resources:
+        requests:
+            storage: 10Gi
+    storageClassName: ""
+    volumeName: generator-nfs-persistent-volume

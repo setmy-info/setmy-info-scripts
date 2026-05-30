@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: xyz-postgres-deployment
+    namespace: xyz-dev
+    labels:
+        app: xyz-postgres-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: xyz-postgres-deployment
+    template:
+        metadata:
+            labels:
+                app: xyz-postgres-deployment
+        spec:
+            containers:
+                -   name: postgres
+                    image: postgres:16
+                    ports:
+                        -   name: pg-port
+                            containerPort: 5432
+                    env:
+                        ## From secrets
+                        -   name: POSTGRES_PASSWORD
+                            valueFrom:
+                                secretKeyRef:
+                                    name: xyz-postgres-secrets-map
+                                    key: postgres-password
+                                    optional: false
+                    volumeMounts:
+                        -   name: postgres-volume
+                            mountPath: /var/lib/postgresql/data
+            volumes:
+                -   name: postgres-volume
+                    persistentVolumeClaim:
+                        claimName: xyz-postgres-persistent-volume-claim

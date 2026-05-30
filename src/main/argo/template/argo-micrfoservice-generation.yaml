@@ -1,0 +1,227 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+# kubectl create namespace argo
+# kubectl apply -n argo -f https://github.com/argoproj/argo-workflows/releases/download/v3.5.8/quick-start-minimal.yaml
+# kubectl get pods -n argo
+# kubectl apply -f argo-secrets-map.yaml
+# kubectl -n argo port-forward deployment/argo-server 2746:2746
+# argo submit -n argo argo-micrfoservice-generation.yaml -p working-dir='/var/opt/setmy.info/microservice' -p pdf-files='["req1.pdf","req2.pdf","req4.pdf"]' -p arc-files='["svc1.arc.md","svc2.arc.md"]' -p prompt-files='["p1.prompt.md","p2.prompt.md"]'     -p md-files='["a.md","b.md"]' -p template-files='["t1.template.md","t2.template.md","t3.template.md"]' -p app-name=my-app -p java-package=com.example.myapp -p gherkin-files='["login.feature","registration.feature"]' --watch
+# argo submit -n argo argo-micrfoservice-generation.yaml -p working-dir="/var/opt/setmy.info/microservice" -p pdf-files="[\"req1.pdf\",\"req2.pdf\",\"req4.pdf\"]" -p arc-files="[\"svc1.arc.md\",\"svc2.arc.md\"]" -p prompt-files="[\"p1.prompt.md\",\"p2.prompt.md\"]" -p md-files="[\"a.md\",\"b.md\"]" -p template-files="[\"t1.template.md\",\"t2.template.md\",\"t3.template.md\"]" -p app-name="my-app" -p java-package="com.example.myapp" -p gherkin-files="[\"login.feature\",\"registration.feature\"]" --watch
+metadata:
+    generateName: ai-demo-
+spec:
+    volumes:
+        -   name: nfs-storage
+            persistentVolumeClaim:
+                claimName: argo-nfs-shared-persistent-volume-claim
+    entrypoint: pipeline
+    arguments:
+        parameters:
+            -   name: pdf-files
+                value: '["example1.pdf","example2.pdf","example3.pdf"]'
+            -   name: arc-files
+                value: '["example1.arc.md","example2.arc.md","example3.arc.md"]'
+            -   name: template-files
+                value: '["example1.template.md","example2.template.md","example3.template.md"]'
+            -   name: prompt-files
+                value: '["example1.prompt.md","example2.prompt.md","example3.prompt.md"]'
+            -   name: gherkin-files
+                value: '["example1.feature","example2.feature","example3.feature"]'
+            -   name: app-name
+                value: "my-app"
+            -   name: java-package
+                value: "com.example.myapp"
+            -   name: working-dir
+                value: "/var/opt/setmy.info/microservice"
+    templates:
+
+        -   name: pipeline
+            steps:
+                # Step 0: Initialize NFS directory
+                -   -   name: init-nfs
+                        template: init-nfs
+
+                # Step 1: parallel - load and embed each PDF requirement file
+                -   -   name: load-and-embed-pdf-requirements
+                        template: echo-filepath
+                        arguments:
+                            parameters:
+                                -   name: filepath
+                                    value: "{{item}}"
+                        withParam: "{{workflow.parameters.pdf-files}}"
+
+                # Step 2: parallel - load and embed each Gherkin file
+                -   -   name: load-and-embed-gherkin-files
+                        template: echo-filepath
+                        arguments:
+                            parameters:
+                                -   name: filepath
+                                    value: "{{item}}"
+                        withParam: "{{workflow.parameters.gherkin-files}}"
+
+                # Step 3: parallel - load and embed each architecture rules file
+                -   -   name: load-and-embed-architecture-rules
+                        template: echo-filepath
+                        arguments:
+                            parameters:
+                                -   name: filepath
+                                    value: "{{item}}"
+                        withParam: "{{workflow.parameters.arc-files}}"
+
+                # Step 4: parallel - load and embed each prompt template file
+                -   -   name: load-and-embed-prompt-templates
+                        template: echo-filepath
+                        arguments:
+                            parameters:
+                                -   name: filepath
+                                    value: "{{item}}"
+                        withParam: "{{workflow.parameters.template-files}}"
+
+                # Step 5: parallel - load and embed each prompt fragment file
+                -   -   name: load-and-embed-prompt-fragments
+                        template: echo-filepath
+                        arguments:
+                            parameters:
+                                -   name: filepath
+                                    value: "{{item}}"
+                        withParam: "{{workflow.parameters.prompt-files}}"
+
+                -   -   name: run-claude
+                        template: run-claude
+                        arguments:
+                            parameters:
+                                -   name: message
+                                    value: "Step 5: Run Claude CLI to generate JHipster .jh file"
+
+                -   -   name: generate-mermaid
+                        template: echo-message
+                        arguments:
+                            parameters:
+                                -   name: message
+                                    value: "Step 6: Generate Mermaid UML diagrams"
+
+                -   -   name: convert-mermaid
+                        template: echo-message
+                        arguments:
+                            parameters:
+                                -   name: message
+                                    value: "Step 7: Convert Mermaid diagrams to PNG"
+
+                -   -   name: build-jhipster
+                        template: echo-message
+                        arguments:
+                            parameters:
+                                -   name: message
+                                    value: "Step 8: Build JHipster application and produce JAR"
+                                -   name: app-name
+                                    value: "{{workflow.parameters.app-name}}"
+                                -   name: java-package
+                                    value: "{{workflow.parameters.java-package}}"
+
+                -   -   name: run-specifications
+                        template: echo-message
+                        arguments:
+                            parameters:
+                                -   name: message
+                                    value: "Step 9: Run specifications"
+
+
+        -   name: run-claude
+            inputs:
+                parameters:
+                    -   name: message
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                workingDir: "{{workflow.parameters.working-dir}}"
+                volumeMounts:
+                    -   name: nfs-storage
+                        mountPath: /mnt/nfs
+                securityContext:
+                #                    runAsUser: 1001
+                command: [ "/bin/sh","-c" ]
+                args:
+                    - |
+                        echo dnf install -y git diffutils
+                        ln -s /mnt/nfs/.setmy.info ~/.setmy.info
+                        ln -s /mnt/nfs/claude /usr/local/bin/claude
+                        echo "{{inputs.parameters.message}}"
+                        echo "CLAUDE_TOKEN=$CLAUDE_TOKEN"
+                        pwd
+                        whoami
+                        mount
+                        ls -la
+                env:
+                    -   name: CLAUDE_TOKEN
+                        valueFrom:
+                            secretKeyRef:
+                                name: ai-demo-secrets
+                                key: claude-token
+
+        -   name: echo-message
+            inputs:
+                parameters:
+                    -   name: message
+                    -   name: app-name
+                        default: ""
+                    -   name: java-package
+                        default: ""
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                workingDir: "{{workflow.parameters.working-dir}}"
+                volumeMounts:
+                    -   name: nfs-storage
+                        mountPath: /mnt/nfs
+                securityContext:
+                #                    runAsUser: 1001
+                command: [ "/bin/sh","-c" ]
+                args:
+                    - |
+                        echo dnf install -y git diffutils
+                        ln -s /mnt/nfs/.setmy.info ~/.setmy.info
+                        ln -s /mnt/nfs/claude /usr/local/bin/claude
+                        echo "Executing command: {{inputs.parameters.message}}"
+                        smi-version
+                        pwd
+                        whoami
+                        mount
+                        ls -la
+
+        -   name: echo-filepath
+            inputs:
+                parameters:
+                    -   name: filepath
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                workingDir: "{{workflow.parameters.working-dir}}"
+                volumeMounts:
+                    -   name: nfs-storage
+                        mountPath: /mnt/nfs
+                securityContext:
+                #                    runAsUser: 1001
+                command: [ "/bin/sh","-c" ]
+                args:
+                    - |
+                        echo dnf install -y git diffutils
+                        ln -s /mnt/nfs/.setmy.info ~/.setmy.info
+                        ln -s /mnt/nfs/claude /usr/local/bin/claude
+                        echo "File: {{inputs.parameters.filepath}}"
+                        smi-version
+                        pwd
+                        whoami
+                        mount
+                        ls -la
+
+        -   name: init-nfs
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                volumeMounts:
+                    -   name: nfs-storage
+                        mountPath: /mnt/nfs
+                command: [ "/bin/sh","-c" ]
+                args:
+                    - |
+                        mkdir -p /mnt/nfs/.setmy.info
+                        smi-download-package mvn
+                        curl -L https://github.com/anthropic-ai/claude-code/releases/latest/download/claude-linux -o /mnt/nfs/claude
+                        chmod +x /mnt/nfs/claude
+                        ls -la /mnt/nfs

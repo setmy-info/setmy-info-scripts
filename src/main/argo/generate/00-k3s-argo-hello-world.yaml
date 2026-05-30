@@ -1,0 +1,21 @@
+# K3S: minimal hello-world workflow to verify Argo Workflows is installed and working.
+# No namespace, PV, PVC, or RBAC setup required — only Argo must be running.
+#
+# Submit:
+#   argo submit -n argo --watch 00-k3s-argo-hello-world.yaml
+#
+# Check logs:
+#   argo logs @latest -n argo
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+    generateName: hello-world-
+    namespace: argo
+spec:
+    entrypoint: hello
+    templates:
+        -   name: hello
+            container:
+                image: alpine:3.18
+                command: [ sh, -c ]
+                args: [ "echo Hello World from Argo Workflows" ]

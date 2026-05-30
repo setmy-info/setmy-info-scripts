@@ -1,0 +1,88 @@
+# K3S-specific Argo Workflow: uses NFS PVC (generator-nfs-persistent-volume-claim) mounted from
+# the host's own NFS server.  No in-cluster NFS deployment needed.
+# The PVC root = /mnt/gintra/organizations/ee/has on the host.
+#
+# Directory layout under the PVC (host-side):
+#   operations/
+#     ai/
+#     packages/
+#     workflows/
+#
+# Prerequisites:
+#   kubectl apply -f 00-generator-namespace.yaml
+#   k3s-setup.sh   (applies PV, PVC, RBAC, secrets)
+#   Argo Workflows installed in the cluster (see k3s-setup.sh header)
+#
+# Submit:
+#   argo submit -n generator --watch 09-k3s-generator-argo.yaml
+# or use argo-wf.sh for auto-generated UUID.
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+    generateName: generator-argo-
+    namespace: generator
+spec:
+    serviceAccountName: default
+    entrypoint: pipeline
+
+    volumes:
+        -   name: nfs-has-org
+            persistentVolumeClaim:
+                claimName: generator-nfs-persistent-volume-claim
+
+    arguments:
+        parameters:
+            -   name: cc
+                value: "ee"
+            -   name: org
+                value: "has"
+            -   name: uuid
+                value: "00000000-0000-0000-0000-000000000000"
+
+    templates:
+        -   name: pipeline
+            steps:
+                -   -   name: make-working-dir
+                        template: make-working-dir
+                        arguments:
+                            parameters:
+                                -   name: cc
+                                    value: "{{workflow.parameters.cc}}"
+                                -   name: org
+                                    value: "{{workflow.parameters.org}}"
+                                -   name: uuid
+                                    value: "{{workflow.parameters.uuid}}"
+
+        -   name: make-working-dir
+            inputs:
+                parameters:
+                    -   name: cc
+                    -   name: org
+                    -   name: uuid
+            container:
+                image: alpine
+                command: [ sh, -c ]
+                args:
+                    - |
+                        set -e
+
+                        CC="{{inputs.parameters.cc}}"
+                        ORG="{{inputs.parameters.org}}"
+                        UUID="{{inputs.parameters.uuid}}"
+
+                        ORG_MOUNT="/mnt/gintra/organizations/$CC/$ORG"
+                        WORKFLOWS_DIR="$ORG_MOUNT/operations/workflows"
+                        AI_DIR="$ORG_MOUNT/operations/ai"
+                        WORKDIR="$WORKFLOWS_DIR/$UUID"
+                        AI_WORKDIR="$AI_DIR/$UUID"
+
+                        printf "Org: %s/%s  UUID: %s\n" "$CC" "$ORG" "$UUID"
+                        printf "NFS mount contents:\n"
+                        ls "$ORG_MOUNT"
+
+                        mkdir -p "$WORKDIR" "$AI_WORKDIR"
+                        printf "Created: %s\n" "$WORKDIR"
+                        printf "Created: %s\n" "$AI_WORKDIR"
+                volumeMounts:
+                    -   name: nfs-has-org
+                        mountPath: /mnt/gintra/organizations/ee/has

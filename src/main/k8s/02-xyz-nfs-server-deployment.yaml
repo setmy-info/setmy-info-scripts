@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: xyz-nfs-server
+    namespace: xyz-dev
+    labels:
+        app: xyz-nfs-server
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: xyz-nfs-server
+    template:
+        metadata:
+            labels:
+                app: xyz-nfs-server
+        spec:
+            containers:
+                -   name: nfs-server
+                    image: itsthenetwork/nfs-server-alpine
+                    securityContext:
+                        privileged: true
+                    env:
+                        -   name: SHARED_DIRECTORY
+                            value: /exports
+                    ports:
+                        -   containerPort: 2049

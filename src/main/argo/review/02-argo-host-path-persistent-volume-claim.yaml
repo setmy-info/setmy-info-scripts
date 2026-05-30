@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: argo-host-path-persistent-volume-claim
+    namespace: review
+spec:
+    accessModes:
+        - ReadWriteOnce
+    storageClassName: manual
+    volumeName: argo-host-path-persistent-volume
+    resources:
+        requests:
+            storage: 5Gi

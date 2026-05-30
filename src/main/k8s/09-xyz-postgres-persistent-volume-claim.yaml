@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: xyz-postgres-persistent-volume-claim
+    namespace: xyz-dev
+spec:
+    accessModes:
+        - ReadWriteOnce
+        #- ReadWriteMany
+    resources:
+        requests:
+            storage: 1Gi
+    #storageClassName: ""
+    #volumeName: xyz-nfs-persistent-volume

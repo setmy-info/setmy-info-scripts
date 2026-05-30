@@ -1,0 +1,250 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+    generateName: argo-wf-
+    namespace: review
+spec:
+    volumes:
+        -   name: shared-storage
+            persistentVolumeClaim:
+                claimName: argo-host-path-persistent-volume-claim
+        -   name: ssh
+            hostPath:
+                path: /host-ssh
+    serviceAccountName: default
+    entrypoint: pipeline
+    arguments:
+        parameters:
+            -   name: uuid
+                value: "427ae6c8-2d17-4e1c-be75-2c43883cdf95"
+            -   name: working-dir
+                value: "example-app"
+            -   name: repo-list
+                value: '[{"url": "git@bitbucket.org:example/example-app.git", "branch": "master", "from": "HEAD~1", "to": "HEAD"}]'
+            -   name: main-project-folder
+                value: "example-app"
+            -   name: agent
+                value: "claude"
+            -   name: mode
+                value: "review"
+    templates:
+        -   name: pipeline
+            steps:
+                -   -   name: setup-dir
+                        template: setup-dir
+                -   -   name: setup-ssh
+                        template: setup-ssh
+                -   -   name: git-clone
+                        template: git-clone
+                        arguments:
+                            parameters:
+                                -   name: repo-url
+                                    value: "{{item.url}}"
+                                -   name: branch
+                                    value: "{{item.branch}}"
+                                -   name: from-commit
+                                    value: "{{item.from}}"
+                                -   name: to-commit
+                                    value: "{{item.to}}"
+                        withParam: "{{workflow.parameters.repo-list}}"
+                -   -   name: generate-diff
+                        template: generate-diff
+                        arguments:
+                            parameters:
+                                -   name: repo-url
+                                    value: "{{item.url}}"
+                                -   name: from-commit
+                                    value: "{{item.from}}"
+                                -   name: to-commit
+                                    value: "{{item.to}}"
+                        withParam: "{{workflow.parameters.repo-list}}"
+                        when: "{{workflow.parameters.mode}} != code && $(basename {{item.url}} .git) == {{workflow.parameters.main-project-folder}}"
+#                -   -   name: create-tasklist
+#                        template: create-tasklist
+#                -   -   name: run-agent
+#                        template: run-agent
+
+        -   name: setup-dir
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                volumeMounts:
+                    -   name: shared-storage
+                        mountPath: "{{workflow.parameters.working-dir}}"
+                command: [ "/bin/sh", "-c" ]
+                args:
+                    - |
+                        echo "Setting up directory: {{workflow.parameters.working-dir}}"
+                        mkdir -p "{{workflow.parameters.working-dir}}/clones/{{workflow.parameters.uuid}}"
+                        mkdir -p "{{workflow.parameters.working-dir}}/.ssh"
+                        ls -la "{{workflow.parameters.working-dir}}"
+                        ls -la "{{workflow.parameters.working-dir}}/clones/{{workflow.parameters.uuid}}"
+                        echo chown -R microservice:microservice "."
+
+        -   name: setup-ssh
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                volumeMounts:
+                    -   name: shared-storage
+                        mountPath: "{{workflow.parameters.working-dir}}"
+                    -   name: ssh
+                        mountPath: /host-ssh
+                command: [ "/bin/sh", "-c" ]
+                args:
+                    - |
+                        echo "Setting up SSH keys..."
+                        cp /host-ssh/id_ed25519 "{{workflow.parameters.working-dir}}/.ssh/id_ed25519"
+                        cp /host-ssh/known_hosts "{{workflow.parameters.working-dir}}/.ssh/known_hosts"
+                        chmod 600 "{{workflow.parameters.working-dir}}/.ssh/id_ed25519"
+                        chmod 644 "{{workflow.parameters.working-dir}}/.ssh/known_hosts"
+                        ls -la "{{workflow.parameters.working-dir}}/.ssh"
+
+        -   name: git-clone
+            inputs:
+                parameters:
+                    -   name: repo-url
+                    -   name: branch
+                    -   name: from-commit
+                    -   name: to-commit
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                volumeMounts:
+                    -   name: shared-storage
+                        mountPath: "{{workflow.parameters.working-dir}}"
+                command: [ "/bin/sh", "-c" ]
+                args:
+                    - |
+                        dnf update -y && \
+                        dnf install -y \
+                            git \
+                        && dnf clean all
+
+                        echo "Cloning to: {{workflow.parameters.working-dir}}/clones/{{workflow.parameters.uuid}}"
+                        cd "{{workflow.parameters.working-dir}}/clones/{{workflow.parameters.uuid}}"
+                        git clone -b "{{inputs.parameters.branch}}" "{{inputs.parameters.repo-url}}"
+
+        -   name: generate-diff
+            inputs:
+                parameters:
+                    -   name: repo-url
+                    -   name: from-commit
+                    -   name: to-commit
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                volumeMounts:
+                    -   name: shared-storage
+                        mountPath: "{{workflow.parameters.working-dir}}"
+                workingDir: "{{workflow.parameters.working-dir}}"
+                command: [ "/bin/sh", "-c" ]
+                args:
+                    - |
+                        dnf update -y && \
+                        dnf install -y \
+                            curl ca-certificates tar gzip \
+                            git \
+                        && dnf clean all
+
+                        REPO_NAME=$(basename "{{inputs.parameters.repo-url}}" .git)
+                        echo "Generating diff for {{workflow.parameters.working-dir}}/clones/{{workflow.parameters.uuid}} in $REPO_NAME"
+                        cd "{{workflow.parameters.working-dir}}/clones/{{workflow.parameters.uuid}}/$REPO_NAME"
+                        git diff "{{inputs.parameters.from-commit}}..{{inputs.parameters.to-commit}}" > "diff.patch" || { echo "Git diff failed"; exit 1; }
+                        cd ../../..
+
+
+        -   name: create-tasklist
+            inputs:
+                parameters:
+                    -   name: repo-url
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                volumeMounts:
+                    -   name: shared-storage
+                        mountPath: "{{workflow.parameters.working-dir}}"
+                workingDir: "{{workflow.parameters.working-dir}}"
+                command: [ "/bin/sh", "-c" ]
+                args:
+                    - |
+                        echo "Installing gettext..."
+                        dnf install -y gettext
+
+                        REPO_NAME=$(basename "{{inputs.parameters.repo-url}}" .git)
+                        cd "{{workflow.parameters.working-dir}}/clones/{{workflow.parameters.uuid}}/$REPO_NAME"
+                        echo "Building tasklist..."
+                        cp -r "{{workflow.parameters.working-dir}}/$REPO_NAME/." .
+                        runuser -u microservice -- smi-build-tasklist
+                        ls -la TASKLIST.md
+                        cd ../../..
+
+
+        -   name: run-agent
+            inputs:
+                parameters:
+                    -   name: repo-url
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                volumeMounts:
+                    -   name: shared-storage
+                        mountPath: "{{workflow.parameters.working-dir}}"
+                workingDir: "{{workflow.parameters.working-dir}}"
+                command: [ "/bin/sh", "-c" ]
+                args:
+                    - |
+                        dnf update -y && \
+                        dnf install -y \
+                            ca-certificates \
+                        && dnf clean all
+
+                        REPO_NAME=$(basename "{{inputs.parameters.repo-url}}" .git)
+                        cd "{{workflow.parameters.working-dir}}/clones/{{workflow.parameters.uuid}}/$REPO_NAME"
+                        if [ ! -f "agent.sh" ]; then
+                          echo "Creating agent.sh..."
+                          cat << 'EOF' > agent.sh
+                        #!/bin/bash
+                        export HOME="{{workflow.parameters.working-dir}}"
+                        export CLAUDE_CONFIG_DIR="$HOME/.claude"
+                        export CURSOR_CONFIG_DIR="$HOME/.cursor"
+                        export LOCAL_CONFIG_DIR="$HOME/.local"
+                        export PATH="$HOME/.local/bin:$HOME/.cursor/bin:$HOME/.claude/bin:$PATH"
+
+                        AGENT="{{workflow.parameters.agent}}"
+
+                        if [ "$AGENT" == "claude" ]; then
+                          mkdir -p "$CLAUDE_CONFIG_DIR"
+                          if ! command -v claude &> /dev/null; then
+                            echo "Installing Claude CLI..."
+                            curl -fsSL https://claude.ai/install.sh | bash
+                          fi
+                          echo "Running Claude Review..."
+                          claude --version
+                          claude --output-format text --dangerously-skip-permissions "Start executing newly written tasklist TASKLIST.md"
+                        elif [ "$AGENT" == "cursor" ]; then
+                          mkdir -p "$CURSOR_CONFIG_DIR"
+                          mkdir -p "$LOCAL_CONFIG_DIR/share/cursor-agent/versions"
+                          if ! command -v agent &> /dev/null; then
+                            echo "Installing Cursor CLI..."
+                            curl https://cursor.com/install -fsS | bash
+                          fi
+                          echo "Running Cursor CLI..."
+                          agent -p "Start executing newly written tasklist TASKLIST.md" --force --trust --output-format text
+                        else
+                          echo "Unknown agent: $AGENT"
+                          exit 1
+                        fi
+                        EOF
+                          chmod a+x agent.sh
+                          chown microservice:microservice agent.sh
+                        fi
+                        echo "Executing as microservice user..."
+                        runuser -u microservice -- ./agent.sh
+                        cd ../../..
+
+                env:
+                    -   name: ANTHROPIC_API_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: ai-secrets
+                                key: anthropic-api-key
+                    -   name: CURSOR_API_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: ai-secrets
+                                key: cursor-api-key

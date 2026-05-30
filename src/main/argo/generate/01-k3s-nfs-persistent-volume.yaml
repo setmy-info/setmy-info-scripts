@@ -1,0 +1,82 @@
+# K3S-specific: PersistentVolume backed by the host machine's own NFS server.
+#
+# This machine (K3S node, 192.168.0.104) IS the NFS server.
+# The NFS export root is a ZFS dataset (pool: tank) mounted at /mnt/gintra.
+#
+# =============================================================================
+# HOST NFS SERVER SETUP (Rocky Linux — run once as root/sudo)
+# =============================================================================
+#
+# 1. Install NFS utilities (also satisfies kubelet NFS mount requirement):
+#      sudo dnf -y install nfs-utils
+#
+# 2. Create gintra group and set permissions on the ZFS mount:
+#      sudo groupadd gintra
+#      sudo chown root:gintra /mnt/gintra
+#      sudo chmod 770 /mnt/gintra
+#      sudo usermod -aG gintra $USER    # add your own user if needed
+#
+# 3. Create the organisation directory structure (if not already present):
+#      sudo mkdir -p /mnt/gintra/organizations/ee/has/development/configuration
+#      sudo mkdir -p /mnt/gintra/organizations/ee/has/operations/ai
+#      sudo mkdir -p /mnt/gintra/organizations/ee/has/operations/workflows
+#      sudo mkdir -p /mnt/gintra/organizations/ee/has/operations/packages
+#      sudo mkdir -p /mnt/gintra/persons
+#      sudo chown -R root:gintra /mnt/gintra
+#      sudo chmod -R 770 /mnt/gintra
+#
+# 4. Create the FHS symlink so smi-* scripts resolve correctly:
+#      sudo mkdir -p /var/opt/setmy.info
+#      sudo ln -s /mnt/gintra /var/opt/setmy.info/gintra
+#
+# 5. Configure /etc/exports:
+#      sudo nano /etc/exports
+#    Add the line:
+#      /mnt/gintra/organizations/ee/has *(rw,sync,no_root_squash)
+#
+# 6. Enable and start NFS services:
+#      sudo systemctl enable --now nfs-server rpcbind
+#
+# 7. Open firewall for NFS:
+#      sudo firewall-cmd --permanent --add-service=nfs
+#      sudo firewall-cmd --permanent --add-service=mountd
+#      sudo firewall-cmd --permanent --add-service=rpc-bind
+#      sudo firewall-cmd --reload
+#
+# 8. Apply the export table:
+#      sudo exportfs -ra
+#
+# 9. Verify:
+#      sudo exportfs -v
+#      showmount -e localhost
+#    Expected output:
+#      Export list for localhost:
+#      /mnt/gintra/organizations/ee/has *
+#
+# =============================================================================
+# APPLYING THIS FILE
+# =============================================================================
+#
+# Update nfs.server below if the node IP changes (kubectl get nodes -o wide).
+# Pods reach the host via the K3S CNI bridge (cni0), not the physical NIC.
+#   cni0:  10.42.0.1   — use this as nfs.server (pod-network-facing)
+#   eth0:  192.168.0.104 — physical NIC, not reachable from pods for NFS
+#
+# Verify: showmount -e 10.42.0.1
+#
+# Apply:
+#   kubectl apply -f 01-k3s-nfs-persistent-volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: generator-nfs-persistent-volume
+spec:
+    capacity:
+        storage: 10Gi
+    accessModes:
+        - ReadWriteMany
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: ""
+    nfs:
+        server: 10.42.0.1
+        path: /mnt/gintra/organizations/ee/has

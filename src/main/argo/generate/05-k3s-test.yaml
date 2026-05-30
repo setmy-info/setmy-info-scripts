@@ -1,0 +1,30 @@
+# K3S-specific: test pod that mounts the NFS PVC and verifies the directory tree.
+# Unlike 05-generator-test.yaml (minikube in-cluster NFS), this uses the host's
+# NFS export via PVC — no manual mount or privileged container needed.
+#
+# The PVC root (/mnt/gintra/organizations/ee/has on the host) is mounted at the
+# same path inside the pod to match the ZFS.md directory convention.
+#
+# Usage:
+#   kubectl apply -f 05-k3s-test.yaml
+#   kubectl exec -it nfs-persistent-volume-claim-test -n generator -- sh
+#     ls /mnt/gintra/organizations/ee/has                      # development  operations
+#     ls /mnt/gintra/organizations/ee/has/operations           # ai  packages  workflows
+#   kubectl delete -f 05-k3s-test.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: nfs-persistent-volume-claim-test
+    namespace: generator
+spec:
+    containers:
+        -   name: client
+            image: alpine
+            command: [ "sh", "-c", "sleep 3600" ]
+            volumeMounts:
+                -   name: nfs-has-org
+                    mountPath: /mnt/gintra/organizations/ee/has
+    volumes:
+        -   name: nfs-has-org
+            persistentVolumeClaim:
+                claimName: generator-nfs-persistent-volume-claim

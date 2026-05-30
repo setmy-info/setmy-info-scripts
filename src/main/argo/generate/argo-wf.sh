@@ -78,7 +78,7 @@ SCRIPT_DIR=$(dirname "$0")
 
 printf "Submitting: cc=%s org=%s model=%s uuid=%s\n" "$CC" "$ORG" "$MODEL" "$UUID"
 
-argo submit -n generator --watch \
+argo submit -n generator \
     -p cc="$CC" \
     -p org="$ORG" \
     -p uuid="$UUID" \

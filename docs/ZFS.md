@@ -51,10 +51,18 @@ mount point and extend the path with their dataset name.
 | `tank/organizations`            | `/mnt/gintra/organizations`            | structural        |
 | `tank/organizations/<cc>`       | `/mnt/gintra/organizations/<cc>`       | structural        |
 | `tank/organizations/<cc>/<org>` | `/mnt/gintra/organizations/<cc>/<org>` | holds actual data |
+| `tank/organizations/<cc>/<org>/operations/packages` | `/mnt/gintra/organizations/<cc>/<org>/operations/packages` | per-org pkg cache (optional sub-dataset) |
 
 All datasets share the same pool quota so AVAIL is the same for every level.
 Only the leaf dataset `tank/organizations/<cc>/<org>` holds actual data; the
 three ancestor datasets are structural containers.
+
+Concrete example (current installation):
+
+| Dataset                     | Mount point                        |
+|-----------------------------|------------------------------------|
+| `tank/organizations/ee`     | `/mnt/gintra/organizations/ee`     |
+| `tank/organizations/ee/has` | `/mnt/gintra/organizations/ee/has` |
 
 Dataset properties (from `mount` output):
 
@@ -71,7 +79,19 @@ tank
 └── organizations          # top-level grouping for all organisations
     └── <cc>               # ISO 3166-1 alpha-2 country code
         └── <org>          # organisation short name
+            ├── development/
+            │   └── configuration/
+            │       └── pki/
+            └── operations/
+                ├── ai/
+                ├── packages/
+                └── workflows/
 ```
+
+Within each org dataset the directory layout separates long-lived configuration
+(`development/`) from runtime workloads (`operations/`). This is a plain
+directory convention inside a single ZFS dataset, not separate child datasets
+(unless explicitly created as such).
 
 This mirrors the path convention used by `smi-organization-location`:
 
@@ -228,6 +248,11 @@ source. Do not use in new scripts.
 #/var/opt/setmy.info/diskless/home *(rw,sync,no_root_squash)
 #/var/opt/setmy.info/diskless/var *(rw,sync,no_root_squash)
 ```
+
+The `operations/packages` directory lives inside the org dataset and is
+automatically covered by the org export. No separate export entry is needed.
+The export uses `rw` so a dedicated Argo download step can write packages
+into the cache; install pods use `readOnly: true` in their volumeMount.
 
 The export path uses the actual ZFS filesystem mount path, not the ZFS dataset
 name. NFS requires real filesystem paths — dataset names (e.g. `tank/…`) are
@@ -559,19 +584,37 @@ runs cannot access each other's working directories.
 ### ZFS Dataset Structure (planned)
 
 ```
-tank/organizations/<cc>/<org>               # org root dataset
-tank/organizations/<cc>/<org>/ai            # AI-specific data (optional sub-dataset)
+tank/organizations/<cc>/<org>                        # org root dataset
+tank/organizations/<cc>/<org>/operations/ai          # AI sub-dataset (optional)
 ```
 
-Working directories inside the org dataset (plain directories, not datasets):
+Directory layout inside each org dataset (plain directories unless noted):
 
 ```
-<org-root>/workflows/<workflow-uuid>/       # general workflow workspace
-<org-root>/ai/<workflow-uuid>/              # AI workflow workspace
+<org-root>/
+├── development/
+│   └── configuration/
+│       └── pki/                                     # CA and domain certs
+└── operations/
+    ├── ai/
+    │   └── <workflow-uuid>/                         # AI workflow workspace
+    └── workflows/
+        └── <workflow-uuid>/                         # general workflow workspace
 ```
 
-These UUID directories are created at workflow start by an init container and
-destroyed (or archived) at workflow end.
+The `operations/` subtree holds all runtime workload data. UUID directories
+under `operations/workflows/` and `operations/ai/` are created at workflow
+start by an init container and destroyed (or archived) at workflow end.
+
+Concrete example (`ee/has`):
+
+```
+/mnt/gintra/organizations/ee/has/
+├── development/configuration/pki/
+└── operations/
+    ├── ai/
+    └── workflows/
+```
 
 ### PV / PVC Naming Convention
 
@@ -678,7 +721,7 @@ container:
 Inside the container:
 
 - `smi-organization-location $SMI_CC $SMI_ORG` → `/mnt/gintra/organizations/<cc>/<org>`
-- `smi-workflow-workspace-location` → `$(smi-organization-location ...)/workflows/<uuid>`
+- `smi-workflow-workspace-location` → `$(smi-organization-location ...)/operations/workflows/<uuid>`
 
 #### Pattern 2 — UUID-isolated general workspace
 
@@ -724,16 +767,16 @@ container:
     - name: SMI_WF_UUID
       value: "{{workflow.uid}}"
     - name: SMI_WORKSPACE
-      value: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/workflows/{{workflow.uid}}
+      value: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/workflows/{{workflow.uid}}
   volumeMounts:
     - name: org-data
-      mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/workflows/{{workflow.uid}}
-      subPath: "workflows/{{workflow.uid}}"
+      mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/workflows/{{workflow.uid}}
+      subPath: "operations/workflows/{{workflow.uid}}"
 ```
 
 Inside the container:
 
-- `smi-workflow-workspace-location` reads `$SMI_WORKSPACE` → `/mnt/gintra/organizations/<cc>/<org>/workflows/<uuid>`
+- `smi-workflow-workspace-location` reads `$SMI_WORKSPACE` → `/mnt/gintra/organizations/<cc>/<org>/operations/workflows/<uuid>`
 - The container cannot access any sibling UUID directory (K8s subPath enforcement)
 - `smi-organization-location` is NOT available in this pattern (org root not mounted)
 
@@ -769,11 +812,11 @@ container:
     - name: SMI_WF_UUID
       value: "{{workflow.uid}}"
     - name: SMI_AI_WORKSPACE
-      value: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/ai/{{workflow.uid}}
+      value: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/ai/{{workflow.uid}}
   volumeMounts:
     - name: org-data
-      mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/ai/{{workflow.uid}}
-      subPath: "ai/{{workflow.uid}}"
+      mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/ai/{{workflow.uid}}
+      subPath: "operations/ai/{{workflow.uid}}"
 ```
 
 #### Pattern 4 — Full org access + UUID workspace combined
@@ -815,21 +858,26 @@ container:
     - name: org-data
       mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}
     - name: org-data
-      mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/workflows/{{workflow.uid}}
-      subPath: "workflows/{{workflow.uid}}"
+      mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/workflows/{{workflow.uid}}
+      subPath: "operations/workflows/{{workflow.uid}}"
 ```
 
 ### Workspace Isolation Guarantee
 
 ```
 org PVC root  =  /mnt/gintra/organizations/<cc>/<org>/
-├── workflows/
-│   ├── <uuid-A>/  ← pod A subPath mount at .../workflows/<uuid-A>  (only this visible)
-│   ├── <uuid-B>/  ← pod B subPath mount at .../workflows/<uuid-B>  (only this visible)
-│   └── <uuid-C>/  ← pod C subPath mount at .../workflows/<uuid-C>  (only this visible)
-└── ai/
-    ├── <uuid-D>/  ← AI pod D subPath mount at .../ai/<uuid-D>  (only this visible)
-    └── <uuid-E>/  ← AI pod E subPath mount at .../ai/<uuid-E>  (only this visible)
+├── development/
+│   └── configuration/
+│       └── pki/
+└── operations/
+    ├── ai/
+    │   ├── <uuid-D>/  ← AI pod D subPath mount at .../operations/ai/<uuid-D>  (only this visible)
+    │   └── <uuid-E>/  ← AI pod E subPath mount at .../operations/ai/<uuid-E>  (only this visible)
+    ├── packages/      ← pkg cache; downloader writes, installer pods mount read-only
+    └── workflows/
+        ├── <uuid-A>/  ← pod A subPath mount at .../operations/workflows/<uuid-A>  (only this visible)
+        ├── <uuid-B>/  ← pod B subPath mount at .../operations/workflows/<uuid-B>  (only this visible)
+        └── <uuid-C>/  ← pod C subPath mount at .../operations/workflows/<uuid-C>  (only this visible)
 ```
 
 Paths accessed via `smi-workflow-workspace-location` and
@@ -867,7 +915,7 @@ templates:
         - sh
         - -c
         - |
-          ARCHIVE=$(smi-organization-location ${SMI_CC} ${SMI_ORG})/workflows/archive
+          ARCHIVE=$(smi-organization-location ${SMI_CC} ${SMI_ORG})/operations/workflows/archive
           mkdir -p ${ARCHIVE}
           mv $(smi-workflow-workspace-location) ${ARCHIVE}/
       volumeMounts:
@@ -886,10 +934,10 @@ templates:
 | `smi-k8s-org-pvc-create <cc> <org>`  | Generates and applies PVC manifest bound to the org PV                                                                   |
 | `smi-k8s-org-provision <cc> <org>`   | Full setup: ZFS dataset + PV + PVC in one call                                                                           |
 | `smi-zfs-org-create <cc> <org>`      | Creates ZFS dataset `tank/organizations/<cc>/<org>` if not yet existing                                                  |
-| `smi-workflow-workspace-location`    | Returns `$(smi-organization-location <cc> <org>)/workflows/<uuid>`, or `$SMI_WORKSPACE` if set (UUID-only mount pattern) |
-| `smi-workflow-ai-workspace-location` | Returns `$(smi-organization-location <cc> <org>)/ai/<uuid>`, or `$SMI_AI_WORKSPACE` if set                               |
-| `smi-packages-shared-location`       | Returns `/mnt/gintra/packages` (or `$SMI_SHARED_PACKAGES_DIR`); used to set `SMI_HOME_PACKAGES_DIR` in pod templates     |
-| `smi-k8s-packages-provision`         | One-time setup: creates `tank/packages` ZFS dataset + PV + PVC for the shared packages store                             |
+| `smi-workflow-workspace-location`    | Returns `$(smi-organization-location <cc> <org>)/operations/workflows/<uuid>`, or `$SMI_WORKSPACE` if set (UUID-only mount pattern) |
+| `smi-workflow-ai-workspace-location` | Returns `$(smi-organization-location <cc> <org>)/operations/ai/<uuid>`, or `$SMI_AI_WORKSPACE` if set                               |
+| `smi-packages-shared-location <cc> <org>` | Returns `$(smi-organization-location <cc> <org>)/operations/packages` (or `$SMI_SHARED_PACKAGES_DIR`); used to set `SMI_HOME_PACKAGES_DIR` in pod templates |
+| `smi-k8s-packages-provision <cc> <org>`   | One-time per-org setup: creates `operations/packages` directory (or ZFS sub-dataset) + PV + PVC for the org's package cache                                 |
 
 #### Existing scripts — no changes required
 
@@ -933,7 +981,7 @@ if [ -n "${SMI_WORKSPACE}" ] && [ $# -eq 0 ]; then
     echo "${SMI_WORKSPACE}"
     exit 0
 fi
-echo "$(smi-organization-location ${CC} ${ORG})/workflows/${UUID}"
+echo "$(smi-organization-location ${CC} ${ORG})/operations/workflows/${UUID}"
 exit 0
 ```
 
@@ -948,7 +996,7 @@ if [ -n "${SMI_AI_WORKSPACE}" ] && [ $# -eq 0 ]; then
     echo "${SMI_AI_WORKSPACE}"
     exit 0
 fi
-echo "$(smi-organization-location ${CC} ${ORG})/ai/${UUID}"
+echo "$(smi-organization-location ${CC} ${ORG})/operations/ai/${UUID}"
 exit 0
 ```
 
@@ -961,7 +1009,7 @@ exit 0
   per-org Kubernetes namespace? Per-org namespace gives stronger RBAC isolation.
 
 - **AI sub-dataset**: Should `ai/` be a plain directory inside the org dataset
-  or a separate ZFS dataset (`tank/organizations/<cc>/<org>/ai`)? A separate
+  or a separate ZFS dataset (`tank/organizations/<cc>/<org>/operations/ai`)? A separate
   dataset allows independent snapshots and quotas for AI data.
 
 - **Workspace cleanup**: Archive vs delete on workflow exit? Who triggers cleanup
@@ -993,14 +1041,19 @@ Only the downloaded binaries live in the shared dataset.
 #### ZFS Dataset
 
 ```
-tank/packages       # shared across all tenants and organisations
+tank/organizations/<cc>/<org>/operations/packages       # per-org package cache (optional sub-dataset)
 ```
 
-Mounted at `/mnt/gintra/packages` — consistent with the gintra mount tree.
+This is a plain directory inside the org dataset by default. Creating it as an
+explicit ZFS sub-dataset enables independent quotas and snapshots for the
+package cache.
 
 ```bash
-sudo zfs create tank/packages
-# path: /mnt/gintra/packages  (inherits pool root mountpoint)
+# As a plain directory (simplest):
+mkdir -p /mnt/gintra/organizations/<cc>/<org>/operations/packages
+
+# As a dedicated ZFS sub-dataset (optional, for quota/snapshot control):
+sudo zfs create -p tank/organizations/<cc>/<org>/operations/packages
 ```
 
 #### How smi-* Scripts Are Redirected
@@ -1016,7 +1069,7 @@ fi
 echo "${SMI_HOME_PACKAGES_DIR}"
 ```
 
-Setting `SMI_HOME_PACKAGES_DIR=/mnt/gintra/packages` in the pod environment
+Setting `SMI_HOME_PACKAGES_DIR=/mnt/gintra/organizations/<cc>/<org>/operations/packages` in the pod environment
 redirects both `smi-download-package` and `smi-install-package` to the shared
 dataset. No script changes required.
 
@@ -1030,59 +1083,73 @@ location scripts and usable both on the host and inside containers.
 
 ```sh
 #!/bin/sh
+CC=${1:-${SMI_CC}}
+ORG=${2:-${SMI_ORG}}
 if [ -n "${SMI_SHARED_PACKAGES_DIR}" ]; then
     echo "${SMI_SHARED_PACKAGES_DIR}"
     exit 0
 fi
-echo "$(smi-gintra-mount-location)/packages"
+echo "$(smi-organization-location ${CC} ${ORG})/operations/packages"
 exit 0
 ```
 
-Output: `/mnt/gintra/packages`
+Output: `/mnt/gintra/organizations/<cc>/<org>/operations/packages`
 
 Used to set `SMI_HOME_PACKAGES_DIR` in pod templates:
 
 ```yaml
 env:
   - name: SMI_HOME_PACKAGES_DIR
-    value: /mnt/gintra/packages   # or: $(smi-packages-shared-location)
+    value: /mnt/gintra/organizations/<cc>/<org>/operations/packages   # or: $(smi-packages-shared-location)
 ```
 
 #### PV / PVC for Packages
 
-The packages PVC uses `ReadWriteMany` (NFS) so the downloader pod and
-installer pods can all mount it simultaneously.
+Packages are per-org. The PVC name follows the same `<cc>-<org>` pattern as
+the org PVC. The downloader pod mounts it `ReadWrite`; installer pods mount
+it `ReadOnly`. On single-node K3S the org PVC itself (`gintra-pvc-<cc>-<org>`)
+already covers the `operations/packages` subdirectory via `subPath` — a
+separate packages PVC is only needed when the packages path must be mounted
+independently (e.g. in multi-node NFS setups or when the full org PVC is not
+available).
 
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: gintra-pv-packages
+  name: gintra-pv-<cc>-<org>-packages
+  labels:
+    gintra-cc: <cc>
+    gintra-org: <org>
 spec:
   capacity:
-    storage: 200Gi
+    storage: 50Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: <nfs-server-ip>
-    path: /mnt/gintra/packages
+    path: /mnt/gintra/organizations/<cc>/<org>/operations/packages
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: gintra-pvc-packages
+  name: gintra-pvc-<cc>-<org>-packages
   namespace: argo
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 200Gi
+      storage: 50Gi
+  selector:
+    matchLabels:
+      gintra-cc: <cc>
+      gintra-org: <org>
 ```
 
-For single-node K3S without NFS, local storage with `ReadWriteOnce` also
-works — multiple pods on the same node can share a RWO PVC simultaneously.
+For single-node K3S without NFS, use the org PVC with `subPath: operations/packages`
+instead of a dedicated packages PVC.
 
 #### Argo WF: Download Step
 
@@ -1098,19 +1165,23 @@ re-run safely to refresh the cache.
   volumes:
     - name: pkg-store
       persistentVolumeClaim:
-        claimName: gintra-pvc-packages
+        claimName: "gintra-pvc-{{inputs.parameters.cc}}-{{inputs.parameters.org}}-packages"
   container:
     image: <base-image>
     env:
+      - name: SMI_CC
+        value: "{{inputs.parameters.cc}}"
+      - name: SMI_ORG
+        value: "{{inputs.parameters.org}}"
       - name: SMI_HOME_PACKAGES_DIR
-        value: /mnt/gintra/packages
+        value: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/packages
     command:
       - sh
       - -c
       - smi-download-package {{inputs.parameters.packages}}
     volumeMounts:
       - name: pkg-store
-        mountPath: /mnt/gintra/packages
+        mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/packages
 ```
 
 #### Pod: Install from Shared Cache
@@ -1123,22 +1194,22 @@ downloading anything.
 volumes:
   - name: pkg-store
     persistentVolumeClaim:
-      claimName: gintra-pvc-packages
-      readOnly: true
+        claimName: "gintra-pvc-{{inputs.parameters.cc}}-{{inputs.parameters.org}}-packages"
+        readOnly: true
 container:
   env:
     - name: SMI_HOME_PACKAGES_DIR
-      value: /mnt/gintra/packages
+      value: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/packages
   volumeMounts:
     - name: pkg-store
-      mountPath: /mnt/gintra/packages
+      mountPath: /mnt/gintra/organizations/{{inputs.parameters.cc}}/{{inputs.parameters.org}}/operations/packages
       readOnly: true
 ```
 
 Inside the container:
 
 ```sh
-smi-install-package groovy       # reads from /mnt/gintra/packages, no download
+smi-install-package groovy       # reads from /mnt/gintra/organizations/<cc>/<org>/operations/packages, no download
 smi-install-package gradle cmake # multiple packages in one call
 ```
 
@@ -1147,9 +1218,10 @@ smi-install-package gradle cmake # multiple packages in one call
 Wraps the one-time setup of the packages dataset and its PV/PVC:
 
 ```
-1. zfs create tank/packages
-2. Apply PV manifest for gintra-pv-packages → kubectl apply -f -
-3. Apply PVC manifest for gintra-pvc-packages → kubectl apply -f -
+1. mkdir -p /mnt/gintra/organizations/<cc>/<org>/operations/packages
+   (or: zfs create -p tank/organizations/<cc>/<org>/operations/packages for sub-dataset)
+2. Apply PV manifest for gintra-pv-<cc>-<org>-packages → kubectl apply -f -
+3. Apply PVC manifest for gintra-pvc-<cc>-<org>-packages → kubectl apply -f -
 4. Wait for PVC to bind
 ```
 
@@ -1170,8 +1242,8 @@ Wraps the one-time setup of the packages dataset and its PV/PVC:
 
 Creating a fresh PVC for every workflow run would require dynamic ZFS dataset
 provisioning (e.g. democratic-csi) and leaves many short-lived PV/PVC objects
-in the cluster to clean up. Using `subPath: workflows/<uuid>` on a single
-pre-existing per-org PVC achieves the same isolation with no extra K8s objects
+in the cluster to clean up. Using `subPath: operations/workflows/<uuid>` on a
+single pre-existing per-org PVC achieves the same isolation with no extra K8s objects
 and no provisioner dependency. The UUID subdirectory is just a directory on the
 ZFS dataset.
 
@@ -1202,11 +1274,11 @@ choice in the original FHS-based path layout.
 
 In Pattern 2 and 3 the org PVC root is not mounted — only the UUID workspace
 subdirectory is mounted at its full canonical path. However, the parent
-directories (`/mnt/gintra/organizations/<cc>/<org>/workflows/`) are just
+directories (`/mnt/gintra/organizations/<cc>/<org>/operations/workflows/`) are just
 empty path components created by the container's own filesystem overlay; they
 do not need to contain real data for `smi-*` scripts to work.
 
-When the mountPath is `/mnt/gintra/organizations/<cc>/<org>/workflows/<uuid>`,
+When the mountPath is `/mnt/gintra/organizations/<cc>/<org>/operations/workflows/<uuid>`,
 the container automatically has those parent directories as empty dirs in its
 overlayfs. This means:
 
@@ -1230,16 +1302,19 @@ UUID workspace isolation layer on top.
 #### AI workspace separation rationale
 
 AI workloads often produce large intermediate artefacts (model checkpoints,
-embeddings, generated files). Keeping these under `ai/<uuid>/` rather than
-`workflows/<uuid>/` allows:
+embeddings, generated files). Keeping these under `operations/ai/<uuid>/`
+rather than `operations/workflows/<uuid>/` allows:
 
-- separate quota tracking if `ai/` becomes a ZFS sub-dataset later
+- separate quota tracking if `operations/ai/` becomes a ZFS sub-dataset later
 - independent snapshot/backup policies for AI artefacts vs general workflow output
 - clear separation when browsing the org dataset manually
 
-The choice between `ai/` as a plain directory vs a dedicated ZFS sub-dataset
-(`tank/organizations/<cc>/<org>/ai`) is left as an open question — both work
-with the subPath mechanism.
+The `operations/` parent groups all runtime workload output together, separating
+it from long-lived configuration under `development/`.
+
+The choice between `operations/ai/` as a plain directory vs a dedicated ZFS
+sub-dataset (`tank/organizations/<cc>/<org>/operations/ai`) is left as an open question —
+both work with the subPath mechanism.
 
 #### StorageClass definition (to be created once)
 
@@ -1291,9 +1366,9 @@ code can identify their execution context without hard-coding values:
 | `SMI_CC`                | country code                                            | Argo input parameter       |
 | `SMI_ORG`               | organisation short name                                 | Argo input parameter       |
 | `SMI_WF_UUID`           | workflow UID                                            | `{{workflow.uid}}`         |
-| `SMI_WORKSPACE`         | `/mnt/gintra/organizations/<cc>/<org>/workflows/<uuid>` | set in pattern 2 pods      |
-| `SMI_AI_WORKSPACE`      | `/mnt/gintra/organizations/<cc>/<org>/ai/<uuid>`        | set in pattern 3 pods      |
-| `SMI_HOME_PACKAGES_DIR` | `/mnt/gintra/packages`                                  | set when using shared pkgs |
+| `SMI_WORKSPACE`         | `/mnt/gintra/organizations/<cc>/<org>/operations/workflows/<uuid>` | set in pattern 2 pods      |
+| `SMI_AI_WORKSPACE`      | `/mnt/gintra/organizations/<cc>/<org>/operations/ai/<uuid>`        | set in pattern 3 pods      |
+| `SMI_HOME_PACKAGES_DIR` | `/mnt/gintra/organizations/<cc>/<org>/operations/packages`                                  | set when using org pkg cache |
 
 `smi-workflow-workspace-location` and `smi-workflow-ai-workspace-location`
 read `$SMI_WORKSPACE` / `$SMI_AI_WORKSPACE` so the mount path can be
@@ -1306,24 +1381,24 @@ overridden without changing scripts. `smi-home-packages-location` reads
 Argo WF triggered with params: cc=<cc>, org=<org>
   │
   ├─ Pre-conditions (one-time setup):
-  │   gintra-pvc-<cc>-<org>  created by smi-k8s-org-provision
-  │   gintra-pvc-packages    created by smi-k8s-packages-provision
+  │   gintra-pvc-<cc>-<org>          created by smi-k8s-org-provision
+  │   gintra-pvc-<cc>-<org>-packages created by smi-k8s-packages-provision <cc> <org>
   │
   ├─ initContainer:
   │   mount org PVC → /mnt/gintra/organizations/<cc>/<org>
   │   mkdir -p $(smi-workflow-workspace-location)
   │
   ├─ main container:
-  │   mount org PVC → /mnt/gintra/organizations/<cc>/<org>          (full access)
-  │   mount org PVC → .../workflows/<uuid>  subPath workflows/<uuid> (workspace)
-  │   mount packages PVC → /mnt/gintra/packages                     (read-only)
+  │   mount org PVC → /mnt/gintra/organizations/<cc>/<org>                           (full access)
+  │   mount org PVC → .../operations/workflows/<uuid>  subPath operations/workflows/<uuid> (workspace)
+  │   mount packages PVC → .../operations/packages  subPath operations/packages  (read-only)
   │   env: SMI_CC, SMI_ORG, SMI_WF_UUID
-  │   env: SMI_WORKSPACE=.../workflows/<uuid>
-  │   env: SMI_HOME_PACKAGES_DIR=/mnt/gintra/packages
+  │   env: SMI_WORKSPACE=.../operations/workflows/<uuid>
+  │   env: SMI_HOME_PACKAGES_DIR=.../organizations/<cc>/<org>/operations/packages
   │   smi-install-package <name>  ← installs from shared packages PVC
   │   smi-* path scripts work normally via symlink chain
   │
-  └─ onExit: archive or delete workflows/<uuid>
+  └─ onExit: archive or delete operations/workflows/<uuid>
 ```
 
 ---
@@ -1336,9 +1411,15 @@ Root:    /mnt/gintra                           (smi-gintra-mount-location)
 Data:    /mnt/gintra/organizations/<cc>/<org>  (ZFS dataset per organisation)
 
 Logical: /var/opt/setmy.info/gintra -> /mnt/gintra   (symlink, FHS)
-         └── organizations/
+         ├── organizations/
          │   └── <cc>/
-         │       └── <org>/         ← ZFS dataset tank/organizations/<cc>/<org>
+         │       └── <org>/               ← ZFS dataset tank/organizations/<cc>/<org>
+         │           ├── development/
+         │           │   └── configuration/pki/
+         │           └── operations/
+         │               ├── ai/          ← AI workflow workspaces
+         │               ├── packages/    ← per-org pkg cache
+         │               └── workflows/   ← general workflow workspaces
          └── persons/
 
 NFS:     /mnt/gintra/organizations/<cc>/<org> *(rw,sync,no_root_squash)

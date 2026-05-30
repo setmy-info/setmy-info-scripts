@@ -1,0 +1,48 @@
+# Minikube-specific: PersistentVolume backed by the host machine's NFS server.
+#
+# The host machine IS the NFS server (same machine running Minikube).
+# The NFS export root is a ZFS dataset (pool: tank) mounted at /mnt/gintra.
+# See docs/ZFS.md for the full directory structure.
+#
+# =============================================================================
+# HOST NFS SERVER SETUP (same as K3S — run once as root/sudo)
+# =============================================================================
+# See 01-k3s-nfs-persistent-volume.yaml for the full setup procedure.
+# The NFS export and firewall rules are shared between K3S and Minikube.
+#
+# =============================================================================
+# MINIKUBE NODE NFS CLIENT
+# =============================================================================
+# Kubelet needs nfs-common to mount NFS volumes.  Install once after
+# minikube start (docker driver, Ubuntu-based node image):
+#
+#   minikube ssh "sudo apt-get update -q && sudo apt-get install -y nfs-common"
+#
+# Verify the host NFS export is reachable from inside Minikube:
+#   minikube ssh "showmount -e 192.168.49.1"
+#
+# =============================================================================
+# NFS SERVER ADDRESS
+# =============================================================================
+# Minikube docker driver uses 192.168.49.1 as the host gateway by default.
+# Verify with:
+#   minikube ssh "ip route show default | awk '{print \$3}'"
+#
+# Update nfs.server below if your host gateway differs.
+#
+# Apply:
+#   kubectl apply -f 01-minikube-nfs-persistent-volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: generator-nfs-persistent-volume
+spec:
+    capacity:
+        storage: 10Gi
+    accessModes:
+        - ReadWriteMany
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: ""
+    nfs:
+        server: 192.168.49.1
+        path: /mnt/gintra/organizations/ee/has

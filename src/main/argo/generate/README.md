@@ -5,32 +5,33 @@ Two parallel setup tracks share common RBAC and secrets files.
 
 ## File Ordering
 
-| #  | Minikube                                  | K3S                                              |
-|----|-------------------------------------------|--------------------------------------------------|
-| 00 | `00-generator-namespace.yaml`             | `00-generator-namespace.yaml`                    |
-| 01 | —                                         | `01-k3s-nfs-persistent-volume.yaml`              |
-| 02 | —                                         | `02-k3s-nfs-persistent-volume-claim.yaml`        |
-| 03 | `03-generator-nfs-server-deployment.yaml` | —                                                |
-| 04 | `04-generator-nfs-server-service.yaml`    | —                                                |
-| 05 | `05-generator-test.yaml`                  | `05-k3s-test.yaml`                               |
-| 06 | `06-generator-secrets-map.yaml`           | `06-generator-secrets-map.yaml`                  |
-| 07 | `07-generator-role.yaml`                  | `07-generator-role.yaml`                         |
-| 08 | `08-generator-rolebinding.yaml`           | `08-generator-rolebinding.yaml`                  |
-| 09 | `09-generator-argo.yaml`                  | `09-k3s-generator-argo.yaml`                     |
+| #  | Generic (both)                  | Minikube                                       | K3S                                         |
+|----|---------------------------------|------------------------------------------------|---------------------------------------------|
+| 00 | `00-generator-namespace.yaml`   | —                                              | —                                           |
+| 01 | —                               | `01-minikube-nfs-persistent-volume.yaml`       | `01-k3s-nfs-persistent-volume.yaml`         |
+| 02 | —                               | `02-minikube-nfs-persistent-volume-claim.yaml` | `02-k3s-nfs-persistent-volume-claim.yaml`   |
+| 05 | —                               | `05-minikube-test.yaml`                        | `05-k3s-test.yaml`                          |
+| 06 | `06-generator-secrets-map.yaml` | —                                              | —                                           |
+| 07 | `07-generator-role.yaml`        | —                                              | —                                           |
+| 08 | `08-generator-rolebinding.yaml` | —                                              | —                                           |
+| 09 | —                               | `09-minikube-generator-argo.yaml`              | `09-k3s-generator-argo.yaml`                |
+| 10 | —                               | —                                              | `10-k3s-argo-serversTransport.yaml`         |
+| 11 | —                               | —                                              | `11-k3s-argo-ingressroute.yaml`             |
 
-Files named `*-generator-*` are Minikube-specific. Files named `*-k3s-*` are K3S-specific.
-Shared files (06–08) carry the `generator` prefix and apply to both tracks.
-PersistentVolume/PersistentVolumeClaim (01–02) always precede Deployment/Service (03–04).
+Naming convention: `*-minikube-*` = Minikube-specific, `*-k3s-*` = K3S-specific, `*-generator-*` = shared.
+Both platforms use the host machine's NFS server — no in-cluster NFS deployment.
+The PVC name `generator-nfs-persistent-volume-claim` is the same on both platforms so the workflow YAML is identical.
 
 ## Scripts
 
-| Script              | Platform | Purpose                                                              |
-|---------------------|----------|----------------------------------------------------------------------|
-| `k3s-setup.sh`      | K3S      | One-time setup: applies PV, PVC, RBAC, secrets                      |
-| `k3s-teardown.sh`   | K3S      | Remove all generator resources to start fresh                        |
-| `argo-wf.sh`        | K3S      | Submit workflow with auto-generated UUID                             |
-| `minikube-start.cmd`| Minikube | Start Minikube with host folder mount                                |
-| `argo-wf.cmd`       | Minikube | Submit workflow with auto-generated UUID                             |
+| Script               | Platform        | Purpose                                              |
+|----------------------|-----------------|------------------------------------------------------|
+| `k3s-setup.sh`       | K3S             | One-time setup: applies PV, PVC, RBAC, secrets, ingress |
+| `k3s-teardown.sh`    | K3S             | Remove all generator resources to start fresh        |
+| `argo-wf.sh`         | K3S             | Submit workflow with auto-generated UUID             |
+| `minikube-setup.sh`  | Minikube/Linux  | One-time setup: applies PV, PVC, RBAC, secrets      |
+| `minikube-start.cmd` | Minikube/Windows| Start Minikube (docker driver)                       |
+| `argo-wf.cmd`        | Minikube/Windows| Submit workflow with auto-generated UUID             |
 
 ## K3S Kubeconfig
 
@@ -46,7 +47,7 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
 ```sh
 # 0. Verify Argo Workflows is installed and running
-argo submit -n argo --watch 00-k3s-argo-hello-world.yaml
+argo submit -n argo --watch ../check/00-argo-hello-world.yaml
 argo logs @latest -n argo
 
 # 1. One-time setup (see k3s-setup.sh header for Argo Workflows install instructions)
@@ -79,16 +80,35 @@ What it deletes, in order:
 
 After teardown, re-run `sh k3s-setup.sh` to set everything up again.
 
-## Quick Start (Minikube)
+## Quick Start (Minikube — Linux)
+
+```sh
+# 0. Start Minikube and install NFS client in the node
+minikube start --driver=docker
+minikube ssh "sudo apt-get update -q && sudo apt-get install -y nfs-common"
+
+# 1. Verify host NFS export is reachable (host gateway is typically 192.168.49.1)
+minikube ssh "showmount -e 192.168.49.1"
+
+# 2. One-time setup
+sh minikube-setup.sh
+
+# 3. Verify NFS mount via test pod (optional)
+kubectl apply -f 05-minikube-test.yaml
+kubectl exec -it nfs-persistent-volume-claim-test -n generator -- ls /mnt/gintra/organizations/ee/has
+kubectl delete -f 05-minikube-test.yaml
+
+# 4. Submit workflow
+argo submit -n generator --watch 09-minikube-generator-argo.yaml
+```
+
+## Quick Start (Minikube — Windows)
 
 ```cmd
 minikube-start.cmd
-kubectl apply -f 00-generator-namespace.yaml
-kubectl apply -f 03-generator-nfs-server-deployment.yaml
-kubectl apply -f 04-generator-nfs-server-service.yaml
-kubectl apply -f 06-generator-secrets-map.yaml
-kubectl apply -f 07-generator-role.yaml
-kubectl apply -f 08-generator-rolebinding.yaml
+minikube ssh "sudo apt-get update -q && sudo apt-get install -y nfs-common"
+REM update 01-minikube-nfs-persistent-volume.yaml: set nfs.server to the Windows host IP
+REM  (run: minikube ssh "ip route show default" to find it)
 argo-wf.cmd
 ```
 
@@ -150,7 +170,7 @@ container:
 `--print` (short: `-p`) runs Claude non-interactively and exits — required for
 automated workflow steps where there is no terminal.
 
-## NFS Directory Structure (K3S host)
+## NFS Directory Structure (host — shared by K3S and Minikube)
 
 The K3S node exports `/mnt/gintra/organizations/ee/has` via NFS.
 Inside the workflow pod that path is mounted at the same path.

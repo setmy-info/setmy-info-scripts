@@ -1,0 +1,31 @@
+# Traefik IngressRoute for Argo Workflows — http://argo.local (port 80)
+#
+# Standard Kubernetes Ingress cannot tell Traefik to use HTTPS for a backend;
+# it always connects via HTTP, which causes "Client sent an HTTP request to an
+# HTTPS server" because argo-server listens on TLS by default.
+#
+# IngressRoute exposes scheme: https so Traefik connects to argo-server:2746
+# over HTTPS.  ServersTransport (11-argo-serversTransport.yaml) tells Traefik
+# to skip verification of the argo-server self-signed cert.
+#
+# The browser uses plain http://argo.local — no certificate needed in Firefox.
+#
+# Prerequisites:
+#   kubectl apply -f 11-argo-serversTransport.yaml
+#   /etc/hosts: 192.168.0.104  argo.local
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+    name: argo-server
+    namespace: argo
+spec:
+    entryPoints:
+        - web
+    routes:
+        - match: Host(`argo.local`)
+          kind: Rule
+          services:
+              - name: argo-server
+                port: 2746
+                scheme: https
+                serversTransport: argo-insecure

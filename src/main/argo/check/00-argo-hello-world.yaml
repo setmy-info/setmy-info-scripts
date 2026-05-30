@@ -1,8 +1,8 @@
-# K3S: minimal hello-world workflow to verify Argo Workflows is installed and working.
-# No namespace, PV, PVC, or RBAC setup required — only Argo must be running.
+# Minimal hello-world workflow to verify Argo Workflows is installed and working.
+# Works on K3S and Minikube. No namespace, PV, PVC, or RBAC setup required.
 #
 # Submit:
-#   argo submit -n argo --watch 00-k3s-argo-hello-world.yaml
+#   argo submit -n argo --watch 00-argo-hello-world.yaml
 #
 # Check logs:
 #   argo logs @latest -n argo

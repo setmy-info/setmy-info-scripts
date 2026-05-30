@@ -1,0 +1,22 @@
+# Minikube-specific: PersistentVolumeClaim bound to the static NFS PersistentVolume.
+# Pair with 01-minikube-nfs-persistent-volume.yaml which must be applied first.
+#
+# storageClassName: "" prevents the default StorageClass provisioner from
+# interfering and forces binding to the static PV defined in 01.
+# volumeName pins the claim to exactly that PV.
+#
+# PVC name is intentionally identical to the K3S counterpart so that the
+# workflow YAML (09-*-generator-argo.yaml) works unchanged on both platforms.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: generator-nfs-persistent-volume-claim
+    namespace: generator
+spec:
+    accessModes:
+        - ReadWriteMany
+    resources:
+        requests:
+            storage: 10Gi
+    storageClassName: ""
+    volumeName: generator-nfs-persistent-volume

@@ -1,5 +1,5 @@
-# K3S-specific Argo Workflow: uses NFS PVC (generator-nfs-persistent-volume-claim) mounted from
-# the host's own NFS server.  No in-cluster NFS deployment needed.
+# Minikube-specific Argo Workflow: uses NFS PVC (generator-nfs-persistent-volume-claim)
+# mounted from the host's own NFS server.  No in-cluster NFS deployment needed.
 # The PVC root = /mnt/gintra/organizations/ee/has on the host.
 #
 # Directory layout under the PVC (host-side):
@@ -10,12 +10,12 @@
 #
 # Prerequisites:
 #   kubectl apply -f 00-generator-namespace.yaml
-#   k3s-setup.sh   (applies PV, PVC, RBAC, secrets)
-#   Argo Workflows installed in the cluster (see k3s-setup.sh header)
+#   minikube-setup.sh  (applies PV, PVC, RBAC, secrets)
+#   Argo Workflows installed in the cluster
 #
 # Submit:
-#   argo submit -n generator --watch 09-k3s-generator-argo.yaml
-# or use argo-wf.sh for auto-generated UUID, model selection and file attachments.
+#   argo submit -n generator --watch 09-minikube-generator-argo.yaml
+# or use argo-wf.cmd for auto-generated UUID, model selection and file attachments.
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:

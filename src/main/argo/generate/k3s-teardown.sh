@@ -14,19 +14,25 @@ set -e
 
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
-printf "--- Delete all workflows in generator namespace ---\n"
+echo "--- Delete all workflows in generator namespace ---"
 kubectl delete workflows --all -n generator --ignore-not-found
 
-printf "\n--- Delete test pod if running ---\n"
+echo "\n--- Delete test pod if running ---"
 kubectl delete pod nfs-persistent-volume-claim-test -n generator --ignore-not-found
 
-printf "\n--- Delete PersistentVolumeClaim ---\n"
+echo "\n--- Delete PersistentVolumeClaim ---"
 kubectl delete pvc generator-nfs-persistent-volume-claim -n generator --ignore-not-found
 
-printf "\n--- Delete namespace (removes secrets, role, rolebinding, remaining pods) ---\n"
+echo "\n--- Delete namespace (removes secrets, role, rolebinding, remaining pods) ---"
 kubectl delete namespace generator --ignore-not-found
 
-printf "\n--- Delete PersistentVolume (cluster-scoped) ---\n"
+echo "\n--- Delete PersistentVolume (cluster-scoped) ---"
 kubectl delete pv generator-nfs-persistent-volume --ignore-not-found
 
-printf "\nTeardown done. Run sh k3s-setup.sh to set up again.\n"
+echo "\n--- Delete argo IngressRoute (11) ---"
+kubectl delete ingressroute argo-server -n argo --ignore-not-found
+
+echo "\n--- Delete argo ServersTransport (10) ---"
+kubectl delete serverstransport argo-insecure -n argo --ignore-not-found
+
+echo "\nTeardown done. Run sh k3s-setup.sh to set up again."

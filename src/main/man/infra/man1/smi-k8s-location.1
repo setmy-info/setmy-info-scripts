@@ -1,0 +1,21 @@
+.TH smi-k8s-location "1" "May 2026" "SMI Toolset" "SMI Infra Command"
+.SH NAME
+smi-k8s-location \- Print the SMI Kubernetes YAML library directory
+.SH SYNOPSIS
+.B smi-k8s-location
+.SH DESCRIPTION
+.PP
+.B smi-k8s-location
+prints the absolute path to the Kubernetes YAML template directory within the SMI library location.
+The directory is \fB$(smi-lib-location)/k8s\fR, typically \fB/opt/setmy.info/lib/k8s\fR on Linux.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-k8s-location bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-lib-location (1),
+.BR smi-argo-location (1)

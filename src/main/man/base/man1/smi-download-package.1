@@ -12,6 +12,240 @@ It uses the \fBpackages.sh\fR library to locate package definitions (with \fB.pa
 .PP
 The download directory defaults to \fB~/.setmy.info/packages\fR but can be overridden by setting the
 \fBSMI_HOME_PACKAGES_DIR\fR environment variable before invoking this command.
+.SH AVAILABLE PACKAGES
+.PP
+The following package names can be passed to
+.B smi-download-package
+(and \fBsmi-install-package\fR(1)).
+Each name corresponds to a \fB.package\fR definition file in the packages library directory.
+.SS AI and Editors
+.TP
+.B claude
+Anthropic Claude Code CLI — installs via \fBhttps://claude.ai/install.sh\fR.
+.TP
+.B cursor
+Cursor AI-powered code editor.
+.TP
+.B mcp
+Model Context Protocol server runtime.
+.TP
+.B vscode
+Visual Studio Code editor.
+.TP
+.B idea
+JetBrains IntelliJ IDEA IDE.
+.TP
+.B clion
+JetBrains CLion C/C++ IDE.
+.TP
+.B pycharm
+JetBrains PyCharm Python IDE.
+.TP
+.B netbeans
+Apache NetBeans IDE.
+.SS Java Development Kits
+.TP
+.B jdk
+OpenJDK (current default version, currently 25.0.2).
+.TP
+.B jdk17
+OpenJDK 17 LTS.
+.TP
+.B jdk21
+OpenJDK 21 LTS.
+.TP
+.B jdk22
+OpenJDK 22.
+.TP
+.B jdk23
+OpenJDK 23.
+.TP
+.B jdk24
+OpenJDK 24.
+.TP
+.B jdk25
+OpenJDK 25.
+.TP
+.B jdk26
+OpenJDK 26.
+.TP
+.B zulu
+Azul Zulu OpenJDK distribution.
+.SS Build Tools
+.TP
+.B cmake
+CMake build system.
+.TP
+.B gradle
+Gradle build tool (current default version).
+.TP
+.B mvn
+Apache Maven build tool (current default version).
+.TP
+.B mvn4
+Apache Maven 4.x.
+.TP
+.B mvnd
+Maven Daemon (fast Maven runner).
+.TP
+.B bazel
+Google Bazel build and test tool.
+.TP
+.B ninja
+Ninja small build system.
+.SS Programming Languages and Runtimes
+.TP
+.B elixir
+Elixir programming language (built from source, Erlang/OTP 29, Elixir 1.19.5).
+.TP
+.B erlang
+Erlang/OTP runtime (built from source).
+.TP
+.B go
+Go programming language (currently 1.26.3).
+.TP
+.B groovy
+Apache Groovy scripting language.
+.TP
+.B clojure
+Clojure programming language.
+.TP
+.B janet
+Janet programming language.
+.TP
+.B julia
+Julia scientific programming language.
+.TP
+.B node
+Node.js JavaScript runtime (currently 24.15.0).
+.TP
+.B python39
+Python 3.9.
+.TP
+.B python310
+Python 3.10.
+.TP
+.B python311
+Python 3.11.
+.TP
+.B python312
+Python 3.12.
+.TP
+.B python313
+Python 3.13.
+.TP
+.B python314
+Python 3.14.
+.TP
+.B sbcl
+Steel Bank Common Lisp compiler.
+.SS AI / Machine Learning
+.TP
+.B pytorch
+PyTorch deep learning framework.
+.TP
+.B tensorflow
+TensorFlow machine learning framework.
+.TP
+.B scikit
+Scikit-learn machine learning library.
+.TP
+.B jupyter
+Jupyter Notebook and JupyterLab.
+.TP
+.B dvc
+Data Version Control for ML pipelines.
+.SS Web Frameworks and Application Servers
+.TP
+.B grails
+Grails web application framework.
+.TP
+.B mn
+Micronaut framework.
+.TP
+.B tomcat
+Apache Tomcat servlet container.
+.TP
+.B nginx
+Nginx web server.
+.SS Databases and Data Stores
+.TP
+.B h2
+H2 in-memory relational database.
+.TP
+.B hsqldb
+HyperSQL database engine.
+.TP
+.B neo4j
+Neo4j graph database.
+.TP
+.B solr
+Apache Solr search platform.
+.TP
+.B infinispan
+Infinispan distributed data grid.
+.SS Kubernetes and Container Tools
+.TP
+.B argo
+Argo Workflows CLI (v4.0.5).
+.TP
+.B docker
+Docker container platform.
+.TP
+.B k3s
+K3s lightweight Kubernetes distribution.
+.TP
+.B kubectl
+Kubernetes command-line tool.
+.TP
+.B minikube
+Local Kubernetes for development.
+.SS CI/CD and DevOps
+.TP
+.B jenkins
+Jenkins CI/CD automation server.
+.TP
+.B jenkins_home
+Jenkins home directory initial setup.
+.TP
+.B zeebe
+Zeebe workflow engine (Camunda Platform).
+.TP
+.B camundam
+Camunda modeler and platform tools.
+.TP
+.B awscli
+Amazon Web Services CLI.
+.SS Desktop Applications
+.TP
+.B firefox
+Mozilla Firefox web browser.
+.TP
+.B thunderbird
+Mozilla Thunderbird email client.
+.TP
+.B libreoffice
+LibreOffice office suite.
+.SS Clojure Build
+.TP
+.B lein
+Leiningen project tool for Clojure.
+.SS Other Tools
+.TP
+.B mitmproxy
+Interactive HTTPS proxy for debugging.
+.TP
+.B selenium
+Selenium WebDriver for browser automation.
+.TP
+.B nsis
+NSIS Windows installer builder.
+.TP
+.B smi
+setmy.info toolset itself.
+.TP
+.B all
+Meta-package that triggers download of all packages.
 .SH ENVIRONMENT
 .TP
 .B SMI_HOME_PACKAGES_DIR

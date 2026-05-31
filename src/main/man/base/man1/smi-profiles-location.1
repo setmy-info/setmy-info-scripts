@@ -7,14 +7,127 @@ smi-profiles-location \- Print the SMI profiles directory location
 .PP
 .B smi-profiles-location
 prints the absolute path to the profiles directory within the SMI library location.
+.SH AVAILABLE PROFILES
+.PP
+Profiles are shell scripts sourced by \fBterm-activate\fR(1) to set up PATH and environment
+variables for a specific tool version.
+The following profiles are installed in the SMI profiles directory.
+Each profile name corresponds to a \fB.profile\fR file; use it with \fBterm-activate\fR.
+.SS Argo Workflows
+.TP
+.B argo
+Argo Workflows CLI.
+.SS Build Systems
+.TP
+.B cmake, cmake3, cmake313, cmake317, cmake320
+CMake — the default alias and specific versioned variants.
+.TP
+.B cm, cm35
+CMake shorthand aliases.
+.TP
+.B gradle, gradle49, gradle50, gradle52, gradle56, gradle63, gradle71
+Gradle build tool — default and versioned variants.
+.TP
+.B mvn, mvn33, mvn35, mvn36, mvn38
+Apache Maven — default and versioned variants.
+.TP
+.B mvnd
+Maven Daemon.
+.TP
+.B bazel
+Google Bazel.
+.TP
+.B ninja
+Ninja build system.
+.SS Java Development Kits
+.TP
+.B jdk
+Default JDK profile.
+.TP
+.B jdk8, jdk9, jdk10, jdk11, jdk12, jdk13, jdk14, jdk15, jdk16, jdk17, jdk18, jdk19, jdk20, jdk21, jdk22, jdk25, jdk26
+Specific OpenJDK version profiles.
+.SS JVM Languages and Frameworks
+.TP
+.B clojure
+Clojure language.
+.TP
+.B grails
+Grails web framework.
+.TP
+.B groovy, groovy30
+Apache Groovy — default and version 3.0.
+.TP
+.B lein
+Leiningen for Clojure.
+.TP
+.B mn, mn12, mn25, mn35
+Micronaut framework — default and versioned variants.
+.TP
+.B zb, zb020, zb022
+Zeebe workflow engine — default and versioned variants.
+.TP
+.B zm, zm08
+Zeebe Modeler.
+.SS Languages and Runtimes
+.TP
+.B elixir
+Elixir programming language.
+.TP
+.B erlang
+Erlang/OTP runtime.
+.TP
+.B go, go114, go116
+Go programming language — default and versioned variants.
+.TP
+.B janet
+Janet programming language.
+.TP
+.B julia
+Julia scientific computing language.
+.TP
+.B node, node8, node8.11, node9, node10, node11, node12, node16
+Node.js JavaScript runtime — default and versioned variants.
+.TP
+.B python, python39, python310, python311, python312, python313, python314
+Python — default and versioned profiles.
+.TP
+.B sbcl
+Steel Bank Common Lisp.
+.SS Package Managers and Tools
+.TP
+.B yarn, yarn115, yarn122
+Yarn package manager — default and versioned variants.
+.SS AI and ML
+.TP
+.B claude
+Anthropic Claude Code CLI profile.
+.SS CI / Version Control
+.TP
+.B ci
+Continuous integration helper profile.
+.TP
+.B git-flow-next
+Git-flow extensions (next generation).
+.SS Project-Specific
+.TP
+.B latest
+Points to the most recently installed default toolchain.
+.TP
+.B projectx
+Example project-specific profile template.
+.TP
+.B ant
+Apache Ant build tool.
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
-Documentation written by Junie.
+Documentation written by Imre Tabur.
 .SH "REPORTING BUGS"
 .PP
 Report smi-profiles-location bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
-.BR smi-lib-location (1)
+.BR smi-lib-location (1),
+.BR term-activate (1),
+.BR term-profile (1)
 

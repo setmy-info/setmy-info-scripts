@@ -1,0 +1,42 @@
+.TH smi-workflow-workspace-location "1" "May 2026" "SMI Toolset" "SMI Infra Command"
+.SH NAME
+smi-workflow-workspace-location \- Print the per-workflow working directory path
+.SH SYNOPSIS
+.B smi-workflow-workspace-location
+.RI [ COUNTRY_CODE
+.RI [ ORG_SHORT_NAME
+.RI [ UUID ]]]
+.SH DESCRIPTION
+.PP
+.B smi-workflow-workspace-location
+returns the path to the per-workflow working directory under
+\fB<org-root>/operations/workflows/<uuid>\fR.
+.PP
+Arguments default to the environment variables \fBSMI_CC\fR, \fBSMI_ORG\fR, and \fBSMI_WF_UUID\fR
+respectively.
+When called with no arguments and \fBSMI_WORKSPACE\fR is set, that value is returned instead
+(UUID-only subPath mount pattern used in Argo Workflows).
+.SH ENVIRONMENT
+.TP
+.B SMI_CC
+Default country code (ISO 3166-1 alpha-2).
+.TP
+.B SMI_ORG
+Default organisation short name.
+.TP
+.B SMI_WF_UUID
+Default workflow UUID.
+.TP
+.B SMI_WORKSPACE
+When set and no arguments are given, this value is returned directly.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-workflow-workspace-location bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-workflow-ai-workspace-location (1),
+.BR smi-organization-location (1)

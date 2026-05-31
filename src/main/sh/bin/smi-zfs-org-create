@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Copyright (C) 2024 Imre Tabur <imre.tabur@mail.ee>
+# Creates ZFS dataset tank/organizations/<cc>/<org> if not already existing.
+# Usage: smi-zfs-org-create <COUNTRY_CODE> <ORG_SHORT_NAME>
+
+CC=${1}
+ORG=${2}
+
+if [ -z "${CC}" ]; then
+    echo "Usage: $0 <COUNTRY_CODE> <ORG_SHORT_NAME>" >&2
+    exit 1
+fi
+
+if [ -z "${ORG}" ]; then
+    echo "Usage: $0 <COUNTRY_CODE> <ORG_SHORT_NAME>" >&2
+    exit 2
+fi
+
+DATASET="tank/organizations/${CC}/${ORG}"
+
+if zfs list "${DATASET}" > /dev/null 2>&1; then
+    echo "ZFS dataset already exists: ${DATASET}"
+    exit 0
+fi
+
+echo "Creating ZFS dataset: ${DATASET}"
+zfs create -p "${DATASET}"
+
+exit ${?}

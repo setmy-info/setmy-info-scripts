@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Copyright (C) 2024 Imre Tabur <imre.tabur@mail.ee>
+# Returns the per-org shared package cache path under operations/packages.
+# Falls back to $SMI_SHARED_PACKAGES_DIR when overriding is needed.
+#
+# Usage: smi-packages-shared-location [COUNTRY_CODE [ORG_SHORT_NAME]]
+
+CC=${1:-${SMI_CC}}
+ORG=${2:-${SMI_ORG}}
+
+if [ -n "${SMI_SHARED_PACKAGES_DIR}" ]; then
+    echo "${SMI_SHARED_PACKAGES_DIR}"
+    exit 0
+fi
+
+echo "$(smi-organization-location ${CC} ${ORG})/operations/packages"
+
+exit 0

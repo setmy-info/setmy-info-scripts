@@ -1,0 +1,41 @@
+.TH smi-packages-shared-location "1" "May 2026" "SMI Toolset" "SMI Infra Command"
+.SH NAME
+smi-packages-shared-location \- Print the per-org shared package cache path
+.SH SYNOPSIS
+.B smi-packages-shared-location
+.RI [ COUNTRY_CODE
+.RI [ ORG_SHORT_NAME ]]
+.SH DESCRIPTION
+.PP
+.B smi-packages-shared-location
+returns the path to the organisation's shared package cache directory at
+\fB<org-root>/operations/packages\fR.
+.PP
+Arguments default to \fBSMI_CC\fR and \fBSMI_ORG\fR.
+When \fBSMI_SHARED_PACKAGES_DIR\fR is set, that value is returned instead.
+.PP
+In Kubernetes pod templates, setting \fBSMI_HOME_PACKAGES_DIR\fR to the output of this command
+redirects both \fBsmi-download-package\fR(1) and \fBsmi-install-package\fR(1) to the shared dataset.
+.SH ENVIRONMENT
+.TP
+.B SMI_CC
+Default country code.
+.TP
+.B SMI_ORG
+Default organisation short name.
+.TP
+.B SMI_SHARED_PACKAGES_DIR
+When set, this value is returned directly.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-packages-shared-location bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-home-packages-location (1),
+.BR smi-organization-location (1),
+.BR smi-download-package (1),
+.BR smi-install-package (1)

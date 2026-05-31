@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+# Outputs the PVC name for an organisation dataset.
+# Usage: smi-k8s-pvc-name <COUNTRY_CODE> <ORG_SHORT_NAME>
+
+CC=${1}
+ORG=${2}
+
+if [ -z "${CC}" ]; then
+    echo "Usage: $0 <COUNTRY_CODE> <ORG_SHORT_NAME>" >&2
+    exit 1
+fi
+
+if [ -z "${ORG}" ]; then
+    echo "Usage: $0 <COUNTRY_CODE> <ORG_SHORT_NAME>" >&2
+    exit 2
+fi
+
+echo "gintra-pvc-${CC}-${ORG}"
+
+exit 0

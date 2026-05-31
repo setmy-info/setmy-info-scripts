@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Copyright (C) 2024 Imre Tabur <imre.tabur@mail.ee>
+# Returns the per-workflow AI working directory under operations/ai/<uuid>.
+# Falls back to $SMI_AI_WORKSPACE when the full org PVC is not mounted (UUID-only subPath pattern).
+#
+# Usage: smi-workflow-ai-workspace-location [COUNTRY_CODE [ORG_SHORT_NAME [UUID]]]
+
+CC=${1:-${SMI_CC}}
+ORG=${2:-${SMI_ORG}}
+UUID=${3:-${SMI_WF_UUID}}
+
+if [ -n "${SMI_AI_WORKSPACE}" ] && [ $# -eq 0 ]; then
+    echo "${SMI_AI_WORKSPACE}"
+    exit 0
+fi
+
+echo "$(smi-organization-location ${CC} ${ORG})/operations/ai/${UUID}"
+
+exit 0

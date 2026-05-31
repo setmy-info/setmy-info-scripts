@@ -1,0 +1,29 @@
+.TH smi-k8s-pvc-name "1" "May 2026" "SMI Toolset" "SMI Infra Command"
+.SH NAME
+smi-k8s-pvc-name \- Output the Kubernetes PVC name for an organisation
+.SH SYNOPSIS
+.B smi-k8s-pvc-name
+.I COUNTRY_CODE ORG_SHORT_NAME
+.SH DESCRIPTION
+.PP
+.B smi-k8s-pvc-name
+outputs the canonical PersistentVolumeClaim name for a given organisation.
+The name format is \fBgintra-pvc-<cc>-<org>\fR, consistent with the naming convention used by
+\fBsmi-k8s-org-pvc-create\fR and Argo workflow templates.
+.SH EXAMPLES
+.PP
+.B smi-k8s-pvc-name ee has
+.PP
+prints \fBgintra-pvc-ee-has\fR.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-k8s-pvc-name bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-k8s-org-pvc-create (1),
+.BR smi-k8s-org-provision (1),
+.BR smi-organization-location (1)

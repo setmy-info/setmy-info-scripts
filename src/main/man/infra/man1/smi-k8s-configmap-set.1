@@ -1,0 +1,26 @@
+.TH smi-k8s-configmap-set "1" "May 2026" "SMI Toolset" "SMI Infra Command"
+.SH NAME
+smi-k8s-configmap-set \- Create or update a key in a Kubernetes ConfigMap
+.SH SYNOPSIS
+.B smi-k8s-configmap-set
+.I NAMESPACE CONFIGMAP_NAME KEY VALUE
+.SH DESCRIPTION
+.PP
+.B smi-k8s-configmap-set
+creates a Kubernetes ConfigMap (or updates an existing one) with a single key/value pair.
+It uses \fBkubectl create configmap --dry-run=client | kubectl apply\fR so it is safe to run repeatedly.
+.SH EXAMPLES
+.PP
+Set a configuration value:
+.PP
+.B smi-k8s-configmap-set myns app-config database-host db.internal
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-k8s-configmap-set bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-k8s-secret-set (1)

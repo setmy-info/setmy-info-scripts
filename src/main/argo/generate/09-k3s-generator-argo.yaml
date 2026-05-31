@@ -25,6 +25,12 @@ spec:
     serviceAccountName: default
     entrypoint: pipeline
 
+#    ttlStrategy:
+#        secondsAfterCompletion: 3600
+
+#    podGC:
+#        strategy: OnWorkflowCompletion
+
     volumes:
         -   name: nfs-has-org
             persistentVolumeClaim:

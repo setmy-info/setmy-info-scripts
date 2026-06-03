@@ -1,0 +1,66 @@
+# K3S-specific: PersistentVolume backed by the host machine's own NFS server.
+#
+# This machine (K3S node, 192.168.0.104) IS the NFS server.
+# The NFS export root is a ZFS dataset (pool: tank) mounted at /mnt/gintra.
+#
+# Physical path (ADR-0034, ADR-0035):
+#   ZFS dataset : tank/organizations/ee/has
+#   NFS export  : /mnt/gintra/organizations/ee/has  (see /etc/exports)
+#
+# Logical path for smi-* tools (ADR-0036):
+#   /var/opt/setmy.info/gintra/organizations/ee/has
+#   (symlinked to /mnt/gintra inside each pod at container start)
+#
+# ADR-0035: NFS export per organization dataset path — export the real
+# filesystem path /mnt/gintra/organizations/<cc>/<org>, not the ZFS
+# dataset name. operations/packages is covered by this org export.
+#
+# =============================================================================
+# HOST NFS SERVER SETUP (Rocky Linux — run once as root/sudo)
+# =============================================================================
+#
+# These steps are shared with the generator PV setup.  Skip if already done.
+#
+# 1. Install NFS utilities:
+#      sudo dnf -y install nfs-utils
+#
+# 2. Create the organisation directory structure (if not already present):
+#      sudo mkdir -p /mnt/gintra/organizations/ee/has/operations/packages
+#      sudo chown -R root:gintra /mnt/gintra
+#      sudo chmod -R 770 /mnt/gintra
+#
+# 3. Ensure /etc/exports contains:
+#      /mnt/gintra/organizations/ee/has *(rw,sync,no_root_squash)
+#
+# 4. Reload the export table:
+#      sudo exportfs -ra
+#
+# 5. Verify:
+#      showmount -e 10.42.0.1
+#    Expected:
+#      /mnt/gintra/organizations/ee/has *
+#
+# =============================================================================
+# APPLYING THIS FILE
+# =============================================================================
+#
+# Pods reach the host via the K3S CNI bridge (cni0), not the physical NIC.
+#   cni0:  10.42.0.1   — use this as nfs.server (pod-network-facing)
+#   eth0:  192.168.0.104 — physical NIC, not reachable from pods for NFS
+#
+# Apply:
+#   kubectl apply -f 01-k3s-nfs-packages-persistent-volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: packages-nfs-persistent-volume
+spec:
+    capacity:
+        storage: 10Gi
+    accessModes:
+        - ReadWriteMany
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: ""
+    nfs:
+        server: 10.42.0.1
+        path: /mnt/gintra/organizations/ee/has

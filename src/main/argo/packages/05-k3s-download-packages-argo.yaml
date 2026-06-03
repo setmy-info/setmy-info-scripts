@@ -1,0 +1,77 @@
+# K3S-specific Argo Workflow: downloads SMI packages into the NFS-shared packages
+# directory so all subsequent workflow pods on any node can read them.
+#
+# Image: setmyinfo/setmy-info-rocky:latest
+#   Rocky Linux base with the setmy-info-scripts RPM installed (smi-* commands
+#   are on PATH via /opt/setmy.info/bin).
+#
+# Logical target path (ADR-0033, ADR-0036, ADR-0037):
+#   /var/opt/setmy.info/gintra/organizations/<cc>/<org>/operations/packages
+#
+# Physical NFS path (ADR-0034, ADR-0035):
+#   /mnt/gintra/organizations/<cc>/<org>  (PVC root)
+#   /mnt/gintra/organizations/<cc>/<org>/operations/packages  (packages subdir)
+#
+# The container step creates /var/opt/setmy.info/gintra -> /mnt/gintra symlink
+# so that smi-download-package resolves the canonical logical path (ADR-0036).
+# SMI_HOME_PACKAGES_DIR overrides the default ~/.setmy.info/packages location.
+#
+# Prerequisites:
+#   kubectl apply -f 00-packages-namespace.yaml
+#   kubectl apply -f 01-k3s-nfs-packages-persistent-volume.yaml
+#   kubectl apply -f 02-k3s-nfs-packages-persistent-volume-claim.yaml
+#   Argo Workflows installed in the cluster
+#
+# Submit with defaults:
+#   argo submit -n packages --watch 05-k3s-download-packages-argo.yaml
+#
+# Override the package list:
+#   argo submit -n packages --watch 05-k3s-download-packages-argo.yaml \
+#     -p packages="jdk mvn gradle node go"
+#
+# After this workflow completes, run 06-k3s-install-packages-argo.yaml to
+# install the downloaded archives inside a container.
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+    generateName: download-packages-
+    namespace: packages
+spec:
+    serviceAccountName: default
+    entrypoint: download-packages
+
+    volumes:
+        -   name: nfs-has-org
+            persistentVolumeClaim:
+                claimName: packages-nfs-persistent-volume-claim
+
+    arguments:
+        parameters:
+            -   name: cc
+                value: "ee"
+            -   name: org
+                value: "has"
+            -   name: packages
+                value: "jdk mvn gradle node"
+
+    templates:
+        -   name: download-packages
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                env:
+                    -   name: SMI_HOME_PACKAGES_DIR
+                        value: "/var/opt/setmy.info/gintra/organizations/{{workflow.parameters.cc}}/{{workflow.parameters.org}}/operations/packages"
+                volumeMounts:
+                    -   name: nfs-has-org
+                        mountPath: "/mnt/gintra/organizations/{{workflow.parameters.cc}}/{{workflow.parameters.org}}"
+                command: [ "/bin/bash", "-c" ]
+                args:
+                    - |
+                        set -e
+                        ln -sf /mnt/gintra /var/opt/setmy.info/gintra
+                        mkdir -p "${SMI_HOME_PACKAGES_DIR}"
+                        echo "Packages target : ${SMI_HOME_PACKAGES_DIR}"
+                        echo "Packages to download: {{workflow.parameters.packages}}"
+                        smi-download-package {{workflow.parameters.packages}}
+                        echo "Download complete. Contents:"
+                        ls -lh "${SMI_HOME_PACKAGES_DIR}"

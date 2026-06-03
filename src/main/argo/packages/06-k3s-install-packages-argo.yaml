@@ -1,0 +1,78 @@
+# K3S-specific Argo Workflow: installs SMI packages inside the container from the
+# NFS-shared packages directory populated by the download-packages workflow.
+#
+# Image: setmyinfo/setmy-info-rocky:latest
+#   Rocky Linux base with the setmy-info-scripts RPM installed (smi-* commands
+#   are on PATH via /opt/setmy.info/bin).
+#
+# Package archives are read from (ADR-0033, ADR-0036, ADR-0037):
+#   /var/opt/setmy.info/gintra/organizations/<cc>/<org>/operations/packages
+# which is backed by the NFS share at:
+#   /mnt/gintra/organizations/<cc>/<org>/operations/packages
+#
+# smi-install-package reads archives from SMI_HOME_PACKAGES_DIR and installs
+# them into the container's local filesystem under /opt/setmy.info (ADR-0032).
+#
+# Run 05-k3s-download-packages-argo.yaml first to populate the shared packages
+# directory before submitting this workflow.
+#
+# Prerequisites:
+#   kubectl apply -f 00-packages-namespace.yaml
+#   kubectl apply -f 01-k3s-nfs-packages-persistent-volume.yaml
+#   kubectl apply -f 02-k3s-nfs-packages-persistent-volume-claim.yaml
+#   Argo Workflows installed in the cluster
+#   05-k3s-download-packages-argo.yaml completed successfully
+#
+# Submit with defaults:
+#   argo submit -n packages --watch 06-k3s-install-packages-argo.yaml
+#
+# Override the package list:
+#   argo submit -n packages --watch 06-k3s-install-packages-argo.yaml \
+#     -p packages="jdk mvn gradle node go"
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+    generateName: install-packages-
+    namespace: packages
+spec:
+    serviceAccountName: default
+    entrypoint: install-packages
+
+    volumes:
+        -   name: nfs-has-org
+            persistentVolumeClaim:
+                claimName: packages-nfs-persistent-volume-claim
+
+    arguments:
+        parameters:
+            -   name: cc
+                value: "ee"
+            -   name: org
+                value: "has"
+            -   name: packages
+                value: "jdk mvn gradle node"
+
+    templates:
+        -   name: install-packages
+            container:
+                image: setmyinfo/setmy-info-rocky:latest
+                env:
+                    -   name: SMI_HOME_PACKAGES_DIR
+                        value: "/var/opt/setmy.info/gintra/organizations/{{workflow.parameters.cc}}/{{workflow.parameters.org}}/operations/packages"
+                volumeMounts:
+                    -   name: nfs-has-org
+                        mountPath: "/mnt/gintra/organizations/{{workflow.parameters.cc}}/{{workflow.parameters.org}}"
+                command: [ "/bin/bash", "-c" ]
+                args:
+                    - |
+                        set -e
+                        ln -sf /mnt/gintra /var/opt/setmy.info/gintra
+                        echo "Packages source  : ${SMI_HOME_PACKAGES_DIR}"
+                        echo "Packages to install: {{workflow.parameters.packages}}"
+                        ls -lh "${SMI_HOME_PACKAGES_DIR}" || {
+                            echo "ERROR: Packages directory not found."
+                            echo "Run 05-k3s-download-packages-argo.yaml first."
+                            exit 1
+                        }
+                        smi-install-package {{workflow.parameters.packages}}
+                        echo "Installation complete."

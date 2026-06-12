@@ -63,6 +63,7 @@
 #   eth0:  192.168.0.104 — physical NIC, not reachable from pods for NFS
 #
 # Verify: showmount -e 10.42.0.1
+#         showmount -e 192.168.2.199
 #
 # Apply:
 #   kubectl apply -f 01-k3s-nfs-persistent-volume.yaml
@@ -79,4 +80,5 @@ spec:
     storageClassName: ""
     nfs:
         server: 10.42.0.1
+        #server: 192.168.2.199
         path: /mnt/gintra/organizations/ee/has

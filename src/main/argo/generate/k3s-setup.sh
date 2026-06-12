@@ -74,7 +74,7 @@ kubectl apply -f "$SCRIPT_DIR/08-generator-rolebinding.yaml"
 # ---------------------------------------------------------------------------
 printf "\n--- PV / PVC status ---\n"
 kubectl get pv generator-nfs-persistent-volume
-kubectl get pvc -n generator generator-nfs-persistent-volumec
+kubectl get pvc -n generator generator-nfs-persistent-volume-claim
 
 printf "\n--- Claude CLI cache (packages/claude) ---\n"
 sh "$SCRIPT_DIR/setup-claude.sh"

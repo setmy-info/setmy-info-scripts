@@ -1,20 +1,90 @@
-.TH smi-decrypt "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.TH smi-decrypt "1" "June 2026" "SMI Toolset" "SMI Encryption Command"
 .SH NAME
-smi-decrypt \- Decrypt a file encrypted with smi-encrypt
+smi-decrypt \- Decrypt and verify a file encrypted with smi-encrypt
 .SH SYNOPSIS
 .B smi-decrypt
 .I ENCRYPTED_FILE
 .SH DESCRIPTION
 .PP
 .B smi-decrypt
-decrypts the specified \fIENCRYPTED_FILE\fR (usually with a \fB.enc\fR suffix) using OpenSSL with the AES-256-CBC algorithm.
-Upon successful decryption (result code 0 and non-empty output), the encrypted file is removed and the original file is restored.
+decrypts the specified
+.I ENCRYPTED_FILE
+(usually with a
+.B .enc
+suffix) using OpenSSL with AES-256-CBC symmetric decryption.
+The passphrase is read interactively from the terminal without echo.
 .PP
-Decryption uses 10,000 iterations for key derivation, matching the encryption process.
+Before decrypting,
+.B smi-decrypt
+verifies the HMAC-SHA-512 integrity tag stored in
+.IR ENCRYPTED_FILE .hmac .
+If the tag does not match, decryption is aborted and exit code
+.B 3
+is returned.
+This detects both accidental corruption and intentional tampering.
+.PP
+Key derivation uses PBKDF2 with HMAC-SHA-256 and 600\,000 iterations with the salt stored
+in the encrypted file header, matching the parameters used by
+.BR smi-encrypt (1).
+.PP
+The command is suitable for decrypting both
+.B text and binary files
+of any size.
+There is
+.B no upper limit on file size
+imposed by the key or block size.
+.PP
+The passphrase is entered via the terminal (stdin) without any graphical or TUI pinentry dialog,
+making the command safe to use over SSH and in non-graphical environments.
+.PP
+Upon successful decryption both
+.I ENCRYPTED_FILE
+and its
+.I .hmac
+file are removed and the original file is restored.
+.PP
+.B Note:
+files encrypted with earlier versions of this tool (10\,000 iterations, no HMAC file) are not
+compatible with the current version and must be decrypted with the matching older version.
+.SH OPTIONS
+.TP
+.I ENCRYPTED_FILE
+Path to the AES-256-CBC encrypted file to decrypt, typically produced by
+.BR smi-encrypt (1).
+Must be an existing regular file.
+A corresponding
+.I ENCRYPTED_FILE.hmac
+integrity file must also be present.
+Both files are removed after successful decryption.
+.SH EXIT STATUS
+.TP
+.B 0
+File decrypted successfully; encrypted file and HMAC file removed.
+.TP
+.B 1
+Invalid usage: wrong number of arguments, encrypted file does not exist, or HMAC file not found.
+.TP
+.B 2
+Decryption failed.
+.TP
+.B 3
+Integrity check failed: the HMAC does not match.
+The file may be corrupted or tampered with.
+No files are modified.
+.SH EXAMPLES
+.PP
+Decrypt a previously encrypted configuration file:
+.IP
+smi-decrypt secrets.conf.enc
+.PP
+The decrypted output is restored to
+.IR secrets.conf .
+Encrypt a file first with:
+.IP
+smi-encrypt secrets.conf
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
-Documentation written by Junie.
 .SH "REPORTING BUGS"
 .PP
 Report smi-decrypt bugs to \fIinfo@setmy.info\fR
@@ -22,4 +92,3 @@ Report smi-decrypt bugs to \fIinfo@setmy.info\fR
 .PP
 .BR smi-encrypt (1),
 .BR openssl (1)
-

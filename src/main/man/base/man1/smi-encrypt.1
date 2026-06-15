@@ -1,21 +1,72 @@
-.TH smi-encrypt "1" "October 2025" "SMI Toolset 0.100.0" "SMI Base Command"
+.TH smi-encrypt "1" "June 2026" "SMI Toolset" "SMI Encryption Command"
 .SH NAME
-smi-encrypt \- Encrypt a file using AES-256-CBC
+smi-encrypt \- Encrypt a file using AES-256-CBC with HMAC-SHA-512 integrity protection
 .SH SYNOPSIS
 .B smi-encrypt
 .I FILE
 .SH DESCRIPTION
 .PP
 .B smi-encrypt
-encrypts the specified \fIFILE\fR using OpenSSL with the AES-256-CBC algorithm.
-The command adds a \fB.enc\fR suffix to the encrypted file.
-Upon successful encryption (result code 0 and non-empty output), the original file is removed.
+encrypts the specified
+.I FILE
+using OpenSSL with AES-256-CBC symmetric encryption.
+The passphrase is read interactively from the terminal without echo; it must be entered twice for confirmation.
+The encrypted output is written to
+.IR FILE .enc .
+An HMAC-SHA-512 integrity tag is written to
+.IR FILE .enc.hmac .
+Upon successful encryption the original file is removed.
 .PP
-Encryption uses a salt and 10,000 iterations for the key derivation.
+Key derivation uses PBKDF2 with HMAC-SHA-256 and 600\,000 iterations (NIST SP\ 800-132 / OWASP\ 2023
+recommended minimum), with a random salt stored in the encrypted file header.
+.PP
+The command is suitable for encrypting both
+.B text and binary files
+of any size.
+AES-256-CBC operates as a chained block cipher over the data, so there is
+.B no upper limit on file size
+imposed by the key or block size.
+Large archives, database dumps, ISO images, and other binary data can all be encrypted with this command.
+.PP
+The passphrase is entered via the terminal (stdin) without any graphical or TUI pinentry dialog,
+making the command safe to use over SSH and in non-graphical environments.
+.PP
+.B Note:
+files encrypted with earlier versions of this tool (10\,000 iterations, no HMAC file) are not
+compatible with the current version and must be decrypted with the matching older version.
+.SH OPTIONS
+.TP
+.I FILE
+Path to the plain-text or binary file to encrypt.
+Must be an existing regular file.
+The file is removed after successful encryption.
+.SH EXIT STATUS
+.TP
+.B 0
+File encrypted successfully; original file removed.
+.TP
+.B 1
+Invalid usage: wrong number of arguments, file does not exist, or passphrases do not match.
+.TP
+.B 2
+Encryption or HMAC generation failed; no files are removed.
+.SH EXAMPLES
+.PP
+Encrypt a configuration file:
+.IP
+smi-encrypt secrets.conf
+.PP
+Two files are produced:
+.IR secrets.conf.enc
+(ciphertext) and
+.IR secrets.conf.enc.hmac
+(integrity tag).
+Decrypt with:
+.IP
+smi-decrypt secrets.conf.enc
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
-Documentation written by Junie.
 .SH "REPORTING BUGS"
 .PP
 Report smi-encrypt bugs to \fIinfo@setmy.info\fR
@@ -23,4 +74,3 @@ Report smi-encrypt bugs to \fIinfo@setmy.info\fR
 .PP
 .BR smi-decrypt (1),
 .BR openssl (1)
-

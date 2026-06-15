@@ -66,6 +66,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-encrypt"                DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-decrypt"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-ca-create"          DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-create-domain-cert" DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-password-gen"          DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/versions"                   DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-spring-boot"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-new-tag"                DESTINATION bin)

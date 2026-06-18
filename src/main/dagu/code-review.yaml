@@ -1,0 +1,233 @@
+name: code-review
+
+description: Prepare an isolated workflow run, clone repositories, run Cursor CLI with a copied prompt, and keep only markdown results.
+
+steps:
+  - name: create-run-directories
+    dir: 'C:\sources\setmy.info\submodules\setmy-info-scripts\src\main\dagu'
+    command: cmd
+    args:
+      - /d
+      - /c
+      - |
+        if not defined RUN_ROOT (
+          echo RUN_ROOT must be defined before the workflow starts.
+          exit /b 1
+        )
+        if not defined CHECKOUT_ROOT (
+          echo CHECKOUT_ROOT must be defined before the workflow starts.
+          exit /b 1
+        )
+        if not defined RESULTS_ROOT (
+          echo RESULTS_ROOT must be defined before the workflow starts.
+          exit /b 1
+        )
+        if not defined PROMPT_FILE (
+          echo PROMPT_FILE must be defined before the workflow starts.
+          exit /b 1
+        )
+        if not exist "%PROMPT_FILE%" (
+          echo Prompt file not found in run directory: %PROMPT_FILE%
+          exit /b 1
+        )
+        if not exist "%RUN_ROOT%" mkdir "%RUN_ROOT%"
+        if not exist "%CHECKOUT_ROOT%" mkdir "%CHECKOUT_ROOT%"
+        if not exist "%RESULTS_ROOT%" mkdir "%RESULTS_ROOT%"
+        > "%RUN_ROOT%\status.txt" echo initialized
+        echo Initialized run directories under %RUN_ROOT%
+
+  - name: clone-and-checkout
+    dir: 'C:\sources\setmy.info\submodules\setmy-info-scripts\src\main\dagu'
+    command: cmd
+    args:
+      - /d
+      - /v:on
+      - /c
+      - |
+        setlocal EnableExtensions EnableDelayedExpansion
+        where git >nul 2>nul || (
+          echo git is required and was not found in PATH.
+          exit /b 1
+        )
+        if not defined MAIN_REPO_URL (
+          echo MAIN_REPO_URL must be provided.
+          exit /b 1
+        )
+        if not defined CHECKOUT_ROOT (
+          echo CHECKOUT_ROOT must be provided.
+          exit /b 1
+        )
+        if not defined RUN_ROOT (
+          echo RUN_ROOT must be provided.
+          exit /b 1
+        )
+        set "REPOSITORIES_FILE=%RUN_ROOT%\repositories.txt"
+        type nul > "!REPOSITORIES_FILE!"
+        set /a repoCount=0
+        set /a branchCount=0
+        set /a processedCount=0
+        call :storeRepo "%MAIN_REPO_URL%" "%MAIN_REPO_BRANCH%"
+        call :storeList "%SECONDARY_REPOS%" secondaryRepo repoCount
+        call :storeList "%SECONDARY_REPO_BRANCHES%" secondaryBranch branchCount
+        if !branchCount! gtr 0 if not !repoCount! equ !branchCount! (
+          echo SECONDARY_REPOS and SECONDARY_REPO_BRANCHES must contain the same number of items.
+          exit /b 1
+        )
+        for /l %%I in (1,1,!repoCount!) do (
+          set "entry=!secondaryRepo%%I!"
+          set "fallbackBranch=!secondaryBranch%%I!"
+          call :storeRepo "!entry!" "!fallbackBranch!"
+        )
+        > "%RUN_ROOT%\status.txt" echo checked-out
+        echo Checked out !processedCount! repositories into %CHECKOUT_ROOT%
+        exit /b 0
+
+        :storeList
+        set "rawValue=%~1"
+        set "prefix=%~2"
+        set "counterName=%~3"
+        if not defined rawValue exit /b 0
+        set "normalized=!rawValue:,=;!"
+        for %%L in ("!normalized:;=" "!") do (
+          if not "%%~L"=="" (
+            set /a !counterName!+=1
+            call set "!prefix!%%!counterName!%%=%%~L"
+          )
+        )
+        exit /b 0
+
+        :storeRepo
+        set "entry=%~1"
+        set "branch=%~2"
+        if "%~1"=="" exit /b 0
+        set "repoUrl=!entry!"
+        set "dirName="
+        if /i not "!entry:.git:=!"=="!entry!" (
+          for /f "tokens=1* delims=|" %%A in ("!entry:.git:=.git^|!") do (
+            set "repoUrl=%%~A"
+            set "branch=%%~B"
+          )
+        )
+        for %%N in ("!repoUrl:/=\!") do set "dirName=%%~nN"
+        if not defined dirName set "dirName=repo"
+        set "baseName=!dirName!"
+        set /a duplicateIndex=0
+        :findUniqueDir
+        if exist "%CHECKOUT_ROOT%\!dirName!" (
+          set /a duplicateIndex+=1
+          set "dirName=!baseName!-!duplicateIndex!"
+          goto findUniqueDir
+        )
+        set "targetDir=%CHECKOUT_ROOT%\!dirName!"
+        echo git clone !repoUrl! !targetDir!
+        git clone "!repoUrl!" "!targetDir!"
+        if errorlevel 1 (
+          echo git clone failed.
+          exit /b 1
+        )
+        if defined branch (
+          pushd "!targetDir!" || exit /b 1
+          echo git checkout !branch!
+          git checkout "!branch!"
+          set "checkoutExit=!errorlevel!"
+          popd
+          if not "!checkoutExit!"=="0" (
+            echo git checkout failed.
+            exit /b 1
+          )
+        )
+        >> "!REPOSITORIES_FILE!" echo(!dirName!^|!repoUrl!^|!branch!^|!targetDir!
+        set /a processedCount+=1
+        set "dirName="
+        exit /b 0
+
+  - name: run-ai-agent
+    dir: 'C:\sources\setmy.info\submodules\setmy-info-scripts\src\main\dagu'
+    command: cmd
+    args:
+      - /d
+      - /v:on
+      - /c
+      - |
+        setlocal EnableExtensions EnableDelayedExpansion
+        if not defined RUN_ROOT (
+          echo RUN_ROOT must be defined.
+          exit /b 1
+        )
+        if not defined CHECKOUT_ROOT (
+          echo CHECKOUT_ROOT must be defined.
+          exit /b 1
+        )
+        if not defined PROMPT_FILE (
+          echo PROMPT_FILE must point to a copied prompt inside the workflow run directory.
+          exit /b 1
+        )
+        if not exist "%PROMPT_FILE%" (
+          echo PROMPT_FILE must point to a copied prompt inside the workflow run directory.
+          exit /b 1
+        )
+        if not defined RESULT_FILE (
+          echo RESULT_FILE must be defined.
+          exit /b 1
+        )
+        if not exist "%RESULTS_ROOT%" mkdir "%RESULTS_ROOT%"
+        set "REPOSITORIES_FILE=%RUN_ROOT%\repositories.txt"
+        set "AGENT_PROMPT_FILE=%RUN_ROOT%\agent-prompt.txt"
+        > "!AGENT_PROMPT_FILE!" type "%PROMPT_FILE%"
+        >> "!AGENT_PROMPT_FILE!" echo(
+        >> "!AGENT_PROMPT_FILE!" echo Context for this workflow run:
+        >> "!AGENT_PROMPT_FILE!" echo - Run root: %RUN_ROOT%
+        >> "!AGENT_PROMPT_FILE!" echo - Checkout root: %CHECKOUT_ROOT%
+        >> "!AGENT_PROMPT_FILE!" echo - Result markdown file: %RESULT_FILE%
+        >> "!AGENT_PROMPT_FILE!" echo - Repositories:
+        if exist "!REPOSITORIES_FILE!" (
+          for /f "usebackq tokens=1-4 delims=|" %%A in ("!REPOSITORIES_FILE!") do (
+            set "branchLabel=%%C"
+            if "!branchLabel!"=="" set "branchLabel=default branch"
+            >> "!AGENT_PROMPT_FILE!" echo - %%A: %%B [!branchLabel!] =^> %%D
+          )
+        )
+        >> "!AGENT_PROMPT_FILE!" echo(
+        >> "!AGENT_PROMPT_FILE!" echo Write the final review in markdown.
+        pushd "%RUN_ROOT%" || exit /b 1
+        if defined CURSOR_COMMAND (
+          echo Running custom Cursor command: %CURSOR_COMMAND%
+          cmd /d /c "%CURSOR_COMMAND%" > "%RESULT_FILE%" 2>&1
+          set "agentExit=!errorlevel!"
+        ) else (
+          where agent >nul 2>nul || (
+            popd
+            echo Cursor agent executable agent was not found in PATH. Provide CURSOR_COMMAND or install Cursor CLI.
+            exit /b 1
+          )
+          echo Running Cursor agent review...
+          for /f "usebackq delims=" %%P in ("!AGENT_PROMPT_FILE!") do set "promptLine=%%P"
+          agent -p "Read the workflow prompt file at %PROMPT_FILE%. Use repositories listed in !REPOSITORIES_FILE!. Write the final review in markdown to stdout." --force --trust --output-format text > "%RESULT_FILE%" 2>&1
+          set "agentExit=!errorlevel!"
+        )
+        popd
+        if not "!agentExit!"=="0" (
+          echo Cursor agent failed.
+          exit /b !agentExit!
+        )
+        > "%RUN_ROOT%\status.txt" echo reviewed
+        echo Review saved to %RESULT_FILE%
+
+  - name: cleanup-checkout
+    dir: 'C:\sources\setmy.info\submodules\setmy-info-scripts\src\main\dagu'
+    command: cmd
+    args:
+      - /d
+      - /c
+      - |
+        if not defined RUN_ROOT (
+          echo RUN_ROOT must be defined.
+          exit /b 1
+        )
+        if not defined CHECKOUT_ROOT (
+          echo CHECKOUT_ROOT must be defined.
+          exit /b 1
+        )
+        if exist "%CHECKOUT_ROOT%" rd /s /q "%CHECKOUT_ROOT%"
+        > "%RUN_ROOT%\status.txt" echo cleaned
+        echo Removed checkout directory %CHECKOUT_ROOT%

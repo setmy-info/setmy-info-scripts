@@ -1,0 +1,8 @@
+name: hello-wf
+description: Hello WF
+steps:
+    -   id: hello
+        run: echo "Hello from Dagu!"
+    -   id: step_2
+        run: echo "Running step 2"
+        depends: hello

@@ -1,0 +1,16 @@
+DAGU_NAME=dagu
+DAGU_VERSION=2.8.2
+DAGU_TAR_GZ_FILE_NAME=${DAGU_NAME}_${DAGU_VERSION}_linux_amd64.tar.gz
+DAGU_TAR_GZ_FILE_URL=https://github.com/dagucloud/dagu/releases/download/v${DAGU_VERSION}/${DAGU_TAR_GZ_FILE_NAME}
+
+# https://github.com/dagucloud/dagu/releases/download/v2.8.2/dagu_2.8.2_linux_amd64.tar.gz
+
+dagu_download_func() {
+    smi-download ${DAGU_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${DAGU_TAR_GZ_FILE_NAME}
+}
+
+dagu_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${DAGU_TAR_GZ_FILE_NAME} -C /opt/${DAGU_NAME}-${DAGU_VERSION}/bin
+    sudo chmod +x /opt/${DAGU_NAME}-${DAGU_VERSION}/bin/${DAGU_NAME}
+    makeOptLink /opt/${DAGU_NAME} /opt/${DAGU_NAME}-${DAGU_VERSION}
+}

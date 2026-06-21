@@ -5,8 +5,14 @@ echo "### Post-Install"
 
 USER_NAME=microservice
 if ! id "${USER_NAME}" >/dev/null 2>&1; then
-    # useradd ${USER_NAME} --shell /sbin/nologin --no-create-home
+    # useradd --shell /sbin/nologin --no-create-home ${USER_NAME}
+    # useradd --system --shell /sbin/nologin --no-create-home
     useradd --system ${USER_NAME}
+fi
+
+DAGU_USER_NAME=dagu
+if ! id "${DAGU_USER_NAME}" >/dev/null 2>&1; then
+    useradd --system --shell /sbin/nologin --no-create-home ${DAGU_USER_NAME}
 fi
 
 SMI_PROVIDER=setmy.info

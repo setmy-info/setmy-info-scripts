@@ -1314,6 +1314,95 @@ class ElixirDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     }
 }
 
+class IdeaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        driver.get(getUrl())
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://download.jetbrains.com/idea/ideaIU-2026.1.3.tar.gz
+            // https://download.jetbrains.com/idea/idea-2026.1.3.tar.gz
+            if (!href.contains("download.jetbrains.com/idea/idea")) return false
+            if (!href.endsWith(".tar.gz")) return false
+            if (href.toLowerCase().contains("-eap")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://www.jetbrains.com/idea/download/?section=linux"
+    }
+
+    @Override
+    String getName() {
+        return "idea"
+    }
+}
+
+class PycharmDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        driver.get(getUrl())
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://download.jetbrains.com/python/pycharm-professional-2026.1.4.tar.gz
+            if (!href.contains("download.jetbrains.com/python/pycharm")) return false
+            if (!href.endsWith(".tar.gz")) return false
+            if (href.toLowerCase().contains("-eap")) return false
+            if (href.toLowerCase().contains("community")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://www.jetbrains.com/pycharm/download/?section=linux"
+    }
+
+    @Override
+    String getName() {
+        return "pycharm"
+    }
+}
+
+class ClionDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        driver.get(getUrl())
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://download.jetbrains.com/cpp/CLion-2026.1.3.tar.gz
+            if (!href.contains("download.jetbrains.com/cpp/CLion-")) return false
+            if (!href.endsWith(".tar.gz")) return false
+            if (href.toLowerCase().contains("-eap")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://www.jetbrains.com/clion/download/?section=linux"
+    }
+
+    @Override
+    String getName() {
+        return "clion"
+    }
+}
+
 class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
@@ -1423,6 +1512,9 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new InnosetupDriverExecute(), rulesRegister)
     fillWithRules(new ElixirDriverExecute(), rulesRegister)
     fillWithRules(new NsisDriverExecute(), rulesRegister)
+    fillWithRules(new IdeaDriverExecute(), rulesRegister)
+    fillWithRules(new PycharmDriverExecute(), rulesRegister)
+    fillWithRules(new ClionDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

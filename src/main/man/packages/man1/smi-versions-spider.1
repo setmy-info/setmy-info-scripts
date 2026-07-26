@@ -1,13 +1,71 @@
-.TH smi-versions-spider "1" "October 2025" "SMI Toolset 0.100.0" "SMI Packages Command"
+.TH smi-versions-spider "1" "June 2026" "SMI Toolset" "SMI Packages Command"
 .SH NAME
-smi-versions-spider \- Crawl and identify versions of packages
+smi-versions-spider \- Crawl upstream sources and report the latest download URLs for managed packages
 .SH SYNOPSIS
 .B smi-versions-spider
-.RI [ ARGUMENTS... ]
+.B \-a
+.br
+.B smi-versions-spider
+.B \-n
+.IR NAME [\, ,\fBN\fR\|.\|.\|.]
 .SH DESCRIPTION
 .PP
 .B smi-versions-spider
-is a utility that uses a Groovy helper script to crawl or identify package versions. It is typically used for maintaining version information within the SMI ecosystem.
+drives a headless Firefox browser (via Selenium and GeckoDriver) to visit the
+official download or release page of each managed package and print the latest
+stable download URL to standard output.
+The output can be compared against the corresponding
+.I .package
+files to identify packages that need updating.
+.PP
+Each run opens a real browser session; JavaScript-rendered pages are handled
+correctly.
+EAP, alpha, beta, and release-candidate builds are excluded unless noted.
+.SH OPTIONS
+.TP
+.B \-a, \-\-all
+Crawl all registered packages and print one URL per package.
+Packages that fail are reported with a leading
+.B ❌
+error line; other packages continue.
+.TP
+.BI \-n\  NAME \fR,\fB\ \-\-name= NAME
+Crawl only the named package.
+Repeat the option to query multiple packages.
+.I NAME
+must be one of the registered package names listed below.
+.SH PACKAGES
+The following package names are registered:
+.PP
+.BR argo ,\  bazel ,\  chromedriver ,\  clion ,\  cmake ,\  cm ,
+.BR elixir ,\  firefox ,\  geckodriver ,\  go ,\  gradle ,\  grails ,
+.BR graphviz ,\  groovy ,\  h2 ,\  hsqldb ,\  idea ,\  infinispan ,
+.BR innosetup ,\  janet ,\  jdk ,\  jenkins ,\  julia ,\  libreoffice ,
+.BR librewolf ,\  mitmproxy ,\  mvn ,\  mvnd ,\  netbeans ,\  node ,
+.BR nsis ,\  pycharm ,\  python ,\  sbcl ,\  selenium ,\  solr ,
+.BR thunderbird ,\  tomcat
+.SH EXIT STATUS
+.TP
+.B 0
+All requested packages were crawled successfully.
+.TP
+.B 1
+One or more packages failed; the failing entries are printed to standard output
+prefixed with
+.BR ❌ .
+.SH EXAMPLES
+.PP
+Report the latest version URL for all packages:
+.IP
+smi-versions-spider \-a
+.PP
+Report only IntelliJ IDEA, PyCharm, and CLion:
+.IP
+smi-versions-spider \-n=idea \-n=pycharm \-n=clion
+.PP
+Report only the latest Maven release:
+.IP
+smi-versions-spider \-n=mvn
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
@@ -16,5 +74,6 @@ Command written by Imre Tabur.
 Report smi-versions-spider bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
+.BR smi-download-package (1),
+.BR smi-install-package (1),
 .BR versions (1)
-

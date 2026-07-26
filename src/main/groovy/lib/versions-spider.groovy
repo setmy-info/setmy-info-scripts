@@ -1403,6 +1403,34 @@ class ClionDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     }
 }
 
+class LibrewolfDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        driver.get(getUrl())
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://dl.librewolf.net/librewolf/153.0-3/librewolf-153.0-3-linux-x86_64-package.tar.xz
+            if (!href.contains("librewolf")) return false
+            if (!href.contains("linux-x86_64-package.tar.xz")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://codeberg.org/librewolf/bsys6/releases"
+    }
+
+    @Override
+    String getName() {
+        return "librewolf"
+    }
+}
+
 class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
@@ -1515,6 +1543,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new IdeaDriverExecute(), rulesRegister)
     fillWithRules(new PycharmDriverExecute(), rulesRegister)
     fillWithRules(new ClionDriverExecute(), rulesRegister)
+    fillWithRules(new LibrewolfDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

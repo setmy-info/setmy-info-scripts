@@ -1,0 +1,15 @@
+LIBREWOLF_NAME=librewolf
+LIBREWOLF_VERSION=153.0-3
+LIBREWOLF_TAR_XZ_FILE_NAME=${LIBREWOLF_NAME}-${LIBREWOLF_VERSION}-linux-x86_64-package.tar.xz
+LIBREWOLF_FILE_URL=https://dl.librewolf.net/${LIBREWOLF_NAME}/${LIBREWOLF_VERSION}/${LIBREWOLF_TAR_XZ_FILE_NAME}
+
+# https://dl.librewolf.net/librewolf/153.0-3/librewolf-153.0-3-linux-x86_64-package.tar.xz
+
+librewolf_download_func() {
+    smi-download ${LIBREWOLF_FILE_URL} ${HOME_PACKAGES_DIR}/${LIBREWOLF_TAR_XZ_FILE_NAME}
+}
+
+librewolf_install_func() {
+    sudo rm -Rf /opt/${LIBREWOLF_NAME}
+    sudo tar --overwrite -xvJf ${HOME_PACKAGES_DIR}/${LIBREWOLF_TAR_XZ_FILE_NAME} -C /opt
+}

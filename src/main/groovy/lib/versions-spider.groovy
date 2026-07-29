@@ -50,6 +50,10 @@ interface FilePath {
     String getPath()
 }
 
+interface Browser extends FilePath, Init, Close {
+    WebDriver getDriver()
+}
+
 interface DriverExecute {
     void execute(WebDriver driver)
 }
@@ -106,7 +110,7 @@ class GeckoDriver implements FilePath, Init {
     }
 }
 
-class Firefox implements FilePath, Init, Close {
+class Firefox implements Browser {
     OperatingSystem operatingSystem
     FirefoxOptions options
     WebDriver driver
@@ -120,6 +124,40 @@ class Firefox implements FilePath, Init, Close {
             "/Applications/Firefox.app/Contents/MacOS/firefox"
         } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
             "/opt/firefox/firefox"
+        } else {
+            throw new RuntimeException("Unsupported OS: $osName")
+        }
+    }
+
+    @Override
+    void init() {
+        options = new FirefoxOptions(binary: getPath())
+        driver = new FirefoxDriver(options)
+    }
+
+    @Override
+    void close() {
+        driver.close()
+    }
+}
+
+// LibreWolf is a Firefox fork: it runs with the same geckodriver and FirefoxDriver,
+// only the binary path differs. It is installed the same way as Firefox (see
+// src/main/sh/packages/lib/packages/librewolf.package -> extracts to /opt/librewolf).
+class Librewolf implements Browser {
+    OperatingSystem operatingSystem
+    FirefoxOptions options
+    WebDriver driver
+
+    @Override
+    String getPath() {
+        def osName = operatingSystem.getName()
+        if (osName.contains("win")) {
+            "C:\\Program Files\\LibreWolf\\librewolf.exe"
+        } else if (osName.contains("mac")) {
+            "/Applications/LibreWolf.app/Contents/MacOS/librewolf"
+        } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+            "/opt/librewolf/librewolf"
         } else {
             throw new RuntimeException("Unsupported OS: $osName")
         }
@@ -1464,7 +1502,7 @@ class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
-    final FilePath firefox = new Firefox(operatingSystem: operatingSystem)
+    final Browser browser = resolveBrowser(operatingSystem)
     final RulesRegister rulesRegister = fillWithRules(new RulesRegister())
     final CliArgs cliArgs = new CliArgs().parseArgs(args)
     /*
@@ -1473,7 +1511,7 @@ static void main(String[] args) {
     */
     try {
         geckoDriver.init()
-        firefox.init()
+        browser.init()
         //println "Package name: ${cliArgs.getPackageName()}"
         if (cliArgs.isAll()) {
             rulesRegister.rulesMap.each { entry ->
@@ -1481,7 +1519,7 @@ static void main(String[] args) {
                 def name = (rule as Name).getName()
                 def url = (rule as Url).getUrl()
                 try {
-                    rule.execute(firefox.getDriver())
+                    rule.execute(browser.getDriver())
                 } catch (Exception e) {
                     println "❌ Error [${name}] from ${url}: ${e.message}"
                 }
@@ -1491,7 +1529,7 @@ static void main(String[] args) {
                 def rule = requireNonNull(rulesRegister[name], "❌ Missing rule: '${name}'")
                 def url = (rule as Url).getUrl()
                 try {
-                    rule.execute(firefox.getDriver())
+                    rule.execute(browser.getDriver())
                 } catch (Exception e) {
                     println "❌ Error [${name}] from ${url}: ${e.message}"
                 }
@@ -1500,8 +1538,20 @@ static void main(String[] args) {
     } catch (Exception exception) {
         println "❌ Error: ${exception.message}"
     } finally {
-        (firefox as Close).close()
+        (browser as Close).close()
     }
+}
+
+// Prefer LibreWolf as the crawling browser; fall back to Firefox when it is absent.
+static Browser resolveBrowser(OperatingSystem operatingSystem) {
+    final Browser librewolf = new Librewolf(operatingSystem: operatingSystem)
+    if (new File(librewolf.getPath()).exists()) {
+        println "🐺 Using LibreWolf: ${librewolf.getPath()}"
+        return librewolf
+    }
+    final Browser firefox = new Firefox(operatingSystem: operatingSystem)
+    println "🦊 LibreWolf not found, using Firefox: ${firefox.getPath()}"
+    return firefox
 }
 
 static RulesRegister fillWithRules(RulesRegister rulesRegister) {

@@ -16,5 +16,5 @@ jdk25_download_func() {
 
 jdk25_install_func() {
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${JDK25_TAR_GZ_FILE_NAME} -C /opt
-    makeOptLink /opt/jdk24 /opt/${JDK25_DIR_NAME}
+    makeOptLink /opt/jdk25 /opt/${JDK25_DIR_NAME}
 }

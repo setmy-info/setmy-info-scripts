@@ -6,8 +6,8 @@ RUN apt-get -y update && apt-get -y upgrade && mkdir -p /var/opt/setmy.info/buil
     apt-get -y install cpp gcc g++ make dos2unix gzip bzip2 xz-utils zip grep coreutils
 
 WORKDIR /opt
-ADD https://github.com/Kitware/CMake/releases/download/v4.2.3/cmake-4.2.3-linux-x86_64.tar.gz /opt
-RUN tar xvzf cmake-4.2.3-linux-x86_64.tar.gz && ln -s /opt/cmake-4.2.3-linux-x86_64 /opt/cmake && ls -la
+ADD https://github.com/Kitware/CMake/releases/download/v4.4.2/cmake-4.4.2-linux-x86_64.tar.gz /opt
+RUN tar xvzf cmake-4.4.2-linux-x86_64.tar.gz && ln -s /opt/cmake-4.4.2-linux-x86_64 /opt/cmake && ls -la
 
 WORKDIR /var/opt/setmy.info/build
 
@@ -20,7 +20,7 @@ RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packag
 RUN ./src/main/sh/build/packages-build.sh
 
 RUN ls -la
-RUN apt install -y ./setmy-info-scripts-0.107.1.noarch.deb
+RUN apt install -y ./setmy-info-scripts-0.107.2.noarch.deb
 RUN ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info
 
@@ -36,8 +36,8 @@ RUN dnf install -y epel-release && \
     dnf install -y cpp gcc g++ boost-test make dos2unix yum-utils rpmdevtools rpm-build rpm rpmlint grep coreutils-single
 
 WORKDIR /opt
-ADD https://github.com/Kitware/CMake/releases/download/v4.2.3/cmake-4.2.3-linux-x86_64.tar.gz /opt
-RUN tar xvzf cmake-4.2.3-linux-x86_64.tar.gz && ln -s /opt/cmake-4.2.3-linux-x86_64 /opt/cmake && ls -la
+ADD https://github.com/Kitware/CMake/releases/download/v4.4.2/cmake-4.4.2-linux-x86_64.tar.gz /opt
+RUN tar xvzf cmake-4.4.2-linux-x86_64.tar.gz && ln -s /opt/cmake-4.4.2-linux-x86_64 /opt/cmake && ls -la
 
 WORKDIR /var/opt/setmy.info/build
 
@@ -46,11 +46,11 @@ COPY CMakeLists.txt ./
 COPY configure ./
 COPY changelog ./
 RUN dos2unix **/* && dos2unix ./configure && dos2unix ./src/main/sh/build/packages-build.sh && dos2unix ./src/main/sh/build/check-files.sh && chmod ugoa+x ./src/main/sh/build/packages-build.sh && chmod ugoa+x ./src/main/sh/build/check-files.sh
-COPY --from=deb_build_image /var/opt/setmy.info/build/setmy-info-scripts-0.107.1.noarch.deb /var/opt/setmy.info/build/setmy-info-scripts-0.107.1.noarch.deb
+COPY --from=deb_build_image /var/opt/setmy.info/build/setmy-info-scripts-0.107.2.noarch.deb /var/opt/setmy.info/build/setmy-info-scripts-0.107.2.noarch.deb
 
 RUN ./src/main/sh/build/packages-build.sh
 RUN ls -la
 RUN rpm -e setmy-info-scripts || true
-RUN rpm -i ./setmy-info-scripts-0.107.1.noarch.rpm
+RUN rpm -i ./setmy-info-scripts-0.107.2.noarch.rpm
 RUN ./src/main/sh/build/check-files.sh
 RUN ls -la /opt/setmy.info

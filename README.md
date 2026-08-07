@@ -20,7 +20,7 @@ sudo dnf install -y openssl-devel sqlite sqlite-devel libffi-devel
 ## Build
 
 ```sh
-SCRIPTS_VERSION=0.107.2
+SCRIPTS_VERSION=0.108.0
 ./configure release
 make clean
 make all test package
@@ -31,7 +31,7 @@ sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 All in single line:
 
 ```sh
-SCRIPTS_VERSION=0.107.2 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
+SCRIPTS_VERSION=0.108.0 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 ```
 
 and for SMI Rocky Linux Docker
@@ -66,6 +66,14 @@ docker build --no-cache --progress=plain -f Dockerfile .
 
 # Version upgrade
 
+Run from the project root:
+
+```sh
+./src/main/sh/build/update-versions.sh <new-version>
+```
+
+This updates all version references in:
+
 * ./README.md
 * ./Doxyfile
 * ./Dockerfile
@@ -73,6 +81,13 @@ docker build --no-cache --progress=plain -f Dockerfile .
 * ./src/main/sh/build/packages-build.sh
 * ./src/main/sh/build/check-files.sh (smi-version output test)
 * ./setup.iss
+
+After updating versions, rebuild and reinstall:
+
+```sh
+SCRIPTS_VERSION=<new-version>
+./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
+```
 
 # TODO
 

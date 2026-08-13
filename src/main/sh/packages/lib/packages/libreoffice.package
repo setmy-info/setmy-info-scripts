@@ -17,5 +17,5 @@ libreoffice_install_func() {
     rm -rf ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}
     mkdir -p ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}
     tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${LIBREOFFICE_TAR_GZ_FILE_NAME} -C ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}
-    sudo dnf localinstall -y ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}/${LIBREOFFICE_DIR_NAME}/RPMS/*.rpm
+    sudo dnf localinstall -y ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}/LibreOffice_*/RPMS/*.rpm
 }

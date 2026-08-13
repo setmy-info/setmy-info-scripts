@@ -10,7 +10,9 @@ dagu_download_func() {
 }
 
 dagu_install_func() {
-    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${DAGU_TAR_GZ_FILE_NAME} -C /opt/${DAGU_NAME}-${DAGU_VERSION}/bin
+    sudo rm -rf /opt/${DAGU_NAME}-${DAGU_VERSION}
+    sudo mkdir -p /opt/${DAGU_NAME}-${DAGU_VERSION}/bin
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${DAGU_TAR_GZ_FILE_NAME} -C /opt/${DAGU_NAME}-${DAGU_VERSION}/bin ${DAGU_NAME}
     sudo chmod +x /opt/${DAGU_NAME}-${DAGU_VERSION}/bin/${DAGU_NAME}
     makeOptLink /opt/${DAGU_NAME} /opt/${DAGU_NAME}-${DAGU_VERSION}
 }

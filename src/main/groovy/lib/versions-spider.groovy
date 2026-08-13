@@ -1463,6 +1463,37 @@ class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     }
 }
 
+class NginxDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://nginx.org/packages/centos/10/x86_64/RPMS/nginx-1.30.4-1.el10.ngx.x86_64.rpm
+        def pageText = new URL(getUrl()).text
+        def versions = (pageText =~ /nginx-(\d+\.\d+\.\d+)-\d+\.el10\.ngx\.x86_64\.rpm/)
+            .collect { it[1] }.unique()
+        if (versions.isEmpty()) throw new RuntimeException("No nginx RPM versions found")
+        def highestVersion = versions.sort { a, b ->
+            def av = a.tokenize('.'); def bv = b.tokenize('.')
+            for (int i = 0; i < Math.max(av.size(), bv.size()); i++) {
+                int ai = i < av.size() ? av[i].toInteger() : 0
+                int bi = i < bv.size() ? bv[i].toInteger() : 0
+                if (ai != bi) return ai <=> bi
+            }
+            return 0
+        }.last()
+        println "https://nginx.org/packages/centos/10/x86_64/RPMS/nginx-${highestVersion}-1.el10.ngx.x86_64.rpm"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://nginx.org/packages/centos/10/x86_64/RPMS/"
+    }
+
+    @Override
+    String getName() {
+        return "nginx"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1559,6 +1590,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new ClionDriverExecute(), rulesRegister)
     fillWithRules(new LibrewolfDriverExecute(), rulesRegister)
     fillWithRules(new DaguDriverExecute(), rulesRegister)
+    fillWithRules(new NginxDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

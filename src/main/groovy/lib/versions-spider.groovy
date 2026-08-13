@@ -597,28 +597,19 @@ class SbclDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     }
 }
 
-class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+class InfinispanDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
-        driver.get(getUrl())
-        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
-        println last
-    }
-
-    Closure<Boolean> getSearcher() {
-        return { href ->
-            // https://github.com/infinispan/infinispan/releases/download/16.1.0/infinispan-server-16.1.0.zip
-            if (!href.contains("/infinispan/infinispan/releases/download/")) return false
-            if (!href.contains("/infinispan-server-")) return false
-            if (!href.endsWith(".zip")) return false
-            if (href.contains("/download//")) return false
-            return true
-        }
+        // GitHub release assets are loaded via JS — use the REST API instead.
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name.startsWith("infinispan-server-") && it.name.endsWith(".zip") }
+        if (!asset) throw new RuntimeException("No infinispan-server zip found in latest release")
+        println asset.browser_download_url
     }
 
     @Override
     String getUrl() {
-        return "https://github.com/infinispan/infinispan/releases"
+        return "https://api.github.com/repos/infinispan/infinispan/releases/latest"
     }
 
     @Override
@@ -1138,25 +1129,18 @@ class LibreOfficeDriverExecute extends DriverExecuteBase implements DriverExecut
 
     @Override
     void execute(WebDriver driver) {
-        //https://www.libreoffice.org/donate/dl/rpm-x86_64/25.8.1/en-US/LibreOffice_25.8.1_Linux_x86-64_rpm.tar.gz
         driver.get(getUrl())
-        def hrefs = getHrefs(driver)
-        // println "🔗: ${hrefs}"
-        hrefs = hrefs.findAll(getSearcher())
-        def last = sortAndLast(hrefs)
-        // println "🔗: ${last}"
-        def version = last.replace("_Linux_x86-64_rpm.tar.gz", "").split("/LibreOffice_")[1]
-        println "https://www.libreoffice.org/donate/dl/rpm-x86_64/${version}/en-US/LibreOffice_${version}_Linux_x86-64_rpm.tar.gz"
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
     }
 
     Closure<Boolean> getSearcher() {
         return { href ->
-            // println "🔗: ${href}"
-            // https://www.libreoffice.org/donate/dl/win-x86_64/26.2.0/en-US/LibreOffice_26.2.0_Win_x86-64.msi
-            // https://www.libreoffice.org/donate/dl/rpm-x86_64/26.2.0/en-US/LibreOffice_26.2.0_Linux_x86-64_rpm.tar.gz
-            return href.contains("/rpm-x86_64/")
-                && href.contains("/en-US/LibreOffice_")
-                && href.endsWith(".tar.gz")
+            // https://download.documentfoundation.org/libreoffice/stable/26.2.5/rpm/x86_64/LibreOffice_26.2.5_Linux_x86-64_rpm.tar.gz
+            if (!href.contains("download.documentfoundation.org/libreoffice/stable/")) return false
+            if (!href.contains("/rpm/x86_64/LibreOffice_")) return false
+            if (!href.endsWith("_Linux_x86-64_rpm.tar.gz")) return false
+            return true
         }
     }
 
@@ -1352,28 +1336,18 @@ class ElixirDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     }
 }
 
-class IdeaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+class IdeaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
-        driver.get(getUrl())
-        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
-        println last
-    }
-
-    Closure<Boolean> getSearcher() {
-        return { href ->
-            // https://download.jetbrains.com/idea/ideaIU-2026.1.3.tar.gz
-            // https://download.jetbrains.com/idea/idea-2026.1.3.tar.gz
-            if (!href.contains("download.jetbrains.com/idea/idea")) return false
-            if (!href.endsWith(".tar.gz")) return false
-            if (href.toLowerCase().contains("-eap")) return false
-            return true
-        }
+        // JetBrains download page is a Next.js SPA — download links are not in static DOM.
+        // Use the data API instead.
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        println json.IIU[0].downloads.linux.link
     }
 
     @Override
     String getUrl() {
-        return "https://www.jetbrains.com/idea/download/?section=linux"
+        return "https://data.services.jetbrains.com/products/releases?code=IIU&latest=true&type=release"
     }
 
     @Override
@@ -1382,28 +1356,16 @@ class IdeaDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     }
 }
 
-class PycharmDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+class PycharmDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
-        driver.get(getUrl())
-        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
-        println last
-    }
-
-    Closure<Boolean> getSearcher() {
-        return { href ->
-            // https://download.jetbrains.com/python/pycharm-professional-2026.1.4.tar.gz
-            if (!href.contains("download.jetbrains.com/python/pycharm")) return false
-            if (!href.endsWith(".tar.gz")) return false
-            if (href.toLowerCase().contains("-eap")) return false
-            if (href.toLowerCase().contains("community")) return false
-            return true
-        }
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        println json.PCP[0].downloads.linux.link
     }
 
     @Override
     String getUrl() {
-        return "https://www.jetbrains.com/pycharm/download/?section=linux"
+        return "https://data.services.jetbrains.com/products/releases?code=PCP&latest=true&type=release"
     }
 
     @Override
@@ -1412,27 +1374,16 @@ class PycharmDriverExecute extends DriverExecuteBase implements DriverExecute, N
     }
 }
 
-class ClionDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+class ClionDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
-        driver.get(getUrl())
-        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
-        println last
-    }
-
-    Closure<Boolean> getSearcher() {
-        return { href ->
-            // https://download.jetbrains.com/cpp/CLion-2026.1.3.tar.gz
-            if (!href.contains("download.jetbrains.com/cpp/CLion-")) return false
-            if (!href.endsWith(".tar.gz")) return false
-            if (href.toLowerCase().contains("-eap")) return false
-            return true
-        }
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        println json.CL[0].downloads.linux.link
     }
 
     @Override
     String getUrl() {
-        return "https://www.jetbrains.com/clion/download/?section=linux"
+        return "https://data.services.jetbrains.com/products/releases?code=CL&latest=true&type=release"
     }
 
     @Override
@@ -1469,23 +1420,36 @@ class LibrewolfDriverExecute extends DriverExecuteBase implements DriverExecute,
     }
 }
 
-class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+class DaguDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
-        driver.get(getUrl())
-        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
-        println first
+        // https://github.com/dagucloud/dagu/releases/download/v2.13.0/dagu_2.13.0_linux_amd64.tar.gz
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name.endsWith("_linux_amd64.tar.gz") }
+        if (!asset) throw new RuntimeException("No dagu linux amd64 tar.gz found in latest release")
+        println asset.browser_download_url
     }
 
-    Closure<Boolean> getSearcher() {
-        return { href ->
-            // https://sourceforge.net/projects/nsis/files/NSIS%203/3.11/nsis-3.11-setup.exe/download?use_mirror=deac-ams&download
-            // https://prdownloads.sourceforge.net/nsis/nsis-3.11-setup.exe?download
-            // https://unlimited.dl.sourceforge.net/project/nsis/NSIS%203/3.11/nsis-3.11-setup.exe?viasf=1
-            if (!href.toLowerCase().contains("nsis-")) return false
-            if (!href.toLowerCase().contains("-setup.exe")) return false
-            return true
-        }
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/dagucloud/dagu/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "dagu"
+    }
+}
+
+class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // SourceForge uses cookie/JS gating in Selenium — fetch page text directly.
+        // https://prdownloads.sourceforge.net/nsis/nsis-3.12-setup.exe?download
+        def pageText = new URL(getUrl()).text
+        def matcher = (pageText =~ /prdownloads\.sourceforge\.net\/nsis\/(nsis-[\d.]+-setup\.exe)\?download/)
+        if (!matcher.find()) throw new RuntimeException("No NSIS download link found")
+        println "https://prdownloads.sourceforge.net/nsis/${matcher.group(1)}?download"
     }
 
     @Override
@@ -1594,6 +1558,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new PycharmDriverExecute(), rulesRegister)
     fillWithRules(new ClionDriverExecute(), rulesRegister)
     fillWithRules(new LibrewolfDriverExecute(), rulesRegister)
+    fillWithRules(new DaguDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

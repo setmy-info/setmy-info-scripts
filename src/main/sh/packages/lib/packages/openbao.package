@@ -1,0 +1,20 @@
+OPENBAO_NAME=openbao
+OPENBAO_BIN_NAME=bao
+OPENBAO_VERSION=2.6.1
+OPENBAO_TAR_GZ_FILE_NAME=${OPENBAO_NAME}_${OPENBAO_VERSION}_linux_amd64.tar.gz
+OPENBAO_TAR_GZ_FILE_URL=https://github.com/openbao/openbao/releases/download/v${OPENBAO_VERSION}/${OPENBAO_TAR_GZ_FILE_NAME}
+
+# https://github.com/openbao/openbao/releases/download/v2.6.1/openbao_2.6.1_linux_amd64.tar.gz
+
+openbao_download_func() {
+    smi-download ${OPENBAO_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${OPENBAO_TAR_GZ_FILE_NAME}
+}
+
+# The archive has no top level directory: it holds the bao binary next to the docs.
+openbao_install_func() {
+    sudo rm -rf /opt/${OPENBAO_NAME}-${OPENBAO_VERSION}
+    sudo mkdir -p /opt/${OPENBAO_NAME}-${OPENBAO_VERSION}/bin
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${OPENBAO_TAR_GZ_FILE_NAME} -C /opt/${OPENBAO_NAME}-${OPENBAO_VERSION}/bin ${OPENBAO_BIN_NAME}
+    sudo chmod +x /opt/${OPENBAO_NAME}-${OPENBAO_VERSION}/bin/${OPENBAO_BIN_NAME}
+    makeOptLink /opt/${OPENBAO_NAME} /opt/${OPENBAO_NAME}-${OPENBAO_VERSION}
+}

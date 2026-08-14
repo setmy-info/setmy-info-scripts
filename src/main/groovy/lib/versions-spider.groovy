@@ -1494,6 +1494,59 @@ class NginxDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     }
 }
 
+class KeycloakDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        driver.get(getUrl())
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/keycloak/keycloak/releases/download/26.7.1/keycloak-26.7.1.tar.gz
+            href = href.toLowerCase()
+            if (!href.contains("/keycloak/keycloak/releases/download/")) return false
+            if (!href.contains("/keycloak-")) return false
+            if (!href.endsWith(".tar.gz")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://www.keycloak.org/downloads"
+    }
+
+    @Override
+    String getName() {
+        return "keycloak"
+    }
+}
+
+class OpenbaoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // GitHub release assets are loaded via JS — use the REST API instead.
+        // https://github.com/openbao/openbao/releases/download/v2.6.1/openbao_2.6.1_linux_amd64.tar.gz
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        // openbao-hsm_*_linux_amd64.tar.gz is the HSM enabled variant, not the plain one.
+        def asset = json.assets.find { it.name.startsWith("openbao_") && it.name.endsWith("_linux_amd64.tar.gz") }
+        if (!asset) throw new RuntimeException("No openbao linux amd64 tar.gz found in latest release")
+        println asset.browser_download_url
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/openbao/openbao/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "openbao"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1591,6 +1644,8 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new LibrewolfDriverExecute(), rulesRegister)
     fillWithRules(new DaguDriverExecute(), rulesRegister)
     fillWithRules(new NginxDriverExecute(), rulesRegister)
+    fillWithRules(new KeycloakDriverExecute(), rulesRegister)
+    fillWithRules(new OpenbaoDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

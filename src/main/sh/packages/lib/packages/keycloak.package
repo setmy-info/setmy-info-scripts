@@ -1,0 +1,16 @@
+KEYCLOAK_NAME=keycloak
+KEYCLOAK_VERSION=26.7.1
+KEYCLOAK_DIR_NAME=${KEYCLOAK_NAME}-${KEYCLOAK_VERSION}
+KEYCLOAK_TAR_GZ_FILE_NAME=${KEYCLOAK_DIR_NAME}.tar.gz
+KEYCLOAK_TAR_GZ_FILE_URL=https://github.com/keycloak/keycloak/releases/download/${KEYCLOAK_VERSION}/${KEYCLOAK_TAR_GZ_FILE_NAME}
+
+# https://github.com/keycloak/keycloak/releases/download/26.7.1/keycloak-26.7.1.tar.gz
+
+keycloak_download_func() {
+    smi-download ${KEYCLOAK_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${KEYCLOAK_TAR_GZ_FILE_NAME}
+}
+
+keycloak_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${KEYCLOAK_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/${KEYCLOAK_NAME} /opt/${KEYCLOAK_DIR_NAME}
+}

@@ -1,0 +1,16 @@
+JENKINS_PLUGIN_MANAGER_NAME=jenkins-plugin-manager
+JENKINS_PLUGIN_MANAGER_VERSION=2.15.0
+JENKINS_PLUGIN_MANAGER_JAR_FILE_NAME=${JENKINS_PLUGIN_MANAGER_NAME}-${JENKINS_PLUGIN_MANAGER_VERSION}.jar
+JENKINS_PLUGIN_MANAGER_JAR_FILE_URL=https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/${JENKINS_PLUGIN_MANAGER_VERSION}/${JENKINS_PLUGIN_MANAGER_JAR_FILE_NAME}
+
+# https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.15.0/jenkins-plugin-manager-2.15.0.jar
+
+jpm_download_func() {
+    smi-download ${JENKINS_PLUGIN_MANAGER_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${JENKINS_PLUGIN_MANAGER_JAR_FILE_NAME}
+}
+
+jpm_install_func() {
+    JENKINS_LIB_DIR=$(smi-lib-location)
+    sudo rm -f ${JENKINS_LIB_DIR}/${JENKINS_PLUGIN_MANAGER_NAME}.jar
+    sudo cp ${HOME_PACKAGES_DIR}/${JENKINS_PLUGIN_MANAGER_JAR_FILE_NAME} ${JENKINS_LIB_DIR}/${JENKINS_PLUGIN_MANAGER_NAME}.jar
+}

@@ -1547,6 +1547,48 @@ class OpenbaoDriverExecute extends DriverExecuteBase implements DriverExecute, N
     }
 }
 
+class JenkinsPluginManagerDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.15.0/jenkins-plugin-manager-2.15.0.jar
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name.startsWith("jenkins-plugin-manager-") && it.name.endsWith(".jar") }
+        if (!asset) throw new RuntimeException("No jenkins-plugin-manager jar found in latest release")
+        println asset.browser_download_url
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/jenkinsci/plugin-installation-manager-tool/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "jpm"
+    }
+}
+
+class NinjaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://github.com/ninja-build/ninja/releases/download/v1.13.1/ninja-linux.zip
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name == "ninja-linux.zip" }
+        if (!asset) throw new RuntimeException("No ninja-linux.zip found in latest release")
+        println asset.browser_download_url
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/ninja-build/ninja/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "ninja"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1646,6 +1688,8 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new NginxDriverExecute(), rulesRegister)
     fillWithRules(new KeycloakDriverExecute(), rulesRegister)
     fillWithRules(new OpenbaoDriverExecute(), rulesRegister)
+    fillWithRules(new NinjaDriverExecute(), rulesRegister)
+    fillWithRules(new JenkinsPluginManagerDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

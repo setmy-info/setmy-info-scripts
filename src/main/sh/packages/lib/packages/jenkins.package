@@ -9,8 +9,19 @@ JENKINS_WAR_FILE_URL=https://get.jenkins.io/war-stable/${JENKINS_VERSION}/${JENK
 
 jenkins_download_func() {
     smi-download ${JENKINS_WAR_FILE_URL} ${HOME_PACKAGES_DIR}/${JENKINS_WAR_FILE_NAME}
+    rm -f ${HOME_PACKAGES_DIR}/jenkins-cli.jar ${HOME_PACKAGES_DIR}/jenkins-agent.jar
+    JENKINS_TMP_DIR=$(mktemp -d)
+    unzip -q -o ${HOME_PACKAGES_DIR}/${JENKINS_WAR_FILE_NAME} "WEB-INF/lib/cli*.jar" -d ${JENKINS_TMP_DIR}
+    unzip -q -o ${HOME_PACKAGES_DIR}/${JENKINS_WAR_FILE_NAME} "WEB-INF/lib/remoting*.jar" -d ${JENKINS_TMP_DIR}
+    cp ${JENKINS_TMP_DIR}/WEB-INF/lib/cli*.jar ${HOME_PACKAGES_DIR}/jenkins-cli.jar
+    cp ${JENKINS_TMP_DIR}/WEB-INF/lib/remoting*.jar ${HOME_PACKAGES_DIR}/jenkins-agent.jar
+    rm -rf ${JENKINS_TMP_DIR}
 }
 
 jenkins_install_func() {
-    return
+    JENKINS_LIB_DIR=$(smi-lib-location)
+    sudo rm -f ${JENKINS_LIB_DIR}/jenkins-cli.jar ${JENKINS_LIB_DIR}/jenkins-agent.jar ${JENKINS_LIB_DIR}/${JENKINS_WAR_FILE_NAME}
+    sudo cp ${HOME_PACKAGES_DIR}/${JENKINS_WAR_FILE_NAME} ${JENKINS_LIB_DIR}/${JENKINS_WAR_FILE_NAME}
+    sudo cp ${HOME_PACKAGES_DIR}/jenkins-cli.jar ${JENKINS_LIB_DIR}/jenkins-cli.jar
+    sudo cp ${HOME_PACKAGES_DIR}/jenkins-agent.jar ${JENKINS_LIB_DIR}/jenkins-agent.jar
 }

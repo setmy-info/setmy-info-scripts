@@ -1,3 +1,13 @@
+* 2026-08-15 Imre Tabur <imre.tabur@mail.ee>
+- Added smi-jenkins-controller: POSIX shell wrapper to start Jenkins WAR with SMI_JENKINS_HOST/SMI_JENKINS_PORT defaults (127.0.0.1:7171); passes all other arguments to jenkins.war unchanged; supports JAVA_OPTS and JENKINS_HOME.
+- Added smi-jenkins-node: POSIX shell wrapper to connect a Jenkins agent node; secret via SMI_JENKINS_SECRET only; controller URL from SMI_JENKINS_CONTROLLER_HOST/PORT; node name from SMI_JENKINS_NODE_NAME or hostname; uses WebSocket.
+- Added jenkins-cli: POSIX shell wrapper for jenkins-cli.jar; auto-constructs controller URL from SMI_JENKINS_HOST/SMI_JENKINS_PORT; all Jenkins CLI commands and arguments pass through unchanged.
+- Added man pages: smi-jenkins-controller(1), smi-jenkins-node(1), jenkins-cli(1) in src/main/man/server/man1/.
+- Updated jenkins.package: install function now copies war and extracts cli/agent JARs from WEB-INF/lib/ to smi-lib-location; extraction moved to download phase.
+- Added jpm.package (Jenkins Plugin Manager) for jenkins-plugin-manager tool.
+- Added NginxDriverExecute, NinjaDriverExecute, JenkinsPluginManagerDriverExecute crawlers to versions-spider.groovy.
+- Fixed dagu.package install: create /opt/dagu-VERSION/bin before extracting binary.
+- Fixed libreoffice.package install: use LibreOffice_* glob for extracted directory name.
 * 2026-05-17 Imre Tabur <imre.tabur@mail.ee>
 - Version bump to 0.106.0: Updated PROJECT_VERSION_MINOR to 106 in CMakeLists.txt.
 - Version bump to 0.106.0: Updated PROJECT_VERSION to "0.106.0" in src/main/sh/build/packages-build.sh.

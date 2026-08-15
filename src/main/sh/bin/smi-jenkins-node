@@ -1,0 +1,78 @@
+#!/bin/sh
+
+_HOST="${SMI_JENKINS_CONTROLLER_HOST:-127.0.0.1}"
+_PORT="${SMI_JENKINS_CONTROLLER_PORT:-7171}"
+_NAME="${SMI_JENKINS_NODE_NAME:-$(hostname)}"
+_WORKDIR="${SMI_JENKINS_WORKDIR:-${HOME}/.jenkins-node}"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --host)
+            _HOST="$2"
+            shift 2
+            ;;
+        --port)
+            _PORT="$2"
+            shift 2
+            ;;
+        --name)
+            _NAME="$2"
+            shift 2
+            ;;
+        --workdir)
+            _WORKDIR="$2"
+            shift 2
+            ;;
+        --help|-h)
+            cat <<EOF
+Usage: smi-jenkins-node [--host HOST] [--port PORT] [--name NAME] [--workdir DIR] [AGENT_ARGS...]
+
+Connects this machine to a Jenkins controller as an agent node.
+All arguments after wrapper options are passed to jenkins-agent.jar unchanged.
+
+Environment variables:
+  SMI_JENKINS_CONTROLLER_HOST    Controller host   (default: 127.0.0.1)
+  SMI_JENKINS_CONTROLLER_PORT    Controller port   (default: 7171)
+  SMI_JENKINS_NODE_NAME          Node name         (default: hostname)
+  SMI_JENKINS_WORKDIR            Agent work dir    (default: ~/.jenkins-node)
+  SMI_JENKINS_SECRET             Agent secret      (required, no default)
+
+Precedence: --host/--port/--name/--workdir > environment variable > default
+The secret must be provided via SMI_JENKINS_SECRET only (never via CLI).
+
+Examples:
+  SMI_JENKINS_SECRET=abc123 smi-jenkins-node
+  SMI_JENKINS_SECRET=abc123 SMI_JENKINS_NODE_NAME=build-01 smi-jenkins-node
+  SMI_JENKINS_SECRET=abc123 smi-jenkins-node --name build-01
+  SMI_JENKINS_SECRET=abc123 smi-jenkins-node --workdir ~/temp/jenkins
+EOF
+            exit 0
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [ -z "${SMI_JENKINS_SECRET}" ]; then
+    echo "ERROR: SMI_JENKINS_SECRET is not set" >&2
+    exit 1
+fi
+
+_LIB=$(smi-lib-location)
+_AGENT="${_LIB}/jenkins-agent.jar"
+
+if [ ! -f "${_AGENT}" ]; then
+    echo "ERROR: ${_AGENT}: not found" >&2
+    exit 1
+fi
+
+_URL="http://${_HOST}:${_PORT}/"
+
+exec java ${JAVA_OPTS} -jar "${_AGENT}" \
+    -url "${_URL}" \
+    -secret "${SMI_JENKINS_SECRET}" \
+    -name "${_NAME}" \
+    -workDir "${_WORKDIR}" \
+    -webSocket \
+    "$@"

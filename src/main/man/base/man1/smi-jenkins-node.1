@@ -1,0 +1,164 @@
+.TH smi-jenkins-node "1" "August 2026" "SMI Toolset" "SMI Server Command"
+.SH NAME
+smi-jenkins-node \- Connect this machine to a Jenkins controller as an agent node
+.SH SYNOPSIS
+.B smi-jenkins-node
+.br
+.B smi-jenkins-node
+.RB [ \-\-host
+.IR HOST ]
+.RB [ \-\-port
+.IR PORT ]
+.RB [ \-\-name
+.IR NAME ]
+.RB [ \-\-workdir
+.IR DIR ]
+.RI [ AGENT_ARGS\| .\|.\|.]
+.SH DESCRIPTION
+.PP
+.B smi-jenkins-node
+connects this machine to a Jenkins controller by running
+.BR jenkins-agent.jar .
+No options are required for normal use beyond supplying the agent secret
+via the
+.SM SMI_JENKINS_SECRET
+environment variable.
+.PP
+The wrapper constructs the controller URL and native agent options
+.RB ( \-url ,
+.BR \-secret ,
+.BR \-name ,
+.BR \-webSocket )
+automatically from environment variables and defaults.
+The user does not need to know or supply those options.
+.PP
+The agent secret must be provided via the
+.SM SMI_JENKINS_SECRET
+environment variable only.
+There is no
+.B \-\-secret
+option; secrets must not appear in shell history or process argument lists.
+.PP
+Any Jenkins agent arguments supplied after the wrapper options are passed
+through unchanged.
+.PP
+The JAR is located via
+.BR smi-lib-location (1)
+so renaming the installation provider requires no changes to this script.
+.PP
+JVM options may be supplied via the
+.SM JAVA_OPTS
+environment variable.
+.SH OPTIONS
+.TP
+.BI \-\-host " HOST"
+Controller host.
+Overrides
+.SM SMI_JENKINS_CONTROLLER_HOST
+and the built-in default.
+.TP
+.BI \-\-port " PORT"
+Controller port.
+Overrides
+.SM SMI_JENKINS_CONTROLLER_PORT
+and the built-in default.
+.TP
+.BI \-\-name " NAME"
+Node name registered in Jenkins.
+Overrides
+.SM SMI_JENKINS_NODE_NAME
+and the hostname default.
+.TP
+.BI \-\-workdir " DIR"
+Agent working directory.
+Overrides
+.SM SMI_JENKINS_WORKDIR
+and the built-in default.
+Passed as
+.B \-workDir
+to the agent JAR.
+.TP
+.B \-\-help
+Print a short usage summary and exit.
+.PP
+All other arguments are passed directly to
+.BR jenkins-agent.jar .
+.SH ENVIRONMENT
+.TP
+.B SMI_JENKINS_SECRET
+Agent secret token.
+.B Required.
+No default.
+Never supply this via command-line options.
+.TP
+.B SMI_JENKINS_CONTROLLER_HOST
+Controller host.
+Default:
+.BR 127.0.0.1 .
+.TP
+.B SMI_JENKINS_CONTROLLER_PORT
+Controller port.
+Default:
+.BR 7171 .
+.TP
+.B SMI_JENKINS_NODE_NAME
+Node name.
+Default: output of
+.BR hostname (1).
+.TP
+.B SMI_JENKINS_WORKDIR
+Agent working directory.
+Default:
+.BR ~/.jenkins-node .
+.TP
+.B JAVA_OPTS
+Additional JVM options.
+.SH PRECEDENCE
+.PP
+.B --host
+>
+.SM SMI_JENKINS_CONTROLLER_HOST
+> 127.0.0.1
+.PP
+.B --port
+>
+.SM SMI_JENKINS_CONTROLLER_PORT
+> 7171
+.PP
+.B --name
+>
+.SM SMI_JENKINS_NODE_NAME
+> hostname
+.PP
+.B --workdir
+>
+.SM SMI_JENKINS_WORKDIR
+> ~/.jenkins-node
+.SH EXAMPLES
+.PP
+Connect with all defaults (secret from environment):
+.RS
+.B SMI_JENKINS_SECRET=abc123 smi-jenkins-node
+.RE
+.PP
+Connect with environment configuration (suitable for systemd):
+.RS
+.nf
+SMI_JENKINS_CONTROLLER_HOST=192.168.1.10
+SMI_JENKINS_CONTROLLER_PORT=8080
+SMI_JENKINS_NODE_NAME=linux-build-01
+SMI_JENKINS_SECRET=abc123
+.fi
+.RS
+.B smi-jenkins-node
+.RE
+.RE
+.PP
+Override node name on the command line:
+.RS
+.B SMI_JENKINS_SECRET=abc123 smi-jenkins-node --name build-01
+.RE
+.SH SEE ALSO
+.BR smi-jenkins-controller (1),
+.BR jenkins-cli (1),
+.BR smi-lib-location (1)

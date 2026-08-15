@@ -1,0 +1,54 @@
+#!/bin/sh
+
+_HOST="${SMI_JENKINS_HOST:-127.0.0.1}"
+_PORT="${SMI_JENKINS_PORT:-7171}"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --host)
+            _HOST="$2"
+            shift 2
+            ;;
+        --port)
+            _PORT="$2"
+            shift 2
+            ;;
+        --help|-h)
+            cat <<EOF
+Usage: jenkins-cli [--host HOST] [--port PORT] JENKINS_CLI_COMMAND [ARGS...]
+
+Runs Jenkins CLI commands. All arguments after wrapper options are passed
+to jenkins-cli.jar unchanged.
+
+Environment variables:
+  SMI_JENKINS_HOST    Controller host   (default: 127.0.0.1)
+  SMI_JENKINS_PORT    Controller port   (default: 7171)
+
+Precedence: --host/--port > environment variable > default
+
+Examples:
+  jenkins-cli list-jobs
+  jenkins-cli build my-job
+  jenkins-cli build my-job -s
+  jenkins-cli --host 192.168.1.10 list-jobs
+  jenkins-cli --port 8080 get-job my-job
+EOF
+            exit 0
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+_LIB=$(smi-lib-location)
+_CLI="${_LIB}/jenkins-cli.jar"
+
+if [ ! -f "${_CLI}" ]; then
+    echo "ERROR: ${_CLI}: not found" >&2
+    exit 1
+fi
+
+_URL="http://${_HOST}:${_PORT}/"
+
+exec java ${JAVA_OPTS} -jar "${_CLI}" -s "${_URL}" "$@"

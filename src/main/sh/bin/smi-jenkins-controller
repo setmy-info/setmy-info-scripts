@@ -1,0 +1,65 @@
+#!/bin/sh
+
+_HOST="${SMI_JENKINS_HOST:-127.0.0.1}"
+_PORT="${SMI_JENKINS_PORT:-7171}"
+_JENKINS_HOME="${SMI_JENKINS_HOME:-${HOME}/.jenkins}"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --host)
+            _HOST="$2"
+            shift 2
+            ;;
+        --port)
+            _PORT="$2"
+            shift 2
+            ;;
+        --home)
+            _JENKINS_HOME="$2"
+            shift 2
+            ;;
+        --help|-h)
+            cat <<EOF
+Usage: smi-jenkins-controller [--host HOST] [--port PORT] [--home DIR] [JENKINS_ARGS...]
+
+Starts the Jenkins controller. All arguments after wrapper options are passed
+to jenkins.war unchanged.
+
+Environment variables:
+  SMI_JENKINS_HOST    Listen address  (default: 127.0.0.1)
+  SMI_JENKINS_PORT    HTTP port       (default: 7171)
+  SMI_JENKINS_HOME    Jenkins home    (default: ~/.jenkins)
+
+Precedence: --host/--port/--home > environment variable > default
+
+Examples:
+  smi-jenkins-controller
+  SMI_JENKINS_HOST=0.0.0.0 smi-jenkins-controller
+  smi-jenkins-controller --port 8080
+  smi-jenkins-controller --home ~/temp/jenkins
+  smi-jenkins-controller --port 8080 --prefix=/jenkins
+EOF
+            exit 0
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+_LIB=$(smi-lib-location)
+_WAR="${_LIB}/jenkins.war"
+
+if [ ! -f "${_WAR}" ]; then
+    echo "ERROR: ${_WAR}: not found" >&2
+    exit 1
+fi
+
+JENKINS_HOME="${_JENKINS_HOME}"
+export JENKINS_HOME
+
+exec java ${JAVA_OPTS} -jar "${_WAR}" \
+    --httpListenAddress="${_HOST}" \
+    --httpPort="${_PORT}" \
+    --enable-future-java \
+    "$@"

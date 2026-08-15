@@ -1,0 +1,125 @@
+.TH jenkins-cli "1" "August 2026" "SMI Toolset" "SMI Server Command"
+.SH NAME
+jenkins-cli \- Run Jenkins CLI commands against the configured controller
+.SH SYNOPSIS
+.B jenkins-cli
+.RI JENKINS_COMMAND
+.RI [ ARGS\| .\|.\|.]
+.br
+.B jenkins-cli
+.RB [ \-\-host
+.IR HOST ]
+.RB [ \-\-port
+.IR PORT ]
+.RI JENKINS_COMMAND
+.RI [ ARGS\| .\|.\|.]
+.SH DESCRIPTION
+.PP
+.B jenkins-cli
+is a thin wrapper around
+.BR jenkins-cli.jar .
+It automatically determines the Jenkins controller URL from environment
+variables or built-in defaults so that the user does not need to supply
+.B \-s
+.I URL
+on every invocation.
+.PP
+All Jenkins CLI commands and their arguments are passed directly and
+unchanged to
+.BR jenkins-cli.jar .
+The wrapper does not interpret, validate, or restrict Jenkins CLI commands.
+New Jenkins CLI commands work without any changes to this wrapper.
+.PP
+The JAR is located via
+.BR smi-lib-location (1)
+so renaming the installation provider requires no changes to this script.
+.PP
+JVM options may be supplied via the
+.SM JAVA_OPTS
+environment variable.
+.SH OPTIONS
+The following options are consumed by the wrapper and not passed to Jenkins:
+.TP
+.BI \-\-host " HOST"
+Controller host.
+Overrides
+.SM SMI_JENKINS_HOST
+and the built-in default.
+.TP
+.BI \-\-port " PORT"
+Controller port.
+Overrides
+.SM SMI_JENKINS_PORT
+and the built-in default.
+.TP
+.B \-\-help
+Print a short usage summary and exit.
+.PP
+All other arguments are passed unchanged to
+.BR jenkins-cli.jar .
+.SH ENVIRONMENT
+.TP
+.B SMI_JENKINS_HOST
+Controller host.
+Default:
+.BR 127.0.0.1 .
+.TP
+.B SMI_JENKINS_PORT
+Controller port.
+Default:
+.BR 7171 .
+.TP
+.B JAVA_OPTS
+Additional JVM options.
+.SH PRECEDENCE
+.PP
+.B --host
+>
+.SM SMI_JENKINS_HOST
+> 127.0.0.1
+.PP
+.B --port
+>
+.SM SMI_JENKINS_PORT
+> 7171
+.SH EXAMPLES
+.PP
+List all jobs on the default controller:
+.RS
+.B jenkins-cli list-jobs
+.RE
+.PP
+Trigger a build:
+.RS
+.B jenkins-cli build my-job
+.RE
+.PP
+Trigger a build and wait for completion:
+.RS
+.B jenkins-cli build my-job -s
+.RE
+.PP
+Get a job configuration:
+.RS
+.B jenkins-cli get-job my-job
+.RE
+.PP
+Connect to a non-default controller:
+.RS
+.B jenkins-cli --host 192.168.1.10 --port 8080 list-jobs
+.RE
+.PP
+Use environment variables for the controller address:
+.RS
+.nf
+SMI_JENKINS_HOST=192.168.1.10
+SMI_JENKINS_PORT=8080
+.fi
+.RS
+.B jenkins-cli list-jobs
+.RE
+.RE
+.SH SEE ALSO
+.BR smi-jenkins-controller (1),
+.BR smi-jenkins-node (1),
+.BR smi-lib-location (1)

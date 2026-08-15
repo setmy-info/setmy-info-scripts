@@ -1,0 +1,138 @@
+.TH smi-jenkins-controller "1" "August 2026" "SMI Toolset" "SMI Server Command"
+.SH NAME
+smi-jenkins-controller \- Start the Jenkins controller (WAR)
+.SH SYNOPSIS
+.B smi-jenkins-controller
+.br
+.B smi-jenkins-controller
+.RB [ \-\-host
+.IR HOST ]
+.RB [ \-\-port
+.IR PORT ]
+.RB [ \-\-home
+.IR DIR ]
+.RI [ JENKINS_ARGS\| .\|.\|.]
+.SH DESCRIPTION
+.PP
+.B smi-jenkins-controller
+starts the Jenkins controller by running
+.BR jenkins.war .
+No options are required for normal use; sensible defaults are applied
+automatically.
+.PP
+The wrapper translates
+.SM SMI_JENKINS_HOST
+and
+.SM SMI_JENKINS_PORT
+into the native Jenkins WAR listener options
+.RB ( \-\-httpListenAddress ,
+.BR \-\-httpPort ).
+The user does not need to know or supply those options.
+.PP
+Any Jenkins WAR arguments supplied after the wrapper options are passed
+through unchanged, allowing full access to advanced Jenkins features.
+.PP
+The JAR is located via
+.BR smi-lib-location (1)
+so renaming the installation provider requires no changes to this script.
+.PP
+JVM options may be supplied via the
+.SM JAVA_OPTS
+environment variable.
+Jenkins home directory may be set via the standard
+.SM JENKINS_HOME
+environment variable.
+.SH OPTIONS
+.TP
+.BI \-\-host " HOST"
+Listen on
+.IR HOST .
+Overrides
+.SM SMI_JENKINS_HOST
+and the built-in default.
+.TP
+.BI \-\-port " PORT"
+Listen on
+.IR PORT .
+Overrides
+.SM SMI_JENKINS_PORT
+and the built-in default.
+.TP
+.BI \-\-home " DIR"
+Jenkins home directory.
+Overrides
+.SM SMI_JENKINS_HOME
+and the built-in default.
+Exported as
+.SM JENKINS_HOME
+before starting the WAR.
+.TP
+.B \-\-help
+Print a short usage summary and exit.
+.PP
+All other arguments are passed directly to
+.BR jenkins.war .
+.SH ENVIRONMENT
+.TP
+.B SMI_JENKINS_HOST
+Listen address.
+Default:
+.BR 127.0.0.1 .
+.TP
+.B SMI_JENKINS_PORT
+HTTP port.
+Default:
+.BR 7171 .
+.TP
+.B SMI_JENKINS_HOME
+Jenkins home directory.
+Default:
+.BR ~/.jenkins .
+Translated to
+.SM JENKINS_HOME
+before the WAR starts.
+.TP
+.B JAVA_OPTS
+Additional JVM options (e.g.\&
+.BR "\-Xmx2g" ).
+.SH PRECEDENCE
+.PP
+.B --host
+>
+.SM SMI_JENKINS_HOST
+> 127.0.0.1
+.PP
+.B --port
+>
+.SM SMI_JENKINS_PORT
+> 7171
+.PP
+.B --home
+>
+.SM SMI_JENKINS_HOME
+> ~/.jenkins
+.SH EXAMPLES
+.PP
+Start with all defaults:
+.RS
+.B smi-jenkins-controller
+.RE
+.PP
+Listen on all interfaces, custom port:
+.RS
+.B SMI_JENKINS_HOST=0.0.0.0 SMI_JENKINS_PORT=8080 smi-jenkins-controller
+.RE
+.PP
+Custom home directory:
+.RS
+.B JENKINS_HOME=/srv/jenkins smi-jenkins-controller
+.RE
+.PP
+Pass a native Jenkins WAR option through:
+.RS
+.B smi-jenkins-controller --port 9090 --prefix=/jenkins
+.RE
+.SH SEE ALSO
+.BR smi-jenkins-node (1),
+.BR jenkins-cli (1),
+.BR smi-lib-location (1)

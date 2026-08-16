@@ -1,7 +1,7 @@
 #!/bin/sh
 
 _HOST="${SMI_JENKINS_CONTROLLER_HOST:-127.0.0.1}"
-_PORT="${SMI_JENKINS_CONTROLLER_PORT:-7171}"
+_PORT="${SMI_JENKINS_CONTROLLER_PORT:-7070}"
 _NAME="${SMI_JENKINS_NODE_NAME:-$(hostname)}"
 _WORKDIR="${SMI_JENKINS_WORKDIR:-${HOME}/.jenkins-node}"
 
@@ -32,7 +32,7 @@ All arguments after wrapper options are passed to jenkins-agent.jar unchanged.
 
 Environment variables:
   SMI_JENKINS_CONTROLLER_HOST    Controller host   (default: 127.0.0.1)
-  SMI_JENKINS_CONTROLLER_PORT    Controller port   (default: 7171)
+  SMI_JENKINS_CONTROLLER_PORT    Controller port   (default: 7070)
   SMI_JENKINS_NODE_NAME          Node name         (default: hostname)
   SMI_JENKINS_WORKDIR            Agent work dir    (default: ~/.jenkins-node)
   SMI_JENKINS_SECRET             Agent secret      (required, no default)

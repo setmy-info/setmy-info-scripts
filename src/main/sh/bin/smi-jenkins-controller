@@ -1,7 +1,7 @@
 #!/bin/sh
 
 _HOST="${SMI_JENKINS_HOST:-127.0.0.1}"
-_PORT="${SMI_JENKINS_PORT:-7171}"
+_PORT="${SMI_JENKINS_PORT:-7070}"
 _JENKINS_HOME="${SMI_JENKINS_HOME:-${HOME}/.jenkins}"
 
 while [ $# -gt 0 ]; do
@@ -27,7 +27,7 @@ to jenkins.war unchanged.
 
 Environment variables:
   SMI_JENKINS_HOST    Listen address  (default: 127.0.0.1)
-  SMI_JENKINS_PORT    HTTP port       (default: 7171)
+  SMI_JENKINS_PORT    HTTP port       (default: 7070)
   SMI_JENKINS_HOME    Jenkins home    (default: ~/.jenkins)
 
 Precedence: --host/--port/--home > environment variable > default

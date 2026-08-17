@@ -1,0 +1,3 @@
+set RABBITMQ_HOME=%PUB_DIR%\rabbitmq_server-4.3.4
+set RABBITMQ_BIN_DIR=%RABBITMQ_HOME%\sbin
+set PATH=%RABBITMQ_BIN_DIR%;%PATH%

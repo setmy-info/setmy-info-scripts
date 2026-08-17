@@ -1,0 +1,89 @@
+.TH smi-greenmail "1" "August 2026" "SMI Toolset" "SMI Server Command"
+.SH NAME
+smi-greenmail \- Start the GreenMail standalone mail server
+.SH SYNOPSIS
+.B smi-greenmail
+.RI [ JAVA_ARGS\| .\|.\|.]
+.SH DESCRIPTION
+.PP
+.B smi-greenmail
+starts the GreenMail standalone mail server bound to localhost only.
+No options are required; all ports, user credentials, and working directory
+are configured automatically from the environment.
+.PP
+All standard mail protocols are enabled simultaneously:
+SMTP, SMTPS, IMAP, IMAPS, POP3, POP3S, and the REST API.
+Every protocol is bound exclusively to
+.B 127.0.0.1
+and is not reachable from outside the machine.
+.PP
+The mail user account is derived from the logged-in OS user:
+the username matches the OS login name and the password is the login name
+with
+.B 123
+appended.
+The e-mail address is
+.IB username @smtp.test\fR.
+.PP
+The working directory is created automatically if it does not exist.
+.PP
+The JAR is located via
+.BR smi-lib-location (1)
+so renaming the installation provider requires no changes to this script.
+.PP
+Any arguments supplied are passed through to the JVM unchanged.
+JVM options may also be supplied via the
+.SM JAVA_OPTS
+environment variable.
+.SH PORTS
+.TP
+.B 3025
+SMTP
+.TP
+.B 3465
+SMTPS
+.TP
+.B 3143
+IMAP
+.TP
+.B 3993
+IMAPS
+.TP
+.B 3110
+POP3
+.TP
+.B 3995
+POP3S
+.TP
+.B 8025
+REST API (http://127.0.0.1:8025)
+.SH ENVIRONMENT
+.TP
+.B JAVA_OPTS
+Additional JVM options (e.g.\&
+.BR "\-Xmx256m" ).
+.SH FILES
+.TP
+.I $(smi-home-location)/greenmail
+Working directory; created automatically if absent.
+.TP
+.I $(smi-lib-location)/greenmail-standalone.jar
+GreenMail standalone JAR; installed by
+.BR smi-install-package (1)
+with package name
+.BR greenmail .
+.SH EXAMPLES
+.PP
+Start with all defaults:
+.RS
+.B smi-greenmail
+.RE
+.PP
+Start with extra heap:
+.RS
+.B JAVA_OPTS="-Xmx512m" smi-greenmail
+.RE
+.SH SEE ALSO
+.BR smi-lib-location (1),
+.BR smi-home-location (1),
+.BR smi-install-package (1)

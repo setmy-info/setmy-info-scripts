@@ -1,0 +1,41 @@
+#!/bin/sh
+
+_LIB=$(smi-lib-location)
+_JAR="${_LIB}/greenmail-standalone.jar"
+
+if [ ! -f "${_JAR}" ]; then
+    echo "ERROR: ${_JAR}: not found" >&2
+    exit 1
+fi
+
+_USER=$(id -un)
+_PASSWORD="${_USER}123"
+_WORKDIR="$(smi-home-location)/greenmail"
+
+mkdir -p "${_WORKDIR}"
+
+echo "Starting GreenMail..."
+echo ""
+echo "SMTP   : 127.0.0.1:3025"
+echo "SMTPS  : 127.0.0.1:3465"
+echo "IMAP   : 127.0.0.1:3143"
+echo "IMAPS  : 127.0.0.1:3993"
+echo "POP3   : 127.0.0.1:3110"
+echo "POP3S  : 127.0.0.1:3995"
+echo "API    : http://127.0.0.1:8025"
+echo ""
+echo "User   : ${_USER}"
+echo "Email  : ${_USER}@smtp.test"
+echo "Pass   : ${_USER}123"
+echo ""
+
+cd "${_WORKDIR}" || exit 1
+
+exec java ${JAVA_OPTS} \
+    -Dgreenmail.setup.test.all \
+    -Dgreenmail.hostname=127.0.0.1 \
+    -Dgreenmail.api.hostname=127.0.0.1 \
+    -Dgreenmail.api.port=8025 \
+    "-Dgreenmail.users=${_USER}:${_PASSWORD}@smtp.test" \
+    -jar "${_JAR}" \
+    "$@"

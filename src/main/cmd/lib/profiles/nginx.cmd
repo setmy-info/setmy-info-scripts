@@ -1,0 +1,3 @@
+set NGINX_HOME=C:\pub\nginx
+set NGINX_BIN_DIR=%NGINX_HOME%
+set PATH=%NGINX_BIN_DIR%;%PATH%

@@ -1,0 +1,126 @@
+.TH smi-sendmail "1" "August 2026" "SMI Toolset" "SMI Server Command"
+.SH NAME
+smi-sendmail \- Send an e-mail message via SMTP using curl
+.SH SYNOPSIS
+.B smi-sendmail
+.I RECIPIENT
+.I SUBJECT
+.RI [ MESSAGE
+.RI [ HOST [: PORT ]]]
+.br
+.B echo
+.I MESSAGE
+.B |
+.B smi-sendmail
+.I RECIPIENT
+.I SUBJECT
+.SH DESCRIPTION
+.PP
+.B smi-sendmail
+sends a plain-text e-mail message via SMTP using
+.BR curl (1).
+No switches are required; all connection parameters default to the
+local GreenMail test server started by
+.BR smi-greenmail (1).
+.PP
+Arguments are positional: recipient first, subject second, message body third.
+If the message body argument is omitted, the body is read from standard input,
+allowing pipeline use.
+.PP
+SMTP connection details and credentials are taken from environment variables
+so that they can be adjusted without changing the command line.
+The sender address defaults to
+.IB username @smtp.test
+where
+.I username
+is the current OS login name.
+.SH ARGUMENTS
+.TP
+.I RECIPIENT
+Destination e-mail address (e.g.\&
+.BR user@smtp.test ).
+.TP
+.I SUBJECT
+Message subject line.
+Quote the argument if it contains spaces.
+.TP
+.I MESSAGE
+Message body text.
+Optional; if absent, body is read from standard input.
+.TP
+.IB HOST [: PORT ]
+SMTP server to use for this invocation only.
+Overrides
+.SM SMI_SMTP_HOST
+and
+.SM SMI_SMTP_PORT
+for this call without changing the environment.
+.I PORT
+is optional; if omitted only the host is overridden and the current port
+(environment or default) is kept.
+Example:
+.BR mail.example.com:587 .
+.SH ENVIRONMENT
+.TP
+.B SMI_SMTP_HOST
+SMTP server hostname or IP address.
+Default:
+.BR 127.0.0.1 .
+.TP
+.B SMI_SMTP_PORT
+SMTP server port.
+Default:
+.BR 3025 .
+.TP
+.B SMI_SMTP_USER
+SMTP authentication username.
+Default: current OS login name.
+.TP
+.B SMI_SMTP_PASSWORD
+SMTP authentication password.
+Default: login name with
+.B 123
+appended.
+.TP
+.B SMI_SMTP_FROM
+Sender address used in the
+.B MAIL FROM
+envelope and the
+.B From:
+header.
+Default:
+.IB username @smtp.test\fR.
+.SH EXAMPLES
+.PP
+Send with all defaults (body as argument):
+.RS
+.B smi-sendmail has@smtp.test "Hello" "Body text here"
+.RE
+.PP
+Send with body from a pipeline:
+.RS
+.B echo "Build failed on main" | smi-sendmail ops@smtp.test "CI alert"
+.RE
+.PP
+Send to a remote SMTP server via the 4th argument:
+.RS
+.B smi-sendmail bob@example.com "Hi Bob" "Hello from the CLI" mail.example.com:587
+.RE
+.PP
+Override host only, keep default port:
+.RS
+.B smi-sendmail bob@example.com "Hi Bob" "Hello" mail.example.com
+.RE
+.PP
+Override via environment instead:
+.RS
+.nf
+SMI_SMTP_HOST=mail.example.com SMI_SMTP_PORT=587 \\
+SMI_SMTP_USER=alice SMI_SMTP_PASSWORD=secret \\
+SMI_SMTP_FROM=alice@example.com \\
+smi-sendmail bob@example.com "Hi Bob" "Hello from the CLI"
+.fi
+.RE
+.SH SEE ALSO
+.BR smi-greenmail (1),
+.BR curl (1)

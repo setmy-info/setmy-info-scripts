@@ -72,6 +72,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-spring-boot"            DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jenkins-controller"     DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jenkins-node"           DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/jenkins-cli"                DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-greenmail"              DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-sendmail"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-new-tag"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/tab"                        DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/tabs"                       DESTINATION bin)
@@ -175,6 +177,8 @@ IF (WIN32)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/venv.cmd"             DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/versions.cmd"         DESTINATION bin)
     INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-venv.cmd"         DESTINATION bin)
+    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-greenmail.cmd"    DESTINATION bin)
+    INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-sendmail.cmd"     DESTINATION bin)
 ENDIF()
 
 # PLACEHOLDER-END #

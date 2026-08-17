@@ -1,0 +1,51 @@
+#!/bin/sh
+
+_SMTP_HOST="${SMI_SMTP_HOST:-127.0.0.1}"
+_SMTP_PORT="${SMI_SMTP_PORT:-3025}"
+_LOGIN_USER=$(id -un)
+_SMTP_USER="${SMI_SMTP_USER:-${_LOGIN_USER}}"
+_SMTP_PASSWORD="${SMI_SMTP_PASSWORD:-${_LOGIN_USER}123}"
+_FROM="${SMI_SMTP_FROM:-${_LOGIN_USER}@smtp.test}"
+
+if [ $# -lt 2 ]; then
+    printf "Usage: smi-sendmail RECIPIENT SUBJECT [MESSAGE [HOST[:PORT]]]\n" >&2
+    printf "       echo MESSAGE | smi-sendmail RECIPIENT SUBJECT\n" >&2
+    exit 1
+fi
+
+_TO="$1"
+_SUBJECT="$2"
+
+if [ $# -ge 4 ]; then
+    _SERVER="$4"
+    case "${_SERVER}" in
+        *:*)
+            _SMTP_HOST="${_SERVER%%:*}"
+            _SMTP_PORT="${_SERVER##*:}"
+            ;;
+        *)
+            _SMTP_HOST="${_SERVER}"
+            ;;
+    esac
+fi
+
+_TMPFILE=$(mktemp)
+printf "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" \
+    "${_FROM}" "${_TO}" "${_SUBJECT}" > "${_TMPFILE}"
+
+if [ $# -ge 3 ]; then
+    printf "%s\r\n" "$3" >> "${_TMPFILE}"
+else
+    cat >> "${_TMPFILE}"
+fi
+
+curl --silent --show-error \
+    --url "smtp://${_SMTP_HOST}:${_SMTP_PORT}" \
+    --mail-from "${_FROM}" \
+    --mail-rcpt "${_TO}" \
+    --user "${_SMTP_USER}:${_SMTP_PASSWORD}" \
+    --upload-file "${_TMPFILE}"
+
+_RESULT=$?
+rm -f "${_TMPFILE}"
+exit ${_RESULT}

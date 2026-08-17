@@ -1,3 +1,10 @@
+* 2026-08-17 Imre Tabur <imre.tabur@mail.ee>
+- Added greenmail.package: downloads greenmail-standalone.jar from Maven Central; installs to smi-lib-location as greenmail-standalone.jar.
+- Added greenmail.profile: exports GREENMAIL_HOME and GREENMAIL_JAR environment variables.
+- Added smi-greenmail: POSIX shell launcher for GreenMail standalone; binds all protocols to 127.0.0.1; SMTP 3025/3465, IMAP 3143/3993, POP3 3110/3995, API 8025; user and password derived from logged-in username; working directory ~/.setmy.info/greenmail.
+- Added smi-greenmail.cmd: Windows CMD equivalent of smi-greenmail for localhost-only GreenMail operation.
+- Added GreenMailDriverExecute to versions-spider.groovy: queries GitHub API for latest release, strips release- tag prefix, constructs Maven Central URL for greenmail-standalone jar.
+- Updated smi-versions-spider man page: added greenmail to package list.
 * 2026-08-15 Imre Tabur <imre.tabur@mail.ee>
 - Added smi-jenkins-controller: POSIX shell wrapper to start Jenkins WAR with SMI_JENKINS_HOST/SMI_JENKINS_PORT defaults (127.0.0.1:7171); passes all other arguments to jenkins.war unchanged; supports JAVA_OPTS and JENKINS_HOME.
 - Added smi-jenkins-node: POSIX shell wrapper to connect a Jenkins agent node; secret via SMI_JENKINS_SECRET only; controller URL from SMI_JENKINS_CONTROLLER_HOST/PORT; node name from SMI_JENKINS_NODE_NAME or hostname; uses WebSocket.

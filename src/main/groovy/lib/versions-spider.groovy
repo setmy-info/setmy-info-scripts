@@ -1463,6 +1463,27 @@ class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name
     }
 }
 
+class GreenMailDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://repo1.maven.org/maven2/com/icegreen/greenmail-standalone/2.1.12/greenmail-standalone-2.1.12.jar
+        // GitHub tag format: release-X.Y.Z
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def version = json.tag_name.replaceAll(/^release-/, '')
+        println "https://repo1.maven.org/maven2/com/icegreen/greenmail-standalone/${version}/greenmail-standalone-${version}.jar"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/greenmail-mail-test/greenmail/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "greenmail"
+    }
+}
+
 class NginxDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
@@ -1685,6 +1706,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new ClionDriverExecute(), rulesRegister)
     fillWithRules(new LibrewolfDriverExecute(), rulesRegister)
     fillWithRules(new DaguDriverExecute(), rulesRegister)
+    fillWithRules(new GreenMailDriverExecute(), rulesRegister)
     fillWithRules(new NginxDriverExecute(), rulesRegister)
     fillWithRules(new KeycloakDriverExecute(), rulesRegister)
     fillWithRules(new OpenbaoDriverExecute(), rulesRegister)

@@ -1,0 +1,2 @@
+set GREENMAIL_HOME=%SMI_LIB_DIR%
+set GREENMAIL_JAR=%GREENMAIL_HOME%\greenmail-standalone.jar

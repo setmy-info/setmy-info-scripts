@@ -1,0 +1,16 @@
+GREENMAIL_NAME=greenmail-standalone
+GREENMAIL_VERSION=2.1.12
+GREENMAIL_JAR_FILE_NAME=${GREENMAIL_NAME}-${GREENMAIL_VERSION}.jar
+GREENMAIL_JAR_FILE_URL=https://repo1.maven.org/maven2/com/icegreen/greenmail-standalone/${GREENMAIL_VERSION}/${GREENMAIL_JAR_FILE_NAME}
+
+# https://repo1.maven.org/maven2/com/icegreen/greenmail-standalone/2.1.12/greenmail-standalone-2.1.12.jar
+
+greenmail_download_func() {
+    smi-download ${GREENMAIL_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${GREENMAIL_JAR_FILE_NAME}
+}
+
+greenmail_install_func() {
+    GREENMAIL_LIB_DIR=$(smi-lib-location)
+    sudo rm -f ${GREENMAIL_LIB_DIR}/${GREENMAIL_NAME}.jar
+    sudo cp ${HOME_PACKAGES_DIR}/${GREENMAIL_JAR_FILE_NAME} ${GREENMAIL_LIB_DIR}/${GREENMAIL_NAME}.jar
+}

@@ -42,13 +42,63 @@ option; secrets must not appear in shell history or process argument lists.
 Any Jenkins agent arguments supplied after the wrapper options are passed
 through unchanged.
 .PP
-The JAR is located via
-.BR smi-lib-location (1)
-so renaming the installation provider requires no changes to this script.
-.PP
 JVM options may be supplied via the
 .SM JAVA_OPTS
 environment variable.
+.SH MODES
+.PP
+The script selects its JAR and nodes root automatically from the effective
+user name, so the same command works on a developer workstation and on a
+live installation.
+.TP
+.B jenkins
+Live installation (rpm package, container image).
+The agent JAR is
+.BR /usr/share/java/jenkins-agent.jar
+when that file exists, otherwise the one reported by
+.BR smi-lib-location (1),
+and the nodes root is
+.BI $JENKINS_HOME /nodes\fR,
+falling back to the jenkins user home directory when
+.SM JENKINS_HOME
+is not set.
+.TP
+.B any other user
+Development.
+The agent JAR is located via
+.BR smi-lib-location (1)
+and the nodes root is
+.BR ~/.setmy.info/.jenkins/nodes .
+.PP
+The working directory of a node is the
+.I NAME
+subdirectory of the nodes root, so several nodes may run side by side
+without further configuration.
+It is created when it does not exist.
+.SH INSTALLATION
+.PP
+In development mode the agent JAR is the one installed by the
+.B jenkins
+package:
+.PP
+.RS
+.nf
+smi-download-package jenkins
+smi-install-package jenkins
+.fi
+.RE
+.PP
+.BR smi-install-package (1)
+places
+.BR jenkins.war ,
+.B jenkins-cli.jar
+and
+.B jenkins-agent.jar
+as root into the directory reported by
+.BR smi-lib-location (1),
+which is
+.B /opt/setmy.info/lib
+in a normal installation.
 .SH OPTIONS
 .TP
 .BI \-\-host " HOST"
@@ -99,7 +149,7 @@ Default:
 .B SMI_JENKINS_CONTROLLER_PORT
 Controller port.
 Default:
-.BR 7171 .
+.BR 7070 .
 .TP
 .B SMI_JENKINS_NODE_NAME
 Node name.
@@ -108,8 +158,23 @@ Default: output of
 .TP
 .B SMI_JENKINS_WORKDIR
 Agent working directory.
+Default: the node directory
+.IR NAME
+under the nodes root of the active mode.
+.TP
+.B SMI_JENKINS_AGENT
+Agent JAR file.
+Default: mode dependent, see
+.BR MODES .
+.TP
+.B SMI_JENKINS_HOME
+Jenkins home directory, development mode only.
+The nodes root is the
+.B nodes
+directory below it, so a controller started with a non-default home keeps
+its nodes together with its own data.
 Default:
-.BR ~/.jenkins-node .
+.BR ~/.setmy.info/.jenkins .
 .TP
 .B JAVA_OPTS
 Additional JVM options.
@@ -123,7 +188,7 @@ Additional JVM options.
 .B --port
 >
 .SM SMI_JENKINS_CONTROLLER_PORT
-> 7171
+> 7070
 .PP
 .B --name
 >
@@ -133,7 +198,7 @@ Additional JVM options.
 .B --workdir
 >
 .SM SMI_JENKINS_WORKDIR
-> ~/.jenkins-node
+> NODES_DIR/NAME
 .SH EXAMPLES
 .PP
 Connect with all defaults (secret from environment):
@@ -158,7 +223,33 @@ Override node name on the command line:
 .RS
 .B SMI_JENKINS_SECRET=abc123 smi-jenkins-node --name build-01
 .RE
+.PP
+Run two nodes on one developer workstation:
+.RS
+.nf
+SMI_JENKINS_SECRET=abc123 smi-jenkins-node --name build-01
+SMI_JENKINS_SECRET=def456 smi-jenkins-node --name build-02
+.fi
+.RE
+.SH FILES
+.TP
+.B ~/.setmy.info/.jenkins/nodes
+Nodes root in development mode.
+.TP
+.BI ~/.setmy.info/.jenkins/nodes/ NAME
+Work directory of a single node.
+Created when it does not exist.
+.TP
+.B /opt/setmy.info/lib/jenkins-agent.jar
+Agent JAR used in development mode, installed by
+.BR smi-install-package (1).
+.TP
+.B /usr/share/java/jenkins-agent.jar
+Agent JAR used in live mode when present.
 .SH SEE ALSO
 .BR smi-jenkins-controller (1),
 .BR jenkins-cli (1),
+.BR smi-download-package (1),
+.BR smi-install-package (1),
+.BR smi-home-location (1),
 .BR smi-lib-location (1)

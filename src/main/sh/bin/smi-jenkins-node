@@ -1,25 +1,45 @@
 #!/bin/sh
 
+# The effective user selects the mode: the jenkins user means a live
+# installation (rpm, container), anything else means development.
+if [ "$(id -un 2>/dev/null)" = "jenkins" ]; then
+    _MODE="live"
+else
+    _MODE="development"
+fi
+
 _HOST="${SMI_JENKINS_CONTROLLER_HOST:-127.0.0.1}"
 _PORT="${SMI_JENKINS_CONTROLLER_PORT:-7070}"
 _NAME="${SMI_JENKINS_NODE_NAME:-$(hostname)}"
-_WORKDIR="${SMI_JENKINS_WORKDIR:-${HOME}/.jenkins-node}"
+_WORKDIR="${SMI_JENKINS_WORKDIR}"
+_AGENT="${SMI_JENKINS_AGENT}"
+
+_require_value() {
+    if [ ${#} -lt 2 ] || [ -z "${2}" ]; then
+        echo "ERROR: ${1}: option requires a value" >&2
+        exit 1
+    fi
+}
 
 while [ $# -gt 0 ]; do
     case "$1" in
         --host)
+            _require_value "$@"
             _HOST="$2"
             shift 2
             ;;
         --port)
+            _require_value "$@"
             _PORT="$2"
             shift 2
             ;;
         --name)
+            _require_value "$@"
             _NAME="$2"
             shift 2
             ;;
         --workdir)
+            _require_value "$@"
             _WORKDIR="$2"
             shift 2
             ;;
@@ -30,14 +50,34 @@ Usage: smi-jenkins-node [--host HOST] [--port PORT] [--name NAME] [--workdir DIR
 Connects this machine to a Jenkins controller as an agent node.
 All arguments after wrapper options are passed to jenkins-agent.jar unchanged.
 
+The mode is selected automatically by the effective user:
+
+  jenkins   live installation (rpm, container)
+            nodes: \$JENKINS_HOME/nodes, or the jenkins user home
+            jar  : /usr/share/java/jenkins-agent.jar
+
+  other     development
+            nodes: ~/.setmy.info/.jenkins/nodes
+            jar  : \$(smi-lib-location)/jenkins-agent.jar
+
+The work directory of a node is the NAME directory under the nodes
+directory, so several nodes can run side by side.
+
+The development JAR is the one installed by:
+
+  smi-download-package jenkins
+  smi-install-package jenkins
+
 Environment variables:
   SMI_JENKINS_CONTROLLER_HOST    Controller host   (default: 127.0.0.1)
   SMI_JENKINS_CONTROLLER_PORT    Controller port   (default: 7070)
   SMI_JENKINS_NODE_NAME          Node name         (default: hostname)
-  SMI_JENKINS_WORKDIR            Agent work dir    (default: ~/.jenkins-node)
+  SMI_JENKINS_WORKDIR            Agent work dir    (default: NODES/NAME)
+  SMI_JENKINS_AGENT              Agent JAR file    (default: mode dependent)
   SMI_JENKINS_SECRET             Agent secret      (required, no default)
+  JAVA_OPTS                      Additional JVM options
 
-Precedence: --host/--port/--name/--workdir > environment variable > default
+Precedence: --host/--port/--name/--workdir > environment variable > mode default
 The secret must be provided via SMI_JENKINS_SECRET only (never via CLI).
 
 Examples:
@@ -59,18 +99,29 @@ if [ -z "${SMI_JENKINS_SECRET}" ]; then
     exit 1
 fi
 
-_LIB=$(smi-lib-location)
-_AGENT="${_LIB}/jenkins-agent.jar"
+if [ "${_MODE}" = "live" ]; then
+    _NODES="${JENKINS_HOME:-${HOME}}/nodes"
+    if [ -z "${_AGENT}" ] && [ -f "/usr/share/java/jenkins-agent.jar" ]; then
+        _AGENT="/usr/share/java/jenkins-agent.jar"
+    fi
+else
+    _NODES="${SMI_JENKINS_HOME:-$(smi-home-location)/.jenkins}/nodes"
+fi
+
+: "${_AGENT:=$(smi-lib-location)/jenkins-agent.jar}"
+: "${_WORKDIR:=${_NODES}/${_NAME}}"
 
 if [ ! -f "${_AGENT}" ]; then
     echo "ERROR: ${_AGENT}: not found" >&2
     exit 1
 fi
 
-_URL="http://${_HOST}:${_PORT}/"
+if [ ! -d "${_WORKDIR}" ]; then
+    mkdir -p "${_WORKDIR}" || exit 1
+fi
 
 exec java ${JAVA_OPTS} -jar "${_AGENT}" \
-    -url "${_URL}" \
+    -url "http://${_HOST}:${_PORT}/" \
     -secret "${SMI_JENKINS_SECRET}" \
     -name "${_NAME}" \
     -workDir "${_WORKDIR}" \

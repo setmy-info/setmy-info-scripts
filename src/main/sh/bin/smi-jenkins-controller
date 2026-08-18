@@ -1,21 +1,40 @@
 #!/bin/sh
 
-_HOST="${SMI_JENKINS_HOST:-127.0.0.1}"
+# The effective user selects the mode: the jenkins user means a live
+# installation (rpm, container), anything else means development.
+if [ "$(id -un 2>/dev/null)" = "jenkins" ]; then
+    _MODE="live"
+else
+    _MODE="development"
+fi
+
+_HOST="${SMI_JENKINS_HOST}"
 _PORT="${SMI_JENKINS_PORT:-7070}"
-_JENKINS_HOME="${SMI_JENKINS_HOME:-${HOME}/.jenkins}"
+_HOME="${SMI_JENKINS_HOME}"
+_WAR="${SMI_JENKINS_WAR}"
+
+_require_value() {
+    if [ ${#} -lt 2 ] || [ -z "${2}" ]; then
+        echo "ERROR: ${1}: option requires a value" >&2
+        exit 1
+    fi
+}
 
 while [ $# -gt 0 ]; do
     case "$1" in
         --host)
+            _require_value "$@"
             _HOST="$2"
             shift 2
             ;;
         --port)
+            _require_value "$@"
             _PORT="$2"
             shift 2
             ;;
         --home)
-            _JENKINS_HOME="$2"
+            _require_value "$@"
+            _HOME="$2"
             shift 2
             ;;
         --help|-h)
@@ -25,12 +44,31 @@ Usage: smi-jenkins-controller [--host HOST] [--port PORT] [--home DIR] [JENKINS_
 Starts the Jenkins controller. All arguments after wrapper options are passed
 to jenkins.war unchanged.
 
-Environment variables:
-  SMI_JENKINS_HOST    Listen address  (default: 127.0.0.1)
-  SMI_JENKINS_PORT    HTTP port       (default: 7070)
-  SMI_JENKINS_HOME    Jenkins home    (default: ~/.jenkins)
+The mode is selected automatically by the effective user:
 
-Precedence: --host/--port/--home > environment variable > default
+  jenkins   live installation (rpm, container)
+            home: \$JENKINS_HOME, or the jenkins user home
+            war : /usr/share/java/jenkins.war
+            host: 0.0.0.0
+
+  other     development
+            home: ~/.setmy.info/.jenkins
+            war : \$(smi-lib-location)/jenkins.war
+            host: 127.0.0.1
+
+The development WAR is the one installed by:
+
+  smi-download-package jenkins
+  smi-install-package jenkins
+
+Environment variables:
+  SMI_JENKINS_HOST    Listen address  (default: mode dependent)
+  SMI_JENKINS_PORT    HTTP port       (default: 7070)
+  SMI_JENKINS_HOME    Jenkins home    (default: mode dependent)
+  SMI_JENKINS_WAR     WAR file        (default: mode dependent)
+  JAVA_OPTS           Additional JVM options
+
+Precedence: --host/--port/--home > environment variable > mode default
 
 Examples:
   smi-jenkins-controller
@@ -47,15 +85,26 @@ EOF
     esac
 done
 
-_LIB=$(smi-lib-location)
-_WAR="${_LIB}/jenkins.war"
+if [ "${_MODE}" = "live" ]; then
+    : "${_HOST:=0.0.0.0}"
+    : "${_HOME:=${JENKINS_HOME:-${HOME}}}"
+    : "${_WAR:=/usr/share/java/jenkins.war}"
+else
+    : "${_HOST:=127.0.0.1}"
+    : "${_HOME:=$(smi-home-location)/.jenkins}"
+    : "${_WAR:=$(smi-lib-location)/jenkins.war}"
+fi
 
 if [ ! -f "${_WAR}" ]; then
     echo "ERROR: ${_WAR}: not found" >&2
     exit 1
 fi
 
-JENKINS_HOME="${_JENKINS_HOME}"
+if [ ! -d "${_HOME}" ]; then
+    mkdir -p "${_HOME}" || exit 1
+fi
+
+JENKINS_HOME="${_HOME}"
 export JENKINS_HOME
 
 exec java ${JAVA_OPTS} -jar "${_WAR}" \

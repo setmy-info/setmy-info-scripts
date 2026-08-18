@@ -32,16 +32,64 @@ The user does not need to know or supply those options.
 Any Jenkins WAR arguments supplied after the wrapper options are passed
 through unchanged, allowing full access to advanced Jenkins features.
 .PP
-The JAR is located via
-.BR smi-lib-location (1)
-so renaming the installation provider requires no changes to this script.
-.PP
 JVM options may be supplied via the
 .SM JAVA_OPTS
 environment variable.
-Jenkins home directory may be set via the standard
+.SH MODES
+.PP
+The script selects its WAR, home directory and listen address automatically
+from the effective user name, so the same command works on a developer
+workstation and on a live installation.
+.TP
+.B jenkins
+Live installation (rpm package, container image).
+The WAR is
+.BR /usr/share/java/jenkins.war ,
+the home directory is
 .SM JENKINS_HOME
-environment variable.
+or the jenkins user home directory when that variable is not set,
+and the listen address is
+.BR 0.0.0.0 .
+.TP
+.B any other user
+Development.
+The WAR is located via
+.BR smi-lib-location (1),
+the home directory is
+.BR ~/.setmy.info/.jenkins ,
+and the listen address is
+.BR 127.0.0.1 .
+.PP
+The home directory is created when it does not exist, so the first start
+needs no preparation.
+.SH INSTALLATION
+.PP
+In development mode the WAR is the one installed by the
+.B jenkins
+package:
+.PP
+.RS
+.nf
+smi-download-package jenkins
+smi-install-package jenkins
+.fi
+.RE
+.PP
+.BR smi-install-package (1)
+places
+.BR jenkins.war ,
+.B jenkins-cli.jar
+and
+.B jenkins-agent.jar
+as root into the directory reported by
+.BR smi-lib-location (1),
+which is
+.B /opt/setmy.info/lib
+in a normal installation.
+The developer never writes into that directory; all data is kept in the
+home directory below the user own
+.B ~/.setmy.info
+directory.
 .SH OPTIONS
 .TP
 .BI \-\-host " HOST"
@@ -76,21 +124,26 @@ All other arguments are passed directly to
 .TP
 .B SMI_JENKINS_HOST
 Listen address.
-Default:
-.BR 127.0.0.1 .
+Default: mode dependent, see
+.BR MODES .
 .TP
 .B SMI_JENKINS_PORT
 HTTP port.
 Default:
-.BR 7171 .
+.BR 7070 .
 .TP
 .B SMI_JENKINS_HOME
-Jenkins home directory.
+Jenkins home directory, development mode only.
 Default:
-.BR ~/.jenkins .
+.BR ~/.setmy.info/.jenkins .
 Translated to
 .SM JENKINS_HOME
 before the WAR starts.
+.TP
+.B SMI_JENKINS_WAR
+WAR file.
+Default: mode dependent, see
+.BR MODES .
 .TP
 .B JAVA_OPTS
 Additional JVM options (e.g.\&
@@ -100,17 +153,17 @@ Additional JVM options (e.g.\&
 .B --host
 >
 .SM SMI_JENKINS_HOST
-> 127.0.0.1
+> mode default
 .PP
 .B --port
 >
 .SM SMI_JENKINS_PORT
-> 7171
+> 7070
 .PP
 .B --home
 >
 .SM SMI_JENKINS_HOME
-> ~/.jenkins
+> mode default
 .SH EXAMPLES
 .PP
 Start with all defaults:
@@ -125,14 +178,33 @@ Listen on all interfaces, custom port:
 .PP
 Custom home directory:
 .RS
-.B JENKINS_HOME=/srv/jenkins smi-jenkins-controller
+.B SMI_JENKINS_HOME=/srv/jenkins smi-jenkins-controller
 .RE
 .PP
 Pass a native Jenkins WAR option through:
 .RS
 .B smi-jenkins-controller --port 9090 --prefix=/jenkins
 .RE
+.SH FILES
+.TP
+.B ~/.setmy.info/.jenkins
+Jenkins home directory in development mode.
+Created when it does not exist.
+.TP
+.B ~/.setmy.info/.jenkins/nodes
+Node directories, see
+.BR smi-jenkins-node (1).
+.TP
+.B /opt/setmy.info/lib/jenkins.war
+WAR used in development mode, installed by
+.BR smi-install-package (1).
+.TP
+.B /usr/share/java/jenkins.war
+WAR used in live mode.
 .SH SEE ALSO
 .BR smi-jenkins-node (1),
 .BR jenkins-cli (1),
+.BR smi-download-package (1),
+.BR smi-install-package (1),
+.BR smi-home-location (1),
 .BR smi-lib-location (1)

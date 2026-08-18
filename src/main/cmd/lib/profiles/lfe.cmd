@@ -1,3 +1,0 @@
-set LFE_HOME=%PUB_DIR%\lfe-2.2.0
-set LFE_BIN_DIR=%LFE_HOME%\bin
-set PATH=%LFE_BIN_DIR%;%PATH%

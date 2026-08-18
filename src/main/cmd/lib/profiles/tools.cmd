@@ -36,6 +36,7 @@ call %LOADER_CMD% git-flow-next
 call %LOADER_CMD% claude
 call %LOADER_CMD% erlang
 call %LOADER_CMD% elixir
+call %LOADER_CMD% lfe
 call %LOADER_CMD% rabbitmqserver
 call %LOADER_CMD% infinispan
 call %LOADER_CMD% openbao

@@ -2,8 +2,8 @@
 
 # Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
 
-if [ $# -lt 3 ]; then
-    echo "Usage: ${0} DISKLESS_NAME SERVER_IP"
+if [ $# -lt 2 ]; then
+    echo "Usage: $(basename ${0}) DISKLESS_NAME SERVER_IP"
     exit 1
 fi
 
@@ -12,6 +12,6 @@ SERVER_IP=${2}
 
 . $(smi-include diskless.sh)
 
-do_diskless_isntall ${DISKLESS_NAME} ${SERVER_IP}
+do_diskless_install ${DISKLESS_NAME} ${SERVER_IP} || exit 1
 
 exit 0

@@ -2,8 +2,8 @@
 
 # Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
 
-if [ $# -lt 3 ]; then
-    echo "Usage: ${0} DISKLESS_NAME USER_NAME"
+if [ $# -lt 2 ]; then
+    echo "Usage: $(basename ${0}) DISKLESS_NAME USER_NAME"
     exit 1
 fi
 
@@ -12,6 +12,6 @@ USER_NAME=${2}
 
 . $(smi-include diskless.sh)
 
-diskless_useradd ${DISKLESS_NAME} ${USER_NAME}
+diskless_useradd ${DISKLESS_NAME} ${USER_NAME} || exit 1
 
 exit 0

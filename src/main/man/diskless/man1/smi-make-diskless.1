@@ -1,6 +1,6 @@
-.TH smi-make-diskless "1" "October 2025" "SMI Toolset 0.100.0" "SMI Diskless Command"
+.TH smi-make-diskless "1" "August 2026" "SMI Toolset" "SMI Diskless Command"
 .SH NAME
-smi-make-diskless \- Setup and install a diskless environment
+smi-make-diskless \- Prepare a diskless installation as a chroot installation
 .SH SYNOPSIS
 .B smi-make-diskless
 .I DISKLESS_NAME
@@ -8,23 +8,379 @@ smi-make-diskless \- Setup and install a diskless environment
 .SH DESCRIPTION
 .PP
 .B smi-make-diskless
-is an automated tool for setting up a diskless workstation or server environment on Linux (primarily tested on Rocky Linux 9.2).
+prepares a complete Linux installation in a directory of the server and
+configures the server so that a diskless machine boots it over PXE, TFTP and
+NFS.
+The installation is a chroot installation: it can be entered, managed and
+extended on the server at any time with the other diskless commands.
 .PP
-The command performs a comprehensive setup process:
+.I SERVER_IP
+is the address of this server as the diskless client sees it.
+It is used in the NFS mounts of the client and as the
+.B next-server
+of the DHCP server.
+.PP
+Running the command again for an existing installation updates it.
+The configuration files of the server are changed in place, every command
+replaces only its own block, so nothing is duplicated and nothing of the rest
+of the file is lost.
+.SH LAYOUT
+.PP
+Every installation is one directory below
+.BR /var/opt/setmy.info/diskless :
+.TP
+.B NAME/root
+The chroot, exported as the NFS root of the client.
+.TP
+.B NAME/home
+Exported and mounted as
+.B /home
+of the client.
+.TP
+.B NAME/var
+Exported and mounted as
+.B /var
+of the client.
+Seeded from the chroot, so the client starts with the files the installation
+created.
+.TP
+.B NAME/diskless.conf
+Settings of the installation.
+Written here and read by all other diskless commands, so they need the name
+of the installation only.
+.PP
+The boot files of the client are below
+.BI /var/lib/tftpboot/ NAME\fR.
+.SH STEPS
 .IP 1.
-\fBPrerequisites\fR: Installs \fBdhcp-server\fR, \fBtftp-server\fR, \fBnfs-server\fR, and \fBnfs-utils\fR on the host.
+Installs
+.BR dhcp-server ,
+.BR tftp-server ,
+.BR nfs-utils ,
+.B dracut-network
+and
+.B rsync
+on the server.
 .IP 2.
-\fBDirectory Structure\fR: Creates the diskless root, home, and var directories under \fB/var/opt/setmy.info/diskless/\fIDISKLESS_NAME\fR.
+Creates the directories of the installation.
 .IP 3.
-\fBOS Installation\fR: Uses \fBdnf --installroot\fR to install a base system (@core, kernel, nfs-utils, dbus) into the diskless root directory.
+Installs the distribution into the chroot with
+.BR "dnf --installroot" ,
+from the distribution repositories only, so no third party repository of the
+server leaks into the client.
 .IP 4.
-\fBTFTP/PXE Setup\fR: Downloads Rocky Linux PXE boot files (vmlinuz, initrd.img, etc.) to \fB/var/lib/tftpboot\fR and configures \fBpxelinux.0\fR.
+Generates the initramfs of the client in the chroot with
+.BR dracut (8)
+and the
+.B nfs
+and
+.B network
+modules.
+The installer initramfs of the distribution is not usable for this, it starts
+the installer instead of mounting an NFS root.
 .IP 5.
-\fBClient Configuration\fR: Configures \fB/etc/fstab\fR inside the diskless root to mount home and var via NFS from the \fISERVER_IP\fR. Disables SELinux on the client.
+Copies the kernel and that initramfs to the TFTP directory of the
+installation.
 .IP 6.
-\fBHost Services\fR: Configures the host's NFS exports, DHCP server (\fBdhcpd.conf\fR), and TFTP boot options.
+Configures the client: NFS entries in
+.BR fstab ,
+host name, empty machine id and disabled SELinux, which cannot keep its labels
+on an NFS root.
 .IP 7.
-\fBFirewall/Systemd\fR: Enables and starts all required services and opens necessary firewall ports (DHCP, TFTP, NFS).
+Configures the server: NFS exports, DHCP server and the boot menus.
+.IP 8.
+Enables the services and opens the firewall for DHCP, TFTP and NFS.
+.SH BOOT
+.PP
+The boot menu is generated from the installations that exist, both for UEFI
+clients
+.RB ( grub.cfg )
+and for legacy BIOS clients
+.RB ( pxelinux.cfg/default ),
+so the menu can never name an installation that is not there.
+The DHCP server selects the boot file from the architecture option of the
+client, so both firmware types are served by one server.
+.PP
+Legacy BIOS boot needs the
+.B syslinux
+package, which does not exist on every release any more.
+When it is missing only UEFI clients are served, which is reported and is not
+an error.
+UEFI boot needs
+.B shim-x64
+and
+.B grub2-efi-x64
+on the server.
+.SH ENVIRONMENT
+.PP
+Every setting has a default and can be overridden in the environment.
+.TP
+.B DISKLESS_DIR
+Root of the installations.
+Default:
+.BR /var/opt/setmy.info/diskless .
+.TP
+.B DISKLESS_TFTP_DIR
+Root of the boot files.
+Default:
+.BR /var/lib/tftpboot .
+.TP
+.B DISKLESS_RELEASEVER
+Release of the distribution installed into the chroot.
+Default:
+.BR 10 .
+.TP
+.B DISKLESS_REPOS
+Repositories used for the chroot.
+Default:
+.BR baseos,appstream,extras .
+.TP
+.B DISKLESS_GROUPS
+Package groups installed into the chroot.
+Default:
+.BR @core .
+.TP
+.B DISKLESS_PACKAGES
+Packages installed into the chroot.
+Default:
+.BR "kernel dracut-network nfs-utils dbus openssh-server" .
+.TP
+.B DISKLESS_NFS_VERSION
+NFS version of the client mounts.
+Default:
+.BR 4.2 .
+.TP
+.B DISKLESS_NFS_CLIENTS
+Clients allowed in the exports.
+Default:
+.BR * .
+.TP
+.B DISKLESS_EXPORT_OPTIONS
+Export options.
+Default:
+.BR rw,sync,no_root_squash,no_subtree_check .
+.TP
+.B DISKLESS_KERNEL_OPTIONS
+Additional kernel options of the client.
+Default:
+.BR selinux=0 .
+.TP
+.B DISKLESS_DEFAULT_NAME
+Installation of the default boot menu entry.
+Default: the first installation.
+.PP
+The DHCP settings
+.SM DISKLESS_DHCP_SUBNET ,
+.SM DISKLESS_DHCP_NETMASK ,
+.SM DISKLESS_DHCP_BROADCAST ,
+.SM DISKLESS_DHCP_RANGE_FROM ,
+.SM DISKLESS_DHCP_RANGE_TO ,
+.SM DISKLESS_DHCP_ROUTER ,
+.SM DISKLESS_DHCP_DNS ,
+.SM DISKLESS_DHCP_DOMAIN ,
+.SM DISKLESS_DHCP_LEASE_TIME
+and
+.SM DISKLESS_DHCP_MAX_LEASE_TIME
+describe the network of the diskless machines.
+The defaults are the
+.B 10.0.0.0/8
+network.
+.SH "SETUP FROM ZERO"
+.PP
+The whole flow from an empty server to a running diskless machine.
+The example prepares the installation
+.B ws\-01
+on a server with the address
+.B 10.0.0.2
+in the
+.B 10.0.0.0/8
+network.
+.SS "1. The server"
+.PP
+The server needs a fixed address in the network of the diskless machines, and
+enough space below
+.B /var/opt
+for every installation, a base installation is a few gigabytes.
+The SMI toolset has to be installed, the diskless commands need nothing else.
+The packages of the services are installed by this command.
+.PP
+The server has to be the only DHCP server of that network, otherwise the
+diskless machines get their addresses from somewhere else and never find the
+boot files.
+.SS "2. Preparing the installation"
+.PP
+.RS
+.nf
+smi-make-diskless ws\-01 10.0.0.2
+.fi
+.RE
+.PP
+This installs the distribution into
+.BR /var/opt/setmy.info/diskless/ws\-01/root ,
+generates the initramfs of the client, writes the exports, the DHCP
+configuration and the boot menus, and starts the services.
+It takes a while, it is a full installation of the distribution.
+.PP
+When the network of the diskless machines is not
+.BR 10.0.0.0/8 ,
+give it in the environment:
+.PP
+.RS
+.nf
+DISKLESS_DHCP_SUBNET=192.168.1.0 \\
+DISKLESS_DHCP_NETMASK=255.255.255.0 \\
+DISKLESS_DHCP_BROADCAST=192.168.1.255 \\
+DISKLESS_DHCP_RANGE_FROM=192.168.1.100 \\
+DISKLESS_DHCP_RANGE_TO=192.168.1.200 \\
+DISKLESS_DHCP_ROUTER=192.168.1.1 \\
+DISKLESS_DHCP_DNS=192.168.1.1 \\
+smi\-make\-diskless ws\-01 192.168.1.2
+.fi
+.RE
+.SS "3. The users of the machine"
+.PP
+The installation has no password of any user yet, so nobody can log in.
+.PP
+.RS
+.nf
+smi\-diskless\-passwd ws\-01 root
+smi\-diskless\-useradd ws\-01 has
+smi\-diskless\-passwd ws\-01 has
+.fi
+.RE
+.SS "4. The software of the machine"
+.PP
+Everything the machine needs is installed into the chroot on the server:
+.PP
+.RS
+.nf
+smi\-diskless\-install\-package ws\-01 @workstation
+smi\-diskless\-install\-package ws\-01 vim git tmux
+.fi
+.RE
+.PP
+Anything the package commands cannot do is done in the chroot itself:
+.PP
+.RS
+.nf
+smi\-diskless\-chroot ws\-01 systemctl enable sshd
+smi\-diskless\-chroot ws\-01
+.fi
+.RE
+.PP
+When a package command installed a new kernel, the initramfs of the client has
+to be generated again for it and copied to the boot files, otherwise the
+machine keeps booting the old one:
+.PP
+.RS
+.nf
+smi\-diskless\-chroot ws\-01 dracut \-\-force \-\-no\-hostonly \-\-add "nfs network" \\
+    /boot/initramfs\-KERNEL_VERSION\-diskless.img KERNEL_VERSION
+.fi
+.RE
+.PP
+.B smi\-diskless\-list
+prints the kernel version the installation was prepared with.
+.SS "5. A fixed address for the machine"
+.PP
+A diskless machine may get an address from the range, but a fixed address per
+machine is easier to work with.
+The library function writes the block of one machine into the DHCP
+configuration:
+.PP
+.RS
+.nf
+. $(smi\-include diskless.sh)
+diskless_dhcp_host ws\-01 66:FB:8B:4F:AC:3A 10.0.0.11
+smi\-start\-diskless
+.fi
+.RE
+.SS "6. Booting the machine"
+.PP
+Set the network card as the first boot device in the firmware of the diskless
+machine and start it.
+It gets its address from the DHCP server of this server, loads the boot loader
+and the menu over TFTP, and the entry of the installation mounts the NFS root.
+.SS "7. When it does not boot"
+.PP
+.RS
+.nf
+smi\-diskless\-list                  # is the installation there
+showmount \-e 10.0.0.2              # are the exports there
+sudo journalctl \-u dhcpd \-f        # does the machine get an address
+sudo journalctl \-u tftp \-f         # does it load the boot files
+sudo journalctl \-u nfs\-server \-f   # does it mount the root
+.fi
+.RE
+.PP
+Restart everything after a change of the configuration of the server that was
+not made by these commands:
+.PP
+.RS
+.nf
+smi\-start\-diskless
+.fi
+.RE
+.SS "8. More machines"
+.PP
+Every further machine is one more installation, prepared the same way and
+added to the same boot menu:
+.PP
+.RS
+.nf
+smi\-make\-diskless ws\-02 10.0.0.2
+smi\-diskless\-list
+.fi
+.RE
+.PP
+An installation that is not needed any more is removed with everything that
+belongs to it:
+.PP
+.RS
+.nf
+smi\-diskless\-remove ws\-02
+.fi
+.RE
+.SH EXAMPLES
+.PP
+Prepare an installation and serve it from this server:
+.RS
+.B smi-make-diskless ws-01 10.0.0.2
+.RE
+.PP
+Prepare an installation of another release in another network:
+.RS
+.nf
+DISKLESS_RELEASEVER=9 \\
+DISKLESS_DHCP_SUBNET=192.168.1.0 \\
+DISKLESS_DHCP_NETMASK=255.255.255.0 \\
+DISKLESS_DHCP_RANGE_FROM=192.168.1.100 \\
+DISKLESS_DHCP_RANGE_TO=192.168.1.200 \\
+smi-make-diskless ws-02 192.168.1.2
+.fi
+.RE
+.PP
+Add a graphical desktop and a user to a prepared installation:
+.RS
+.nf
+smi-diskless-install-package ws-01 @workstation
+smi-diskless-useradd ws-01 has
+smi-diskless-passwd ws-01 has
+.fi
+.RE
+.SH FILES
+.TP
+.BI /var/opt/setmy.info/diskless/ NAME
+Directory of one installation.
+.TP
+.BI /var/lib/tftpboot/ NAME
+Kernel and initramfs of one installation.
+.TP
+.B /etc/exports
+NFS exports, one block per installation.
+.TP
+.B /etc/dhcp/dhcpd.conf
+DHCP server configuration, written by this command.
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
@@ -32,7 +388,11 @@ Command written by Imre Tabur.
 .PP
 Report smi-make-diskless bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
-.PP
-.BR smi-start-diskless (1),
+.BR smi-diskless-list (1),
+.BR smi-diskless-chroot (1),
+.BR smi-diskless-install-package (1),
 .BR smi-diskless-useradd (1),
-.BR smi-diskless-passwd (1)
+.BR smi-diskless-passwd (1),
+.BR smi-diskless-remove (1),
+.BR smi-start-diskless (1),
+.BR smi-stop-diskless (1)

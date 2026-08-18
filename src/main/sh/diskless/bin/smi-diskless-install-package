@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
+
+if [ $# -lt 2 ]; then
+    echo "Usage: $(basename ${0}) DISKLESS_NAME PACKAGE [PACKAGE...]"
+    exit 1
+fi
+
+. $(smi-include diskless.sh)
+
+diskless_install_package "$@" || exit 1
+
+exit 0

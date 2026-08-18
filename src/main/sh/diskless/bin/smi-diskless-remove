@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
+
+if [ $# -lt 1 ]; then
+    echo "Usage: $(basename ${0}) DISKLESS_NAME"
+    exit 1
+fi
+
+DISKLESS_NAME=${1}
+
+. $(smi-include diskless.sh)
+
+diskless_config_load ${DISKLESS_NAME} || exit 1
+
+echo "Removing diskless installation ${DISKLESS_NAME} from ${NAMED_DISKLESS_DIR}"
+printf "Type the name of the installation to confirm: "
+read CONFIRMED_NAME
+if [ "${CONFIRMED_NAME}" != "${DISKLESS_NAME}" ]; then
+    echo "Not confirmed, nothing removed"
+    exit 1
+fi
+
+diskless_remove ${DISKLESS_NAME} || exit 1
+
+exit 0

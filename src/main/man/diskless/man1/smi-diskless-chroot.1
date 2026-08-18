@@ -1,0 +1,66 @@
+.TH smi-diskless-chroot "1" "August 2026" "SMI Toolset" "SMI Diskless Command"
+.SH NAME
+smi-diskless-chroot \- Run a command in the chroot of a diskless installation
+.SH SYNOPSIS
+.B smi-diskless-chroot
+.I DISKLESS_NAME
+.RI [ COMMAND
+.RI [ ARGUMENTS... ]]
+.SH DESCRIPTION
+.PP
+.B smi-diskless-chroot
+runs
+.I COMMAND
+inside the chroot of the installation
+.IR DISKLESS_NAME ,
+or an interactive shell when no command is given.
+.PP
+The kernel file systems
+.RB ( /proc ,
+.BR /sys ,
+.BR /dev ,
+.B /dev/pts
+and
+.BR /run )
+are mounted before the command and unmounted after it, and the name resolution
+of the server is copied into the chroot, so package management, service
+configuration and user management work exactly as on an installed machine.
+.PP
+This is the command behind
+.BR smi-diskless-useradd (1),
+.BR smi-diskless-passwd (1)
+and the initramfs generation of
+.BR smi-make-diskless (1).
+.PP
+The exit status is the exit status of
+.IR COMMAND .
+.SH EXAMPLES
+.PP
+Enter the installation:
+.RS
+.B smi-diskless-chroot ws-01
+.RE
+.PP
+Enable a service of the client:
+.RS
+.B smi-diskless-chroot ws-01 systemctl enable sshd
+.RE
+.PP
+Regenerate the initramfs after a kernel update:
+.RS
+.nf
+smi-diskless-chroot ws-01 dracut --force --no-hostonly --add "nfs network" \\
+    /boot/initramfs-KERNEL_VERSION-diskless.img KERNEL_VERSION
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-diskless-chroot bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.BR smi-make-diskless (1),
+.BR smi-diskless-list (1),
+.BR smi-diskless-install-package (1),
+.BR chroot (8)

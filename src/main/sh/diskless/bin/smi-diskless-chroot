@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
+
+if [ $# -lt 1 ]; then
+    echo "Usage: $(basename ${0}) DISKLESS_NAME [COMMAND [ARGUMENTS...]]"
+    exit 1
+fi
+
+DISKLESS_NAME=${1}
+shift
+
+. $(smi-include diskless.sh)
+
+diskless_config_load ${DISKLESS_NAME} || exit 1
+
+diskless_chroot_run "$@"
+
+exit ${?}

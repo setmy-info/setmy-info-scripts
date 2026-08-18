@@ -1,0 +1,41 @@
+.TH smi-diskless-list "1" "August 2026" "SMI Toolset" "SMI Diskless Command"
+.SH NAME
+smi-diskless-list \- List the diskless installations of this server
+.SH SYNOPSIS
+.B smi-diskless-list
+.SH DESCRIPTION
+.PP
+.B smi-diskless-list
+prints every diskless installation of this server with the settings it was
+prepared with: the address of the server, the release, the kernel version the
+initramfs was generated for, the chroot directory and the directory of its
+boot files.
+.PP
+An installation is listed when it has a
+.B diskless.conf
+file, which
+.BR smi-make-diskless (1)
+writes.
+.SH EXAMPLES
+.PP
+.RS
+.nf
+$ smi-diskless-list
+ws-01
+    server      : 10.0.0.2
+    release     : 10
+    kernel      : 6.12.0-55.el10.x86_64
+    root        : /var/opt/setmy.info/diskless/ws-01/root
+    boot files  : /var/lib/tftpboot/ws-01
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-diskless-list bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.BR smi-make-diskless (1),
+.BR smi-diskless-chroot (1),
+.BR smi-diskless-remove (1)

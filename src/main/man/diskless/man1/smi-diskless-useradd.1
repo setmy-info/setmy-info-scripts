@@ -1,6 +1,6 @@
-.TH smi-diskless-useradd "1" "October 2025" "SMI Toolset 0.100.0" "SMI Diskless Command"
+.TH smi-diskless-useradd "1" "August 2026" "SMI Toolset" "SMI Diskless Command"
 .SH NAME
-smi-diskless-useradd \- Add a user to a diskless environment
+smi-diskless-useradd \- Add a user to a diskless installation
 .SH SYNOPSIS
 .B smi-diskless-useradd
 .I DISKLESS_NAME
@@ -8,8 +8,33 @@ smi-diskless-useradd \- Add a user to a diskless environment
 .SH DESCRIPTION
 .PP
 .B smi-diskless-useradd
-adds a new user to the specified \fIDISKLESS_NAME\fR environment.
-It performs a \fBchroot\fR(8) into the diskless root directory and executes \fBuseradd\fR(8).
+adds the user
+.I USER_NAME
+to the installation
+.IR DISKLESS_NAME .
+.PP
+The command runs
+.BR useradd (8)
+in the chroot of the installation, with the kernel file systems mounted, see
+.BR smi-diskless-chroot (1).
+.PP
+The home directory is created below
+.B /home
+of the chroot.
+That directory is not the one the client uses: the client mounts the exported
+.B home
+directory of the installation over it.
+.PP
+The user has no password until one is set with
+.BR smi-diskless-passwd (1).
+.SH EXAMPLES
+.PP
+.RS
+.nf
+smi-diskless-useradd ws-01 has
+smi-diskless-passwd ws-01 has
+.fi
+.RE
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
@@ -17,6 +42,6 @@ Command written by Imre Tabur.
 .PP
 Report smi-diskless-useradd bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
-.PP
 .BR smi-make-diskless (1),
-.BR smi-diskless-passwd (1)
+.BR smi-diskless-passwd (1),
+.BR smi-diskless-chroot (1)

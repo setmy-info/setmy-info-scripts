@@ -1,0 +1,46 @@
+.TH smi-diskless-remove "1" "August 2026" "SMI Toolset" "SMI Diskless Command"
+.SH NAME
+smi-diskless-remove \- Remove a diskless installation
+.SH SYNOPSIS
+.B smi-diskless-remove
+.I DISKLESS_NAME
+.SH DESCRIPTION
+.PP
+.B smi-diskless-remove
+removes the installation
+.I DISKLESS_NAME
+from the server:
+.IP 1.
+Unmounts the kernel file systems of the chroot, so nothing is deleted while a
+mount of the chroot is still there.
+.IP 2.
+Removes the NFS exports of the installation and reloads them.
+.IP 3.
+Removes the boot files and the directory of the installation.
+.IP 4.
+Writes the boot menus again, without the removed installation.
+.PP
+The name of the installation has to be typed to confirm.
+The whole installation is deleted, the chroot and the exported
+.B home
+and
+.B var
+directories with it, and nothing of it can be recovered afterwards.
+.SH EXAMPLES
+.PP
+.RS
+.nf
+$ smi-diskless-remove ws-01
+Removing diskless installation ws-01 from /var/opt/setmy.info/diskless/ws-01
+Type the name of the installation to confirm: ws-01
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-diskless-remove bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.BR smi-make-diskless (1),
+.BR smi-diskless-list (1)

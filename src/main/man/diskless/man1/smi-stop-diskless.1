@@ -1,0 +1,33 @@
+.TH smi-stop-diskless "1" "August 2026" "SMI Toolset" "SMI Diskless Command"
+.SH NAME
+smi-stop-diskless \- Stop the servers the diskless machines boot from
+.SH SYNOPSIS
+.B smi-stop-diskless
+.SH DESCRIPTION
+.PP
+.B smi-stop-diskless
+stops the services of the diskless machines in the reverse order of
+.BR smi-start-diskless (1):
+.IP 1.
+.B dhcpd
+.IP 2.
+.B tftp.socket
+.IP 3.
+.B nfs-server
+.PP
+.B rpcbind
+is left running, it is a service of the whole system and is used by more than
+the diskless machines.
+.PP
+Running diskless machines lose their root file system when the NFS server is
+stopped.
+Stop the clients first.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-stop-diskless bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.BR smi-start-diskless (1),
+.BR smi-make-diskless (1)

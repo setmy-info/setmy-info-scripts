@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Copyright (C) 2023 - etc Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include diskless.sh)
+
+diskless_list
+
+exit 0

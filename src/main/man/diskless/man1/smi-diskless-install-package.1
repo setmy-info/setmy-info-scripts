@@ -1,0 +1,44 @@
+.TH smi-diskless-install-package "1" "August 2026" "SMI Toolset" "SMI Diskless Command"
+.SH NAME
+smi-diskless-install-package \- Install packages into a diskless installation
+.SH SYNOPSIS
+.B smi-diskless-install-package
+.I DISKLESS_NAME
+.I PACKAGE
+.RI [ PACKAGE... ]
+.SH DESCRIPTION
+.PP
+.B smi-diskless-install-package
+installs packages and package groups into the chroot of the installation
+.IR DISKLESS_NAME .
+.PP
+The release and the repositories of the installation are used, the ones it was
+prepared with, so a package of the client can never come from a repository of
+the server.
+The client gets the packages on its next boot, the running clients on their
+next start of the program.
+.PP
+When a kernel is installed the initramfs of the client has to be generated
+again, see
+.BR smi-diskless-chroot (1).
+.SH EXAMPLES
+.PP
+Install single packages:
+.RS
+.B smi-diskless-install-package ws-01 vim git tmux
+.RE
+.PP
+Install a package group:
+.RS
+.B smi-diskless-install-package ws-01 @workstation
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-diskless-install-package bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.BR smi-make-diskless (1),
+.BR smi-diskless-chroot (1),
+.BR smi-install-package (1)

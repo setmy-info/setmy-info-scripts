@@ -1,0 +1,31 @@
+.TH lfe "1" "August 2026" "SMI Toolset 0.100.0" "SMI Profile"
+.SH NAME
+lfe \- Lisp Flavoured Erlang programming language profile and environment
+.SH SYNOPSIS
+.B term-activate
+.B lfe
+.SH DESCRIPTION
+.PP
+The
+.B lfe
+profile configures the environment for LFE (Lisp Flavoured Erlang).
+It sets \fBLFE_HOME\fR to \fI/opt/lfe\fR (or \fI%PUB_DIR%\\lfe-2.2.0\fR on Windows) and adds its \fIbin\fR directory to \fBPATH\fR.
+.PP
+LFE is a Lisp syntax front-end to the Erlang compiler and Erlang runtime system.
+Code produced with LFE is 100% compatible with Core Erlang, allowing seamless interoperability with Erlang and Elixir libraries.
+.PP
+For more information, see \fIhttps://lfe.io/\fR.
+.SH AUTHOR
+.PP
+Documentation written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR erlang (1),
+.BR elixir (1),
+.BR smi-download-package (1),
+.BR smi-install-package (1),
+.BR term-activate (1),
+.BR term-profile (1)

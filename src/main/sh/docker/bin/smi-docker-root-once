@@ -15,4 +15,8 @@ ${2}
 rm -f /etc/sudoers
 #cp -f /etc/sudoers.backup /etc/sudoers
 
+# Removes the command itself, so that the restricted user cannot become root
+# again even if a sudoers file appears from somewhere later.
+rm -f /usr/bin/sudo
+
 exit 0

@@ -14,6 +14,9 @@ AS_ROOT_USER_SCRIPT=${1}
 AS_RESTRICTED_USER_SCRIPT=${2}
 shift 2
 
+# TODO : 1 : Before switching to root call something, so some setup can be done before before administration as root (for example save some env variables, those will be lost by sudo).
+# TODO : 2 : create also smi-docker-entry for Docker ENTRYPOINT CMD for parameters, so params can be passed to executable container.
+
 # Do root related work and remove sudo rights
 #sudo smi-docker-root-once ${AS_ROOT_USER_SCRIPT}
 echo "Executing as root from ${CURRENT_USER}"

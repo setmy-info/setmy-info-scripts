@@ -1,9 +1,11 @@
 ERLANG_NAME=erlang
+ERLANG_VERSION=29.0.5
 ERLANG_GIT_URL=https://github.com/erlang/otp.git
 ERLANG_GIT_DIR=${HOME_PACKAGES_DIR}/erlang-git
 
-# Version is detected at runtime from git tags (OTP-x.y.z, no -rc)
 # https://github.com/erlang/otp/releases
+# To upgrade: change ERLANG_VERSION above. The functions check out that exact
+# OTP tag so the install path is always /opt/erlang-${ERLANG_VERSION}.
 
 erlang_download_func() {
     CUR_DIR=$(pwd)
@@ -12,10 +14,7 @@ erlang_download_func() {
     else
         git clone ${ERLANG_GIT_URL} ${ERLANG_GIT_DIR}
     fi
-    LATEST_TAG=$(git -C "${ERLANG_GIT_DIR}" tag --sort=-version:refname | grep '^OTP-' | grep -v -- '-rc' | head -n 1)
-    ERLANG_VERSION=${LATEST_TAG#OTP-}
-    echo "Latest OTP tag: ${LATEST_TAG} (${ERLANG_VERSION})"
-    git -C "${ERLANG_GIT_DIR}" checkout "${LATEST_TAG}"
+    git -C "${ERLANG_GIT_DIR}" checkout "OTP-${ERLANG_VERSION}"
     cd ${ERLANG_GIT_DIR}
     export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et --without-javac"
     ./configure --prefix=/opt/${ERLANG_NAME}-${ERLANG_VERSION} --without-wx --without-debugger --without-observer --without-et --without-javac
@@ -25,8 +24,6 @@ erlang_download_func() {
 
 erlang_install_func() {
     CUR_DIR=$(pwd)
-    LATEST_TAG=$(git -C "${ERLANG_GIT_DIR}" tag --sort=-version:refname | grep '^OTP-' | grep -v -- '-rc' | head -n 1)
-    ERLANG_VERSION=${LATEST_TAG#OTP-}
     cd ${ERLANG_GIT_DIR}
     sudo make install
     makeOptLink /opt/${ERLANG_NAME} /opt/${ERLANG_NAME}-${ERLANG_VERSION}

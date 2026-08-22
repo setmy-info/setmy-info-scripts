@@ -1,9 +1,11 @@
 ELIXIR_NAME=elixir
+ELIXIR_VERSION=1.20.3
 ELIXIR_GIT_URL=https://github.com/elixir-lang/elixir.git
 ELIXIR_GIT_DIR=${HOME_PACKAGES_DIR}/elixir-git
 
-# Version is detected at runtime from git tags (v*, no -rc/-alpha/-beta)
 # https://github.com/elixir-lang/elixir/releases
+# To upgrade: change ELIXIR_VERSION above. The functions check out that exact
+# tag so the install path is always /opt/elixir-${ELIXIR_VERSION}.
 
 elixir_download_func() {
     CUR_DIR=$(pwd)
@@ -12,15 +14,7 @@ elixir_download_func() {
     else
         git clone ${ELIXIR_GIT_URL} ${ELIXIR_GIT_DIR}
     fi
-    LATEST_TAG=$(git -C "${ELIXIR_GIT_DIR}" tag --sort=-version:refname \
-        | grep '^v' \
-        | grep -v -- '-rc' \
-        | grep -v -- '-alpha' \
-        | grep -v -- '-beta' \
-        | head -n 1)
-    ELIXIR_VERSION=${LATEST_TAG#v}
-    echo "Latest Elixir stable tag: ${LATEST_TAG} (${ELIXIR_VERSION})"
-    git -C "${ELIXIR_GIT_DIR}" checkout "${LATEST_TAG}"
+    git -C "${ELIXIR_GIT_DIR}" checkout "v${ELIXIR_VERSION}"
     cd ${ELIXIR_GIT_DIR}
     make clean compile
     cd ${CUR_DIR}
@@ -28,13 +22,6 @@ elixir_download_func() {
 
 elixir_install_func() {
     CUR_DIR=$(pwd)
-    LATEST_TAG=$(git -C "${ELIXIR_GIT_DIR}" tag --sort=-version:refname \
-        | grep '^v' \
-        | grep -v -- '-rc' \
-        | grep -v -- '-alpha' \
-        | grep -v -- '-beta' \
-        | head -n 1)
-    ELIXIR_VERSION=${LATEST_TAG#v}
     sudo rm -Rf /opt/${ELIXIR_NAME}-${ELIXIR_VERSION}
     sudo mkdir -p /opt/${ELIXIR_NAME}-${ELIXIR_VERSION}
     sudo cp -r ${ELIXIR_GIT_DIR}/. /opt/${ELIXIR_NAME}-${ELIXIR_VERSION}

@@ -10,6 +10,9 @@ ninja_download_func() {
 }
 
 ninja_install_func() {
-    sudo unzip -o ${HOME_PACKAGES_DIR}/${NINJA_ZIP_FILE_NAME} -d /opt/ninja/bin
-    sudo chmod +x /opt/ninja/bin/ninja
+    sudo rm -rf /opt/${NINJA_NAME}-${NINJA_VERSION}
+    sudo mkdir -p /opt/${NINJA_NAME}-${NINJA_VERSION}/bin
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${NINJA_ZIP_FILE_NAME} -d /opt/${NINJA_NAME}-${NINJA_VERSION}/bin
+    sudo chmod +x /opt/${NINJA_NAME}-${NINJA_VERSION}/bin/${NINJA_NAME}
+    makeOptLink /opt/${NINJA_NAME} /opt/${NINJA_NAME}-${NINJA_VERSION}
 }

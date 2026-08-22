@@ -1610,6 +1610,25 @@ class NinjaDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     }
 }
 
+class LFEDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def version = json.tag_name.replaceAll(/^v/, '')
+        println "https://github.com/lfe/lfe/archive/refs/tags/v${version}.tar.gz"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/lfe/lfe/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "lfe"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1711,6 +1730,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new KeycloakDriverExecute(), rulesRegister)
     fillWithRules(new OpenbaoDriverExecute(), rulesRegister)
     fillWithRules(new NinjaDriverExecute(), rulesRegister)
+    fillWithRules(new LFEDriverExecute(), rulesRegister)
     fillWithRules(new JenkinsPluginManagerDriverExecute(), rulesRegister)
     return rulesRegister
 }

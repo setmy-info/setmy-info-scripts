@@ -1,2 +1,2 @@
-export NINJA_HOME=/opt/ninja/bin
-export PATH=${NINJA_HOME}:${PATH}
+export NINJA_HOME=/opt/ninja
+export PATH=${NINJA_HOME}/bin:${PATH}

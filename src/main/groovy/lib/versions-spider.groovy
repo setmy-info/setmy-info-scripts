@@ -1632,6 +1632,37 @@ class LFEDriverExecute extends DriverExecuteBase implements DriverExecute, Name,
     }
 }
 
+class ZookeeperDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        driver.get(getUrl())
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        def version = last.split("/zookeeper-")[1].split("/")[0]
+        println "https://dlcdn.apache.org/zookeeper/zookeeper-${version}/apache-zookeeper-${version}-bin.tar.gz"
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.9.5/apache-zookeeper-3.9.5-bin.tar.gz
+            href = href.toLowerCase()
+            if (!href.contains("/zookeeper/zookeeper-")) return false
+            if (!href.contains("apache-zookeeper-")) return false
+            if (!href.endsWith("-bin.tar.gz")) return false
+            return true
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://zookeeper.apache.org/releases.html"
+    }
+
+    @Override
+    String getName() {
+        return "zookeeper"
+    }
+}
+
 class TelegramDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
@@ -1754,6 +1785,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new OpenbaoDriverExecute(), rulesRegister)
     fillWithRules(new NinjaDriverExecute(), rulesRegister)
     fillWithRules(new LFEDriverExecute(), rulesRegister)
+    fillWithRules(new ZookeeperDriverExecute(), rulesRegister)
     fillWithRules(new TelegramDriverExecute(), rulesRegister)
     fillWithRules(new JenkinsPluginManagerDriverExecute(), rulesRegister)
     return rulesRegister

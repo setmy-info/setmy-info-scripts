@@ -1,6 +1,11 @@
 * 2026-08-23 Imre Tabur <imre.tabur@mail.ee>
 - Updated keycloak to 26.7.2, greenmail to 2.1.13, dagu to 2.15.2, firefox to 154.0, thunderbird to 154.0, go to 1.27.0, groovy to 5.1.0, openbao to 2.6.2, argo to 4.1.2, ninja to 1.13.2, jdk to 26.0.2.1.
 - Fixed versions-spider.groovy: H2 searcher now excludes -javadoc and -sources jars; Librewolf searcher now excludes .sig files; Gradle and Julia spiders changed from sortAndFirst to sortAndLast to return the newest stable release.
+- Added zookeeper.package: downloads apache-zookeeper-VERSION-bin.tar.gz from dlcdn.apache.org; installs to /opt/apache-zookeeper-VERSION-bin with symlink /opt/zookeeper.
+- Added zookeeper.profile: exports ZOOKEEPER_HOME=/opt/zookeeper and adds bin to PATH.
+- Added ZookeeperDriverExecute to versions-spider.groovy: scrapes releases.html, constructs direct dlcdn URL for binary tarball.
+- Updated smi-versions-spider man page: added zookeeper to package list.
+- Updated all.package and latest.profile: added zookeeper.
 - Added telegram.package: downloads tsetup.VERSION.tar.xz from GitHub releases; installs to /opt/telegram-VERSION with symlink /opt/telegram.
 - Added telegram.profile: exports TELEGRAM_HOME=/opt/telegram and adds it to PATH.
 - Added TelegramDriverExecute to versions-spider.groovy: queries GitHub API for latest tdesktop release, constructs tsetup.VERSION.tar.xz URL.

@@ -1,0 +1,17 @@
+ZOOKEEPER_NAME=zookeeper
+ZOOKEEPER_VERSION=3.9.5
+ZOOKEEPER_DIR_NAME=apache-${ZOOKEEPER_NAME}-${ZOOKEEPER_VERSION}-bin
+ZOOKEEPER_TAR_GZ_FILE_NAME=${ZOOKEEPER_DIR_NAME}.tar.gz
+ZOOKEEPER_TAR_GZ_FILE_URL=https://dlcdn.apache.org/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/${ZOOKEEPER_TAR_GZ_FILE_NAME}
+
+# https://dlcdn.apache.org/zookeeper/zookeeper-3.9.5/apache-zookeeper-3.9.5-bin.tar.gz
+# https://zookeeper.apache.org/releases.html
+
+zookeeper_download_func() {
+    smi-download ${ZOOKEEPER_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${ZOOKEEPER_TAR_GZ_FILE_NAME}
+}
+
+zookeeper_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${ZOOKEEPER_TAR_GZ_FILE_NAME} -C /opt
+    makeOptLink /opt/${ZOOKEEPER_NAME} /opt/${ZOOKEEPER_DIR_NAME}
+}

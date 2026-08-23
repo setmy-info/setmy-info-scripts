@@ -381,8 +381,8 @@ class GradleDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
-        println first
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
     }
 
     @Override
@@ -662,8 +662,8 @@ class JuliaDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        def first = sortAndFirst(getHrefs(driver).findAll(getSearcher()))
-        println first
+        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        println last
     }
 
     Closure<Boolean> getSearcher() {
@@ -1015,6 +1015,8 @@ class H2DriverExecute extends DriverExecuteBase implements DriverExecute, Name, 
             if (!href.contains("com/h2database/h2/")) return false
             if (!href.endsWith(".jar")) return false
             if (!href.startsWith("https://search.maven.org/remotecontent")) return false
+            if (href.contains("-javadoc")) return false
+            if (href.contains("-sources")) return false
             return true
         }
     }
@@ -1405,6 +1407,7 @@ class LibrewolfDriverExecute extends DriverExecuteBase implements DriverExecute,
             // https://dl.librewolf.net/librewolf/153.0-3/librewolf-153.0-3-linux-x86_64-package.tar.xz
             if (!href.contains("librewolf")) return false
             if (!href.contains("linux-x86_64-package.tar.xz")) return false
+            if (href.endsWith(".sig")) return false
             return true
         }
     }
@@ -1629,6 +1632,26 @@ class LFEDriverExecute extends DriverExecuteBase implements DriverExecute, Name,
     }
 }
 
+class TelegramDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://github.com/telegramdesktop/tdesktop/releases/download/v7.1.1/tsetup.7.1.1.tar.xz
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def version = json.tag_name.replaceAll(/^v/, '')
+        println "https://github.com/telegramdesktop/tdesktop/releases/download/v${version}/tsetup.${version}.tar.xz"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/telegramdesktop/tdesktop/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "telegram"
+    }
+}
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1731,6 +1754,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new OpenbaoDriverExecute(), rulesRegister)
     fillWithRules(new NinjaDriverExecute(), rulesRegister)
     fillWithRules(new LFEDriverExecute(), rulesRegister)
+    fillWithRules(new TelegramDriverExecute(), rulesRegister)
     fillWithRules(new JenkinsPluginManagerDriverExecute(), rulesRegister)
     return rulesRegister
 }

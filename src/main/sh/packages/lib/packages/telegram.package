@@ -1,0 +1,18 @@
+TELEGRAM_NAME=telegram
+TELEGRAM_VERSION=7.1.1
+TELEGRAM_DIR_NAME=${TELEGRAM_NAME}-${TELEGRAM_VERSION}
+TELEGRAM_TAR_XZ_FILE_NAME=tsetup.${TELEGRAM_VERSION}.tar.xz
+TELEGRAM_TAR_XZ_FILE_URL=https://github.com/telegramdesktop/tdesktop/releases/download/v${TELEGRAM_VERSION}/${TELEGRAM_TAR_XZ_FILE_NAME}
+
+# https://github.com/telegramdesktop/tdesktop/releases
+
+telegram_download_func() {
+    smi-download ${TELEGRAM_TAR_XZ_FILE_URL} ${HOME_PACKAGES_DIR}/${TELEGRAM_TAR_XZ_FILE_NAME}
+}
+
+telegram_install_func() {
+    sudo rm -rf /opt/${TELEGRAM_DIR_NAME}
+    sudo mkdir -p /opt/${TELEGRAM_DIR_NAME}
+    sudo tar --overwrite -xvJf ${HOME_PACKAGES_DIR}/${TELEGRAM_TAR_XZ_FILE_NAME} -C /opt/${TELEGRAM_DIR_NAME}
+    makeOptLink /opt/${TELEGRAM_NAME} /opt/${TELEGRAM_DIR_NAME}
+}

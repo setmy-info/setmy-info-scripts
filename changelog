@@ -1,3 +1,15 @@
+* 2026-08-23 Imre Tabur <imre.tabur@mail.ee>
+- Updated keycloak to 26.7.2, greenmail to 2.1.13, dagu to 2.15.2, firefox to 154.0, thunderbird to 154.0, go to 1.27.0, groovy to 5.1.0, openbao to 2.6.2, argo to 4.1.2, ninja to 1.13.2, jdk to 26.0.2.1.
+- Fixed versions-spider.groovy: H2 searcher now excludes -javadoc and -sources jars; Librewolf searcher now excludes .sig files; Gradle and Julia spiders changed from sortAndFirst to sortAndLast to return the newest stable release.
+- Added telegram.package: downloads tsetup.VERSION.tar.xz from GitHub releases; installs to /opt/telegram-VERSION with symlink /opt/telegram.
+- Added telegram.profile: exports TELEGRAM_HOME=/opt/telegram and adds it to PATH.
+- Added TelegramDriverExecute to versions-spider.groovy: queries GitHub API for latest tdesktop release, constructs tsetup.VERSION.tar.xz URL.
+- Updated smi-versions-spider man page: added telegram to package list.
+- Updated all.package: added telegram to downloadPackages and installPackages lists.
+- Updated latest.profile: added telegram to PROFILES list.
+- Added solr.profile: exports SOLR_HOME=/opt/solr and adds bin to PATH.
+- Updated all.package: added solr to downloadPackages and installPackages lists.
+- Updated latest.profile: added solr to PROFILES list.
 * 2026-08-17 Imre Tabur <imre.tabur@mail.ee>
 - Added greenmail.package: downloads greenmail-standalone.jar from Maven Central; installs to smi-lib-location as greenmail-standalone.jar.
 - Added greenmail.profile: exports GREENMAIL_HOME and GREENMAIL_JAR environment variables.

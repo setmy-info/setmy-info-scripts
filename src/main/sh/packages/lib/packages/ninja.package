@@ -1,5 +1,5 @@
 NINJA_NAME=ninja
-NINJA_VERSION=1.13.1
+NINJA_VERSION=1.13.2
 NINJA_ZIP_FILE_NAME=${NINJA_NAME}-linux.zip
 NINJA_ZIP_FILE_URL=https://github.com/ninja-build/ninja/releases/download/v${NINJA_VERSION}/${NINJA_ZIP_FILE_NAME}
 

@@ -1,8 +1,8 @@
 
 all_download_func() {
-    downloadPackages sbcl jdk zulu jdk17 jdk21 jdk22 jdk23 jdk24 jdk25 jdk26 tomcat zeebe infinispan camundam hsqldb h2 node mvn mvnd mvn4 gradle cmake ninja julia go janet dvc jenkins jpm jenkins_home groovy mn grails clojure lein kubectl k3s docker nginx firefox thunderbird selenium smi netbeans libreoffice erlang elixir lfe awscli
+    downloadPackages sbcl jdk zulu jdk17 jdk21 jdk22 jdk23 jdk24 jdk25 jdk26 tomcat zeebe infinispan camundam hsqldb h2 node mvn mvnd mvn4 gradle cmake ninja julia go janet dvc jenkins jpm jenkins_home groovy mn grails clojure lein kubectl k3s docker nginx firefox thunderbird selenium smi netbeans libreoffice solr telegram erlang elixir lfe awscli
 }
 
 all_install_func() {
-    installPackages sbcl jdk zulu jdk17 jdk21 jdk22 jdk23 jdk24 jdk25 jdk26 tomcat zeebe infinispan camundam hsqldb h2 node mvn mvnd mvn4 gradle cmake ninja julia go janet dvc jenkins jpm jenkins_home groovy mn grails clojure lein kubectl k3s docker nginx firefox thunderbird selenium smi netbeans libreoffice erlang elixir lfe awscli
+    installPackages sbcl jdk zulu jdk17 jdk21 jdk22 jdk23 jdk24 jdk25 jdk26 tomcat zeebe infinispan camundam hsqldb h2 node mvn mvnd mvn4 gradle cmake ninja julia go janet dvc jenkins jpm jenkins_home groovy mn grails clojure lein kubectl k3s docker nginx firefox thunderbird selenium smi netbeans libreoffice solr telegram erlang elixir lfe awscli
 }

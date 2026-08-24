@@ -82,12 +82,7 @@ This updates all version references in:
 * ./src/main/sh/build/check-files.sh (smi-version output test)
 * ./setup.iss
 
-After updating versions, rebuild and reinstall:
-
-```sh
-SCRIPTS_VERSION=<new-version>
-./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
-```
+After updating versions, rebuild and reinstall.
 
 # TODO
 

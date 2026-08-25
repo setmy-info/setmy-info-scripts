@@ -1,0 +1,112 @@
+.TH smi-jenkinsfile "1" "August 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-jenkinsfile \- Run a Jenkins declarative Jenkinsfile locally, without Jenkins
+.SH SYNOPSIS
+.B smi-jenkinsfile
+[\fB\-b\fR \fIBRANCH\fR]
+[\fB\-e\fR \fIKEY\fR=\fIVALUE\fR]...
+[\fIJENKINSFILE\fR]
+.SH DESCRIPTION
+.PP
+.B smi-jenkinsfile
+executes a Jenkins declarative pipeline on the local machine.
+The Jenkinsfile is compiled as a Groovy script against a small pipeline base class,
+which implements the declarative DSL with closure delegates: every directive
+.RB ( pipeline ,
+.BR agent ,
+.BR triggers ,
+.BR options ,
+.BR environment ,
+.BR stages ,
+.BR stage ,
+.BR when ,
+.BR steps ,
+.BR parallel ,
+.BR post )
+is a method call on a block object that collects a model, and the model is then
+executed.
+.PP
+The directory containing the Jenkinsfile is used as the workspace.
+It is a deliberately small implementation, meant for trying out a Jenkinsfile and for
+understanding how the DSL works, not a Jenkins replacement.
+.SH OPTIONS
+.TP
+.BI \-b\  BRANCH \fR,\fB\ \-\-branch= BRANCH
+Value of
+.BR env.BRANCH_NAME .
+Default is
+.BR master .
+This is what the
+.B when
+conditions of the pipeline are evaluated against.
+.TP
+.BI \-e\  KEY = VALUE \fR,\fB\ \-\-env= KEY = VALUE
+Set an environment variable.
+It wins over the
+.B environment
+block, so a run can be steered without editing the Jenkinsfile.
+Repeat the option for more variables.
+.TP
+.B \-h, \-\-help
+Show usage and exit.
+.TP
+.I JENKINSFILE
+Jenkinsfile to run.
+Default is
+.B ./Jenkinsfile
+in the current directory.
+.SH STEPS
+The following steps are implemented:
+.PP
+.BR echo ,\  sh ,\  bat ,\  isUnix ,\  script ,\  fileExists ,\  error ,\  sleep ,
+.BR retry ,\  timeout ,\  emailext .
+.PP
+.B sh
+and
+.B bat
+really start a process, in the workspace, with the pipeline environment passed to it,
+so shell expansion of environment variables works as it does on Jenkins.
+A non\-zero exit code fails the build.
+.PP
+.B emailext
+prints the message that Jenkins would send instead of sending it.
+.PP
+Any other step is reported as not implemented and skipped: it does not fail the build.
+.PP
+.B timeout
+does not interrupt its body; the duration is checked after the body has finished.
+.SH ENVIRONMENT
+The following variables are provided before the Jenkinsfile is read:
+.BR NODE_NAME ,\  WORKSPACE ,\  JOB_NAME ,\  BUILD_NUMBER ,\  BUILD_URL ,
+.BR BRANCH_NAME ,\  GIT_BRANCH ,\  GIT_URL .
+.SH EXIT STATUS
+.TP
+.B 0
+The pipeline finished with result SUCCESS.
+.TP
+.B 1
+The pipeline finished with result FAILURE, or the Jenkinsfile was not found.
+.SH EXAMPLES
+.PP
+Run the Jenkinsfile of the current directory as branch master:
+.PP
+.RS
+.B smi-jenkinsfile
+.RE
+.PP
+Run another Jenkinsfile as a hotfix branch:
+.PP
+.RS
+.B smi-jenkinsfile \-b hotfix/NPE ../jenkinsfile-starter/Jenkinsfile
+.RE
+.PP
+Run the master branch, but without the live deployment:
+.PP
+.RS
+.B smi-jenkinsfile \-e MASTER_TO_LIVE=SKIP
+.RE
+.SH SEE ALSO
+.BR jenkins-cli (1),
+.BR smi-ci-cli (1)
+.SH AUTHOR
+Imre Tabur

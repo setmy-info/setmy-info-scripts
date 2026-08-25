@@ -446,7 +446,11 @@ abstract class PipelineScript extends Script {
         build.env.putAll(build.overrides)
         // Now that the environment is known, publish it so that "$JOB_NAME" and "${GHI}"
         // written directly in the Jenkinsfile resolve, and so that env.X works.
-        build.env.each { key, value -> binding.setVariable(key, value) }
+        build.env.each { key, value ->
+            if (key ==~ /[A-Za-z_][A-Za-z0-9_]*/) {
+                binding.setVariable(key, value)
+            }
+        }
         binding.setVariable("env", build.env)
         new Executor(build: build, pipeline: model, script: this).execute()
         build.result
@@ -476,17 +480,19 @@ abstract class PipelineScript extends Script {
 
     void sh(String command) {
         Console.step("sh")
-        shell(["sh", "-c", command], command)
+        // -x echoes every expanded command, -e stops at the first failing line of a
+        // multi line script. That is how Jenkins runs a sh step.
+        shell(["sh", "-xe", "-c", command])
     }
 
     void bat(String command) {
         Console.step("bat")
-        shell(["cmd", "/c", command], command)
+        Console.out("+ ${command}")
+        shell(["cmd", "/c", command])
     }
 
     /** The build environment is passed to the process, so 'echo "${GHI}"' expands there. */
-    private void shell(List<String> commandLine, String command) {
-        Console.out("+ ${command}")
+    private void shell(List<String> commandLine) {
         def builder = new ProcessBuilder(commandLine)
         builder.directory(build.workspace)
         builder.environment().putAll(build.env)
@@ -598,6 +604,10 @@ static void main(String[] args) {
 static Build newBuild(File jenkinsfile, CliArgs cliArgs) {
     final File workspace = jenkinsfile.canonicalFile.parentFile
     final Build build = new Build(workspace: workspace)
+    // The environment of this machine comes first: a Jenkinsfile that writes
+    // PATH = "/opt/setmy.info/bin:$PATH" must find the real PATH there, exactly as it
+    // does on a Jenkins agent. Without it $PATH resolves to null and the PATH is lost.
+    build.env.putAll(System.getenv())
     build.env.putAll([
         NODE_NAME   : "built-in",
         WORKSPACE   : workspace.path,

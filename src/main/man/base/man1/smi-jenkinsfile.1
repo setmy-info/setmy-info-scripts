@@ -62,10 +62,15 @@ The following steps are implemented:
 .BR retry ,\  timeout ,\  emailext .
 .PP
 .B sh
-and
+runs the script with
+.BR "sh \-xe" :
+every expanded command is echoed, and a multi\-line script stops at its first failing
+line, as it does on Jenkins.
 .B bat
-really start a process, in the workspace, with the pipeline environment passed to it,
-so shell expansion of environment variables works as it does on Jenkins.
+runs it with
+.BR "cmd /c" .
+Both start a real process in the workspace, with the pipeline environment passed to it,
+so shell expansion of environment variables works.
 A non\-zero exit code fails the build.
 .PP
 .B emailext
@@ -76,7 +81,19 @@ Any other step is reported as not implemented and skipped: it does not fail the 
 .B timeout
 does not interrupt its body; the duration is checked after the body has finished.
 .SH ENVIRONMENT
-The following variables are provided before the Jenkinsfile is read:
+The environment of the calling shell is inherited first, so
+.B PATH
+and everything else on the machine is available to the pipeline and to its
+.B sh
+steps.
+A Jenkinsfile that extends it, as in
+.PP
+.RS
+.B environment { PATH = "/opt/setmy.info/bin:$PATH" }
+.RE
+.PP
+therefore works the same way it does on a Jenkins agent.
+On top of that the following variables are provided before the Jenkinsfile is read:
 .BR NODE_NAME ,\  WORKSPACE ,\  JOB_NAME ,\  BUILD_NUMBER ,\  BUILD_URL ,
 .BR BRANCH_NAME ,\  GIT_BRANCH ,\  GIT_URL .
 .SH EXIT STATUS

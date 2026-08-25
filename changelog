@@ -1,6 +1,8 @@
 * 2026-08-25 Imre Tabur <imre.tabur@mail.ee>
 - Added jenkinsfile.groovy: a minimal Jenkins declarative pipeline runner that executes a Jenkinsfile locally, without Jenkins. The DSL is implemented with closure delegates (one block class per nesting level, DELEGATE_FIRST), steps are methods of the script base class, and `sleep` is rewritten at compile time because Groovy's own Object.sleep(millis) answers it inside closures before any delegate does.
 - Added smi-jenkinsfile and smi-jenkinsfile.cmd wrappers plus the smi-jenkinsfile man page.
+- jenkinsfile.groovy: the build environment is seeded from the environment of the calling shell, so PATH = "/opt/setmy.info/bin:$PATH" in an environment block extends the real PATH instead of resolving $PATH to null and losing every command on it.
+- jenkinsfile.groovy: sh steps run with sh -xe, so each expanded command is echoed and a multi-line script stops at its first failing line, like Jenkins.
 
 * 2026-08-23 Imre Tabur <imre.tabur@mail.ee>
 - Updated keycloak to 26.7.2, greenmail to 2.1.13, dagu to 2.15.2, firefox to 154.0, thunderbird to 154.0, go to 1.27.0, groovy to 5.1.0, openbao to 2.6.2, argo to 4.1.2, ninja to 1.13.2, jdk to 26.0.2.1.

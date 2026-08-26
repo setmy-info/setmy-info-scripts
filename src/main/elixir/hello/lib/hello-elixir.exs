@@ -3,11 +3,8 @@ defmodule HelloElixir do
   Example helpers showing how values can be piped from one function to the next.
   """
 
-  # POSIX shells report the exit status of a command as a single byte.
   @min_exit_code 0
   @max_exit_code 255
-
-  # Returned when the requested exit code is not a usable POSIX exit status.
   @invalid_exit_code 1
 
   @doc """
@@ -21,8 +18,11 @@ defmodule HelloElixir do
 
   def parse_exit_code([code | _]) do
     case Integer.parse(code) do
-      {value, ""} when value >= @min_exit_code and value <= @max_exit_code -> value
-      _ -> @invalid_exit_code
+      {value, ""} when value >= @min_exit_code and value <= @max_exit_code ->
+        value
+
+      _ ->
+        @invalid_exit_code
     end
   end
 
@@ -30,11 +30,10 @@ defmodule HelloElixir do
   Prints the exit code when it is non-zero and stays silent otherwise.
   Returns the code unchanged so it can be piped onwards.
   """
-  def print_exit_code(exit_code) do
-    if exit_code != @min_exit_code do
-      IO.puts("Exiting with code #{exit_code}.")
-    end
+  def print_exit_code(0), do: 0
 
+  def print_exit_code(exit_code) do
+    IO.puts("Exiting with code #{exit_code}.")
     exit_code
   end
 end

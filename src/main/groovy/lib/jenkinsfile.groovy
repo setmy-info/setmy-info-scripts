@@ -91,6 +91,9 @@ class CliArgs {
 class Console {
     static final ThreadLocal<String> BRANCH = new ThreadLocal<String>()
 
+    /** Width of the banner lines, so that every "Begin of" marker lines up. */
+    static final int WIDTH = 110
+
     static synchronized void out(String message) {
         def branch = BRANCH.get()
         println branch ? "[${branch}] ${message}" : message
@@ -100,12 +103,29 @@ class Console {
         out("[Pipeline] ${name}")
     }
 
-    static void open(String name) {
-        out("[Pipeline] { (${name})")
+    /**
+     * The marker that says where execution is and whether the stage ran:
+     *
+     *   ------------------- Begin of 'Build' DO -------------------
+     *   ------------------- Begin of 'Tag' SKIP -------------------
+     *
+     * Nested (parallel) stages are indented, so the tree is visible in the log.
+     */
+    static void stage(String position, String name, String decision, int depth) {
+        fill("-", "${position} of '${name}' ${decision}", "  " * depth)
     }
 
-    static void close() {
-        out("[Pipeline] }")
+    /** A heavier banner, used for the pipeline itself and for the closing summary. */
+    static void banner(String title) {
+        fill("=", title, "")
+    }
+
+    private static void fill(String character, String title, String indent) {
+        def label = " ${title} "
+        def width = Math.max(0, WIDTH - indent.length() - label.length())
+        def left = Math.max(3, (int) (width / 2))
+        def right = Math.max(3, width - left)
+        out(indent + (character * left) + label + (character * right))
     }
 }
 
@@ -172,14 +192,31 @@ class Build {
     Map<String, String> overrides = [:]
     File workspace
     String result = "SUCCESS"
+    /** The running Jenkinsfile, so that a nested `when` block can evaluate its conditions. */
+    PipelineScript script
 }
 
 /** One stage of the model. It has either `steps` or parallel `branches`, never both. */
 class Stage implements Name {
+    /** What the runner decided to do with a stage; also what the closing summary prints. */
+    static final String DO = "DO"
+    static final String SKIP = "SKIP"
+    static final String NOT_RUN = "NOT RUN"
+    /** Ran, but a `when` directive this runner does not understand was ignored to get there. */
+    static final String DO_UNSURE = "DO (?)"
+
     String name
     List<Closure<Boolean>> conditions = []
+    /** Names of `when` directives this runner does not implement; empty means the decision is exact. */
+    List<String> unsupported = []
     Closure steps
-    List<Stage> branches = []
+    /** Nested stages: at the same time when `parallel` is set, one after another otherwise. */
+    List<Stage> children = []
+    boolean parallel
+    Map<String, String> environment = [:]
+    Map<String, Closure> post = [:]
+    /** Filled in while the stage is executed, so the summary can be printed in declaration order. */
+    String decision = NOT_RUN
 }
 
 /** The whole model, as collected from the Jenkinsfile before anything is executed. */
@@ -304,6 +341,12 @@ class StagesBlock extends Block {
     void stage(String name, Closure body) {
         stages << dsl(new StageBlock(build: build, stage: new Stage(name: name)), body).stage
     }
+
+    /** `failFast true` and anything else written beside the stages, reported not leaked. */
+    def methodMissing(String name, Object args) {
+        Console.out("WARNING: '${name}' is not implemented by this runner and was ignored")
+        null
+    }
 }
 
 class StageBlock extends Block {
@@ -314,20 +357,60 @@ class StageBlock extends Block {
     }
 
     void when(Closure body) {
-        stage.conditions = dsl(new WhenBlock(build: build), body).conditions
+        def block = (WhenBlock) dsl(new WhenBlock(build: build), body)
+        stage.conditions = block.conditions
+        stage.unsupported = block.unsupported
     }
 
+    /** `parallel { }` - the nested stages run at the same time. */
     void parallel(Closure body) {
-        stage.branches = dsl(new StagesBlock(build: build), body).stages
+        stage.children = dsl(new StagesBlock(build: build), body).stages
+        stage.parallel = true
+    }
+
+    /** `stages { }` inside a stage - the nested stages run one after another. */
+    void stages(Closure body) {
+        stage.children = dsl(new StagesBlock(build: build), body).stages
+        stage.parallel = false
+    }
+
+    /**
+     * A stage level `environment` and `post` have to be caught here. Without these two methods
+     * the call is not answered by this block, so Groovy walks the owner chain of the closure up
+     * to PipelineBlock - which does have both - and the stage's block silently becomes the
+     * *pipeline's* environment or post section instead. It then runs at the wrong level, and
+     * looks like it worked.
+     */
+    void environment(Closure body) {
+        stage.environment = dsl(new EnvironmentBlock(build: build), body).variables
+    }
+
+    void post(Closure body) {
+        stage.post = dsl(new PostBlock(build: build), body).sections
     }
 
     void agent(Object agent) {
     }
+
+    /** Same reason: an unimplemented directive is reported here instead of leaking upwards. */
+    def methodMissing(String name, Object args) {
+        Console.out("WARNING: stage directive '${name}' is not implemented by this runner and was ignored")
+        null
+    }
 }
 
-/** Every condition of a `when` block must hold for the stage to run. */
+/**
+ * Every condition of a `when` block must hold for the stage to run - `when` ANDs its
+ * directives, and `anyOf` / `allOf` / `not` nest another `when` block inside one condition.
+ *
+ * A directive this runner does not know must never be silently dropped: an empty condition
+ * list passes, so dropping one turns a stage that should be skipped into a stage that runs.
+ * Unknown directives are recorded as `unsupported` instead, and the stage is reported with a
+ * decision of "DO (?)" so the summary cannot quietly lie about what was executed.
+ */
 class WhenBlock extends Block {
     List<Closure<Boolean>> conditions = []
+    List<String> unsupported = []
 
     void branch(String pattern) {
         def regex = pattern.split("\\*", -1).collect { java.util.regex.Pattern.quote(it) }.join(".*")
@@ -336,6 +419,39 @@ class WhenBlock extends Block {
 
     void expression(Closure<Boolean> condition) {
         conditions << condition
+    }
+
+    /** `environment name: 'DEPLOY_TO', value: 'production'` */
+    void environment(Map args) {
+        conditions << { build.env[String.valueOf(args.name)] == String.valueOf(args.value) }
+    }
+
+    void anyOf(Closure body) {
+        def nested = nest(body)
+        conditions << { nested.conditions.any { build.script.callBody(it) } }
+    }
+
+    void allOf(Closure body) {
+        def nested = nest(body)
+        conditions << { nested.conditions.every { build.script.callBody(it) } }
+    }
+
+    void not(Closure body) {
+        def nested = nest(body)
+        conditions << { !nested.conditions.every { build.script.callBody(it) } }
+    }
+
+    /** A nested block shares this block's list of unsupported directives, so nothing is lost. */
+    private WhenBlock nest(Closure body) {
+        def nested = (WhenBlock) dsl(new WhenBlock(build: build), body)
+        unsupported.addAll(nested.unsupported)
+        nested.unsupported = unsupported
+        nested
+    }
+
+    def methodMissing(String name, Object args) {
+        unsupported << name
+        null
     }
 }
 
@@ -363,47 +479,100 @@ class Executor implements Executable {
 
     @Override
     void execute() {
+        Console.banner("Begin of pipeline on branch '${build.env.BRANCH_NAME}'")
         Console.out("Running on ${build.env.NODE_NAME} in ${build.workspace}")
         Console.out("agent ${pipeline.agent}")
         pipeline.triggers.each { Console.out("trigger ${it}") }
         pipeline.options.each { Console.out("option ${it}") }
         try {
-            pipeline.stages.each { executeStage(it) }
+            pipeline.stages.each { executeStage(it, 0) }
         } catch (Throwable throwable) {
             build.result = "FAILURE"
             Console.out("ERROR: ${throwable.message}")
         }
         executePost()
-        Console.out("Finished: ${build.result}")
+        printSummary()
+        Console.banner("End of pipeline: ${build.result}")
     }
 
-    private void executeStage(Stage stage) {
-        if (!stage.conditions.every { script.callBody(it) }) {
-            Console.out("Stage \"${stage.name}\" skipped due to when conditional")
-            return
+    /**
+     * The `when` conditions decide DO or SKIP, and that decision is printed before anything
+     * else happens in the stage - so the log says where execution is and what it did there,
+     * for a skipped stage just as much as for one that ran.
+     */
+    private void executeStage(Stage stage, int depth) {
+        stage.decision = stage.conditions.every { script.callBody(it) } ? Stage.DO : Stage.SKIP
+        // `when` ANDs its directives, so an ignored one can only ever have turned DO into SKIP.
+        // A SKIP is therefore still exact; only a DO has to admit that it might be wrong.
+        if (stage.unsupported && stage.decision == Stage.DO) {
+            stage.decision = Stage.DO_UNSURE
         }
-        Console.step("stage")
-        Console.open(stage.name)
+        Console.stage("Begin", stage.name, stage.decision, depth)
         try {
-            if (stage.branches) {
-                executeBranches(stage)
+            if (stage.unsupported) {
+                Console.out("${'  ' * depth}  WARNING: when ${stage.unsupported.join(', ')}"
+                    + " is not implemented by this runner and was ignored")
+            }
+            if (stage.decision == Stage.SKIP) {
+                Console.out("${'  ' * depth}  skipped by the when conditional of the stage")
+                return
+            }
+            executeBody(stage, depth)
+        } finally {
+            Console.stage("End", stage.name, stage.decision, depth)
+        }
+    }
+
+    /** The stage really runs: its own environment applies, and its own post sections follow it. */
+    private void executeBody(Stage stage, int depth) {
+        Map<String, String> restore = applyEnvironment(stage)
+        Throwable failure = null
+        try {
+            if (stage.children && stage.parallel) {
+                executeBranches(stage, depth)
+            } else if (stage.children) {
+                stage.children.each { executeStage(it, depth + 1) }
             } else if (stage.steps) {
                 script.callBody(stage.steps)
             }
+        } catch (Throwable throwable) {
+            failure = throwable
+            throw throwable
         } finally {
-            Console.close()
+            executeSections(stage.post, failure == null, "stage post", depth)
+            restoreEnvironment(restore)
+        }
+    }
+
+    /**
+     * Jenkins scopes a stage level environment to that stage, so the previous values are put back
+     * when it ends. There is one environment map per build here and parallel branches share it,
+     * so a stage environment inside a parallel branch is not isolated from its siblings.
+     */
+    private Map<String, String> applyEnvironment(Stage stage) {
+        Map<String, String> previous = [:]
+        stage.environment.each { key, value ->
+            previous[key] = build.env[key]
+            build.env[key] = value
+        }
+        previous
+    }
+
+    private void restoreEnvironment(Map<String, String> previous) {
+        previous.each { key, value ->
+            value == null ? build.env.remove(key) : build.env.put(key, value)
         }
     }
 
     /** Real threads, one per branch; the first failure fails the whole stage. */
-    private void executeBranches(Stage stage) {
+    private void executeBranches(Stage stage, int depth) {
         Console.step("parallel")
         def failures = Collections.synchronizedList(new ArrayList<Throwable>())
-        stage.branches.collect { branch ->
+        stage.children.collect { branch ->
             Thread.start {
                 Console.BRANCH.set(branch.name)
                 try {
-                    executeStage(branch)
+                    executeStage(branch, depth + 1)
                 } catch (Throwable throwable) {
                     failures << throwable
                 } finally {
@@ -416,17 +585,46 @@ class Executor implements Executable {
         }
     }
 
+    /**
+     * Parallel branches finish in whatever order the threads happen to end, so the summary is
+     * printed by walking the model instead of by recording as it goes: it always comes out in
+     * the order the Jenkinsfile declares the stages.
+     */
+    private void printSummary() {
+        Console.banner("Stage summary for branch '${build.env.BRANCH_NAME}'")
+        pipeline.stages.each { summarise(it, 0) }
+    }
+
+    private void summarise(Stage stage, int depth) {
+        Console.out(String.format("  %-8s %s%s", stage.decision, "    " * depth, stage.name))
+        stage.children.each { summarise(it, depth + 1) }
+    }
+
     private void executePost() {
-        ["always", build.result == "SUCCESS" ? "success" : "failure"].each { section ->
-            def body = pipeline.post[section]
+        executeSections(pipeline.post, build.result == "SUCCESS", "post", 0)
+    }
+
+    /**
+     * `always` plus exactly one of `success` / `failure`, for a stage and for the pipeline alike.
+     *
+     * A step that fails inside a post section fails the build, exactly as it does in Jenkins -
+     * otherwise a broken notification or cleanup would be reported as a green build and this
+     * runner would exit 0. It is not rethrown: this runs from a finally block, where throwing
+     * would swallow the failure that brought us here. Remaining stages therefore still run,
+     * which Jenkins would not do.
+     */
+    private void executeSections(Map<String, Closure> sections, boolean success, String label, int depth) {
+        ["always", success ? "success" : "failure"].each { section ->
+            def body = sections[section]
             if (!body) {
                 return
             }
-            Console.step("post ${section}")
+            Console.out("${'  ' * depth}[Pipeline] ${label} ${section}")
             try {
                 script.callBody(body)
             } catch (Throwable throwable) {
-                Console.out("ERROR in post ${section}: ${throwable.message}")
+                build.result = "FAILURE"
+                Console.out("ERROR in ${label} ${section}: ${throwable.message}")
             }
         }
     }
@@ -562,16 +760,52 @@ abstract class PipelineScript extends Script {
         }
     }
 
+    /**
+     * Mail is emulated, never sent: this runner opens no SMTP connection anywhere, so a
+     * Jenkinsfile can be exercised over and over without mailing the team on every run.
+     * `emailext` comes from the Email Extension plugin, `mail` is the built in Jenkins step;
+     * both are printed the same way.
+     */
     void emailext(Map args) {
-        Console.step("emailext")
-        Console.out("Sending e-mail to ${args.to ?: args.recipientProviders}")
+        mailStep("emailext", args)
+    }
+
+    void mail(Map args) {
+        mailStep("mail", args)
+    }
+
+    private static void mailStep(String step, Map args) {
+        Console.step(step)
+        Console.out("E-mail is NOT sent, only printed:")
+        Console.out("  to:      ${args.to ?: args.recipientProviders ?: '(not set)'}")
+        if (args.cc) {
+            Console.out("  cc:      ${args.cc}")
+        }
+        if (args.replyTo) {
+            Console.out("  replyTo: ${args.replyTo}")
+        }
         Console.out("  subject: ${args.subject}")
         Console.out("  body:    ${args.body}")
     }
 
-    /** Steps this small runner does not implement are reported, not failed. */
+    /**
+     * Steps this small runner does not implement are reported, not failed.
+     *
+     * A step that takes a closure is a *wrapper* - `dir`, `withEnv`, `withCredentials`,
+     * `timestamps`, `catchError`, `lock`, `ws` - and the real build steps are written inside it.
+     * Reporting such a step and returning would throw that whole body away: `dir('sub') { sh
+     * 'make' }` would run nothing at all and the build would still be reported as SUCCESS. The
+     * body is therefore executed as it stands, without whatever the wrapper would have set up
+     * around it - so `dir` does not change directory and `withEnv` does not add its variables.
+     */
     def methodMissing(String name, Object args) {
         Console.step(name)
+        def body = (args as Object[]).find { it instanceof Closure }
+        if (body) {
+            Console.out("Step '${name}' is not implemented by this runner;"
+                + " its body is executed without the wrapper")
+            return callBody((Closure) body)
+        }
         Console.out("Step '${name}' is not implemented by this runner, skipped")
         null
     }
@@ -595,6 +829,7 @@ static void main(String[] args) {
     final GroovyShell shell = new GroovyShell(PipelineScript.classLoader, new Binding(), configuration)
     final PipelineScript pipelineScript = (PipelineScript) shell.parse(jenkinsfile)
     pipelineScript.build = build
+    build.script = pipelineScript
     pipelineScript.run()
     if (build.result != "SUCCESS") {
         System.exit(1)

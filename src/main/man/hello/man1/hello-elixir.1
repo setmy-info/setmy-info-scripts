@@ -1,0 +1,35 @@
+.TH hello-elixir "1" "August 2026" "SMI Toolset" "SMI Hello Command"
+.SH NAME
+hello-elixir \- Print a greeting message using an Elixir script
+.SH SYNOPSIS
+.B hello-elixir
+.SH DESCRIPTION
+.PP
+.B hello-elixir
+is a minimal example command that runs an Elixir script installed in the
+.I lib/elixir/
+directory of the SMI toolset installation.
+It demonstrates that Elixir scripting is correctly set up: the
+.B elixir
+interpreter is on the PATH, and the SMI library location is resolvable.
+.PP
+The script is executed via
+.BR smi-lib-location (1)
+to locate the installed Elixir library directory and then runs
+.B hello-elixir.exs
+with the
+.B elixir
+command.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.SH FILES
+.TP
+.I $(smi-lib-location)/elixir/hello-elixir.exs
+The Elixir script executed by this command.
+.SH SEE ALSO
+.BR elixir (1),
+.BR smi-lib-location (1)
+.SH AUTHOR
+setmy.info

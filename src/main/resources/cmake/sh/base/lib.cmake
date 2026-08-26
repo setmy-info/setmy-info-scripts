@@ -14,6 +14,7 @@ INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/uuid.groovy"                   DESTINATION
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/jenkinsfile.groovy"             DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/smi-cl-test.lisp"              DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/quicklisp-user-setup.lisp"     DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/elixir.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/crypto.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/pki.sh"                        DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/openssl.ca.ext.file.txt"       DESTINATION lib)

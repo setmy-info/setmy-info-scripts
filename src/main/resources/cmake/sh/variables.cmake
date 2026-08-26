@@ -19,5 +19,6 @@ INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/vcs/variables.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/virtualization/variables.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/workstation/variables.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/ai/variables.cmake)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/hello/variables.cmake)
 
 # PLACEHOLDER-END #

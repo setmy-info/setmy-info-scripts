@@ -19,5 +19,6 @@ INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/vcs/targets.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/virtualization/targets.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/workstation/targets.cmake)
 INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/ai/targets.cmake)
+INCLUDE_CMAKE_FILE(${MAIN_CMAKE_PATH}/sh/hello/targets.cmake)
 
 # PLACEHOLDER-END #

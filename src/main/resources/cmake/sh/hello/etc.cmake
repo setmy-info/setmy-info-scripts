@@ -1,0 +1,4 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- hello etc.cmake")
+
+# PLACEHOLDER-END #

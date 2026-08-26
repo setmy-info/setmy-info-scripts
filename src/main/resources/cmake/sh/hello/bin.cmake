@@ -1,0 +1,6 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- hello bin.cmake")
+
+INSTALL(PROGRAMS "${BINARY_OUTPUT_PATH}/hello-elixir" DESTINATION bin)
+
+# PLACEHOLDER-END #

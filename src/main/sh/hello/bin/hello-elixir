@@ -1,0 +1,5 @@
+#!/bin/sh
+
+. `smi-include elixir.sh`
+
+exec elixir "${SMI_ELIXIR_LIB_DIR}/hello-elixir.exs" "$@"

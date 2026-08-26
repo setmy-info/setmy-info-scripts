@@ -1,0 +1,6 @@
+# PLACEHOLDER-BEGIN #
+MESSAGE("-- hello man.cmake")
+
+INSTALL(DIRECTORY "${MAN_OUTPUT_PATH}/man1"             DESTINATION man)
+
+# PLACEHOLDER-END #

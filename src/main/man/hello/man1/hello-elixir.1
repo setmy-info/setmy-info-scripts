@@ -3,6 +3,7 @@
 hello-elixir \- Print a greeting message using an Elixir script
 .SH SYNOPSIS
 .B hello-elixir
+.RI [ EXIT_CODE ]
 .SH DESCRIPTION
 .PP
 .B hello-elixir
@@ -13,17 +14,39 @@ It demonstrates that Elixir scripting is correctly set up: the
 .B elixir
 interpreter is on the PATH, and the SMI library location is resolvable.
 .PP
-The script is executed via
-.BR smi-lib-location (1)
-to locate the installed Elixir library directory and then runs
-.B hello-elixir.exs
-with the
+The command prints a greeting naming the current working directory and then
+exits with the requested code.
+The exit code is echoed on a second line only when it is non-zero;
+a successful run prints the greeting alone.
+Passing an explicit
+.I EXIT_CODE
+makes it possible to verify that exit statuses propagate correctly from the
+Elixir script, through the shell wrapper, to the calling shell.
+.PP
+The script is located by sourcing
+.I elixir.sh
+via
+.BR smi-include (1),
+which sets
+.BR SMI_ELIXIR_LIB_DIR ,
+and is then run with the
 .B elixir
 command.
+.SH ARGUMENTS
+.TP
+.I EXIT_CODE
+Optional integer to exit with.
+Defaults to
+.BR 0 .
 .SH EXIT STATUS
 .TP
 .B 0
-Success.
+Success, or no
+.I EXIT_CODE
+argument was given.
+.TP
+.I EXIT_CODE
+The value passed on the command line.
 .SH FILES
 .TP
 .I $(smi-lib-location)/elixir/hello-elixir.exs

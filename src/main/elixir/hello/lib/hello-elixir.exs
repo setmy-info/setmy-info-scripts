@@ -1,3 +1,7 @@
+Mix.install([
+  {:elixir_uuid, "~> 1.2"}
+])
+
 defmodule HelloElixir do
   @moduledoc """
   Example helpers showing how values can be piped from one function to the next.
@@ -38,7 +42,7 @@ defmodule HelloElixir do
   end
 end
 
-IO.puts("Hello, world from #{File.cwd!()}!")
+IO.puts("Hello, world from #{File.cwd!()} as UUID: #{UUID.uuid4()}!")
 
 System.argv()
 |> HelloElixir.parse_exit_code()

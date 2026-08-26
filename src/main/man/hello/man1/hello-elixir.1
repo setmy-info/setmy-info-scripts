@@ -35,9 +35,26 @@ command.
 .SH ARGUMENTS
 .TP
 .I EXIT_CODE
-Optional integer to exit with.
+Optional integer to exit with, in the range
+.B 0
+to
+.BR 255 ,
+the range a POSIX shell can report as the status of a command.
 Defaults to
-.BR 0 .
+.B 0
+when omitted.
+An argument that is not an integer, or that falls outside that range, is
+rejected and the command exits
+.BR 1 ,
+rather than raising an error.
+Rejected values include
+.BR abc ,
+.BR 42abc ,
+.BR 3.9 ,
+.BR \-1 ,
+and
+.BR 256 .
+Any further arguments are ignored.
 .SH EXIT STATUS
 .TP
 .B 0
@@ -45,8 +62,16 @@ Success, or no
 .I EXIT_CODE
 argument was given.
 .TP
+.B 1
+The
 .I EXIT_CODE
-The value passed on the command line.
+argument was not an integer in the range
+.B 0
+to
+.BR 255 .
+.TP
+.I EXIT_CODE
+The value passed on the command line, when valid.
 .SH FILES
 .TP
 .I $(smi-lib-location)/elixir/hello-elixir.exs

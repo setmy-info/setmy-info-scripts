@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- server variables.cmake")
 
+SET (SERVER_MAN_SOURCES_PATH ${MAIN_MAN_SOURCES_PATH}/server)
+
 # PLACEHOLDER-END #

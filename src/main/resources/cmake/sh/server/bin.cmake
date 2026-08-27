@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- server bin.cmake")
 
+INSTALL(PROGRAMS "${BINARY_OUTPUT_PATH}/smi-serve-files" DESTINATION bin)
+
 # PLACEHOLDER-END #

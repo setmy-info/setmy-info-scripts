@@ -1,0 +1,243 @@
+.TH smi-serve-files "1" "August 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-serve-files \- Serve an application directory over HTTP behind a reverse proxy
+.SH SYNOPSIS
+.B smi-serve-files
+.I COUNTRY_CODE ORG_SHORT_NAME APP_NAME
+.RI [ PORT ]
+.SH DESCRIPTION
+.PP
+Serves
+.IR $(smi-applications-location\ CC\ ORG)/APP_NAME/www
+over HTTP with an Elixir server, for
+.BR haproxy (1)
+or
+.BR nginx (8)
+to sit in front of.
+Binds to
+.B 127.0.0.1
+only.
+Runs in the foreground until killed.
+.PP
+An application is two sibling directories:
+.PP
+.RS
+.I APP_NAME/www
+\- what is served. Root owned, read only to everybody else.
+.br
+.I APP_NAME/workingdir
+\- what the service writes. Owned by
+.BR microservice ,
+mode
+.BR 700 .
+.RE
+.PP
+Only
+.I www
+is served, so nothing the service user can write is reachable over HTTP.
+.PP
+Must be started as root.
+It sets
+.I www
+to
+.B root:root
+with mode
+.B 644
+for files and
+.B 755
+for directories, creates
+.I workingdir
+owned by
+.B microservice
+with mode
+.BR 700 ,
+and then drops to the
+.B microservice
+user for the server itself.
+The service user can therefore read the site but not modify it.
+.PP
+.I workingdir
+is the service user's
+.B HOME
+and the only place it may write: log files, runtime state, and the
+.B Mix.install
+dependency cache, so the first run needs network access to fetch the dependencies.
+.PP
+A request that matches no file is answered with
+.IR index.html ,
+so a single page application resolves its own routes.
+.SH ARGUMENTS
+.TP
+.I COUNTRY_CODE
+ISO 3166-1 alpha-2 country code of the organization.
+.TP
+.I ORG_SHORT_NAME
+Organization short name.
+.TP
+.I APP_NAME
+Directory name under the organization's applications directory.
+.PP
+None of the three may contain a
+.B /
+or start with a
+.BR . :
+each becomes a path component and this command runs
+.B chown -R
+as root.
+.TP
+.I PORT
+Port to listen on.
+Defaults to
+.BR 8130 .
+.SH EXAMPLE PAGE
+.PP
+The toolset ships one static page,
+.BR hello-server ,
+to check that serving works before pointing this at a real application.
+It is plain HTML, CSS and JavaScript with no backend calls: it renders a greeting, and its
+script replaces one line of text, so a correct render means the HTML, the stylesheet, the script
+and an
+.I assets/
+file were all served.
+.PP
+It is installed with the toolset rather than under an organization, because the applications
+directory is per organization and is only known at deploy time.
+Copy it in as the application's
+.IR www :
+.PP
+.RS
+.B APPS=$(smi-applications-location ee has)
+.br
+.B sudo mkdir -p ${APPS}/hello-server
+.br
+.B sudo cp -R $(smi-lib-location)/hello-server/. ${APPS}/hello-server/www
+.br
+.B sudo env PATH="$PATH" smi-serve-files ee has hello-server
+.RE
+.PP
+The
+.B /.
+at the end of the source is required, and is the whole difference between
+.I www/index.html
+and
+.IR www/hello-server/index.html .
+Without it
+.B cp -R
+copies the directory
+.I into
+.I www
+whenever
+.I www
+already exists.
+With it the
+.I contents
+are copied, whether
+.I www
+exists or not, so the command can be repeated to update the site.
+.I workingdir
+needs no
+.BR mkdir :
+this command creates it.
+.PP
+.B env PATH="$PATH"
+is what lets root find the toolset at all.
+.I /opt/setmy.info/bin
+is put on
+.B PATH
+by
+.IR /etc/profile.d/setmy-info.sh ,
+which root under
+.B sudo
+has not read.
+On a distribution whose sudoers sets
+.BR secure_path ,
+Red Hat family ones do by default,
+.B sudo
+uses that path to look the command up and plain
+.B sudo smi-serve-files
+fails with
+.BR "command not found" .
+.PP
+.B sudo --preserve-env=PATH
+does not fix it either:
+.B secure_path
+still decides how the command is found, and the flag only affects the environment handed to a
+command already resolved.
+.B env
+works because it is itself on
+.BR secure_path ,
+so
+.B sudo
+finds
+.BR env ,
+and
+.B env
+then resolves
+.B smi-serve-files
+using the
+.B PATH
+it was given.
+That
+.B PATH
+also stays in place for the
+.B smi-*
+commands this one calls.
+.PP
+The alternative, if you would rather not repeat this on every invocation, is to add
+.I /opt/setmy.info/bin
+to
+.B secure_path
+in
+.IR /etc/sudoers .
+.PP
+.B $(smi-lib-location)
+and
+.B $(smi-applications-location)
+in the lines above are different: they are expanded by the calling shell before
+.B sudo
+starts, so they use the caller's own
+.BR PATH .
+A root shell started without that profile expands them to nothing.
+.SH FILES
+.TP
+.I $(smi-applications-location\ CC\ ORG)/APP_NAME/www
+The served directory.
+Root owned, read only to everybody else.
+.TP
+.I $(smi-applications-location\ CC\ ORG)/APP_NAME/workingdir
+Service user's home, log files, runtime state and dependency cache.
+Never served.
+.TP
+.I $(smi-lib-location)/hello-server
+The example page, before it is copied into an organization.
+.TP
+.I $(smi-lib-location)/elixir/smi-serve-files.exs
+The server.
+.TP
+.IR /opt/erlang ,\  /opt/elixir
+The runtime.
+The
+.B PATH
+given to the service user is built from these two, so the server always runs on the toolset's
+own Erlang and Elixir rather than on whatever the caller or the distribution provides.
+.SH EXIT STATUS
+.TP
+.B 1
+Bad arguments, not run as root, missing directory, missing
+.B microservice
+user, or elixir not found.
+.SH EXAMPLES
+.PP
+.RS
+.B sudo env PATH="$PATH" smi-serve-files ee has hello-server
+.br
+.B sudo env PATH="$PATH" smi-serve-files ee has my-app
+.br
+.B sudo env PATH="$PATH" smi-serve-files ee has my-app 8081
+.RE
+.SH SEE ALSO
+.BR smi-applications-location (1),
+.BR smi-lib-location (1),
+.BR elixir (1)
+.SH AUTHOR
+setmy.info

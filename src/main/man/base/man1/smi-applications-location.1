@@ -1,0 +1,36 @@
+.TH smi-applications-location "1" "August 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-applications-location \- Print the applications directory of an organization
+.SH SYNOPSIS
+.B smi-applications-location
+.I COUNTRY_CODE ORG_SHORT_NAME
+.SH DESCRIPTION
+.PP
+Prints the directory that holds the deployed applications of one organization, one directory
+per application:
+.PP
+.RS
+.I $(smi-organization-dir-location CC ORG operations)/applications
+.RE
+.SH ARGUMENTS
+.TP
+.I COUNTRY_CODE
+ISO 3166-1 alpha-2 country code of the organization.
+.TP
+.I ORG_SHORT_NAME
+Organization short name.
+.SH EXAMPLES
+.PP
+.RS
+.B $ smi-applications-location ee has
+.br
+/var/opt/setmy.info/gintra/organizations/ee/has/operations/applications
+.RE
+.SH SEE ALSO
+.BR smi-organization-dir-location (1),
+.BR smi-organization-location (1),
+.BR smi-organizations-location (1),
+.BR smi-gintra-location (1),
+.BR smi-serve-files (1)
+.SH AUTHOR
+setmy.info

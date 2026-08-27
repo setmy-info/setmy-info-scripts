@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include elixir.sh)
+
+SERVE_USER=microservice
+DEFAULT_PORT=8130
+
+ERLANG_DIR=/opt/erlang
+ELIXIR_DIR=/opt/elixir
+ERLANG_BIN_DIR=${ERLANG_DIR}/bin
+ELIXIR_BIN_DIR=${ELIXIR_DIR}/bin
+PATH=${ERLANG_BIN_DIR}:${ELIXIR_BIN_DIR}:${PATH}
+
+COUNTRY_CODE=${1}
+ORG_SHORT_NAME=${2}
+APP_NAME=${3}
+PORT=${4:-${DEFAULT_PORT}}
+
+if [ -z "${COUNTRY_CODE}" ] || [ -z "${ORG_SHORT_NAME}" ] || [ -z "${APP_NAME}" ]; then
+    echo "Usage: $(basename ${0}) <country-code> <org-short-name> <app-name> [port]" >&2
+    exit 1
+fi
+
+for NAME in "${COUNTRY_CODE}" "${ORG_SHORT_NAME}" "${APP_NAME}"; do
+    case "${NAME}" in
+        */*|.*)
+            echo "ERROR: invalid name: ${NAME}" >&2
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "ERROR: must be run as root" >&2
+    exit 1
+fi
+
+if ! id "${SERVE_USER}" >/dev/null 2>&1; then
+    echo "ERROR: user does not exist: ${SERVE_USER}" >&2
+    exit 1
+fi
+
+APP_DIR=$(smi-applications-location ${COUNTRY_CODE} ${ORG_SHORT_NAME})/${APP_NAME}
+WWW_DIR=${APP_DIR}/www
+WORK_DIR=${APP_DIR}/workingdir
+
+if [ ! -d "${WWW_DIR}" ]; then
+    echo "ERROR: web root not found: ${WWW_DIR}" >&2
+    exit 1
+fi
+
+chown -R root:root "${WWW_DIR}"
+find "${WWW_DIR}" -type d -exec chmod 755 {} +
+find "${WWW_DIR}" -type f -exec chmod 644 {} +
+
+mkdir -p "${WORK_DIR}"
+chown -R "${SERVE_USER}:${SERVE_USER}" "${WORK_DIR}"
+chmod 700 "${WORK_DIR}"
+
+cd "${WORK_DIR}" || exit 1
+
+exec sudo -u "${SERVE_USER}" \
+    env PATH="${PATH}" \
+        HOME="${WORK_DIR}" \
+        LANG="${LANG:-en_US.UTF-8}" \
+        ELIXIR_ERL_OPTIONS="+fnu" \
+        MIX_INSTALL_DIR="${WORK_DIR}/mix-install" \
+        elixir "${SMI_ELIXIR_LIB_DIR}/smi-serve-files.exs" "${WWW_DIR}" "${PORT}"

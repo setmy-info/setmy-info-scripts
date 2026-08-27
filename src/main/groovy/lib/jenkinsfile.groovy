@@ -179,6 +179,27 @@ class SleepRewriter extends CompilationCustomizer {
     }
 }
 
+/**
+ * SMI_JENKINSFILE_DEPLOY switches the steps of the Publish and Deploy stages on.
+ * true, yes, on or 1 runs them; anything else, including unset, does not. Off by default,
+ * because this runner executes `sh` for real.
+ */
+class Deployment {
+    static final String VARIABLE = "SMI_JENKINSFILE_DEPLOY"
+    static final List<String> STAGES = ["publish", "deploy"]
+
+    private static final List<String> ON = ["true", "yes", "on", "1"]
+
+    static boolean enabled(Build build) {
+        String value = build.env[VARIABLE]
+        value != null && ON.contains(value.trim().toLowerCase())
+    }
+
+    static boolean blocks(Build build, String stageName) {
+        !enabled(build) && STAGES.contains(String.valueOf(stageName).trim().toLowerCase())
+    }
+}
+
 /** Thrown by the `error` step and by a failing `sh`: it fails the build. */
 class AbortException extends RuntimeException {
     AbortException(String message) {
@@ -204,6 +225,8 @@ class Stage implements Name {
     static final String NOT_RUN = "NOT RUN"
     /** Ran, but a `when` directive this runner does not understand was ignored to get there. */
     static final String DO_UNSURE = "DO (?)"
+    /** Its `when` said run, but SMI_JENKINSFILE_DEPLOY is off. See Deployment. */
+    static final String BLOCKED = "BLOCKED"
 
     String name
     List<Closure<Boolean>> conditions = []
@@ -412,9 +435,54 @@ class WhenBlock extends Block {
     List<Closure<Boolean>> conditions = []
     List<String> unsupported = []
 
+    /**
+     * `branch 'release/*'` and `branch pattern: 'release.*', comparator: 'REGEXP'`.
+     *
+     * The default comparator is GLOB, and its `*` does NOT cross a `/`: `release*` does not match
+     * `release/1.2.0`, while `release/*` and `release**` do. This is easy to get wrong, because a
+     * pattern like `devel*` keeps working - `develop` has no separator in it - and only the
+     * branch names that do have one fall through to SKIP. Treating `*` as `.*` here would make
+     * this runner more permissive than Jenkins and it would report DO for a stage that Jenkins
+     * skips, which is the one thing it must never do.
+     */
     void branch(String pattern) {
-        def regex = pattern.split("\\*", -1).collect { java.util.regex.Pattern.quote(it) }.join(".*")
+        branch(pattern: pattern)
+    }
+
+    void branch(Map args) {
+        String pattern = String.valueOf(args.pattern ?: args.name)
+        String regex
+        switch (String.valueOf(args.comparator ?: "GLOB").toUpperCase()) {
+            case "REGEXP":
+                regex = pattern
+                break
+            case "EQUALS":
+                regex = java.util.regex.Pattern.quote(pattern)
+                break
+            default:
+                regex = globToRegex(pattern)
+        }
         conditions << { build.env.BRANCH_NAME ==~ regex }
+    }
+
+    private static String globToRegex(String pattern) {
+        StringBuilder regex = new StringBuilder()
+        for (int index = 0; index < pattern.length(); index++) {
+            String character = pattern.charAt(index) as String
+            if (character == "*") {
+                if (index + 1 < pattern.length() && (pattern.charAt(index + 1) as String) == "*") {
+                    regex.append(".*")          // ** crosses the / separators
+                    index++
+                } else {
+                    regex.append("[^/]*")       // * stays inside one path segment
+                }
+            } else if (character == "?") {
+                regex.append("[^/]")
+            } else {
+                regex.append(java.util.regex.Pattern.quote(character))
+            }
+        }
+        regex.toString()
     }
 
     void expression(Closure<Boolean> condition) {
@@ -484,6 +552,7 @@ class Executor implements Executable {
         Console.out("agent ${pipeline.agent}")
         pipeline.triggers.each { Console.out("trigger ${it}") }
         pipeline.options.each { Console.out("option ${it}") }
+        Console.out("${Deployment.VARIABLE}=${Deployment.enabled(build) ? 'on' : 'off'}")
         try {
             pipeline.stages.each { executeStage(it, 0) }
         } catch (Throwable throwable) {
@@ -501,11 +570,21 @@ class Executor implements Executable {
      * for a skipped stage just as much as for one that ran.
      */
     private void executeStage(Stage stage, int depth) {
+        executeStage(stage, depth, false)
+    }
+
+    /** `blocked` stops the steps from running; the when conditions are still evaluated. */
+    private void executeStage(Stage stage, int depth, boolean blockedByParent) {
+        boolean blocked = blockedByParent || Deployment.blocks(build, stage.name)
         stage.decision = stage.conditions.every { script.callBody(it) } ? Stage.DO : Stage.SKIP
         // `when` ANDs its directives, so an ignored one can only ever have turned DO into SKIP.
         // A SKIP is therefore still exact; only a DO has to admit that it might be wrong.
         if (stage.unsupported && stage.decision == Stage.DO) {
             stage.decision = Stage.DO_UNSURE
+        }
+        // A SKIP stays a SKIP: the stage would not have run anyway.
+        if (blocked && stage.decision != Stage.SKIP) {
+            stage.decision = Stage.BLOCKED
         }
         Console.stage("Begin", stage.name, stage.decision, depth)
         try {
@@ -517,21 +596,23 @@ class Executor implements Executable {
                 Console.out("${'  ' * depth}  skipped by the when conditional of the stage")
                 return
             }
-            executeBody(stage, depth)
+            executeBody(stage, depth, blocked)
         } finally {
             Console.stage("End", stage.name, stage.decision, depth)
         }
     }
 
     /** The stage really runs: its own environment applies, and its own post sections follow it. */
-    private void executeBody(Stage stage, int depth) {
+    private void executeBody(Stage stage, int depth, boolean blocked) {
         Map<String, String> restore = applyEnvironment(stage)
         Throwable failure = null
         try {
             if (stage.children && stage.parallel) {
-                executeBranches(stage, depth)
+                executeBranches(stage, depth, blocked)
             } else if (stage.children) {
-                stage.children.each { executeStage(it, depth + 1) }
+                stage.children.each { executeStage(it, depth + 1, blocked) }
+            } else if (stage.steps && blocked) {
+                Console.out("${'  ' * depth}  steps not executed, ${Deployment.VARIABLE} is off")
             } else if (stage.steps) {
                 script.callBody(stage.steps)
             }
@@ -565,14 +646,14 @@ class Executor implements Executable {
     }
 
     /** Real threads, one per branch; the first failure fails the whole stage. */
-    private void executeBranches(Stage stage, int depth) {
+    private void executeBranches(Stage stage, int depth, boolean blocked) {
         Console.step("parallel")
         def failures = Collections.synchronizedList(new ArrayList<Throwable>())
         stage.children.collect { branch ->
             Thread.start {
                 Console.BRANCH.set(branch.name)
                 try {
-                    executeStage(branch, depth + 1)
+                    executeStage(branch, depth + 1, blocked)
                 } catch (Throwable throwable) {
                     failures << throwable
                 } finally {

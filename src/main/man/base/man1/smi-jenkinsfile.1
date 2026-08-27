@@ -96,6 +96,18 @@ therefore works the same way it does on a Jenkins agent.
 On top of that the following variables are provided before the Jenkinsfile is read:
 .BR NODE_NAME ,\  WORKSPACE ,\  JOB_NAME ,\  BUILD_NUMBER ,\  BUILD_URL ,
 .BR BRANCH_NAME ,\  GIT_BRANCH ,\  GIT_URL .
+.TP
+.B SMI_JENKINSFILE_DEPLOY
+Runs the steps of the
+.B Publish
+and
+.B Deploy
+stages.
+.BR true ,\  yes ,\  on \  or \  1
+switches them on; any other value, including unset, switches them off.
+Off by default.
+Stages switched off are reported as
+.BR BLOCKED .
 .SH EXIT STATUS
 .TP
 .B 0

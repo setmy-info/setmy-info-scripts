@@ -25,12 +25,23 @@ fi
 
 for NAME in "${COUNTRY_CODE}" "${ORG_SHORT_NAME}" "${APP_NAME}"; do
     case "${NAME}" in
-        */*|.*)
+        *[!A-Za-z0-9_-]*|-*)
             echo "ERROR: invalid name: ${NAME}" >&2
             exit 1
             ;;
     esac
 done
+
+case "${PORT}" in
+    *[!0-9]*|'')
+        echo "ERROR: invalid port: ${PORT}" >&2
+        exit 1
+        ;;
+esac
+if [ "${PORT}" -lt 1 ] || [ "${PORT}" -gt 65535 ]; then
+    echo "ERROR: invalid port: ${PORT}" >&2
+    exit 1
+fi
 
 if [ "$(id -u)" -ne 0 ]; then
     echo "ERROR: must be run as root" >&2
@@ -48,6 +59,11 @@ WORK_DIR=${APP_DIR}/workingdir
 
 if [ ! -d "${WWW_DIR}" ]; then
     echo "ERROR: web root not found: ${WWW_DIR}" >&2
+    exit 1
+fi
+
+if find "${WWW_DIR}" ! -type f ! -type d | grep -q .; then
+    echo "ERROR: only regular files and directories are allowed in ${WWW_DIR}" >&2
     exit 1
 fi
 

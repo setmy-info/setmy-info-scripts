@@ -66,6 +66,40 @@ dependency cache, so the first run needs network access to fetch the dependencie
 A request that matches no file is answered with
 .IR index.html ,
 so a single page application resolves its own routes.
+.PP
+Everything under
+.I www
+is public.
+Only
+.B GET
+and
+.B HEAD
+are accepted; any other method gets
+.BR 405 .
+HTTP/2 and WebSocket are disabled.
+A request gets
+.B 404
+without touching the file system when its path is longer than 2048 bytes, deeper than 16
+directories, or has a component that, once percent-decoded, is empty, starts with
+.BR . ,
+or contains a slash, backslash, colon, control or non-printable character.
+Anything under
+.I www
+that is not a regular file or a directory, a symbolic link in particular, stops the command from
+starting, since it could reach outside
+.IR www .
+.PP
+Every request is written to standard output in the
+.B combined
+log format of
+.BR nginx (8),
+one line per request.
+The client address is the
+.B last
+.B X-Forwarded-For
+entry, which is the one the proxy appended, so a client cannot forge it by sending its own.
+Header values in the log have quotes and non-printable characters replaced by
+.BR ? .
 .SH ARGUMENTS
 .TP
 .I COUNTRY_CODE
@@ -77,16 +111,18 @@ Organization short name.
 .I APP_NAME
 Directory name under the organization's applications directory.
 .PP
-None of the three may contain a
-.B /
-or start with a
-.BR . :
+Each of the three may contain only letters, digits,
+.B _
+and
+.BR - ,
+and may not start with
+.BR - :
 each becomes a path component and this command runs
 .B chown -R
 as root.
 .TP
 .I PORT
-Port to listen on.
+Port to listen on, 1 to 65535.
 Defaults to
 .BR 8130 .
 .SH EXAMPLE PAGE
@@ -216,14 +252,18 @@ The server.
 .TP
 .IR /opt/erlang ,\  /opt/elixir
 The runtime.
-The
+Both are put first on the
 .B PATH
-given to the service user is built from these two, so the server always runs on the toolset's
-own Erlang and Elixir rather than on whatever the caller or the distribution provides.
+given to the service user, so the server runs on the toolset's own Erlang and Elixir
+whatever else is on the caller's path.
 .SH EXIT STATUS
 .TP
 .B 1
-Bad arguments, not run as root, missing directory, missing
+Bad arguments, not run as root, missing
+.IR www ,
+symbolic links under
+.IR www ,
+missing
 .B microservice
 user, or elixir not found.
 .SH EXAMPLES

@@ -1,0 +1,8 @@
+[Unit]
+Description=setmy.info incoming package deploy service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/opt/setmy.info/bin/smi-incoming-deploy

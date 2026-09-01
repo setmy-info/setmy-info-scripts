@@ -1,0 +1,10 @@
+[Unit]
+Description=setmy.info incoming package watcher
+After=local-fs.target
+
+[Path]
+PathExistsGlob=/var/opt/setmy.info/incoming/*.tar.gz
+Unit=setmy-info-deploy.service
+
+[Install]
+WantedBy=multi-user.target

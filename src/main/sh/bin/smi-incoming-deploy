@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+INCOMING_DIR="/var/opt/setmy.info/incoming"
+PLUGINS_DIR="/opt/setmy.info/lib/incoming"
+
+if [ ! -d "${INCOMING_DIR}" ]; then
+    exit 0
+fi
+
+for package in "${INCOMING_DIR}"/*.tar.gz; do
+    [ -e "${package}" ] || continue
+
+    if [ -d "${PLUGINS_DIR}" ]; then
+        for script in "${PLUGINS_DIR}"/*.sh; do
+            [ -x "${script}" ] || continue
+            "${script}" "${package}"
+        done
+    fi
+done
+
+exit 0

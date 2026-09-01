@@ -32,6 +32,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-persons-location"       DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-include"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-scheduled"              DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-scheduled-deploy"       DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-incoming-deploy"        DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-timestamp"              DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-host-update"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-sync"                   DESTINATION bin)

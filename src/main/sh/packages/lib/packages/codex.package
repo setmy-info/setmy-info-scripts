@@ -1,0 +1,11 @@
+CODEX_NAME=codex
+CODEX_INSTALL_SCRIPT_NAME=${CODEX_NAME}-install.sh
+CODEX_INSTALL_SCRIPT_URL=https://chatgpt.com/codex/install.sh
+
+codex_download_func() {
+    smi-download ${CODEX_INSTALL_SCRIPT_URL} ${HOME_PACKAGES_DIR}/${CODEX_INSTALL_SCRIPT_NAME}
+}
+
+codex_install_func() {
+    sh ${HOME_PACKAGES_DIR}/${CODEX_INSTALL_SCRIPT_NAME}
+}

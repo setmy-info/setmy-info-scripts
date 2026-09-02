@@ -2,6 +2,7 @@
 MESSAGE("-- ai lib.cmake")
 
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/ai-profiles.sh"           DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/ai-agents.sh"             DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/ai-profile-render.groovy" DESTINATION lib)
 
 # PLACEHOLDER-END #

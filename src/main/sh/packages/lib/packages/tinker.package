@@ -1,0 +1,13 @@
+TINKER_NAME=tinker
+SYSTEM_PROFILES_DIR=$(smi-lib-location)/packages
+
+tinker_download_func() {
+    CUR_DIR=$(pwd)
+    cd ${CUR_DIR}
+}
+
+tinker_install_func() {
+    CUR_DIR=$(pwd)
+    smi-prepare-venv ${SYSTEM_PROFILES_DIR}/${TINKER_NAME}-requirements.txt
+    cd ${CUR_DIR}
+}

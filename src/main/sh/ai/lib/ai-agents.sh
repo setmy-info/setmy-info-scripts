@@ -23,7 +23,7 @@ codexCLI() {
     PROMPT_FILE=${1}
     shift
     PROMPT_TEXT=$(promptCreator "${PROMPT_FILE}")
-    codex exec --full-auto "${PROMPT_TEXT}" "$@"
+    codex exec --dangerously-bypass-approvals-and-sandbox "${PROMPT_TEXT}" "$@"
 }
 
 codewhaleCLI() {
@@ -37,7 +37,7 @@ opencodeCLI() {
     PROMPT_FILE=${1}
     shift
     PROMPT_TEXT=$(promptCreator "${PROMPT_FILE}")
-    opencode run --auto "${PROMPT_TEXT}" "$@"
+    opencode run "${PROMPT_TEXT}" "$@"
 }
 
 promptCreator() {

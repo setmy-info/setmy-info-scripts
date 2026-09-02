@@ -1,0 +1,93 @@
+." Manpage for smi-agent
+.TH smi-agent 1 "September 2026" "setmy.info" "User Commands"
+.SH NAME
+smi-agent \- run an AI agent CLI non-interactively with a prompt file
+.SH SYNOPSIS
+.B smi-agent
+.I AGENT
+.RI [ PROMPT_FILE ]
+.RI [ AGENT_ARG ]...
+.SH DESCRIPTION
+The
+.B smi-agent
+command selects one AI agent CLI and runs it non-interactively.
+The agent is not given the prompt file content itself: it is given a short prompt that points at
+.IR PROMPT_FILE ,
+and reads the file on its own.
+The prompt file is written in s-expression (Lisp) syntax and defaults to
+.IR TASKLIST.sexp
+in the current directory.
+.PP
+Every agent runs in its print or exec mode with approvals switched off, so the run finishes
+without an interactive shell.
+Everything after
+.I PROMPT_FILE
+is passed to the agent CLI unchanged, so agent specific options work; passing agent options
+requires naming the prompt file explicitly.
+.SH AGENTS
+.TP
+.B claude
+.B claude -p
+.I PROMPT
+.B \-\-dangerously\-skip\-permissions
+.TP
+.B cursor
+.B cursor-agent -p \-\-force
+.I PROMPT
+.TP
+.B gemini
+.B gemini -p
+.I PROMPT
+.B \-\-yolo
+.TP
+.B codex
+.B codex exec \-\-dangerously\-bypass\-approvals\-and\-sandbox
+.I PROMPT
+.TP
+.B codewhale
+.B codewhale exec \-\-auto \-\-output\-format stream-json
+.I PROMPT
+.TP
+.B opencode
+.B opencode run
+.I PROMPT
+.SH INSTALLATION
+The agent CLIs install into the user's home, not as root, with
+.BR smi-download-package (1)
+and
+.BR smi-install-package (1):
+package names
+.BR claude ,
+.BR gemini ,
+.BR codex
+and
+.BR codewhale .
+.SH EXIT STATUS
+.TP
+.B 1
+Missing agent name, unknown agent, or prompt file not found.
+.PP
+Otherwise the exit status of the agent CLI.
+.SH FILES
+.TP
+.I TASKLIST.sexp
+Default prompt file.
+.SH EXAMPLES
+.PP
+.RS
+.B smi-agent claude
+.br
+.B smi-agent gemini PLAN.sexp
+.br
+.B smi-agent codex TASKLIST.sexp --model gpt-5-codex
+.RE
+.SH SEE ALSO
+.BR ai (1),
+.BR smi-build-tasklist (1),
+.BR smi-install-package (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>
+.SH COPYRIGHT
+Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+.PP
+Licensed under the MIT License.

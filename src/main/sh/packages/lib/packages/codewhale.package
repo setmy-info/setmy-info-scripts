@@ -1,0 +1,11 @@
+CODEWHALE_NAME=codewhale
+CODEWHALE_NPM_PACKAGE=codewhale
+
+codewhale_download_func() {
+    CUR_DIR=$(pwd)
+    cd ${CUR_DIR}
+}
+
+codewhale_install_func() {
+    npm install -g ${CODEWHALE_NPM_PACKAGE}
+}

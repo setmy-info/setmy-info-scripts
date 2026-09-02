@@ -1,0 +1,11 @@
+GEMINI_NAME=gemini
+GEMINI_NPM_PACKAGE=@google/gemini-cli
+
+gemini_download_func() {
+    CUR_DIR=$(pwd)
+    cd ${CUR_DIR}
+}
+
+gemini_install_func() {
+    npm install -g ${GEMINI_NPM_PACKAGE}
+}

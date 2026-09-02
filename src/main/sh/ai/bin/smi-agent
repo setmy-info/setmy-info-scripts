@@ -6,11 +6,29 @@ set -eu
 
 . $(smi-include ai-agents.sh)
 
-AGENT_TYPE=${1:?Agent type is required}
+AGENT_TYPE=${1:-}
 AGENT_PROMPT_FILE=${2:-TASKLIST.sexp}
 
-shift 2
+if [ -z "${AGENT_TYPE}" ]; then
+    echo "Usage: $(basename ${0}) <agent> [prompt-file] [agent-args...]" >&2
+    exit 1
+fi
+
+if ! command -v "${AGENT_TYPE}CLI" >/dev/null 2>&1; then
+    echo "ERROR: unknown agent: ${AGENT_TYPE}" >&2
+    exit 1
+fi
+
+if [ ! -f "${AGENT_PROMPT_FILE}" ]; then
+    echo "ERROR: prompt file not found: ${AGENT_PROMPT_FILE}" >&2
+    exit 1
+fi
+
+shift
+if [ $# -gt 0 ]; then
+    shift
+fi
 
 "${AGENT_TYPE}CLI" "${AGENT_PROMPT_FILE}" "$@"
 
-exit 0
+exit ${?}

@@ -277,6 +277,32 @@ abstract class DriverExecuteBase {
     List<String> sort(List<String> hrefs) {
         hrefs.sort { a, b -> a <=> b }
     }
+
+    /**
+     * Alphabetical sort puts selenium-4.9 after selenium-4.40, so version segments are compared
+     * as numbers: every run of digits in the href, left to right, missing segments count as 0.
+     */
+    String sortByVersionAndLast(List<String> hrefs) {
+        if (!hrefs) {
+            throw new RuntimeException("Empty hrefs list for sortByVersionAndLast")
+        }
+        hrefs.sort { a, b -> compareNumbers(numbers(a), numbers(b)) }.last()
+    }
+
+    private static List<Integer> numbers(String href) {
+        (href =~ /\d+/).collect { it.toInteger() }
+    }
+
+    private static int compareNumbers(List<Integer> a, List<Integer> b) {
+        for (int i = 0; i < Math.max(a.size(), b.size()); i++) {
+            int x = i < a.size() ? a[i] : 0
+            int y = i < b.size() ? b[i] : 0
+            if (x != y) {
+                return x <=> y
+            }
+        }
+        return 0
+    }
 }
 
 class MavenDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
@@ -671,6 +697,9 @@ class JuliaDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
             // https://julialang-s3.julialang.org/bin/linux/x64/1.11/julia-1.11.5-linux-x86_64.tar.gz
             if (!href.contains("/bin/linux/x64/")) return false
             if (!href.endsWith("-linux-x86_64.tar.gz")) return false
+            if (href.contains("-alpha")) return false
+            if (href.contains("-beta")) return false
+            if (href.contains("-rc")) return false
             return true
         }
     }
@@ -777,7 +806,7 @@ class SeleniumDriverExecute extends DriverExecuteBase implements DriverExecute, 
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
-        def last = sortAndLast(getHrefs(driver).findAll(getSearcher()))
+        def last = sortByVersionAndLast(getHrefs(driver).findAll(getSearcher()))
         println last
     }
 
@@ -1408,6 +1437,7 @@ class LibrewolfDriverExecute extends DriverExecuteBase implements DriverExecute,
             if (!href.contains("librewolf")) return false
             if (!href.contains("linux-x86_64-package.tar.xz")) return false
             if (href.endsWith(".sig")) return false
+            if (href.endsWith(".sha256sum")) return false
             return true
         }
     }

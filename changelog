@@ -1,4 +1,8 @@
 * 2026-09-02 Imre Tabur <imre.tabur@mail.ee>
+- Updated packages from spider run: janet 1.42.0, dagu 2.16.2, firefox 155.0, thunderbird 155.0, libreoffice 26.8.0, grails 7.0.16, node 24.20.0, groovy 5.1.1, keycloak 26.7.3, elixir 1.20.4, idea 2026.2.2, h2 2.5.250, sbcl 2.6.8, jenkins 2.568.3, clion 2026.2.2, librewolf 155.0-1, go 1.27.1, telegram 7.1.4, camunda modeler 5.51.0, gradle 9.7.1, cmake 4.4.3; chromedriver in selenium.package 152.0.7977.75.
+- Updated setmy-info-rocky-elixir Dockerfile ELIXIR_VERSION to 1.20.4, matching elixir.package.
+- Julia deliberately kept at 1.12.6: the spider returned 1.13.0-rc3, a release candidate.
+- Fixed versions-spider.groovy: Librewolf searcher now excludes .sha256sum files; Julia searcher now excludes alpha, beta and rc builds; Selenium spider sorts by numeric version segments (new sortByVersionAndLast), plain alphabetical sort put 4.9 after 4.40 and reported an old release.
 - Renamed smi-agent to smi-agent-cli: positional agent, prompt file and pass-through agent arguments, unchanged behaviour.
 - Added smi-agent-cli-options: prints one agent's model and reasoning flags from generic --model and --reasoning, for appending to a smi-agent-cli call.
 - Added new smi-agent: option driven front, --agent --model --reasoning --prompt-file, all with defaults, so a bare call runs claude with the cheapest model, low reasoning and TASKLIST.sexp.

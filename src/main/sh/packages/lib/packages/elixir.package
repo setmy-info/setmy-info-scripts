@@ -1,5 +1,5 @@
 ELIXIR_NAME=elixir
-ELIXIR_VERSION=1.20.3
+ELIXIR_VERSION=1.20.4
 ELIXIR_GIT_URL=https://github.com/elixir-lang/elixir.git
 ELIXIR_GIT_DIR=${HOME_PACKAGES_DIR}/elixir-git
 

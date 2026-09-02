@@ -1,0 +1,81 @@
+." Manpage for smi-agent-cli-options
+.TH smi-agent-cli-options 1 "September 2026" "setmy.info" "User Commands"
+.SH NAME
+smi-agent-cli-options \- print agent specific model and reasoning options
+.SH SYNOPSIS
+.B smi-agent-cli-options
+.I AGENT
+.RB [ \-\-model
+.IR MODEL ]
+.RB [ \-\-reasoning
+.IR LEVEL ]
+.SH DESCRIPTION
+The
+.B smi-agent-cli-options
+command translates the generic
+.B \-\-model
+and
+.B \-\-reasoning
+options into the flags of one agent CLI and prints them on one line, ready to append to a
+.BR smi-agent-cli (1)
+call:
+.PP
+.RS
+.B AGENT_CLI_OPTIONS=$(smi-agent-cli-options claude --model sonnet --reasoning high)
+.br
+.B smi-agent-cli claude TASKLIST.sexp ${AGENT_CLI_OPTIONS}
+.RE
+.PP
+Without
+.B \-\-model
+the first, least expensive, entry of the agent's model list is used; without
+.B \-\-reasoning
+the level is
+.BR low .
+The model is validated against the agent's model list, the level against
+.BR "low medium high" .
+Model lists and the option mapping live in one place,
+.IR ai-agents.sh ,
+one function per agent.
+.SH MAPPING
+.TP
+.B claude
+.B --model
+.I MODEL
+.B --effort
+.I LEVEL
+.TP
+.B codex
+.B --model
+.I MODEL
+.B -c model_reasoning_effort=\c
+.I LEVEL
+.TP
+.BR cursor ", " gemini ", " codewhale ", " opencode
+.B --model
+.I MODEL
+\(em the reasoning level is ignored.
+.SH EXIT STATUS
+.TP
+.B 1
+Missing agent name, unknown agent, unknown model, unknown reasoning level, or unknown option.
+.SH EXAMPLES
+.PP
+.RS
+.B $ smi-agent-cli-options claude
+.br
+--model haiku --effort low
+.br
+.B $ smi-agent-cli-options codex --model gpt-5.1 --reasoning medium
+.br
+--model gpt-5.1 -c model_reasoning_effort=medium
+.RE
+.SH SEE ALSO
+.BR smi-agent (1),
+.BR smi-agent-cli (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>
+.SH COPYRIGHT
+Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+.PP
+Licensed under the MIT License.

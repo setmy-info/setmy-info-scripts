@@ -1,4 +1,10 @@
 * 2026-09-02 Imre Tabur <imre.tabur@mail.ee>
+- Renamed smi-agent to smi-agent-cli: positional agent, prompt file and pass-through agent arguments, unchanged behaviour.
+- Added smi-agent-cli-options: prints one agent's model and reasoning flags from generic --model and --reasoning, for appending to a smi-agent-cli call.
+- Added new smi-agent: option driven front, --agent --model --reasoning --prompt-file, all with defaults, so a bare call runs claude with the cheapest model, low reasoning and TASKLIST.sexp.
+- Extended ai-agents.sh with all of the logic: per agent Models and Options functions resolved by function name concatenation, first model in each list is the default, agentCliOptions builder, requireAgent and requirePromptFile helpers; claude reasoning maps to --effort, codex to -c model_reasoning_effort, other agents ignore it.
+- Added smi-agent-cli and smi-agent-cli-options man pages, rewrote smi-agent man page, installed the new commands via ai module cmake.
+- opencode model list seeds Tinker served models (tinker provider, Qwen and Llama), since opencode is used with the Tinker backend.
 - Fixed smi-agent: shift 2 aborted under set -eu when only the agent name was given; now shifts what is present, prints usage without arguments, rejects an unknown agent, and refuses a missing prompt file before starting the agent.
 - Fixed ai-agents.sh: codex exec --full-auto no longer exists, replaced with --dangerously-bypass-approvals-and-sandbox; opencode run --auto is not an opencode flag, removed.
 - Added smi-agent man page: agent list with exact non-interactive commands, TASKLIST.sexp default, installation pointers; added smi-agent to ai(1) and smi-build-tasklist(1) SEE ALSO.

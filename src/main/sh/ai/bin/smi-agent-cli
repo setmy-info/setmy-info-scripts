@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+
+. $(smi-include ai-agents.sh)
+
+AGENT_TYPE=${1:-}
+AGENT_PROMPT_FILE=${2:-TASKLIST.sexp}
+
+if [ -z "${AGENT_TYPE}" ]; then
+    echo "Usage: $(basename ${0}) <agent> [prompt-file] [agent-args...]" >&2
+    exit 1
+fi
+
+requireAgent "${AGENT_TYPE}"
+requirePromptFile "${AGENT_PROMPT_FILE}"
+
+shift
+if [ $# -gt 0 ]; then
+    shift
+fi
+
+"${AGENT_TYPE}CLI" "${AGENT_PROMPT_FILE}" "$@"
+
+exit ${?}

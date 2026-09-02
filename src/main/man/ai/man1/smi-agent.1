@@ -1,90 +1,85 @@
 ." Manpage for smi-agent
 .TH smi-agent 1 "September 2026" "setmy.info" "User Commands"
 .SH NAME
-smi-agent \- run an AI agent CLI non-interactively with a prompt file
+smi-agent \- run an AI agent CLI non-interactively, with defaults for everything
 .SH SYNOPSIS
 .B smi-agent
-.I AGENT
-.RI [ PROMPT_FILE ]
+.RB [ \-\-agent
+.IR AGENT ]
+.RB [ \-\-model
+.IR MODEL ]
+.RB [ \-\-reasoning
+.IR LEVEL ]
+.RB [ \-\-prompt\-file
+.IR FILE ]
 .RI [ AGENT_ARG ]...
 .SH DESCRIPTION
 The
 .B smi-agent
-command selects one AI agent CLI and runs it non-interactively.
-The agent is not given the prompt file content itself: it is given a short prompt that points at
-.IR PROMPT_FILE ,
-and reads the file on its own.
-The prompt file is written in s-expression (Lisp) syntax and defaults to
-.IR TASKLIST.sexp
-in the current directory.
-.PP
-Every agent runs in its print or exec mode with approvals switched off, so the run finishes
-without an interactive shell.
-Everything after
-.I PROMPT_FILE
-is passed to the agent CLI unchanged, so agent specific options work; passing agent options
-requires naming the prompt file explicitly.
-.SH AGENTS
-.TP
-.B claude
-.B claude -p
-.I PROMPT
-.B \-\-dangerously\-skip\-permissions
-.TP
-.B cursor
-.B cursor-agent -p \-\-force
-.I PROMPT
-.TP
-.B gemini
-.B gemini -p
-.I PROMPT
-.B \-\-yolo
-.TP
-.B codex
-.B codex exec \-\-dangerously\-bypass\-approvals\-and\-sandbox
-.I PROMPT
-.TP
-.B codewhale
-.B codewhale exec \-\-auto \-\-output\-format stream-json
-.I PROMPT
-.TP
-.B opencode
-.B opencode run
-.I PROMPT
-.SH INSTALLATION
-The agent CLIs install into the user's home, not as root, with
-.BR smi-download-package (1)
-and
-.BR smi-install-package (1):
-package names
+command builds the agent specific model and reasoning options with the same logic as
+.BR smi-agent-cli-options (1)
+and runs the agent with the same logic as
+.BR smi-agent-cli (1).
+Every option has a default, so calling it without parameters runs the cheapest configuration:
+agent
 .BR claude ,
+prompt file
+.IR TASKLIST.sexp ,
+the first model of the agent's model list, reasoning
+.BR low .
+.PP
+Anything that is not one of the options below is passed to the agent CLI unchanged.
+.SH OPTIONS
+.TP
+.BI \-\-agent \ AGENT
+Agent to run:
+.BR claude ,
+.BR cursor ,
 .BR gemini ,
-.BR codex
-and
-.BR codewhale .
+.BR codex ,
+.BR codewhale ,
+.BR opencode .
+Default
+.BR claude .
+.TP
+.BI \-\-model \ MODEL
+Model name, validated against the agent's model list in
+.IR ai-agents.sh .
+Default is the first, least expensive, entry of that list.
+.TP
+.BI \-\-reasoning \ LEVEL
+.BR low ,
+.B medium
+or
+.BR high .
+Default
+.BR low .
+Ignored by agents without a reasoning option.
+.TP
+.BI \-\-prompt\-file \ FILE
+Prompt file in s-expression (Lisp) syntax.
+Default
+.IR TASKLIST.sexp .
 .SH EXIT STATUS
 .TP
 .B 1
-Missing agent name, unknown agent, or prompt file not found.
+Unknown agent, unknown model, unknown reasoning level, or prompt file not found.
 .PP
 Otherwise the exit status of the agent CLI.
-.SH FILES
-.TP
-.I TASKLIST.sexp
-Default prompt file.
 .SH EXAMPLES
 .PP
 .RS
-.B smi-agent claude
+.B smi-agent
 .br
-.B smi-agent gemini PLAN.sexp
+.B smi-agent --model sonnet --reasoning high
 .br
-.B smi-agent codex TASKLIST.sexp --model gpt-5-codex
+.B smi-agent --agent codex --prompt-file PLAN.sexp
 .RE
 .SH SEE ALSO
+.BR smi-agent-cli (1),
+.BR smi-agent-cli-options (1),
 .BR ai (1),
-.BR smi-build-tasklist (1),
-.BR smi-install-package (1)
+.BR smi-build-tasklist (1)
 .SH AUTHOR
 Imre Tabur <imre.tabur@mail.ee>
 .SH COPYRIGHT

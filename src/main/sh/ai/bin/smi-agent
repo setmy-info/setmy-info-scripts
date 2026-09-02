@@ -6,29 +6,40 @@ set -eu
 
 . $(smi-include ai-agents.sh)
 
-AGENT_TYPE=${1:-}
-AGENT_PROMPT_FILE=${2:-TASKLIST.sexp}
+AGENT=claude
+PROMPT_FILE=TASKLIST.sexp
+MODEL=""
+REASONING=""
 
-if [ -z "${AGENT_TYPE}" ]; then
-    echo "Usage: $(basename ${0}) <agent> [prompt-file] [agent-args...]" >&2
-    exit 1
-fi
+while [ $# -gt 0 ]; do
+    case "${1}" in
+        --agent)
+            AGENT=${2:?--agent needs a value}
+            shift 2
+            ;;
+        --prompt-file)
+            PROMPT_FILE=${2:?--prompt-file needs a value}
+            shift 2
+            ;;
+        --model)
+            MODEL=${2:?--model needs a value}
+            shift 2
+            ;;
+        --reasoning)
+            REASONING=${2:?--reasoning needs a value}
+            shift 2
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
 
-if ! command -v "${AGENT_TYPE}CLI" >/dev/null 2>&1; then
-    echo "ERROR: unknown agent: ${AGENT_TYPE}" >&2
-    exit 1
-fi
+requireAgent "${AGENT}"
+requirePromptFile "${PROMPT_FILE}"
 
-if [ ! -f "${AGENT_PROMPT_FILE}" ]; then
-    echo "ERROR: prompt file not found: ${AGENT_PROMPT_FILE}" >&2
-    exit 1
-fi
+AGENT_CLI_OPTIONS=$(agentCliOptions "${AGENT}" ${MODEL:+--model ${MODEL}} ${REASONING:+--reasoning ${REASONING}})
 
-shift
-if [ $# -gt 0 ]; then
-    shift
-fi
-
-"${AGENT_TYPE}CLI" "${AGENT_PROMPT_FILE}" "$@"
+"${AGENT}CLI" "${PROMPT_FILE}" ${AGENT_CLI_OPTIONS} "$@"
 
 exit ${?}

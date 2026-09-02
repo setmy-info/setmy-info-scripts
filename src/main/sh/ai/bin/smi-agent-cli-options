@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+
+. $(smi-include ai-agents.sh)
+
+AGENT_TYPE=${1:-}
+
+if [ -z "${AGENT_TYPE}" ]; then
+    echo "Usage: $(basename ${0}) <agent> [--model MODEL] [--reasoning low|medium|high]" >&2
+    exit 1
+fi
+
+requireAgent "${AGENT_TYPE}"
+
+shift
+
+agentCliOptions "${AGENT_TYPE}" "$@"
+
+exit ${?}

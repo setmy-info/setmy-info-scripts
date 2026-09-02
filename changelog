@@ -1,3 +1,15 @@
+* 2026-09-02 Imre Tabur <imre.tabur@mail.ee>
+- Fixed smi-agent: shift 2 aborted under set -eu when only the agent name was given; now shifts what is present, prints usage without arguments, rejects an unknown agent, and refuses a missing prompt file before starting the agent.
+- Fixed ai-agents.sh: codex exec --full-auto no longer exists, replaced with --dangerously-bypass-approvals-and-sandbox; opencode run --auto is not an opencode flag, removed.
+- Added smi-agent man page: agent list with exact non-interactive commands, TASKLIST.sexp default, installation pointers; added smi-agent to ai(1) and smi-build-tasklist(1) SEE ALSO.
+- Updated ai module cmake: install smi-agent binary and ai-agents.sh library, both were built but never installed.
+- Added gemini.package: installs Google Gemini CLI via npm install -g @google/gemini-cli.
+- Added codex.package: downloads https://chatgpt.com/codex/install.sh and runs it with sh, like claude.package.
+- Added codewhale.package: installs Codewhale CLI via npm install -g codewhale.
+- Added tinker.package and tinker-requirements.txt: installs the Tinker training API client into the project ./.venv via smi-prepare-venv, like mcp and jupyter.
+- New agent packages are user-home installations and are deliberately not in all.package, like claude.
+- Updated smi-install-package and smi-download-package man pages: added gemini, codex, codewhale, tinker.
+
 * 2026-08-25 Imre Tabur <imre.tabur@mail.ee>
 - Added jenkinsfile.groovy: a minimal Jenkins declarative pipeline runner that executes a Jenkinsfile locally, without Jenkins. The DSL is implemented with closure delegates (one block class per nesting level, DELEGATE_FIRST), steps are methods of the script base class, and `sleep` is rewritten at compile time because Groovy's own Object.sleep(millis) answers it inside closures before any delegate does.
 - Added smi-jenkinsfile and smi-jenkinsfile.cmd wrappers plus the smi-jenkinsfile man page.

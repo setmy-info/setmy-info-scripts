@@ -13,6 +13,6 @@ telegram_download_func() {
 telegram_install_func() {
     sudo rm -rf /opt/${TELEGRAM_DIR_NAME}
     sudo mkdir -p /opt/${TELEGRAM_DIR_NAME}
-    sudo tar --overwrite -xvJf ${HOME_PACKAGES_DIR}/${TELEGRAM_TAR_XZ_FILE_NAME} -C /opt/${TELEGRAM_DIR_NAME}
+    sudo tar --overwrite --strip-components=1 -xvJf ${HOME_PACKAGES_DIR}/${TELEGRAM_TAR_XZ_FILE_NAME} -C /opt/${TELEGRAM_DIR_NAME}
     makeOptLink /opt/${TELEGRAM_NAME} /opt/${TELEGRAM_DIR_NAME}
 }

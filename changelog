@@ -1,3 +1,6 @@
+* 2026-09-03 Imre Tabur <imre.tabur@mail.ee>
+- Updated packages from spider run: selenium 4.48.0, julia 1.12.7, telegram 7.1.5. The selenium and julia values confirm yesterday's spider fixes: version aware sort now reports 4.48.0 instead of the alphabetically last 4.9, and the rc exclusion reports the stable 1.12.7 instead of 1.13.0-rc3.
+
 * 2026-09-02 Imre Tabur <imre.tabur@mail.ee>
 - Updated packages from spider run: janet 1.42.0, dagu 2.16.2, firefox 155.0, thunderbird 155.0, libreoffice 26.8.0, grails 7.0.16, node 24.20.0, groovy 5.1.1, keycloak 26.7.3, elixir 1.20.4, idea 2026.2.2, h2 2.5.250, sbcl 2.6.8, jenkins 2.568.3, clion 2026.2.2, librewolf 155.0-1, go 1.27.1, telegram 7.1.4, camunda modeler 5.51.0, gradle 9.7.1, cmake 4.4.3; chromedriver in selenium.package 152.0.7977.75.
 - Updated setmy-info-rocky-elixir Dockerfile ELIXIR_VERSION to 1.20.4, matching elixir.package.

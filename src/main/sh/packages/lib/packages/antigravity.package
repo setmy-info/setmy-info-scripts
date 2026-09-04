@@ -1,0 +1,13 @@
+ANTIGRAVITY_NAME=antigravity
+ANTIGRAVITY_INSTALL_SCRIPT_NAME=${ANTIGRAVITY_NAME}-install.sh
+ANTIGRAVITY_INSTALL_SCRIPT_URL=https://antigravity.google/cli/install.sh
+
+# https://antigravity.google/cli/install.sh
+
+antigravity_download_func() {
+    smi-download ${ANTIGRAVITY_INSTALL_SCRIPT_URL} ${HOME_PACKAGES_DIR}/${ANTIGRAVITY_INSTALL_SCRIPT_NAME}
+}
+
+antigravity_install_func() {
+    bash ${HOME_PACKAGES_DIR}/${ANTIGRAVITY_INSTALL_SCRIPT_NAME}
+}

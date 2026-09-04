@@ -1,2 +1,5 @@
 export CLAUDE_BIN_DIR=~/.local/bin
-export PATH=${CLAUDE_BIN_DIR}:${PATH}
+case ":${PATH}:" in
+    *:"${CLAUDE_BIN_DIR}":*) ;;
+    *) export PATH=${CLAUDE_BIN_DIR}:${PATH} ;;
+esac

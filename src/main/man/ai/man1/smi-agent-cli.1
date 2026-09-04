@@ -36,10 +36,11 @@ passing agent options requires naming the prompt file explicitly.
 .B cursor-agent -p \-\-force
 .I PROMPT
 .TP
-.B gemini
-.B gemini -p
+.B agy
+Antigravity:
+.B agy -p
 .I PROMPT
-.B \-\-yolo
+.B \-\-dangerously\-skip\-permissions
 .TP
 .B codex
 .B codex exec \-\-dangerously\-bypass\-approvals\-and\-sandbox
@@ -59,7 +60,7 @@ and
 .BR smi-install-package (1):
 package names
 .BR claude ,
-.BR gemini ,
+.BR antigravity ,
 .BR codex
 and
 .BR codewhale .
@@ -78,7 +79,7 @@ Default prompt file.
 .RS
 .B smi-agent-cli claude
 .br
-.B smi-agent-cli gemini PLAN.sexp
+.B smi-agent-cli agy PLAN.sexp
 .br
 .B AGENT_CLI_OPTIONS=$(smi-agent-cli-options claude --model sonnet --reasoning high)
 .br

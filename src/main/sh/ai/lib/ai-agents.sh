@@ -12,11 +12,11 @@ cursorCLI() {
     cursor-agent -p --force "${PROMPT_TEXT}" "$@"
 }
 
-geminiCLI() {
+agyCLI() {
     PROMPT_FILE=${1}
     shift
     PROMPT_TEXT=$(promptCreator "${PROMPT_FILE}")
-    gemini -p "${PROMPT_TEXT}" --yolo "$@"
+    agy -p "${PROMPT_TEXT}" --dangerously-skip-permissions "$@"
 }
 
 codexCLI() {
@@ -53,8 +53,8 @@ cursorModels() {
     echo "auto gpt-5.3-codex-low gpt-5.3-codex gpt-5.3-codex-high"
 }
 
-geminiModels() {
-    echo "gemini-2.5-flash gemini-2.5-pro"
+agyModels() {
+    echo "gemini-3.8-flash-low gemini-3.8-flash-medium gemini-3.8-flash-high gemini-3.1-pro-high"
 }
 
 codexModels() {
@@ -77,8 +77,8 @@ cursorOptions() {
     echo "--model ${AGENT_MODEL}"
 }
 
-geminiOptions() {
-    echo "--model ${AGENT_MODEL}"
+agyOptions() {
+    echo "--model ${AGENT_MODEL} --effort ${AGENT_REASONING}"
 }
 
 codexOptions() {

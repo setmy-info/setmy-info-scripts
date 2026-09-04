@@ -1,3 +1,10 @@
+* 2026-09-04 Imre Tabur <imre.tabur@mail.ee>
+- Replaced the deprecated Gemini CLI with Google Antigravity CLI (agy) everywhere: gemini.package removed, antigravity.package added, installing via https://antigravity.google/cli/install.sh into the user's home.
+- Added antigravity.profile (~/.local/bin on PATH, like claude.profile) and antigravity to the latest.profile PROFILES list.
+- ai-agents.sh: geminiCLI/geminiModels/geminiOptions replaced by agyCLI/agyModels/agyOptions, the agent name is agy, the CLI command; runs agy -p PROMPT --dangerously-skip-permissions, reasoning maps to --effort like claude, model list seeded from a live agy models call (gemini-3.8-flash-low default).
+- Updated man pages: smi-agent, smi-agent-cli, smi-agent-cli-options, smi-install-package, smi-download-package now name antigravity instead of gemini.
+- claude.profile and antigravity.profile now add ~/.local/bin to PATH only when it is not already there: Rocky puts it on PATH by default and both profiles point at the same directory, so it appeared four times.
+
 * 2026-09-03 Imre Tabur <imre.tabur@mail.ee>
 - Fixed idea.package install: the symlink target was a hardcoded build directory (idea-IU-262.9437.185) that goes stale on every upgrade, since JetBrains names the IDEA tarball's top directory by build number, not by version; the directory is now read from the tarball itself, so /opt/idea always points at what was actually extracted (idea-IU-262.10315.125 for 2026.2.2). The install now also removes the old /opt/idea-IU-* directories and the symlink before extracting, like telegram does, so old builds no longer accumulate. CLion and PyCharm are unaffected, their tarballs use name-version directories.
 - Fixed telegram.package install: the tarball carries a top level Telegram/ directory, so the binary ended up at /opt/telegram/Telegram/Telegram; extraction now uses --strip-components=1 and the executable is /opt/telegram/Telegram, matching telegram.profile PATH.

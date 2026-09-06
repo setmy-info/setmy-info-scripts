@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- workstation bin.cmake")
 
+INSTALL(PROGRAMS "${BINARY_OUTPUT_PATH}/smi-backup" DESTINATION bin)
+
 # PLACEHOLDER-END #

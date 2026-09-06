@@ -16,6 +16,7 @@ ADD_CUSTOM_TARGET(makeDirectories
     mkdir -p ${LIBRARY_OUTPUT_PATH}/profiles &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/packages &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/elixir &&
+    mkdir -p ${LIBRARY_OUTPUT_PATH}/cl &&
     mkdir -p ${ETC_PROFILED_OUTPUT_PATH} &&
     mkdir -p ${INCLUDE_OUTPUT_PATH} &&
     mkdir -p ${ETC_SYSTEM_OUTPUT_PATH} &&

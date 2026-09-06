@@ -1,0 +1,28 @@
+.TH smi-cl-test "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-cl-test \- Run the Common Lisp installation test script
+.SH SYNOPSIS
+.B smi-cl-test
+.RI [ ARG ]...
+.SH DESCRIPTION
+.PP
+.B smi-cl-test
+runs the
+.I smi-cl-test.lisp
+script from the SMI library directory with
+.BR sbcl (1)
+and prints
+.BR "Hello, world!" .
+A correct print means SBCL is installed, on the PATH, and can execute a script from the
+installed toolset.
+Arguments are passed to the script unchanged.
+.SH FILES
+.TP
+.I $(smi-lib-location)/smi-cl-test.lisp
+The executed script.
+.SH SEE ALSO
+.BR sbcl (1),
+.BR hello-lisp (1),
+.BR smi-lib-location (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

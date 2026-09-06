@@ -1,0 +1,69 @@
+.TH smi-backup "1" "September 2026" "SMI Toolset" "SMI Workstation Command"
+.SH NAME
+smi-backup \- Back up the important home directories of a developer machine
+.SH SYNOPSIS
+.B smi-backup
+.I TARGET_DIRECTORY
+.SH DESCRIPTION
+.PP
+Creates
+.IR TARGET_DIRECTORY/TIMESTAMP/ ,
+the timestamp coming from
+.BR smi-timestamp (1),
+and packs each backed up directory into its own
+.B .tar.gz
+archive there, named after the directory with the leading dot removed.
+.PP
+Backed up, when present; a missing directory is skipped without an error:
+.PP
+.RS
+.I ~/.gnupg*
+(every GnuPG directory, backups and robot keyrings included),
+.I ~/.ssh ~/.pki ~/.dev-certs ~/.revelation ~/.mozilla ~/.thunderbird ~/Backup ~/Documents
+.I ~/Pictures ~/Music ~/Videos ~/sources
+.RE
+.PP
+.I ~/Backup
+is where password manager databases such as KeePass
+.B .kdbx
+files are kept, so they are covered.
+.PP
+.I ~/sources
+is packed without build garbage: every
+.IR target ,
+.I node_modules
+and
+.I .venv
+directory is left out of the archive.
+Nothing is deleted from the live tree, the exclusion happens during packing.
+.PP
+The first failing archive stops the command, so a partial backup is never mistaken for a
+complete one.
+.PP
+Symbolic links are never followed: a link is stored as a link, its target's content is not
+packed.
+A backed up directory that is itself a symbolic link therefore yields an archive holding only
+the link.
+.SH ARGUMENTS
+.TP
+.I TARGET_DIRECTORY
+Existing directory the timestamped backup directory is created under.
+.SH EXIT STATUS
+.TP
+.B 0
+All present directories were archived.
+.TP
+.B 1
+Missing or nonexistent target directory, or an archive failed.
+.SH EXAMPLES
+.PP
+.RS
+.B smi-backup /run/media/has/usb-disk
+.br
+.B smi-backup /var/backups
+.RE
+.SH SEE ALSO
+.BR smi-timestamp (1),
+.BR tar (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

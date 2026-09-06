@@ -1,0 +1,38 @@
+.TH quicklisp-user-setup "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+quicklisp-user-setup \- Install Quicklisp into the current user's home
+.SH SYNOPSIS
+.B quicklisp-user-setup
+.SH DESCRIPTION
+.PP
+.B quicklisp-user-setup
+installs Quicklisp for the current user by loading the system wide
+.I /opt/quicklisp/lib/quicklisp.lisp
+downloaded by
+.BR quicklisp-setup (1)
+and running the
+.I quicklisp-user-setup.lisp
+script from the SMI library directory with
+.BR sbcl (1).
+The result is a per user Quicklisp under
+.IR ~/quicklisp/ ,
+which Common Lisp scripts load to fetch and cache libraries, see
+.BR hello-lisp (1).
+.SH FILES
+.TP
+.I /opt/quicklisp/lib/quicklisp.lisp
+System wide Quicklisp bootstrap, from
+.BR quicklisp-setup (1).
+.TP
+.I $(smi-lib-location)/quicklisp-user-setup.lisp
+The setup script.
+.TP
+.I ~/quicklisp/
+The resulting per user installation.
+.SH SEE ALSO
+.BR quicklisp-setup (1),
+.BR sbcl (1),
+.BR hello-lisp (1),
+.BR smi-cl-test (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

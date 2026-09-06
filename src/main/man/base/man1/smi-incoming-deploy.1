@@ -1,0 +1,38 @@
+.TH smi-incoming-deploy "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-incoming-deploy \- Hand incoming deployment packages to deployment plugins
+.SH SYNOPSIS
+.B smi-incoming-deploy
+.SH DESCRIPTION
+.PP
+.B smi-incoming-deploy
+processes deployment packages dropped into the incoming directory: for every
+.B .tar.gz
+file in
+.I /var/opt/setmy.info/incoming
+it runs each executable
+.B .sh
+plugin from
+.I /opt/setmy.info/lib/incoming
+with the package path as the only argument.
+What a package means is entirely up to the plugins.
+.PP
+The command is quiet by design: a missing incoming directory, an empty one, or an absent
+plugin directory all end with success, so it is safe to run from cron or a timer.
+.SH FILES
+.TP
+.I /var/opt/setmy.info/incoming
+Incoming packages, one
+.B .tar.gz
+per deployment.
+.TP
+.I /opt/setmy.info/lib/incoming
+Deployment plugins, executable
+.B .sh
+files.
+.SH EXIT STATUS
+.TP
+.B 0
+Every plugin ran successfully, or there was nothing to do.
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

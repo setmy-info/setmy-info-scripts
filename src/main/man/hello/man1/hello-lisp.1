@@ -1,0 +1,88 @@
+.TH hello-lisp "1" "September 2026" "SMI Toolset" "SMI Hello Command"
+.SH NAME
+hello-lisp \- Print a greeting and a fresh UUID using a Common Lisp script
+.SH SYNOPSIS
+.B hello-lisp
+.RI [ EXIT_CODE ]
+.SH DESCRIPTION
+.PP
+.B hello-lisp
+is a minimal example command that runs a Common Lisp script with
+.BR sbcl (1)
+from the
+.I lib/cl/
+directory of the SMI toolset installation.
+It demonstrates that Common Lisp scripting is correctly set up: SBCL is on the PATH, the SMI
+library location is resolvable, and Quicklisp can load libraries.
+.PP
+The script loads the
+.B cl-uuid
+library (system name
+.BR uuid )
+through Quicklisp and prints a greeting naming the current working directory and a fresh
+version 4 UUID.
+On the first run Quicklisp downloads the library; every later run uses the already compiled
+local copy, so only the first run needs network access.
+.PP
+Quicklisp must be set up for the user first, see
+.BR quicklisp-setup (1)
+and
+.BR quicklisp-user-setup (1):
+the script loads
+.IR ~/quicklisp/setup.lisp ,
+because
+.B sbcl --script
+does not read
+.IR ~/.sbclrc .
+.PP
+The command mirrors
+.BR hello-elixir (1)
+one to one, exit code handling included, so the same program can be compared across the two
+languages.
+.SH ARGUMENTS
+.TP
+.I EXIT_CODE
+Optional integer to exit with, in the range
+.B 0
+to
+.BR 255 ,
+the range a POSIX shell can report as the status of a command.
+Defaults to
+.B 0
+when omitted.
+An argument that is not an integer, or that falls outside that range, is rejected and the
+command exits
+.BR 1 .
+A non-zero exit code is echoed before exiting; further arguments are ignored.
+.SH EXIT STATUS
+.TP
+.B 0
+Success, or no
+.I EXIT_CODE
+argument was given.
+.TP
+.B 1
+The
+.I EXIT_CODE
+argument was not an integer in the range
+.B 0
+to
+.BR 255 .
+.TP
+.I EXIT_CODE
+The value passed on the command line, when valid.
+.SH FILES
+.TP
+.I $(smi-lib-location)/cl/hello-lisp.lisp
+The Common Lisp script executed by this command.
+.TP
+.I ~/quicklisp/
+Quicklisp installation and library cache.
+.SH SEE ALSO
+.BR sbcl (1),
+.BR hello-elixir (1),
+.BR quicklisp-setup (1),
+.BR quicklisp-user-setup (1),
+.BR smi-lib-location (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

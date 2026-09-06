@@ -1,0 +1,32 @@
+.TH grmb "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+grmb \- Delete a git branch locally and on origin
+.SH SYNOPSIS
+.B grmb
+.I BRANCH_NAME
+.SH DESCRIPTION
+.PP
+.B grmb
+(git remove branch) force deletes
+.I BRANCH_NAME
+locally with
+.B git branch -D
+and then deletes it on the
+.B origin
+remote with
+.BR "git push origin --delete" .
+.PP
+The local delete is forced, so a branch is removed even when it is not merged.
+There is no confirmation: only run it on a branch that is really finished.
+.SH EXIT STATUS
+The exit status of the remote delete.
+.SH EXAMPLES
+.PP
+.RS
+.B grmb feature/old-experiment
+.RE
+.SH SEE ALSO
+.BR git (1),
+.BR smi-new-tag (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

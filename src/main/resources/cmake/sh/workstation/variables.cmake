@@ -1,4 +1,6 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- workstation variables.cmake")
 
+SET (WORKSTATION_MAN_SOURCES_PATH ${MAIN_MAN_SOURCES_PATH}/workstation)
+
 # PLACEHOLDER-END #

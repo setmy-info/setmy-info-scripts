@@ -3,13 +3,11 @@ Mix.install([
   {:plug, "~> 1.18"}
 ])
 
-[directory, port] = System.argv()
+[config_path, port] = System.argv()
 
 defmodule SmiServeFiles do
   use Plug.Router
 
-  @directory Path.expand(directory)
-  @index Path.join(@directory, "index.html")
   @max_depth 16
   @max_path 2048
 
@@ -17,9 +15,22 @@ defmodule SmiServeFiles do
   plug :nosniff
   plug :keep_method
   plug Plug.Head
-  plug Plug.Static, at: "/", from: @directory
+  plug :serve_host
   plug :match
   plug :dispatch
+
+  def load_hosts(config_path) do
+    config_path
+    |> File.stream!()
+    |> Stream.map(&String.trim/1)
+    |> Stream.reject(&(&1 == "" or String.starts_with?(&1, "#")))
+    |> Map.new(fn line ->
+      [host, dir] = String.split(line, ~r/\s+/, parts: 2)
+      dir = Path.expand(String.trim(dir))
+      {String.downcase(host),
+       %{static: Plug.Static.init(at: "/", from: dir), index: Path.join(dir, "index.html")}}
+    end)
+  end
 
   def guard_path(conn, _opts) do
     if byte_size(conn.request_path) > @max_path or length(conn.path_info) > @max_depth or
@@ -42,12 +53,31 @@ defmodule SmiServeFiles do
 
   def keep_method(conn, _opts), do: assign(conn, :method, conn.method)
 
+  def serve_host(conn, _opts) do
+    case Map.fetch(hosts(), request_host(conn)) do
+      {:ok, %{static: static}} -> Plug.Static.call(conn, static)
+      :error -> conn |> send_resp(404, "Not Found") |> halt()
+    end
+  end
+
+  defp hosts, do: :persistent_term.get({__MODULE__, :hosts})
+
+  defp request_host(conn) do
+    (List.first(get_req_header(conn, "x-forwarded-host")) || conn.host)
+    |> String.split(",")
+    |> List.first()
+    |> String.trim()
+    |> String.split(":")
+    |> List.first()
+    |> String.downcase()
+  end
+
   def access_log(_event, %{resp_body_bytes: bytes}, %{conn: conn}, _config) do
     time = Calendar.strftime(DateTime.utc_now(), "%d/%b/%Y:%H:%M:%S %z")
     referer = clean(List.first(get_req_header(conn, "referer")) || "-")
     agent = clean(List.first(get_req_header(conn, "user-agent")) || "-")
     method = conn.assigns[:method] || conn.method
-    IO.puts(~s(#{client_ip(conn)} - - [#{time}] "#{method} #{clean(conn.request_path)} HTTP/1.1" #{conn.status} #{bytes} "#{referer}" "#{agent}"))
+    IO.puts(~s(#{request_host(conn)} #{client_ip(conn)} - - [#{time}] "#{method} #{clean(conn.request_path)} HTTP/1.1" #{conn.status} #{bytes} "#{referer}" "#{agent}"))
   end
 
   def access_log(_event, _measurements, _metadata, _config), do: :ok
@@ -62,10 +92,16 @@ defmodule SmiServeFiles do
   defp clean(text), do: String.replace(text, ~r/[^\x20-\x7e]|"/, "?")
 
   get _ do
-    if File.regular?(@index) do
-      conn |> put_resp_content_type("text/html") |> send_file(200, @index)
-    else
-      send_resp(conn, 404, "Not Found")
+    case Map.fetch(hosts(), request_host(conn)) do
+      {:ok, %{index: index}} ->
+        if File.regular?(index) do
+          conn |> put_resp_content_type("text/html") |> send_file(200, index)
+        else
+          send_resp(conn, 404, "Not Found")
+        end
+
+      :error ->
+        send_resp(conn, 404, "Not Found")
     end
   end
 
@@ -73,6 +109,15 @@ defmodule SmiServeFiles do
     conn |> put_resp_header("allow", "GET, HEAD") |> send_resp(405, "Method Not Allowed")
   end
 end
+
+hosts = SmiServeFiles.load_hosts(config_path)
+
+if hosts == %{} do
+  IO.puts(:stderr, "ERROR: no host mappings in #{config_path}")
+  System.halt(1)
+end
+
+:persistent_term.put({SmiServeFiles, :hosts}, hosts)
 
 :telemetry.attach("access-log", [:bandit, :request, :stop], &SmiServeFiles.access_log/4, nil)
 
@@ -86,6 +131,10 @@ end
     websocket_options: [enabled: false]
   )
 
-IO.puts("Serving #{Path.expand(directory)} on http://127.0.0.1:#{port} as #{System.get_env("USER")}")
+for {host, %{index: index}} <- Enum.sort(hosts) do
+  IO.puts("Serving #{host} from #{Path.dirname(index)}")
+end
+
+IO.puts("Listening on http://127.0.0.1:#{port} as #{System.get_env("USER")}")
 
 Process.sleep(:infinity)

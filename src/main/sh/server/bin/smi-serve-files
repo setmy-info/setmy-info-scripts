@@ -2,10 +2,12 @@
 
 # Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
 
+set -eu
+
 . $(smi-include elixir.sh)
 
 SERVE_USER=microservice
-DEFAULT_PORT=8130
+DEFAULT_PORT=8140
 
 ERLANG_DIR=/opt/erlang
 ELIXIR_DIR=/opt/elixir
@@ -13,24 +15,8 @@ ERLANG_BIN_DIR=${ERLANG_DIR}/bin
 ELIXIR_BIN_DIR=${ELIXIR_DIR}/bin
 PATH=${ERLANG_BIN_DIR}:${ELIXIR_BIN_DIR}:${PATH}
 
-COUNTRY_CODE=${1}
-ORG_SHORT_NAME=${2}
-APP_NAME=${3}
-PORT=${4:-${DEFAULT_PORT}}
-
-if [ -z "${COUNTRY_CODE}" ] || [ -z "${ORG_SHORT_NAME}" ] || [ -z "${APP_NAME}" ]; then
-    echo "Usage: $(basename ${0}) <country-code> <org-short-name> <app-name> [port]" >&2
-    exit 1
-fi
-
-for NAME in "${COUNTRY_CODE}" "${ORG_SHORT_NAME}" "${APP_NAME}"; do
-    case "${NAME}" in
-        *[!A-Za-z0-9_-]*|-*)
-            echo "ERROR: invalid name: ${NAME}" >&2
-            exit 1
-            ;;
-    esac
-done
+CONFIG_FILE=${1:-$(smi-etc-location)/smi-serve-files.config}
+PORT=${2:-${DEFAULT_PORT}}
 
 case "${PORT}" in
     *[!0-9]*|'')
@@ -53,24 +39,64 @@ if ! id "${SERVE_USER}" >/dev/null 2>&1; then
     exit 1
 fi
 
-APP_DIR=$(smi-applications-location ${COUNTRY_CODE} ${ORG_SHORT_NAME})/${APP_NAME}
-WWW_DIR=${APP_DIR}/www
-WORK_DIR=${APP_DIR}/workingdir
-
-if [ ! -d "${WWW_DIR}" ]; then
-    echo "ERROR: web root not found: ${WWW_DIR}" >&2
+if [ ! -f "${CONFIG_FILE}" ]; then
+    echo "ERROR: config file not found: ${CONFIG_FILE}" >&2
     exit 1
 fi
 
-if find "${WWW_DIR}" ! -type f ! -type d | grep -q .; then
-    echo "ERROR: only regular files and directories are allowed in ${WWW_DIR}" >&2
+secureWebRoot() {
+    WWW_DIR=${1}
+    case "${WWW_DIR}" in
+        /*) ;;
+        *)
+            echo "ERROR: directory must be absolute: ${WWW_DIR}" >&2
+            exit 1
+            ;;
+    esac
+    if [ "${WWW_DIR}" = "/" ]; then
+        echo "ERROR: refusing to serve /" >&2
+        exit 1
+    fi
+    if [ ! -d "${WWW_DIR}" ]; then
+        echo "ERROR: web root not found: ${WWW_DIR}" >&2
+        exit 1
+    fi
+    if find "${WWW_DIR}" ! -type f ! -type d | grep -q .; then
+        echo "ERROR: only regular files and directories are allowed in ${WWW_DIR}" >&2
+        exit 1
+    fi
+    chown -R root:root "${WWW_DIR}"
+    find "${WWW_DIR}" -type d -exec chmod 755 {} +
+    find "${WWW_DIR}" -type f -exec chmod 644 {} +
+}
+
+MAPPINGS=0
+while read -r HOST DIR _; do
+    case "${HOST}" in
+        ''|'#'*)
+            continue
+            ;;
+    esac
+    case "${HOST}" in
+        *[!A-Za-z0-9.-]*|-*)
+            echo "ERROR: invalid host name: ${HOST}" >&2
+            exit 1
+            ;;
+    esac
+    if [ -z "${DIR}" ]; then
+        echo "ERROR: host without directory: ${HOST}" >&2
+        exit 1
+    fi
+    secureWebRoot "${DIR}"
+    MAPPINGS=$((MAPPINGS + 1))
+done < "${CONFIG_FILE}"
+
+if [ "${MAPPINGS}" -eq 0 ]; then
+    echo "ERROR: no host mappings in ${CONFIG_FILE}" >&2
     exit 1
 fi
 
-chown -R root:root "${WWW_DIR}"
-find "${WWW_DIR}" -type d -exec chmod 755 {} +
-find "${WWW_DIR}" -type f -exec chmod 644 {} +
-
+WORK_DIR=$(smi-var-location)/smi-serve-files/workingdir
 mkdir -p "${WORK_DIR}"
 chown -R "${SERVE_USER}:${SERVE_USER}" "${WORK_DIR}"
 chmod 700 "${WORK_DIR}"
@@ -83,4 +109,4 @@ exec sudo -u "${SERVE_USER}" \
         LANG="${LANG:-en_US.UTF-8}" \
         ELIXIR_ERL_OPTIONS="+fnu" \
         MIX_INSTALL_DIR="${WORK_DIR}/mix-install" \
-        elixir "${SMI_ELIXIR_LIB_DIR}/smi-serve-files.exs" "${WWW_DIR}" "${PORT}"
+        elixir "${SMI_ELIXIR_LIB_DIR}/smi-serve-files.exs" "${CONFIG_FILE}" "${PORT}"

@@ -7,5 +7,6 @@ ADD_CUSTOM_TARGET(buildServerMan       cp ${SERVER_MAN_SOURCES_PATH}/man1/*.1 ${
 # The example app ships with the toolset, not under an organization: the applications directory
 # is per organization and is only known at deploy time, so it is copied there by hand.
 ADD_CUSTOM_TARGET(buildServerHelloApp  mkdir -p ${LIBRARY_OUTPUT_PATH}/hello-server && cp -R ${MAIN_HTML_SOURCES_PATH}/hello-server/. ${LIBRARY_OUTPUT_PATH}/hello-server)
+ADD_CUSTOM_TARGET(buildServerEtc       cp ${MAIN_SH_SOURCES_PATH}/server/etc/smi-serve-files.config ${ETC_OUTPUT_PATH})
 
 # PLACEHOLDER-END #

@@ -1,0 +1,19 @@
+.TH smi-pki-do-cert-request "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-do-cert-request \- Create a server private key, public key and CSR
+.SH SYNOPSIS
+.B smi-pki-do-cert-request
+.I DIRECTORY DOMAIN_NAME
+.SH DESCRIPTION
+.PP
+Creates the private key, public key and CSR for \fIDOMAIN_NAME\fR in \fIDIRECTORY\fR, with subjectAltName \fBDNS:DOMAIN_NAME\fR, exact host, no wildcard.
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH SEE ALSO
+.BR smi-pki-ca-create (1),
+.BR smi-pki-create-domain-cert (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

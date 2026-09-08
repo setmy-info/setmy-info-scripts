@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. $(smi-include pki.sh)
+
+if [ "$#" -lt 1 ]; then
+    echo "Usage: $(basename "$0") OUT_EXT_FILE" >&2
+    exit 1
+fi
+
+pkiIntermediateCaExtensions "$@"
+
+exit ${?}

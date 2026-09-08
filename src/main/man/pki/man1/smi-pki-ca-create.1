@@ -1,28 +1,57 @@
-.TH smi-pki-ca-create "1" "October 2025" "SMI Toolset 0.100.0" "SMI PKI Command"
+.TH smi-pki-ca-create "1" "September 2026" "SMI Toolset" "SMI PKI Command"
 .SH NAME
-smi-pki-ca-create \- Create a self-signed Root Certificate Authority (CA)
+smi-pki-ca-create \- Create a Root CA, optionally the Intermediate CA too
 .SH SYNOPSIS
 .B smi-pki-ca-create
 .I DIRECTORY
 .I ROOT_DOMAIN
+.RI [ WITH_INTERMEDIATE ]
 .SH DESCRIPTION
 .PP
 .B smi-pki-ca-create
-initializes a Root Certificate Authority (CA) in the specified \fIDIRECTORY\fR for the given \fIROOT_DOMAIN\fR.
+creates the Root CA in the \fBca\fR subdirectory of \fIDIRECTORY\fR for the given
+\fIROOT_DOMAIN\fR.
+By default only the Root CA is created; pass \fIWITH_INTERMEDIATE\fR as
+\fBtrue\fR, \fByes\fR or \fB1\fR to also create the Intermediate CA in the same run.
+Anything else, including omitting it, creates the Root CA alone.
 .PP
-The command performs the following steps:
-.IP 1.
-Loads certificate subject information from \fBsubject.sh\fR if it exists in the target directory.
-.IP 2.
-Creates a \fBca\fR subdirectory.
-.IP 3.
-Generates a 2048-bit RSA private key.
-.IP 4.
-Generates a matching public key.
-.IP 5.
-Creates a Certificate Signing Request (CSR) for \fBintranet.\fIROOT_DOMAIN\fR.
-.IP 6.
-Self-signs the request to create a CA certificate valid for 2048 days, using an extension file located in the SMI library.
+Subject information is loaded from \fBsubject.sh\fR in \fIDIRECTORY\fR if present, giving
+the country, state, locality, organization, organizational unit and email of the certificates.
+.PP
+The Root CA is a 4096-bit key and a self-signed certificate with a descriptive Common Name
+(\fBHAS Internal Root CA\fR, not a host name), marked \fBbasicConstraints=critical,CA:TRUE\fR with
+\fBkeyCertSign,cRLSign\fR.
+Files \fB\fIROOT_DOMAIN\fB.priv.key\fR, \fB.pub.key\fR, \fB.csr\fR, \fB.crt\fR.
+.PP
+The Intermediate CA, when requested, is a 4096-bit key and a certificate signed by the Root CA,
+never self-signed, marked \fBbasicConstraints=critical,CA:TRUE,pathlen:0\fR with
+\fBkeyCertSign,cRLSign\fR.
+Files \fB\fIROOT_DOMAIN\fB.intermediate.priv.key\fR, \fB.intermediate.pub.key\fR,
+\fB.intermediate.csr\fR, \fB.intermediate.crt\fR.
+It can also be created on its own later with \fBsmi-pki-start-intermediate-ca\fR(1).
+.PP
+The full chain is Root CA \[->] Intermediate CA \[->] Server certificate. The Root CA signs only
+the Intermediate CA; routine server certificates are signed by the Intermediate CA with
+\fBsmi-pki-create-domain-cert\fR(1), which therefore requires the Intermediate CA to exist first.
+Only the Root CA certificate need be installed into trust stores. Private keys are written with
+mode \fB600\fR, so the Root CA private key can be kept protected and offline.
+.SH ARGUMENTS
+.TP
+.I DIRECTORY
+Where the \fBca\fR subdirectory and the subject file live.
+.TP
+.I ROOT_DOMAIN
+The root domain, for example \fBhas.ee.gintra\fR, used to name the CA files.
+.TP
+.I WITH_INTERMEDIATE
+\fBtrue\fR, \fByes\fR or \fB1\fR to also create the Intermediate CA. Default: create the Root CA only.
+.SH FILES
+.TP
+.I DIRECTORY/subject.sh
+Optional subject information sourced for the certificate distinguished names.
+.TP
+.I DIRECTORY/ca
+Root CA and Intermediate CA keys, requests, certificates and extension files.
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.

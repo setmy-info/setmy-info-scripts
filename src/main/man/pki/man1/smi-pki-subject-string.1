@@ -1,0 +1,19 @@
+.TH smi-pki-subject-string "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-subject-string \- Print an OpenSSL subject string from the subject file
+.SH SYNOPSIS
+.B smi-pki-subject-string
+.I DIRECTORY COMMON_NAME
+.SH DESCRIPTION
+.PP
+Sources \fBsubject.sh\fR from \fIDIRECTORY\fR and prints a \fB/C=.../CN=COMMON_NAME/...\fR subject string, ready to pass to \fBsmi-pki-create-csr\fR(1).
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH SEE ALSO
+.BR smi-pki-ca-create (1),
+.BR smi-pki-create-domain-cert (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

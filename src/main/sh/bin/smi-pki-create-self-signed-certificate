@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. $(smi-include pki.sh)
+
+if [ "$#" -lt 5 ]; then
+    echo "Usage: $(basename "$0") PRIV_KEY_FILE CSR_FILE CERT_FILE DAYS EXT_FILE" >&2
+    exit 1
+fi
+
+pkiCreateSelfSignedCertificate "$@"
+
+exit ${?}

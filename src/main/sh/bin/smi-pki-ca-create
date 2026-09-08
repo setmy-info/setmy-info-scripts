@@ -3,10 +3,28 @@
 . $(smi-include pki.sh)
 
 OUT_DIR="${1}"
-ROOT_DOMAIN=${2}
+ROOT_DOMAIN="${2}"
+WITH_INTERMEDIATE="${3:-false}"
 
-# smi-pki-create-ca /tmp/abc "has.ee.gintra"
+# smi-pki-ca-create /tmp/abc "has.ee.gintra"          # Root CA only (default)
+# smi-pki-ca-create /tmp/abc "has.ee.gintra" true     # Root CA and Intermediate CA
+#
+# The third argument decides whether the Intermediate CA is created too:
+# true/yes/1 create it, anything else (default) create only the Root CA. The
+# Intermediate CA can also be created on its own later with
+# smi-pki-start-intermediate-ca.
 
-pkiStartCA ${OUT_DIR} ${ROOT_DOMAIN}
+if [ -z "${OUT_DIR}" ] || [ -z "${ROOT_DOMAIN}" ]; then
+    echo "Usage: $(basename "$0") DIRECTORY ROOT_DOMAIN [with-intermediate]" >&2
+    exit 1
+fi
+
+pkiStartCA "${OUT_DIR}" "${ROOT_DOMAIN}"
+
+case "${WITH_INTERMEDIATE}" in
+    true|yes|1|TRUE|YES|True|Yes)
+        pkiStartIntermediateCA "${OUT_DIR}" "${ROOT_DOMAIN}"
+        ;;
+esac
 
 exit 0

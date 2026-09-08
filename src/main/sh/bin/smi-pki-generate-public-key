@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. $(smi-include pki.sh)
+
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $(basename "$0") PRIV_KEY_FILE PUB_KEY_FILE" >&2
+    exit 1
+fi
+
+pkiGeneratePublicKey "$@"
+
+exit ${?}

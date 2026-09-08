@@ -1,0 +1,20 @@
+.TH smi-pki-create-csr "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-create-csr \- Create a certificate signing request from a private key
+.SH SYNOPSIS
+.B smi-pki-create-csr
+.I PRIV_KEY_FILE CSR_FILE SUBJECT_STRING
+.RI [ SAN ]
+.SH DESCRIPTION
+.PP
+Creates a CSR in \fICSR_FILE\fR from \fIPRIV_KEY_FILE\fR for \fISUBJECT_STRING\fR. An optional \fISAN\fR, for example \fBDNS:ldap.has.ee.gintra\fR, is added to the request as a subjectAltName.
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH SEE ALSO
+.BR smi-pki-ca-create (1),
+.BR smi-pki-create-domain-cert (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

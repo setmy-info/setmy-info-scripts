@@ -1,0 +1,19 @@
+.TH smi-pki-generate-public-key "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-generate-public-key \- Derive a public key from a private key
+.SH SYNOPSIS
+.B smi-pki-generate-public-key
+.I PRIV_KEY_FILE PUB_KEY_FILE
+.SH DESCRIPTION
+.PP
+Writes the public key of \fIPRIV_KEY_FILE\fR to \fIPUB_KEY_FILE\fR.
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH SEE ALSO
+.BR smi-pki-ca-create (1),
+.BR smi-pki-create-domain-cert (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

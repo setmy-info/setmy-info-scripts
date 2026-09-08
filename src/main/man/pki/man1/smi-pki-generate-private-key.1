@@ -1,0 +1,20 @@
+.TH smi-pki-generate-private-key "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-generate-private-key \- Generate an RSA private key into a file
+.SH SYNOPSIS
+.B smi-pki-generate-private-key
+.I OUT_KEY_FILE
+.RI [ BITS ]
+.SH DESCRIPTION
+.PP
+Generates an RSA private key into \fIOUT_KEY_FILE\fR. \fIBITS\fR defaults to 2048; CA keys use 4096.
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH SEE ALSO
+.BR smi-pki-ca-create (1),
+.BR smi-pki-create-domain-cert (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

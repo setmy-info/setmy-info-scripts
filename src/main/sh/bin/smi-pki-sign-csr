@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. $(smi-include pki.sh)
+
+if [ "$#" -lt 6 ]; then
+    echo "Usage: $(basename "$0") CSR_FILE CA_CERT_FILE CA_KEY_FILE CERT_FILE DAYS EXT_FILE" >&2
+    exit 1
+fi
+
+pkiSignCSR "$@"
+
+exit ${?}

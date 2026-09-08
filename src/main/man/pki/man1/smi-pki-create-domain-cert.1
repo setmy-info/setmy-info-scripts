@@ -1,6 +1,6 @@
-.TH smi-pki-create-domain-cert "1" "October 2025" "SMI Toolset 0.100.0" "SMI PKI Command"
+.TH smi-pki-create-domain-cert "1" "September 2026" "SMI Toolset" "SMI PKI Command"
 .SH NAME
-smi-pki-create-domain-cert \- Create a domain certificate signed by a local CA
+smi-pki-create-domain-cert \- Create a server certificate signed by the Intermediate CA
 .SH SYNOPSIS
 .B smi-pki-create-domain-cert
 .I DIRECTORY
@@ -8,18 +8,29 @@ smi-pki-create-domain-cert \- Create a domain certificate signed by a local CA
 .SH DESCRIPTION
 .PP
 .B smi-pki-create-domain-cert
-generates a private key and a signed certificate for the specified \fIDOMAIN_NAME\fR.
-It requires that a Root CA has already been initialized in the \fIDIRECTORY\fR (or a parent structure) using \fBsmi-pki-ca-create\fR(1).
+generates a private key and a signed TLS server certificate for the specified \fIDOMAIN_NAME\fR,
+for example \fBldap.has.ee.gintra\fR.
+It requires that \fBsmi-pki-ca-create\fR(1) has already created the Root CA and Intermediate CA in
+\fIDIRECTORY\fR; the root domain is \fIDOMAIN_NAME\fR with its first label removed.
 .PP
-The process involves:
+The process:
 .IP 1.
-Generating a 2048-bit RSA private key and public key for the domain.
+Generates a 2048-bit RSA private key (mode \fB600\fR) and public key for the domain.
 .IP 2.
-Creating a CSR with \fBsubjectAltName\fR set to the domain.
+Creates a CSR whose \fBsubjectAltName\fR is \fBDNS:\fIDOMAIN_NAME\fR, the exact host, no wildcard.
 .IP 3.
-Signing the CSR using the CA certificate and key found in the \fBca\fR subdirectory of the provided directory.
+Signs the CSR with the \fBIntermediate\fR CA key and certificate from the \fBca\fR subdirectory,
+never with the Root CA.
 .IP 4.
-The resulting certificate is valid for 1095 days.
+The certificate is \fBCA:FALSE\fR with critical \fBkeyUsage\fR
+\fBdigitalSignature,keyEncipherment\fR, \fBextendedKeyUsage=serverAuth\fR, and the same
+\fBsubjectAltName\fR, so clients validate the host from the SAN rather than the Common Name.
+It is valid for 825 days.
+.PP
+The domain key, CSR and certificate are written in \fIDIRECTORY\fR itself, outside the \fBca\fR
+subdirectory.
+Because the certificate chains to the Root CA through the Intermediate CA, a client that trusts the
+Root CA trusts it without any per-certificate installation.
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.

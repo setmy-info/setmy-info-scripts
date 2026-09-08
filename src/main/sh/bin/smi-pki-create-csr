@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. $(smi-include pki.sh)
+
+if [ "$#" -lt 3 ]; then
+    echo "Usage: $(basename "$0") PRIV_KEY_FILE CSR_FILE SUBJECT_STRING [SAN]" >&2
+    exit 1
+fi
+
+pkiCreateCSR "$@"
+
+exit ${?}

@@ -1,0 +1,19 @@
+.TH smi-pki-start-ca "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-start-ca \- Create a self-signed Root CA
+.SH SYNOPSIS
+.B smi-pki-start-ca
+.I DIRECTORY ROOT_DOMAIN
+.SH DESCRIPTION
+.PP
+Creates the self-signed Root CA (4096-bit) in \fIDIRECTORY\fB/ca\fR for \fIROOT_DOMAIN\fR, with a descriptive Common Name. This is the Root CA step of \fBsmi-pki-ca-create\fR(1).
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH SEE ALSO
+.BR smi-pki-ca-create (1),
+.BR smi-pki-create-domain-cert (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

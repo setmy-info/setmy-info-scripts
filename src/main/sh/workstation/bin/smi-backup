@@ -30,6 +30,22 @@ backupDirectory() {
     echo "${BACKUP_DIR}/${ARCHIVE_NAME}.tar.gz"
 }
 
+backupFiles() {
+    ARCHIVE_NAME=${1}
+    shift
+    FOUND=0
+    for ENTRY in "$@"; do
+        if [ -e "${HOME}/${ENTRY}" ]; then
+            FOUND=1
+        fi
+    done
+    if [ "${FOUND}" -eq 0 ]; then
+        return 0
+    fi
+    tar --ignore-failed-read -czf "${BACKUP_DIR}/${ARCHIVE_NAME}.tar.gz" -C "${HOME}" "$@"
+    echo "${BACKUP_DIR}/${ARCHIVE_NAME}.tar.gz"
+}
+
 for GNUPG_DIR in "${HOME}"/.gnupg*; do
     backupDirectory "${GNUPG_DIR}"
 done
@@ -45,5 +61,21 @@ backupDirectory "${HOME}/Pictures"
 backupDirectory "${HOME}/Music"
 backupDirectory "${HOME}/Videos"
 backupDirectory "${HOME}/sources" --exclude=target --exclude=node_modules --exclude=.venv
+backupFiles dotfiles .profile .bashrc
+backupDirectory "${HOME}/.local/share/TelegramDesktop"
+backupDirectory "${HOME}/.config" \
+    --exclude='*/Cache' \
+    --exclude='*/Code Cache' \
+    --exclude='*/GPUCache' \
+    --exclude='*/GPUPersistentCache' \
+    --exclude='*/ShaderCache' \
+    --exclude='*/GrShaderCache' \
+    --exclude='*/GraphiteDawnCache' \
+    --exclude='*/DawnCache' \
+    --exclude='*/DawnGraphiteCache' \
+    --exclude='*/DawnWebGPUCache' \
+    --exclude='*/Service Worker' \
+    --exclude='*/component_crx_cache' \
+    --exclude='*/Crashpad'
 
 exit 0

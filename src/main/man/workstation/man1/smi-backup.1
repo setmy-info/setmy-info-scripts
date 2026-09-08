@@ -20,8 +20,15 @@ Backed up, when present; a missing directory is skipped without an error:
 .I ~/.gnupg*
 (every GnuPG directory, backups and robot keyrings included),
 .I ~/.ssh ~/.pki ~/.dev-certs ~/.revelation ~/.mozilla ~/.thunderbird ~/Backup ~/Documents
-.I ~/Pictures ~/Music ~/Videos ~/sources
+.I ~/Pictures ~/Music ~/Videos ~/sources ~/.config ~/.local/share/TelegramDesktop
 .RE
+.PP
+The shell login files
+.I ~/.profile
+and
+.I ~/.bashrc
+are packed together into a single
+.IR dotfiles.tar.gz .
 .PP
 .I ~/Backup
 is where password manager databases such as KeePass
@@ -35,10 +42,28 @@ is packed without build garbage: every
 and
 .I .venv
 directory is left out of the archive.
-Nothing is deleted from the live tree, the exclusion happens during packing.
 .PP
-The first failing archive stops the command, so a partial backup is never mistaken for a
-complete one.
+.I ~/.config
+holds application settings and messaging data, including
+.B Signal
+under
+.IR ~/.config/Signal .
+The browser and Electron cache directories under it
+.RB ( Cache ,
+.BR "Code Cache" ,
+.BR GPUCache ,
+.BR "Service Worker" ,
+.B Crashpad
+and similar) are excluded: they are large and disposable, and the excludes touch only caches,
+never the settings, messages or profiles beside them.
+.I ~/.local/share/TelegramDesktop
+holds Telegram Desktop message data and is packed whole.
+.PP
+Nothing is deleted from the live tree, every exclusion happens during packing.
+.PP
+A file that changes or vanishes while it is being read, common in the config of a running
+application, is a warning, not a failure. Any harder error stops the command, so a partial backup
+is never mistaken for a complete one.
 .PP
 Symbolic links are never followed: a link is stored as a link, its target's content is not
 packed.

@@ -19,11 +19,16 @@ sbcl_install_func() {
     sudo INSTALL_ROOT=/opt/sbcl-${SBCL_VERSION}-x86-64-linux sh install.sh
     makeOptLink /opt/${SBCL_NAME} /opt/${SBCL_DIR_NAME}
     if [ ! -f "$HOME/quicklisp/setup.lisp" ]; then
+      # ql:add-to-init-file stops at "Press Enter to continue." before it appends the
+      # loader to ~/.sbclrc. ql-util:without-prompting is Quicklisp's own switch for
+      # that prompt; the form is read only after quicklisp-quickstart:install has
+      # brought the ql-util package into existence. --disable-debugger keeps any other
+      # surprise an error instead of a process waiting on a terminal that is not there.
       /opt/${SBCL_NAME}/bin/sbcl \
-        --no-sysinit --no-userinit \
+        --no-sysinit --no-userinit --disable-debugger \
         --load ${HOME_PACKAGES_DIR}/quicklisp.lisp \
         --eval '(quicklisp-quickstart:install)' \
-        --eval '(ql:add-to-init-file)' \
+        --eval '(ql-util:without-prompting (ql:add-to-init-file))' \
         --quit
     fi
     cd ${CURRENT_DIR}

@@ -17,5 +17,7 @@ libreoffice_install_func() {
     rm -rf ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}
     mkdir -p ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}
     tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${LIBREOFFICE_TAR_GZ_FILE_NAME} -C ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}
-    sudo dnf localinstall -y ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}/LibreOffice_*/RPMS/*.rpm
+    # dnf5 (Fedora 41 and newer) dropped the localinstall command; plain install takes
+    # local .rpm paths on both dnf4 (Rocky Linux) and dnf5.
+    sudo dnf install -y ${HOME_PACKAGES_DIR}/${LIBREOFFICE_NAME}/LibreOffice_*/RPMS/*.rpm
 }

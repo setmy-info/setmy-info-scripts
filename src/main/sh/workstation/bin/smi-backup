@@ -33,16 +33,24 @@ backupDirectory() {
 backupFiles() {
     ARCHIVE_NAME=${1}
     shift
-    FOUND=0
-    for ENTRY in "$@"; do
+    # Keep only the files this machine actually has: a Debian home has .profile, a
+    # Rocky Linux or Fedora home has .bash_profile, and neither should make tar
+    # complain about the other one. Rotating the positional parameters keeps the
+    # names quoted the whole way to tar.
+    COUNT=${#}
+    INDEX=0
+    while [ "${INDEX}" -lt "${COUNT}" ]; do
+        ENTRY=${1}
+        shift
         if [ -e "${HOME}/${ENTRY}" ]; then
-            FOUND=1
+            set -- "$@" "${ENTRY}"
         fi
+        INDEX=$((INDEX + 1))
     done
-    if [ "${FOUND}" -eq 0 ]; then
+    if [ ${#} -eq 0 ]; then
         return 0
     fi
-    tar --ignore-failed-read -czf "${BACKUP_DIR}/${ARCHIVE_NAME}.tar.gz" -C "${HOME}" "$@"
+    tar -czf "${BACKUP_DIR}/${ARCHIVE_NAME}.tar.gz" -C "${HOME}" "$@"
     echo "${BACKUP_DIR}/${ARCHIVE_NAME}.tar.gz"
 }
 
@@ -61,7 +69,7 @@ backupDirectory "${HOME}/Pictures"
 backupDirectory "${HOME}/Music"
 backupDirectory "${HOME}/Videos"
 backupDirectory "${HOME}/sources" --exclude=target --exclude=node_modules --exclude=.venv
-backupFiles dotfiles .profile .bashrc
+backupFiles dotfiles .profile .bash_profile .bash_login .bashrc .bash_logout
 backupDirectory "${HOME}/.local/share/TelegramDesktop"
 backupDirectory "${HOME}/.config" \
     --exclude='*/Cache' \

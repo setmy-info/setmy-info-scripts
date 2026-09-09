@@ -24,11 +24,19 @@ Backed up, when present; a missing directory is skipped without an error:
 .RE
 .PP
 The shell login files
-.I ~/.profile
-and
+.IR ~/.profile ,
+.IR ~/.bash_profile ,
+.IR ~/.bash_login ,
 .I ~/.bashrc
+and
+.I ~/.bash_logout
 are packed together into a single
 .IR dotfiles.tar.gz .
+Only the ones this machine actually has are packed, so a Debian home with
+.I ~/.profile
+and a Rocky Linux or Fedora home with
+.I ~/.bash_profile
+are both backed up whole and neither reports a missing file.
 .PP
 .I ~/Backup
 is where password manager databases such as KeePass

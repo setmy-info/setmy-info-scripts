@@ -20,6 +20,8 @@ if command -v systemctl >/dev/null 2>&1; then
 fi
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-test
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-stealer
+mkdir -p /opt/${SMI_PROVIDER}/lib/incoming
+ln -f -s /opt/${SMI_PROVIDER}/lib/smi-incoming-deploy.sh /opt/${SMI_PROVIDER}/lib/incoming/angular-start-project.sh
 mkdir -p /var/opt/${SMI_PROVIDER}
 mkdir -p /var/opt/${SMI_PROVIDER}/incoming
 

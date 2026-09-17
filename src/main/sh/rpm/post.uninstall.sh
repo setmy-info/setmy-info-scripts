@@ -5,6 +5,7 @@ echo "### Post-Uninstall"
 SMI_PROVIDER=setmy.info
 rm -f /etc/profile.d/setmy-info.sh
 rm -f /opt/${SMI_PROVIDER}/bin/smi-test
+rm -f /opt/${SMI_PROVIDER}/lib/incoming/angular-start-project.sh
 if command -v systemctl >/dev/null 2>&1; then
     systemctl disable --now setmy-info-deploy.path || true
 fi

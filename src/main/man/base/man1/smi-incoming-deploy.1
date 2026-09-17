@@ -17,6 +17,47 @@ plugin from
 with the package path as the only argument.
 What a package means is entirely up to the plugins.
 .PP
+A package whose name contains no plugin's pattern is not removed and not reported.
+.SH PLUGINS
+.PP
+The plugins shipped are symbolic links to one generic script,
+.IR /opt/setmy.info/lib/smi-incoming-deploy.sh .
+The script takes its pattern from the name it was started under, the link name without
+.BR .sh ,
+and handles a package only when the package file name contains that pattern;
+other packages are ignored with success.
+A handled package is unpacked with
+.B tar xzf
+into
+.IR /usr/share/nginx ,
+the nginx content directory, creating the directory when it does not exist.
+The archive paths are kept, so a package that contains
+.I html/index.html
+updates
+.IR /usr/share/nginx/html/index.html .
+A package that matches but cannot be unpacked prints an error and exits with 1.
+.PP
+Links created by the rpm and deb install scripts, and removed again on uninstall:
+.TP
+.I angular-start-project.sh
+Deploys every incoming package whose file name contains
+.BR angular-start-project ,
+for example
+.IR angular-start-project-1.0.0.tar.gz .
+.PP
+Another deployment only needs another link, named after the package it handles:
+.RS
+.nf
+ln -s ../smi-incoming-deploy.sh /opt/setmy.info/lib/incoming/my-site.sh
+.fi
+.RE
+.PP
+The pattern is matched anywhere in the file name, so a link named
+.I shop.sh
+also handles
+.IR webshop-2.0.tar.gz ;
+choose names that are not part of other package names.
+.PP
 The command is quiet by design: a missing incoming directory, an empty one, or an absent
 plugin directory all end with success, so it is safe to run from cron or a timer.
 .SH FILES
@@ -29,10 +70,20 @@ per deployment.
 .I /opt/setmy.info/lib/incoming
 Deployment plugins, executable
 .B .sh
-files.
+files; the shipped ones are links to
+.IR smi-incoming-deploy.sh .
+.TP
+.I /opt/setmy.info/lib/smi-incoming-deploy.sh
+Generic nginx deployment plugin, selected by the name of the link it is started through.
+.TP
+.I /usr/share/nginx
+Target directory of the generic plugin.
 .SH EXIT STATUS
 .TP
 .B 0
 Every plugin ran successfully, or there was nothing to do.
+.TP
+.I other
+A plugin failed; the remaining packages are not processed.
 .SH AUTHOR
 Imre Tabur <imre.tabur@mail.ee>

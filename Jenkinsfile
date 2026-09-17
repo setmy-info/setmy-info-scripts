@@ -1,74 +1,3 @@
-pipeline {
-
-    agent any
-
-    environment {
-        PATH = "/opt/cmake/bin:/usr/local/bin:$PATH"
-    }
-
-    stages {
-        stage('Environment') {
-            steps {
-                echo "PATH is: $PATH"
-                sh 'cmake --version'
-                sh 'make --version'
-            }
-        }
-        stage('Clean') {
-            steps {
-                sh 'rm -Rf Makefile CMakeFiles build/ *.cmake CMakeCache.txt setmy-info-scripts-*.noarch.*'
-            }
-        }
-        stage('Configure') {
-            steps {
-                sh './configure'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'make'
-            }
-        }
-        stage('Package') {
-            steps {
-                sh 'make package'
-            }
-        }
-        stage ('Deploy') {
-            steps {
-            	sh 'cp -f ./setmy-info-scripts-*.noarch.* /gintra/org/has/files/www/rpms/'
-            }
-        }
-        stage('List') {
-            steps {
-                sh 'ls -la'
-                sh 'ls -la /gintra/org/has/files/www/rpms/'
-            }
-        }
-    }
-
-    post {
-        success {
-            emailext (
-                subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-                            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-            )
-        }
-        failure {
-            emailext (
-                subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
-                            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-            )
-        }
-    }
-}
-
-
-
 def runCommand(String command) {
     if (isUnix()) {
         sh command
@@ -131,7 +60,7 @@ pipeline {
                 stage('Install') {
                     steps {
                         echo 'Preparing the software to be built. Installation commands go here.'
-                        runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && ./configure release"
+                        runCommand './configure release'
                     }
                 }
             }
@@ -140,8 +69,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Cleaning command, because in some cases shared directories can have previous build garbage'
-                runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && make clean"
-                runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && make all test package"
+                runCommand 'make clean'
+                runCommand 'make all test package'
             }
         }
 
@@ -154,7 +83,7 @@ pipeline {
                     }
                     steps {
                         echo 'Put here software release steps'
-                    }
+                   }
                 }
                 stage('Snapshot') {
                     when {
@@ -191,7 +120,7 @@ pipeline {
                     }
                     steps {
                         echo 'Put here software development installations steps'
-                        runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && (sudo rpm -e setmy-info-scripts 2>/dev/null || true)"
+                        runCommand '(sudo rpm -e setmy-info-scripts 2>/dev/null || true)'
                         runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && sudo rpm -i setmy-info-scripts-\${SCRIPTS_VERSION}.noarch.rpm"
                         runCommand "smi-version"
                     }
@@ -241,7 +170,7 @@ pipeline {
                     }
                     steps {
                         echo 'Put here software production installations steps'
-                        runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && (sudo rpm -e setmy-info-scripts 2>/dev/null || true)"
+                        runCommand '(sudo rpm -e setmy-info-scripts 2>/dev/null || true)'
                         runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && sudo rpm -i setmy-info-scripts-\${SCRIPTS_VERSION}.noarch.rpm"
                         runCommand "smi-version"
                     }
@@ -257,7 +186,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                echo 'SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && smi-new-tag ${SCRIPTS_VERSION}'
+                echo "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && smi-new-tag \${SCRIPTS_VERSION}"
             }
         }
     }

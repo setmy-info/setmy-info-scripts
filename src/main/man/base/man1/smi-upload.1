@@ -1,0 +1,158 @@
+.TH smi-upload "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-upload \- Upload a file to a remote host over SSH using scp
+.SH SYNOPSIS
+.B smi-upload
+.I SOURCE_FILE
+.I DESTINATION_FILE
+.RI [[ USER @] HOST [: PORT ]]
+.SH DESCRIPTION
+.PP
+.B smi-upload
+copies the local
+.I SOURCE_FILE
+to
+.I DESTINATION_FILE
+on a remote host using
+.BR scp (1).
+.PP
+Arguments are positional: the local file first, the remote path second.
+Host name, port, user name and password are taken from environment variables,
+so that credentials stay out of the command line and out of the shell history.
+The optional third argument overrides user, host and port for one call.
+The variables are the same ones
+.BR smi-remote-exec (1)
+reads, so an upload and the remote commands that follow it share one
+configuration.
+.PP
+When a password is set, it is handed to
+.BR sshpass (1)
+through the
+.SM SSHPASS
+environment variable, never as a command line argument, so it does not appear
+in the process list.
+When no password is set,
+.B scp
+runs on its own and key based authentication (or an interactive password
+prompt) is used;
+.B sshpass
+is not needed in that case.
+.PP
+An unknown host key is accepted and stored without asking
+.RB ( StrictHostKeyChecking=accept-new ),
+so the command works unattended.
+A host key that has changed since it was stored is still refused.
+.SH ARGUMENTS
+.TP
+.I SOURCE_FILE
+Local file to upload.
+Must exist and be a regular file.
+.TP
+.I DESTINATION_FILE
+Path on the remote host.
+A relative path is resolved against the remote user's home directory.
+The remote parent directory must already exist.
+.TP
+.RI [ USER @] HOST [: PORT ]
+Remote server for this invocation only.
+Overrides
+.SM SMI_REMOTE_HOST
+and, when present, the
+.I USER
+part overrides
+.SM SMI_REMOTE_USER
+and the
+.I PORT
+part overrides
+.SM SMI_REMOTE_PORT\c
+\&.
+Example:
+.BR deploy@files.example.com:2222 .
+.SH ENVIRONMENT
+.TP
+.B SMI_REMOTE_HOST
+Remote host name or IP address.
+No default; required unless the host is given as the third argument.
+.TP
+.B SMI_REMOTE_PORT
+Remote SSH port.
+Default:
+.BR 22 .
+.TP
+.B SMI_REMOTE_USER
+Remote user name.
+Default: current OS login name.
+.TP
+.B SMI_REMOTE_PASSWORD
+Remote user's password.
+Default: empty, which means key based authentication without
+.BR sshpass (1).
+.SH EXIT STATUS
+.TP
+.B 0
+The file was uploaded.
+.TP
+.B 1
+Wrong usage, no host given, the source file is missing, or a password is set but
+.B sshpass
+is not installed.
+.TP
+.I other
+Exit status of
+.BR scp (1)
+or
+.BR sshpass (1);
+.B sshpass
+returns
+.B 5
+for a wrong password and
+.B 6
+for an unknown host key.
+.SH EXAMPLES
+.PP
+Upload with key based authentication, server as the third argument:
+.RS
+.nf
+smi-upload build/app.war /srv/incoming/app.war deploy@files.example.com:2222
+.fi
+.RE
+.PP
+Upload with a password, everything from the environment:
+.RS
+.nf
+SMI_REMOTE_HOST=files.example.com SMI_REMOTE_PORT=2222 \\
+SMI_REMOTE_USER=deploy SMI_REMOTE_PASSWORD=secret \\
+smi-upload build/app.war /srv/incoming/app.war
+.fi
+.RE
+.PP
+Upload a deployment archive, then move it into place on the same host:
+.RS
+.nf
+export SMI_REMOTE_HOST=files.example.com SMI_REMOTE_USER=deploy
+smi-upload build/a.tar.gz deployments/a.tar.gz
+smi-remote-exec mv '~/deployments/a.tar.gz' /var/opt/a/deploy/a.tar.gz
+.fi
+.RE
+.PP
+Keep the password in the environment, choose the server per call:
+.RS
+.nf
+export SMI_REMOTE_PASSWORD=secret
+smi-upload report.pdf reports/report.pdf alice@intranet.example.com
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-upload bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR scp (1),
+.BR sshpass (1),
+.BR ssh_config (5),
+.BR smi-remote-exec (1),
+.BR smi-download (1),
+.BR smi-sync (1)

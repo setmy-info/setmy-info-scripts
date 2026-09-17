@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include remote.sh)
+
+if [ $# -lt 2 ]; then
+    printf "Usage: smi-upload SOURCE_FILE DESTINATION_FILE [[USER@]HOST[:PORT]]\n" >&2
+    exit 1
+fi
+
+_SOURCE_FILE="$1"
+_DESTINATION_FILE="$2"
+
+if [ $# -ge 3 ]; then
+    remoteParseServer "$3"
+fi
+
+remoteRequireHost || exit 1
+
+if [ ! -f "${_SOURCE_FILE}" ]; then
+    printf "smi-upload: source file not found: %s\n" "${_SOURCE_FILE}" >&2
+    exit 1
+fi
+
+remotePreparePassword || exit 1
+
+_TARGET="$(remoteDestination):${_DESTINATION_FILE}"
+
+${REMOTE_SSHPASS} scp -P "${REMOTE_PORT}" \
+    -o "${REMOTE_HOST_KEY_CHECKING}" \
+    "${_SOURCE_FILE}" "${_TARGET}"
+
+_RESULT=$?
+if [ ${_RESULT} -eq 0 ]; then
+    printf "Uploaded: %s -> %s\n" "${_SOURCE_FILE}" "${_TARGET}"
+else
+    printf "smi-upload: upload failed: %s -> %s\n" "${_SOURCE_FILE}" "${_TARGET}" >&2
+fi
+exit ${_RESULT}

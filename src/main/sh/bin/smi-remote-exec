@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include remote.sh)
+
+if [ $# -lt 1 ]; then
+    printf "Usage: smi-remote-exec COMMAND [ARGUMENT ...]\n" >&2
+    printf "       connection from SMI_REMOTE_HOST, SMI_REMOTE_PORT, SMI_REMOTE_USER, SMI_REMOTE_PASSWORD\n" >&2
+    exit 1
+fi
+
+remoteRequireHost || exit 1
+remotePreparePassword || exit 1
+
+_REMOTE_COMMAND=$(remoteQuoteCommand "$@")
+
+${REMOTE_SSHPASS} ssh -p "${REMOTE_PORT}" \
+    -o "${REMOTE_HOST_KEY_CHECKING}" \
+    "$(remoteDestination)" "${_REMOTE_COMMAND}"
+
+exit $?

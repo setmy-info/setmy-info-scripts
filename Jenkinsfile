@@ -193,6 +193,7 @@ pipeline {
                         echo 'Put here software development installations steps'
                         runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && (sudo rpm -e setmy-info-scripts 2>/dev/null || true)"
                         runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && sudo rpm -i setmy-info-scripts-\${SCRIPTS_VERSION}.noarch.rpm"
+                        runCommand "smi-version"
                     }
                 }
                 stage('test') {
@@ -242,6 +243,7 @@ pipeline {
                         echo 'Put here software production installations steps'
                         runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && (sudo rpm -e setmy-info-scripts 2>/dev/null || true)"
                         runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && sudo rpm -i setmy-info-scripts-\${SCRIPTS_VERSION}.noarch.rpm"
+                        runCommand "smi-version"
                     }
                 }
             }

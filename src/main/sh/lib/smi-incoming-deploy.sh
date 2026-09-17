@@ -6,8 +6,9 @@
 #
 # It is never called by its own name: every symbolic link in /opt/setmy.info/lib/incoming points
 # here, and the link name selects the packages. A link named angular-start-project.sh handles each
-# incoming .tar.gz whose file name contains angular-start-project and unpacks it into the nginx
-# directory; every other package is left to the other links. One more deployment is one more link.
+# incoming .tar.gz whose file name contains angular-start-project, unpacks it into the nginx
+# directory and removes the package; every other package is left to the other links. One more
+# deployment is one more link.
 
 INPUT_FILE="$1"
 TARGET_DIR="/usr/share/nginx"
@@ -43,5 +44,14 @@ if ! tar xvzf "$INPUT_FILE" -C "$TARGET_DIR"; then
     exit 1
 fi
 echo "Success: Unpacked '$INPUT_FILE' to '$TARGET_DIR'"
+
+# Only a package unpacked without error is removed: a failed one stays for inspection, and one
+# that no link matched stays for the link that will handle it. Without the removal the systemd
+# path unit would start the deployment again and again while the package exists.
+if ! rm -f "$INPUT_FILE"; then
+    echo "Error: Unpacked '$INPUT_FILE', but could not remove it from the incoming directory" >&2
+    exit 1
+fi
+echo "Removed: '$INPUT_FILE'"
 
 exit 0

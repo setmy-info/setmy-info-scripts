@@ -17,7 +17,8 @@ plugin from
 with the package path as the only argument.
 What a package means is entirely up to the plugins.
 .PP
-A package whose name contains no plugin's pattern is not removed and not reported.
+A package whose name contains no plugin's pattern is not removed and not reported;
+it stays in the incoming directory until a plugin handles it.
 .SH PLUGINS
 .PP
 The plugins shipped are symbolic links to one generic script,
@@ -35,7 +36,18 @@ The archive paths are kept, so a package that contains
 .I html/index.html
 updates
 .IR /usr/share/nginx/html/index.html .
-A package that matches but cannot be unpacked prints an error and exits with 1.
+After a successful unpack the package is removed from the incoming directory, so it is deployed
+once and the
+.B setmy-info-deploy.path
+unit does not start the deployment again.
+A package that matches but cannot be unpacked prints an error, exits with 1 and is kept in the
+incoming directory for inspection.
+When two links match the same package, the first one deploys and removes it; the next one
+only warns that the file was not found.
+.PP
+Upload a package under a different name or directory and move it into the incoming directory
+when it is complete: the watcher reacts to the file as soon as it exists, and a package that is
+still being written fails to unpack.
 .PP
 Links created by the rpm and deb install scripts, and removed again on uninstall:
 .TP

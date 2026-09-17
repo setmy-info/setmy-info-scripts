@@ -20,7 +20,7 @@ sudo dnf install -y openssl-devel sqlite sqlite-devel libffi-devel
 ## Build
 
 ```sh
-SCRIPTS_VERSION=0.113.0
+SCRIPTS_VERSION=0.114.0
 # Or
 # SCRIPTS_VERSION=$(sed -n 's/^SCRIPTS_VERSION=\([0-9.]*\)$/\1/p' README.md)
 ./configure release
@@ -34,7 +34,7 @@ sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 All in single line:
 
 ```sh
-SCRIPTS_VERSION=0.113.0 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
+SCRIPTS_VERSION=0.114.0 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 
 # Or
 # SCRIPTS_VERSION=$(sed -n 's/^SCRIPTS_VERSION=\([0-9.]*\)$/\1/p' README.md) && ./configure release && make clean && make all test package && (sudo rpm -e setmy-info-scripts 2>/dev/null || true) && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm

@@ -1,0 +1,50 @@
+.TH smi-pki-do-client-cert-request "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-do-client-cert-request \- Create the private key and certificate request of a client certificate
+.SH SYNOPSIS
+.B smi-pki-do-client-cert-request
+.I DIRECTORY CLIENT_NAME
+.SH DESCRIPTION
+.PP
+Creates, in \fIDIRECTORY\fR, a 2048-bit RSA private key \fICLIENT_NAME\fB.client.priv.key\fR (mode \fB600\fR), its public key \fB.client.pub.key\fR and the certificate signing request \fB.client.csr\fR with \fICLIENT_NAME\fR as Common Name.
+The other subject fields come from \fIDIRECTORY\fB/subject.sh\fR when it exists (COUNTRY, STATE, LOCALITY, ORG, ORG_UNIT, EMAIL), so a customer names its own organization.
+.PP
+Run it on the client side and send only the \fB.client.csr\fR file to the CA; keep the private key.
+\fICLIENT_NAME\fR must be the name agreed with the CA, because the CA signs only a request whose Common Name is exactly that name.
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH MUTUAL TLS WORKFLOW
+.IP 1. 4
+The client runs \fBsmi-pki-do-client-cert-request\fR \fIDIRECTORY CLIENT_NAME\fR on its own machine,
+with the agreed \fICLIENT_NAME\fR, and sends only \fICLIENT_NAME\fB.client.csr\fR. The private key never
+leaves the client.
+.IP 2. 4
+The CA side saves the request as \fIDIRECTORY\fB/\fICLIENT_NAME\fB.client.csr\fR, may inspect it with
+\fBsmi-pki-verify-client-csr\fR, and signs it with \fBsmi-pki-do-client-signing\fR
+\fIDIRECTORY CLIENT_NAME ROOT_DOMAIN\fR.
+.IP 3. 4
+The CA side sends back \fICLIENT_NAME\fB.client.chain.crt\fR, and the Root CA certificate
+\fBca/\fIROOT_DOMAIN\fB.crt\fR when the client does not have it yet.
+.IP 4. 4
+The server trusts the CA, for example nginx \fBssl_client_certificate\fR with the Root CA and
+Intermediate CA certificates and \fBssl_verify_client on\fR; the client connects with its private
+key and the chain file.
+.SH EXAMPLE
+.RS
+.nf
+smi-pki-do-client-cert-request ~/pki acme-billing
+smi-upload ~/pki/acme-billing.client.csr incoming/acme-billing.client.csr
+.fi
+.RE
+.SH SEE ALSO
+.BR smi-pki-do-client-cert-request (1),
+.BR smi-pki-verify-client-csr (1),
+.BR smi-pki-do-client-signing (1),
+.BR smi-pki-create-client-cert (1),
+.BR smi-pki-client-extensions (1),
+.BR smi-pki-ca-create (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

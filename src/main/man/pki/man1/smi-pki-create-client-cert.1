@@ -1,0 +1,33 @@
+.TH smi-pki-create-client-cert "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-create-client-cert \- Create a complete client certificate on the CA side
+.SH SYNOPSIS
+.B smi-pki-create-client-cert
+.I DIRECTORY CLIENT_NAME ROOT_DOMAIN
+.SH DESCRIPTION
+.PP
+Runs \fBsmi-pki-do-client-cert-request\fR(1) and \fBsmi-pki-do-client-signing\fR(1) in one go, for a client that does not create its own key, such as an internal service.
+Writes \fICLIENT_NAME\fB.client.priv.key\fR, \fB.client.pub.key\fR, \fB.client.csr\fR, \fB.client.crt\fR, \fB.client.ext\fR and \fB.client.chain.crt\fR in \fIDIRECTORY\fR.
+The Intermediate CA of \fIROOT_DOMAIN\fR is checked first, so nothing is generated when it is missing.
+.PP
+The private key is created on the CA side and has to be delivered to the client securely; when the client can run \fBsmi-pki-do-client-cert-request\fR(1) itself, prefer that, so the key never leaves the client.
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH EXAMPLE
+.RS
+.nf
+smi-pki-create-client-cert /var/opt/pki intranet-bot gintra
+.fi
+.RE
+.SH SEE ALSO
+.BR smi-pki-do-client-cert-request (1),
+.BR smi-pki-verify-client-csr (1),
+.BR smi-pki-do-client-signing (1),
+.BR smi-pki-create-client-cert (1),
+.BR smi-pki-client-extensions (1),
+.BR smi-pki-ca-create (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

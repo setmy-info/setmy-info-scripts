@@ -1,0 +1,58 @@
+.TH smi-pki-do-client-signing "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-do-client-signing \- Sign a received client certificate request with the Intermediate CA
+.SH SYNOPSIS
+.B smi-pki-do-client-signing
+.I DIRECTORY CLIENT_NAME ROOT_DOMAIN
+.SH DESCRIPTION
+.PP
+Signs \fIDIRECTORY\fB/\fICLIENT_NAME\fB.client.csr\fR with the Intermediate CA \fBca/\fIROOT_DOMAIN\fB.intermediate.crt\fR and \fB.intermediate.priv.key\fR, the root domain given to \fBsmi-pki-ca-create\fR(1).
+.PP
+Before signing, the Intermediate CA must exist and the request must pass \fBsmi-pki-verify-client-csr\fR(1): a valid self-signature and \fICLIENT_NAME\fR as its only Common Name.
+The certificate gets the client extensions of \fBsmi-pki-client-extensions\fR(1), CA:FALSE and extendedKeyUsage=clientAuth, whatever the request asked for, and is valid for 365 days (\fBCLIENT_CERT_VALIDITY_DAYS\fR in \fBpki.sh\fR).
+The subject is taken from the request.
+.PP
+Writes \fICLIENT_NAME\fB.client.crt\fR, \fB.client.ext\fR and \fB.client.chain.crt\fR, the certificate followed by the Intermediate CA certificate, which is the file to send back.
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH MUTUAL TLS WORKFLOW
+.IP 1. 4
+The client runs \fBsmi-pki-do-client-cert-request\fR \fIDIRECTORY CLIENT_NAME\fR on its own machine,
+with the agreed \fICLIENT_NAME\fR, and sends only \fICLIENT_NAME\fB.client.csr\fR. The private key never
+leaves the client.
+.IP 2. 4
+The CA side saves the request as \fIDIRECTORY\fB/\fICLIENT_NAME\fB.client.csr\fR, may inspect it with
+\fBsmi-pki-verify-client-csr\fR, and signs it with \fBsmi-pki-do-client-signing\fR
+\fIDIRECTORY CLIENT_NAME ROOT_DOMAIN\fR.
+.IP 3. 4
+The CA side sends back \fICLIENT_NAME\fB.client.chain.crt\fR, and the Root CA certificate
+\fBca/\fIROOT_DOMAIN\fB.crt\fR when the client does not have it yet.
+.IP 4. 4
+The server trusts the CA, for example nginx \fBssl_client_certificate\fR with the Root CA and
+Intermediate CA certificates and \fBssl_verify_client on\fR; the client connects with its private
+key and the chain file.
+.SH EXAMPLE
+.RS
+.nf
+smi-pki-do-client-signing /var/opt/pki acme-billing gintra
+.fi
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+The certificate was signed.
+.TP
+.B 1
+Wrong usage, the Intermediate CA was not found, the request failed the check, or an OpenSSL step failed.
+.SH SEE ALSO
+.BR smi-pki-do-client-cert-request (1),
+.BR smi-pki-verify-client-csr (1),
+.BR smi-pki-do-client-signing (1),
+.BR smi-pki-create-client-cert (1),
+.BR smi-pki-client-extensions (1),
+.BR smi-pki-ca-create (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

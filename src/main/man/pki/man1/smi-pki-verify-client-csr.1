@@ -1,0 +1,28 @@
+.TH smi-pki-verify-client-csr "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-verify-client-csr \- Check a received client certificate request before signing
+.SH SYNOPSIS
+.B smi-pki-verify-client-csr
+.I CSR_FILE CLIENT_NAME
+.SH DESCRIPTION
+.PP
+Checks \fICSR_FILE\fR and prints its subject.
+The request self-signature must be valid, which proves the sender holds the matching private key, and its only Common Name must be exactly \fICLIENT_NAME\fR, the identity the CA agreed to, so a client cannot request a certificate in another client's name.
+Otherwise the command names the Common Name found and exits with 1.
+.PP
+Extensions a request asks for, such as CA:TRUE, serverAuth or a subjectAltName, are not checked because they are never used: signing takes every extension from \fBsmi-pki-client-extensions\fR(1).
+\fBsmi-pki-do-client-signing\fR(1) runs this check itself; the command is for inspecting a request on its own.
+It is a thin command line wrapper over the matching function in the file based PKI library
+\fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
+on its own. All material is passed as file names; the command fails if the underlying OpenSSL
+operation fails.
+.SH SEE ALSO
+.BR smi-pki-do-client-cert-request (1),
+.BR smi-pki-verify-client-csr (1),
+.BR smi-pki-do-client-signing (1),
+.BR smi-pki-create-client-cert (1),
+.BR smi-pki-client-extensions (1),
+.BR smi-pki-ca-create (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

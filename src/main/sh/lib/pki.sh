@@ -47,6 +47,7 @@ DEFAULT_KEY_BITS=2048
 ROOT_CA_VALIDITY_DAYS=7300
 INTERMEDIATE_CA_VALIDITY_DAYS=3650
 SERVER_CERT_VALIDITY_DAYS=825
+CLIENT_CERT_VALIDITY_DAYS=365
 
 # A CA is named by its role, never by a server hostname.
 ROOT_CA_COMMON_NAME="HAS Internal Root CA"
@@ -155,6 +156,21 @@ pkiServerExtensions() {
         echo "subjectKeyIdentifier=hash"
         echo "authorityKeyIdentifier=keyid,issuer"
         echo "subjectAltName=${san}"
+    } > "${out_ext_file}"
+}
+
+# Client (end-entity): not a CA, usable only to authenticate a TLS client (mTLS).
+# digitalSignature alone, because a TLS client only signs the handshake; that
+# also holds for EC keys, where keyEncipherment would be wrong.
+# Args: OUT_EXT_FILE
+pkiClientExtensions() {
+    local out_ext_file="${1}"
+    {
+        echo "basicConstraints=critical,CA:FALSE"
+        echo "keyUsage=critical,digitalSignature"
+        echo "extendedKeyUsage=clientAuth"
+        echo "subjectKeyIdentifier=hash"
+        echo "authorityKeyIdentifier=keyid,issuer"
     } > "${out_ext_file}"
 }
 
@@ -333,4 +349,95 @@ pkiCreateDomainCert() {
     pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
     pkiDoCertRequest "${tank_certs_dir}" "${domain_name}" || return 1
     pkiDoCASigning "${tank_certs_dir}" "${domain_name}" "${root_domain}" || return 1
+}
+
+# ==========================================================================
+# Client certificates for mutual TLS. The client creates its key and request
+# with pkiDoClientCertRequest and sends only the CSR; the CA side checks it with
+# pkiVerifyClientCSR and signs it with pkiDoClientSigning. Client files are named
+# "<client-name>.client.*", so they never collide with server files.
+# ==========================================================================
+
+# Create the private key, public key and CSR of a client certificate, with
+# CLIENT_NAME as Common Name. Run on the client side: the private key stays there.
+# Args: TANK_CERTS_DIR CLIENT_NAME   CLIENT_NAME for example "acme-billing"
+pkiDoClientCertRequest() {
+    local tank_certs_dir="${1}"
+    local client_name="${2}"
+
+    if [ -f "${tank_certs_dir}/${SUBJECT_FILE}" ]; then
+        . "${tank_certs_dir}/${SUBJECT_FILE}"
+    fi
+
+    local priv_key="${tank_certs_dir}/${client_name}.client.${CERT_PRIVATE_KEY_SUFFIX}"
+    local pub_key="${tank_certs_dir}/${client_name}.client.${CERT_PUBLIC_KEY_SUFFIX}"
+    local csr="${tank_certs_dir}/${client_name}.client.${CERT_REQUEST_SUFFIX}"
+    local subject
+    subject="$(pkiSubjectString "${client_name}")"
+
+    mkdir -p "${tank_certs_dir}" || return 1
+    pkiGeneratePrivateKey "${priv_key}" "${SERVER_KEY_BITS}" || return 1
+    chmod 600 "${priv_key}" || return 1
+    pkiGeneratePublicKey "${priv_key}" "${pub_key}" || return 1
+    pkiCreateCSR "${priv_key}" "${csr}" "${subject}" || return 1
+}
+
+# Check a received client CSR before it is signed: its self-signature must be valid
+# (the sender holds the private key) and its only Common Name must be exactly
+# CLIENT_NAME, the identity the CA agreed to, so a client cannot name itself as
+# another client. Extensions the CSR asks for are never used: pkiSignCSR takes
+# them only from the extension file.
+# Args: CSR_FILE CLIENT_NAME
+pkiVerifyClientCSR() {
+    local csr_file="${1}"
+    local client_name="${2}"
+    local common_name
+
+    openssl req -in "${csr_file}" -noout -verify || return 1
+    common_name="$(openssl req -in "${csr_file}" -noout -subject -nameopt multiline \
+        | sed -n 's/^ *commonName *= //p')" || return 1
+    if [ "${common_name}" != "${client_name}" ]; then
+        echo "Client CSR ${csr_file} has Common Name '${common_name}', expected '${client_name}'" >&2
+        return 1
+    fi
+    openssl req -in "${csr_file}" -noout -subject
+}
+
+# Sign a received client CSR "<client-name>.client.csr" in TANK_CERTS_DIR with the
+# Intermediate CA of ROOT_DOMAIN. Writes the certificate and a chain file, the
+# certificate followed by the Intermediate CA certificate, to send back.
+# Args: TANK_CERTS_DIR CLIENT_NAME ROOT_DOMAIN
+pkiDoClientSigning() {
+    local tank_certs_dir="${1}"
+    local client_name="${2}"
+    local root_domain="${3}"
+
+    local ca_dir="${tank_certs_dir}/ca"
+    local int_priv_key="${ca_dir}/${root_domain}.intermediate.${CERT_PRIVATE_KEY_SUFFIX}"
+    local int_cert="${ca_dir}/${root_domain}.intermediate.${CERT_SUFFIX}"
+    local csr="${tank_certs_dir}/${client_name}.client.${CERT_REQUEST_SUFFIX}"
+    local cert="${tank_certs_dir}/${client_name}.client.${CERT_SUFFIX}"
+    local chain="${tank_certs_dir}/${client_name}.client.chain.${CERT_SUFFIX}"
+    local ext="${tank_certs_dir}/${client_name}.client.${CERT_EXTENSION_SUFFIX}"
+
+    pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
+    pkiVerifyClientCSR "${csr}" "${client_name}" || return 1
+    pkiClientExtensions "${ext}" || return 1
+    pkiSignCSR "${csr}" "${int_cert}" "${int_priv_key}" "${cert}" \
+        "${CLIENT_CERT_VALIDITY_DAYS}" "${ext}" || return 1
+    cat "${cert}" "${int_cert}" > "${chain}" || return 1
+    openssl x509 -noout -text -in "${cert}"
+}
+
+# Create a complete client certificate on the CA side, for a client that does not
+# create its own key: key, public key, CSR, certificate and chain file.
+# Args: TANK_CERTS_DIR CLIENT_NAME ROOT_DOMAIN
+pkiCreateClientCert() {
+    local tank_certs_dir="${1}"
+    local client_name="${2}"
+    local root_domain="${3}"
+
+    pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
+    pkiDoClientCertRequest "${tank_certs_dir}" "${client_name}" || return 1
+    pkiDoClientSigning "${tank_certs_dir}" "${client_name}" "${root_domain}" || return 1
 }

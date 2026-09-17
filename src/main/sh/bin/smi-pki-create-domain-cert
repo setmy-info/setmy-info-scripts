@@ -2,11 +2,18 @@
 
 . $(smi-include pki.sh)
 
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $(basename "$0") DIRECTORY DOMAIN_NAME [ROOT_DOMAIN]" >&2
+    exit 1
+fi
+
 OUT_DIR="${1}"
 DOMAIN="${2}"
+ROOT_DOMAIN="${3:-}"
 
-# smi-pki-create-domain-cert /tmp/abc "ldap.has.ee.gintra"
+# smi-pki-create-domain-cert /tmp/abc "ldap.has.ee.gintra"                # CA of has.ee.gintra
+# smi-pki-create-domain-cert /tmp/abc "setmy.info.gintra" "gintra"        # CA of gintra
 
-pkiCreateDomainCert "${OUT_DIR}" "${DOMAIN}"
+pkiCreateDomainCert "${OUT_DIR}" "${DOMAIN}" "${ROOT_DOMAIN}"
 
-exit 0
+exit ${?}

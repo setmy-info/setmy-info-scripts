@@ -262,15 +262,49 @@ pkiDoCertRequest() {
     pkiCreateCSR "${priv_key}" "${csr}" "${subject}" "DNS:${domain_name}" || return 1
 }
 
+# Print the root domain the CA files are named by: ROOT_DOMAIN when given, otherwise
+# DOMAIN_NAME with its first label removed ("ldap.has.ee.gintra" -> "has.ee.gintra").
+# Args: DOMAIN_NAME [ROOT_DOMAIN]
+pkiRootDomain() {
+    local domain_name="${1}"
+    local root_domain="${2:-}"
+
+    if [ -n "${root_domain}" ]; then
+        printf '%s' "${root_domain}"
+    else
+        printf '%s' "${domain_name#*.}"
+    fi
+}
+
+# Fail with a message naming the missing file unless the Intermediate CA key and
+# certificate of ROOT_DOMAIN exist in TANK_CERTS_DIR/ca.
+# Args: TANK_CERTS_DIR ROOT_DOMAIN
+pkiRequireIntermediateCA() {
+    local tank_certs_dir="${1}"
+    local root_domain="${2}"
+
+    local ca_file
+    for ca_file in \
+        "${tank_certs_dir}/ca/${root_domain}.intermediate.${CERT_PRIVATE_KEY_SUFFIX}" \
+        "${tank_certs_dir}/ca/${root_domain}.intermediate.${CERT_SUFFIX}"; do
+        if [ ! -f "${ca_file}" ]; then
+            echo "Intermediate CA of root domain '${root_domain}' not found: ${ca_file}" >&2
+            echo "Give the root domain the CA was created with, or create it with smi-pki-start-intermediate-ca" >&2
+            return 1
+        fi
+    done
+}
+
 # Sign a server CSR with the Intermediate CA, not the Root CA. The Intermediate
-# CA key and certificate are resolved from the ca directory by root domain, the
-# root domain being the requested domain with its first label removed.
-# Args: TANK_CERTS_DIR DOMAIN_NAME
+# CA key and certificate are resolved from the ca directory by root domain, see
+# pkiRootDomain.
+# Args: TANK_CERTS_DIR DOMAIN_NAME [ROOT_DOMAIN]
 pkiDoCASigning() {
     local tank_certs_dir="${1}"
     local domain_name="${2}"
 
-    local root_domain="${domain_name#*.}"
+    local root_domain
+    root_domain="$(pkiRootDomain "${domain_name}" "${3:-}")"
     local ca_dir="${tank_certs_dir}/ca"
     local int_priv_key="${ca_dir}/${root_domain}.intermediate.${CERT_PRIVATE_KEY_SUFFIX}"
     local int_cert="${ca_dir}/${root_domain}.intermediate.${CERT_SUFFIX}"
@@ -278,6 +312,7 @@ pkiDoCASigning() {
     local cert="${tank_certs_dir}/${domain_name}.${CERT_SUFFIX}"
     local ext="${tank_certs_dir}/${domain_name}.${CERT_EXTENSION_SUFFIX}"
 
+    pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
     pkiServerExtensions "${ext}" "DNS:${domain_name}" || return 1
     pkiSignCSR "${csr}" "${int_cert}" "${int_priv_key}" "${cert}" \
         "${SERVER_CERT_VALIDITY_DAYS}" "${ext}" || return 1
@@ -286,11 +321,16 @@ pkiDoCASigning() {
 }
 
 # Create a complete server certificate: key, public key, CSR and the certificate
-# signed by the Intermediate CA.
-# Args: TANK_CERTS_DIR DOMAIN_NAME
+# signed by the Intermediate CA. The Intermediate CA is checked before any server
+# key is generated, so a wrong root domain leaves no half made files behind.
+# Args: TANK_CERTS_DIR DOMAIN_NAME [ROOT_DOMAIN]
 pkiCreateDomainCert() {
     local tank_certs_dir="${1}"
     local domain_name="${2}"
+    local root_domain
+    root_domain="$(pkiRootDomain "${domain_name}" "${3:-}")"
+
+    pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
     pkiDoCertRequest "${tank_certs_dir}" "${domain_name}" || return 1
-    pkiDoCASigning "${tank_certs_dir}" "${domain_name}" || return 1
+    pkiDoCASigning "${tank_certs_dir}" "${domain_name}" "${root_domain}" || return 1
 }

@@ -3,7 +3,7 @@
 . $(smi-include pki.sh)
 
 if [ "$#" -lt 2 ]; then
-    echo "Usage: $(basename "$0") DIRECTORY DOMAIN_NAME" >&2
+    echo "Usage: $(basename "$0") DIRECTORY DOMAIN_NAME [ROOT_DOMAIN]" >&2
     exit 1
 fi
 

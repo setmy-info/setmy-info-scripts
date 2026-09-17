@@ -5,13 +5,18 @@ smi-pki-create-domain-cert \- Create a server certificate signed by the Intermed
 .B smi-pki-create-domain-cert
 .I DIRECTORY
 .I DOMAIN_NAME
+.RI [ ROOT_DOMAIN ]
 .SH DESCRIPTION
 .PP
 .B smi-pki-create-domain-cert
 generates a private key and a signed TLS server certificate for the specified \fIDOMAIN_NAME\fR,
 for example \fBldap.has.ee.gintra\fR.
 It requires that \fBsmi-pki-ca-create\fR(1) has already created the Root CA and Intermediate CA in
-\fIDIRECTORY\fR; the root domain is \fIDOMAIN_NAME\fR with its first label removed.
+\fIDIRECTORY\fR.
+The CA files are named by the root domain the CA was created with: \fIROOT_DOMAIN\fR when given,
+otherwise \fIDOMAIN_NAME\fR with its first label removed.
+The Intermediate CA is checked before anything is generated; when it is missing, the command names
+the file it looked for, creates no files and exits with 1.
 .PP
 The process:
 .IP 1.
@@ -31,6 +36,43 @@ The domain key, CSR and certificate are written in \fIDIRECTORY\fR itself, outsi
 subdirectory.
 Because the certificate chains to the Root CA through the Intermediate CA, a client that trusts the
 Root CA trusts it without any per-certificate installation.
+.SH ARGUMENTS
+.TP
+.I DIRECTORY
+PKI directory: the CA files are read from its \fBca\fR subdirectory, the server files are written
+into it.
+.TP
+.I DOMAIN_NAME
+Host name of the server certificate, used as Common Name and \fBsubjectAltName\fR.
+.TP
+.I ROOT_DOMAIN
+Root domain given to \fBsmi-pki-ca-create\fR(1), which selects
+\fBca/\fIROOT_DOMAIN\fB.intermediate.crt\fR and \fB.intermediate.priv.key\fR.
+Optional; needed whenever the CA root domain is not \fIDOMAIN_NAME\fR minus its first label, for
+example a CA created for \fBgintra\fR and a server \fBsetmy.info.gintra\fR.
+.SH EXAMPLES
+.PP
+CA created for \fBhas.ee.gintra\fR, root domain derived from the host name:
+.RS
+.nf
+smi-pki-create-domain-cert /var/opt/pki ldap.has.ee.gintra
+.fi
+.RE
+.PP
+CA created for \fBgintra\fR, a host two labels below it:
+.RS
+.nf
+smi-pki-ca-create /var/opt/pki gintra true
+smi-pki-create-domain-cert /var/opt/pki setmy.info.gintra gintra
+.fi
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+The certificate was created.
+.TP
+.B 1
+Wrong usage, the Intermediate CA was not found, or an OpenSSL step failed.
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
@@ -40,5 +82,6 @@ Report smi-pki-create-domain-cert bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
 .BR smi-pki-ca-create (1),
+.BR smi-pki-do-ca-signing (1),
 .BR openssl (1)
 

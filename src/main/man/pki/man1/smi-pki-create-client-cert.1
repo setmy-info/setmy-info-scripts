@@ -7,7 +7,9 @@ smi-pki-create-client-cert \- Create a complete client certificate on the CA sid
 .SH DESCRIPTION
 .PP
 Runs \fBsmi-pki-do-client-cert-request\fR(1) and \fBsmi-pki-do-client-signing\fR(1) in one go, for a client that does not create its own key, such as an internal service.
-Writes \fICLIENT_NAME\fB.client.priv.key\fR, \fB.client.pub.key\fR, \fB.client.csr\fR, \fB.client.crt\fR, \fB.client.ext\fR and \fB.client.chain.crt\fR in \fIDIRECTORY\fR.
+Writes \fICLIENT_NAME\fB.client.priv.key\fR, \fB.client.pub.key\fR, \fB.client.csr\fR, \fB.client.crt\fR, \fB.client.ext\fR, \fB.client.chain.crt\fR and the PKCS#12 bundle \fB.client.p12\fR in \fIDIRECTORY\fR.
+The bundle holds the key, the certificate and the Intermediate CA in one file, so the client imports it into a browser or a Java keystore without handling PEM files; see \fBsmi-pki-export-client-pkcs12\fR(1).
+Its export password comes from \fBSMI_PKI_PKCS12_PASSWORD\fR, and without that variable OpenSSL asks for it on the terminal, so the command is interactive unless the variable is set.
 The Intermediate CA of \fIROOT_DOMAIN\fR is checked first, so nothing is generated when it is missing.
 .PP
 The private key is created on the CA side and has to be delivered to the client securely; when the client can run \fBsmi-pki-do-client-cert-request\fR(1) itself, prefer that, so the key never leaves the client.
@@ -15,10 +17,15 @@ It is a thin command line wrapper over the matching function in the file based P
 \fBpki.sh\fR, so each step of building a CA and signing certificates can be run and inspected
 on its own. All material is passed as file names; the command fails if the underlying OpenSSL
 operation fails.
+.SH ENVIRONMENT
+.TP
+.B SMI_PKI_PKCS12_PASSWORD
+Export password of the \fB.client.p12\fR bundle. Unset means asking on the terminal.
 .SH EXAMPLE
 .RS
 .nf
-smi-pki-create-client-cert /var/opt/pki intranet-bot gintra
+SMI_PKI_PKCS12_PASSWORD=secret \\
+    smi-pki-create-client-cert /var/opt/pki intranet-bot gintra
 .fi
 .RE
 .SH SEE ALSO
@@ -27,6 +34,7 @@ smi-pki-create-client-cert /var/opt/pki intranet-bot gintra
 .BR smi-pki-do-client-signing (1),
 .BR smi-pki-create-client-cert (1),
 .BR smi-pki-client-extensions (1),
+.BR smi-pki-export-client-pkcs12 (1),
 .BR smi-pki-ca-create (1),
 .BR openssl (1)
 .SH AUTHOR

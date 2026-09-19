@@ -8,10 +8,13 @@ rm -f /opt/${SMI_PROVIDER}/bin/smi-test
 rm -f /opt/${SMI_PROVIDER}/lib/incoming/angular-start-project.sh
 if command -v systemctl >/dev/null 2>&1; then
     systemctl disable --now setmy-info-deploy.path || true
+    systemctl disable --now setmy-info-external-ip.timer || true
 fi
 rm -f /etc/systemd/system/example.service
 rm -f /etc/systemd/system/setmy-info-deploy.path
 rm -f /etc/systemd/system/setmy-info-deploy.service
+rm -f /etc/systemd/system/setmy-info-external-ip.service
+rm -f /etc/systemd/system/setmy-info-external-ip.timer
 if command -v systemctl >/dev/null 2>&1; then
     systemctl daemon-reload || true
 fi

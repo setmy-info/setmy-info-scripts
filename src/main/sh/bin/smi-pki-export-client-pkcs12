@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include pki.sh)
+
+if [ "$#" -lt 3 ]; then
+    echo "Usage: $(basename "$0") DIRECTORY CLIENT_NAME ROOT_DOMAIN" >&2
+    echo "Export password from SMI_PKI_PKCS12_PASSWORD, asked on the terminal when unset" >&2
+    exit 1
+fi
+
+pkiExportClientPkcs12 "$@"
+
+exit ${?}

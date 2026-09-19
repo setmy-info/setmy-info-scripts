@@ -26,6 +26,7 @@ CERT_PUBLIC_KEY_SUFFIX=pub.key
 CERT_REQUEST_SUFFIX=csr
 CERT_SUFFIX=crt
 CERT_EXTENSION_SUFFIX=ext
+CERT_PKCS12_SUFFIX=p12
 SUBJECT_FILE=subject.sh
     # The subject file, loaded from TANK_CERTS_DIR, defines:
     # COUNTRY="EE"
@@ -117,6 +118,33 @@ pkiSignCSR() {
     openssl x509 -req -in "${csr_file}" \
         -CA "${ca_cert_file}" -CAkey "${ca_key_file}" -CAcreateserial \
         -days "${days}" -extfile "${ext_file}" -out "${cert_file}"
+}
+
+# Bundle a private key and its certificate into a PKCS#12 file, the single file
+# format browsers, Java keystores and many clients import. CA_CERT_FILE, when given,
+# is added to the bundle as the chain, so the client also presents the Intermediate CA.
+# The export password is read from SMI_PKI_PKCS12_PASSWORD when it is set, never from
+# the command line where the process list would show it; without the variable OpenSSL
+# asks for it on the terminal.
+# Args: PRIV_KEY_FILE CERT_FILE P12_FILE FRIENDLY_NAME [CA_CERT_FILE]
+pkiExportPkcs12() {
+    local priv_key_file="${1}"
+    local cert_file="${2}"
+    local p12_file="${3}"
+    local friendly_name="${4}"
+    local ca_cert_file="${5:-}"
+
+    set -- -export -inkey "${priv_key_file}" -in "${cert_file}" \
+        -out "${p12_file}" -name "${friendly_name}"
+    if [ -n "${ca_cert_file}" ]; then
+        set -- "$@" -certfile "${ca_cert_file}"
+    fi
+    if [ -n "${SMI_PKI_PKCS12_PASSWORD:-}" ]; then
+        set -- "$@" -passout env:SMI_PKI_PKCS12_PASSWORD
+    fi
+
+    openssl pkcs12 "$@" || return 1
+    chmod 600 "${p12_file}"
 }
 
 # ==========================================================================
@@ -429,8 +457,25 @@ pkiDoClientSigning() {
     openssl x509 -noout -text -in "${cert}"
 }
 
+# Bundle an issued client certificate, its private key and the Intermediate CA of
+# ROOT_DOMAIN into <client-name>.client.p12, for a client that imports one file.
+# Args: TANK_CERTS_DIR CLIENT_NAME ROOT_DOMAIN
+pkiExportClientPkcs12() {
+    local tank_certs_dir="${1}"
+    local client_name="${2}"
+    local root_domain="${3}"
+
+    local priv_key="${tank_certs_dir}/${client_name}.client.${CERT_PRIVATE_KEY_SUFFIX}"
+    local cert="${tank_certs_dir}/${client_name}.client.${CERT_SUFFIX}"
+    local int_cert="${tank_certs_dir}/ca/${root_domain}.intermediate.${CERT_SUFFIX}"
+    local p12="${tank_certs_dir}/${client_name}.client.${CERT_PKCS12_SUFFIX}"
+
+    pkiExportPkcs12 "${priv_key}" "${cert}" "${p12}" "${client_name}" "${int_cert}"
+}
+
 # Create a complete client certificate on the CA side, for a client that does not
-# create its own key: key, public key, CSR, certificate and chain file.
+# create its own key: key, public key, CSR, certificate, chain file and PKCS#12
+# bundle. The client needs only the .client.p12 file and its password.
 # Args: TANK_CERTS_DIR CLIENT_NAME ROOT_DOMAIN
 pkiCreateClientCert() {
     local tank_certs_dir="${1}"
@@ -440,4 +485,5 @@ pkiCreateClientCert() {
     pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
     pkiDoClientCertRequest "${tank_certs_dir}" "${client_name}" || return 1
     pkiDoClientSigning "${tank_certs_dir}" "${client_name}" "${root_domain}" || return 1
+    pkiExportClientPkcs12 "${tank_certs_dir}" "${client_name}" "${root_domain}" || return 1
 }

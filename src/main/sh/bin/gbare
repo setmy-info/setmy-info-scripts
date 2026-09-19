@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+REPO_NAME=${1}
+git init --bare ${REPO_NAME}.git
+
+exit ${?}

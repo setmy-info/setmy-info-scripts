@@ -15,8 +15,11 @@ if command -v systemctl >/dev/null 2>&1; then
     ln -f -s /opt/${SMI_PROVIDER}/etc/systemd/system/example.service /etc/systemd/system/example.service
     ln -f -s /opt/${SMI_PROVIDER}/etc/systemd/system/setmy-info-deploy.path /etc/systemd/system/setmy-info-deploy.path
     ln -f -s /opt/${SMI_PROVIDER}/etc/systemd/system/setmy-info-deploy.service /etc/systemd/system/setmy-info-deploy.service
+    ln -f -s /opt/${SMI_PROVIDER}/etc/systemd/system/setmy-info-external-ip.service /etc/systemd/system/setmy-info-external-ip.service
+    ln -f -s /opt/${SMI_PROVIDER}/etc/systemd/system/setmy-info-external-ip.timer /etc/systemd/system/setmy-info-external-ip.timer
     systemctl daemon-reload || true
     systemctl enable --now setmy-info-deploy.path || true
+    systemctl enable --now setmy-info-external-ip.timer || true
 fi
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-test
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-stealer

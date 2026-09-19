@@ -1,0 +1,38 @@
+.TH smi-pki-export-client-pkcs12 "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-export-client-pkcs12 \- Bundle an issued client certificate into a PKCS#12 file
+.SH SYNOPSIS
+.B smi-pki-export-client-pkcs12
+.I DIRECTORY CLIENT_NAME ROOT_DOMAIN
+.SH DESCRIPTION
+.PP
+Bundles \fIDIRECTORY\fB/\fICLIENT_NAME\fB.client.priv.key\fR, \fB.client.crt\fR and the Intermediate
+CA \fBca/\fIROOT_DOMAIN\fB.intermediate.crt\fR into \fICLIENT_NAME\fB.client.p12\fR, mode \fB600\fR,
+under the alias \fICLIENT_NAME\fR.
+.PP
+It is the CA side form of \fBsmi-pki-export-pkcs12\fR(1) with the client file naming, for clients
+whose key the CA side created with \fBsmi-pki-create-client-cert\fR(1), which runs this command
+itself. A client that made its own key and received only a certificate uses
+\fBsmi-pki-export-pkcs12\fR(1) instead, because its private key never reached the CA side.
+.PP
+The export password is taken from
+.SM SMI_PKI_PKCS12_PASSWORD
+when set, never from the command line; without it OpenSSL asks on the terminal.
+.SH ENVIRONMENT
+.TP
+.B SMI_PKI_PKCS12_PASSWORD
+Export password of the PKCS#12 file. Unset means asking on the terminal.
+.SH EXAMPLE
+.RS
+.nf
+SMI_PKI_PKCS12_PASSWORD=secret \\
+    smi-pki-export-client-pkcs12 /var/opt/pki intranet-bot gintra
+.fi
+.RE
+.SH SEE ALSO
+.BR smi-pki-export-pkcs12 (1),
+.BR smi-pki-create-client-cert (1),
+.BR smi-pki-do-client-signing (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

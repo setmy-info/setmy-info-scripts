@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+OUTPUT_FILE="${1:-}"
+
+for SOURCE in https://icanhazip.com https://ifconfig.me https://api.ipify.org; do
+    EXTERNAL_IP=$(curl -fsS --max-time 5 "${SOURCE}" 2>/dev/null | tr -d '[:space:]')
+    case "${EXTERNAL_IP}" in
+        ''|*[!0-9A-Fa-f.:]*)
+            continue
+            ;;
+    esac
+    printf '%s\n' "${EXTERNAL_IP}"
+    if [ -n "${OUTPUT_FILE}" ]; then
+        printf '%s\n' "${EXTERNAL_IP}" > "${OUTPUT_FILE}.tmp" && mv -f "${OUTPUT_FILE}.tmp" "${OUTPUT_FILE}"
+        exit ${?}
+    fi
+    exit 0
+done
+
+echo "smi-external-ip: external IP address not found from any source" >&2
+exit 1

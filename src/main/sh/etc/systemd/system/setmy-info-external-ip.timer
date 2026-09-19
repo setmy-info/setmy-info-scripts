@@ -1,0 +1,10 @@
+[Unit]
+Description=setmy.info external IP address update every half hour
+
+[Timer]
+OnCalendar=*-*-* *:00,30:00
+OnActiveSec=1min
+Unit=setmy-info-external-ip.service
+
+[Install]
+WantedBy=timers.target

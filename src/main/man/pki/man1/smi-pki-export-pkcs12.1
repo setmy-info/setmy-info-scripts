@@ -1,0 +1,50 @@
+.TH smi-pki-export-pkcs12 "1" "September 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-export-pkcs12 \- Bundle a private key and its certificate into a PKCS#12 file
+.SH SYNOPSIS
+.B smi-pki-export-pkcs12
+.I PRIV_KEY_FILE CERT_FILE P12_FILE FRIENDLY_NAME
+.RI [ CA_CERT_FILE ]
+.SH DESCRIPTION
+.PP
+Writes \fIP12_FILE\fR, a PKCS#12 bundle of \fIPRIV_KEY_FILE\fR and \fICERT_FILE\fR under the alias
+\fIFRIENDLY_NAME\fR, mode \fB600\fR.
+PKCS#12 is the single file format that browsers, Java keystores, .NET and many clients import;
+the PEM key and certificate are separate files.
+.PP
+\fICA_CERT_FILE\fR, when given, is added to the bundle as the chain, so a client also presents the
+Intermediate CA. Give the Intermediate CA certificate itself, not a chain file that already
+contains the client certificate, or the client certificate ends up in the bundle twice.
+.PP
+The export password is taken from
+.SM SMI_PKI_PKCS12_PASSWORD
+when that variable is set, never from the command line, where the process list would show it to
+every user on the machine.
+Without the variable OpenSSL asks for the password on the terminal; with no terminal the command
+fails and writes no file.
+.PP
+The file is written with the OpenSSL 3 defaults, AES-256-CBC and PBKDF2. Very old clients that
+cannot read those need a bundle made with the OpenSSL
+.B -legacy
+option.
+.SH ENVIRONMENT
+.TP
+.B SMI_PKI_PKCS12_PASSWORD
+Export password of the PKCS#12 file. Unset means asking on the terminal.
+.SH EXAMPLE
+.PP
+On the client side, from the key it created and the certificate it received:
+.RS
+.nf
+SMI_PKI_PKCS12_PASSWORD=secret smi-pki-export-pkcs12 \\
+    acme-billing.client.priv.key acme-billing.client.crt \\
+    acme-billing.client.p12 acme-billing gintra.intermediate.crt
+.fi
+.RE
+.SH SEE ALSO
+.BR smi-pki-export-client-pkcs12 (1),
+.BR smi-pki-do-client-cert-request (1),
+.BR smi-pki-create-client-cert (1),
+.BR openssl (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

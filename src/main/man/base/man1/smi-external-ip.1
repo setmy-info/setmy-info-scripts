@@ -1,0 +1,89 @@
+.TH smi-external-ip "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-external-ip \- Print the external Internet IP address of this machine
+.SH SYNOPSIS
+.B smi-external-ip
+.RI [ FILE ]
+.SH DESCRIPTION
+.PP
+.B smi-external-ip
+asks public IP echo services for the address this machine is seen from on the Internet
+and prints only that address, one line, so it can be used in scripts.
+.PP
+The services are tried in order and the first valid answer is printed:
+.IP 1. 4
+.B https://icanhazip.com
+.IP 2. 4
+.B https://ifconfig.me
+.IP 3. 4
+.B https://api.ipify.org
+.PP
+Each request is made with
+.BR curl (1)
+and a 5 second time limit.
+A service is skipped when it cannot be reached, answers with an HTTP error, or answers with
+anything that is not an IPv4 or IPv6 address, such as the login page of a captive portal.
+Whether an IPv4 or an IPv6 address is printed depends on how the machine reaches the service.
+.PP
+When \fIFILE\fR is given, the address is also written to it, one line.
+The file is replaced through \fIFILE\fB.tmp\fR and \fBmv\fR, so a reader never sees a half written
+file, and it is left untouched when no service gives an address, so it keeps the last known address.
+.SH TIMER
+.PP
+The package installs
+.B setmy-info-external-ip.timer
+and
+.BR setmy-info-external-ip.service ,
+linked into
+.I /etc/systemd/system
+and enabled by the rpm and deb install scripts.
+The timer runs the service every half hour, at minute 00 and 30, and once one minute after it is
+activated, at installation and at every boot, so the file is filled without waiting for the next
+half hour.
+The service runs
+.B smi-external-ip /var/opt/setmy.info/ip.txt
+as a oneshot job after the network is online; the printed address also lands in the journal.
+.PP
+.RS
+.nf
+systemctl list-timers setmy-info-external-ip.timer
+journalctl -u setmy-info-external-ip.service
+cat /var/opt/setmy.info/ip.txt
+.fi
+.RE
+.SH FILES
+.TP
+.I /var/opt/setmy.info/ip.txt
+External IP address written by the timer.
+.TP
+.I /opt/setmy.info/etc/systemd/system/setmy-info-external-ip.timer
+.TQ
+.I /opt/setmy.info/etc/systemd/system/setmy-info-external-ip.service
+The timer and the service it starts.
+.SH EXIT STATUS
+.TP
+.B 0
+The address was printed, and written to \fIFILE\fR when given.
+.TP
+.B 1
+No service gave an address, or \fIFILE\fR could not be written; an error message is printed
+to standard error.
+.SH EXAMPLES
+.PP
+.RS
+.nf
+smi-external-ip
+EXTERNAL_IP=$(smi-external-ip) || exit 1
+smi-external-ip /var/opt/setmy.info/ip.txt
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-external-ip bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR curl (1),
+.BR systemd.timer (5)

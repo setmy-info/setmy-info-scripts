@@ -186,7 +186,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                echo "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && smi-new-tag \${SCRIPTS_VERSION}"
+                runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && smi-new-tag \${SCRIPTS_VERSION}"
             }
         }
     }

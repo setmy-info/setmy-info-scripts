@@ -37,9 +37,9 @@ and
 linked into
 .I /etc/systemd/system
 and enabled by the rpm and deb install scripts.
-The timer runs the service every half hour, at minute 00 and 30, and once one minute after it is
+The timer runs the service once an hour at half past, minute 30 only, and once one minute after it is
 activated, at installation and at every boot, so the file is filled without waiting for the next
-half hour.
+half past.
 The service runs
 .B smi-external-ip /var/opt/setmy.info/ip.txt
 as a oneshot job after the network is online; the printed address also lands in the journal.

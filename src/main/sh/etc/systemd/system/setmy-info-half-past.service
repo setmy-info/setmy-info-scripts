@@ -1,0 +1,9 @@
+[Unit]
+Description=setmy.info half past plugins
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/opt/setmy.info/bin/smi-half-past-run

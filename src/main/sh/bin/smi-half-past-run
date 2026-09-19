@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+PATH="$(dirname "$0"):${PATH}"
+export PATH
+
+PLUGINS_DIR="$(smi-lib-location)/half-past"
+RESULT=0
+LC_ALL=C
+
+if [ ! -d "${PLUGINS_DIR}" ]; then
+    exit 0
+fi
+
+for script in "${PLUGINS_DIR}"/*.sh; do
+    [ -x "${script}" ] || continue
+    if ! "${script}"; then
+        echo "smi-half-past-run: plugin failed: ${script}" >&2
+        RESULT=1
+    fi
+done
+
+exit ${RESULT}

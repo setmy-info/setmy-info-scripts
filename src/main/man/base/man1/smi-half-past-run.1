@@ -1,0 +1,108 @@
+.TH smi-half-past-run "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-half-past-run \- Run the half past plugins, at half past every hour
+.SH SYNOPSIS
+.B smi-half-past-run
+.SH DESCRIPTION
+.PP
+.B smi-half-past-run
+runs every executable
+.B .sh
+plugin in the
+.B half-past
+directory of the setmy.info lib directory,
+.I /opt/setmy.info/lib/half-past
+in an installed package, one after another, without arguments.
+It is the time based counterpart of
+.BR smi-incoming-deploy (1),
+which runs its plugins on file system events.
+.PP
+Plugins run in the byte order of their file names, sorted in the C locale whatever the system
+language is. Prefix the names with two digits to set the order:
+.BR 00_ ,
+.BR 10_ ,
+.BR 20_ ,
+and so on, leaving gaps so a plugin can be put in between later.
+A file that is not executable is skipped.
+.PP
+A failing plugin does not stop the others: its name is reported on standard error, the
+remaining plugins still run, and the command exits with 1 at the end so the systemd service
+shows the failure.
+A missing plugin directory is not an error.
+.PP
+The directory holding the command itself is put first on
+.BR PATH ,
+so plugins can call the other setmy.info commands by name, such as
+.BR smi-var-location (1),
+also when started by systemd, whose
+.B PATH
+does not contain it.
+.SH TIMER
+.PP
+The package installs
+.B setmy-info-half-past.timer
+and
+.BR setmy-info-half-past.service ,
+linked into
+.I /etc/systemd/system
+and enabled by the rpm and deb install scripts.
+The timer starts the service at half past every hour, 00:30, 01:30, 02:30 and so on, once an hour,
+and once one minute after
+it is activated, at installation and at every boot.
+The service runs
+.B smi-half-past-run
+as root, after the network is online.
+.PP
+.RS
+.nf
+systemctl list-timers setmy-info-half-past.timer
+journalctl -u setmy-info-half-past.service
+.fi
+.RE
+.SH PLUGINS
+.PP
+Plugins shipped with the package, from
+.I src/main/sh/lib/half-past
+in the sources; every executable
+.B .sh
+file placed there is built and installed into
+.I lib/half-past
+without further changes:
+.TP
+.I 10_external-ip.sh
+Writes the external Internet IP address to
+.B ip.txt
+in the directory
+.BR smi-var-location (1)
+prints, with
+.BR smi-external-ip (1).
+.SH FILES
+.TP
+.I /opt/setmy.info/lib/half-past
+Half past plugins, executable
+.B .sh
+files.
+.TP
+.I /opt/setmy.info/etc/systemd/system/setmy-info-half-past.timer
+.TQ
+.I /opt/setmy.info/etc/systemd/system/setmy-info-half-past.service
+The timer and the service it starts.
+.SH EXIT STATUS
+.TP
+.B 0
+Every plugin succeeded, or there was nothing to run.
+.TP
+.B 1
+At least one plugin failed.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-half-past-run bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-external-ip (1),
+.BR smi-incoming-deploy (1),
+.BR smi-lib-location (1),
+.BR systemd.timer (5)

@@ -1,9 +1,0 @@
-[Unit]
-Description=setmy.info external IP address update
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-Type=oneshot
-User=root
-ExecStart=/opt/setmy.info/bin/smi-external-ip /var/opt/setmy.info/ip.txt

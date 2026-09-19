@@ -55,6 +55,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-download-package"       DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-upload"                 DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-remote-exec"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-external-ip"            DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-half-past-run"             DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-install-package"       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-temp-location"          DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-home-location"          DESTINATION bin)

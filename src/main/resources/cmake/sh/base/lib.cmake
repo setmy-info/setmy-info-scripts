@@ -11,7 +11,7 @@ INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/base64encode.py"               DESTINATION
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/radians.groovy"                DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/degrees.groovy"                DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/uuid.groovy"                   DESTINATION lib)
-INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/jenkinsfile.groovy"             DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/jenkinsfile.groovy"            DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/smi-cl-test.lisp"              DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/quicklisp-user-setup.lisp"     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/elixir.sh"                     DESTINATION lib)
@@ -19,6 +19,7 @@ INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/cl.sh"                         DESTINATION
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/crypto.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/pki.sh"                        DESTINATION lib)
 INSTALL(PROGRAMS "${LIBRARY_OUTPUT_PATH}/smi-incoming-deploy.sh"     DESTINATION lib)
+INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/half-past"                 DESTINATION lib USE_SOURCE_PERMISSIONS)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/remote.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/openssl.ca.ext.file.txt"       DESTINATION lib)
 

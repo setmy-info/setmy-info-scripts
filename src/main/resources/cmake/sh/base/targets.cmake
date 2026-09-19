@@ -17,6 +17,7 @@ ADD_CUSTOM_TARGET(makeDirectories
     mkdir -p ${LIBRARY_OUTPUT_PATH}/packages &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/elixir &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/cl &&
+    mkdir -p ${LIBRARY_OUTPUT_PATH}/half-past &&
     mkdir -p ${ETC_PROFILED_OUTPUT_PATH} &&
     mkdir -p ${INCLUDE_OUTPUT_PATH} &&
     mkdir -p ${ETC_SYSTEM_OUTPUT_PATH} &&
@@ -29,6 +30,7 @@ ADD_CUSTOM_TARGET(buildMan             cp ${BASE_MAN_SOURCES_PATH}/man1/*.1 ${MA
 ADD_CUSTOM_TARGET(buildEtc             cp -R ${MAIN_SH_SOURCES_PATH}/etc/profile.d/* ${ETC_OUTPUT_PATH}/profile.d)
 ADD_CUSTOM_TARGET(buildLibShells       cp ${MAIN_SH_SOURCES_PATH}/lib/*.sh ${LIBRARY_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/lib/*.txt ${LIBRARY_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildShellScripts    cp ${MAIN_SH_SOURCES_PATH}/bin/* ${BINARY_OUTPUT_PATH})
+ADD_CUSTOM_TARGET(buildHalfPastPlugins cp ${MAIN_SH_SOURCES_PATH}/lib/half-past/*.sh ${LIBRARY_OUTPUT_PATH}/half-past)
 ADD_CUSTOM_TARGET(buildServiceScripts  cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/*.service ${ETC_SYSTEM_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/*.path ${ETC_SYSTEM_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/*.timer ${ETC_SYSTEM_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/environment.conf ${ETC_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildYumReposScripts cp ${MAIN_SH_SOURCES_PATH}/etc/yum.repos.d/*.repo ${ETC_YUM_REPOS_PATH})
 

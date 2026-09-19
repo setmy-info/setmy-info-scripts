@@ -28,38 +28,37 @@ Whether an IPv4 or an IPv6 address is printed depends on how the machine reaches
 When \fIFILE\fR is given, the address is also written to it, one line.
 The file is replaced through \fIFILE\fB.tmp\fR and \fBmv\fR, so a reader never sees a half written
 file, and it is left untouched when no service gives an address, so it keeps the last known address.
-.SH TIMER
+.SH HALF PAST PLUGIN
 .PP
-The package installs
-.B setmy-info-external-ip.timer
-and
-.BR setmy-info-external-ip.service ,
-linked into
-.I /etc/systemd/system
-and enabled by the rpm and deb install scripts.
-The timer runs the service once an hour at half past, minute 30 only, and once one minute after it is
-activated, at installation and at every boot, so the file is filled without waiting for the next
-half past.
-The service runs
-.B smi-external-ip /var/opt/setmy.info/ip.txt
-as a oneshot job after the network is online; the printed address also lands in the journal.
+The package ships the half past plugin
+.IR /opt/setmy.info/lib/half-past/10_external-ip.sh ,
+which
+.BR smi-half-past-run (1)
+runs from
+.B setmy-info-half-past.timer
+at half past every hour and one minute after boot.
+It calls
+.B smi-external-ip
+with
+.B ip.txt
+in the directory
+.BR smi-var-location (1)
+prints, so the address is kept up to date there; the printed address also lands in the journal.
 .PP
 .RS
 .nf
-systemctl list-timers setmy-info-external-ip.timer
-journalctl -u setmy-info-external-ip.service
+systemctl list-timers setmy-info-half-past.timer
+journalctl -u setmy-info-half-past.service
 cat /var/opt/setmy.info/ip.txt
 .fi
 .RE
 .SH FILES
 .TP
 .I /var/opt/setmy.info/ip.txt
-External IP address written by the timer.
+External IP address written by the half past plugin.
 .TP
-.I /opt/setmy.info/etc/systemd/system/setmy-info-external-ip.timer
-.TQ
-.I /opt/setmy.info/etc/systemd/system/setmy-info-external-ip.service
-The timer and the service it starts.
+.I /opt/setmy.info/lib/half-past/10_external-ip.sh
+The half past plugin.
 .SH EXIT STATUS
 .TP
 .B 0
@@ -86,4 +85,5 @@ Report smi-external-ip bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
 .BR curl (1),
-.BR systemd.timer (5)
+.BR smi-half-past-run (1),
+.BR smi-var-location (1)

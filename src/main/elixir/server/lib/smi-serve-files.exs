@@ -27,17 +27,20 @@ defmodule SmiServeFiles do
     |> Map.new(fn line ->
       [host, dir] = String.split(line, ~r/\s+/, parts: 2)
       dir = Path.expand(String.trim(dir))
-      brand_dir = Path.join(dir, "brand")
-      apps_dir = Path.join(dir, "apps")
-
-      {String.downcase(host),
-       %{
-         brand: Plug.Static.init(at: "/", from: brand_dir),
-         apps: Plug.Static.init(at: "/apps", from: apps_dir),
-         index: Path.join(brand_dir, "index.html"),
-         apps_dir: apps_dir
-       }}
+      {String.downcase(host), %{"" => variant(dir), "draft" => variant(Path.join(dir, "draft"))}}
     end)
+  end
+
+  defp variant(dir) do
+    brand_dir = Path.join(dir, "brand")
+    apps_dir = Path.join(dir, "apps")
+
+    %{
+      brand: Plug.Static.init(at: "/", from: brand_dir),
+      apps: Plug.Static.init(at: "/apps", from: apps_dir),
+      index: Path.join(brand_dir, "index.html"),
+      apps_dir: apps_dir
+    }
   end
 
   def guard_path(conn, _opts) do
@@ -62,9 +65,22 @@ defmodule SmiServeFiles do
   def keep_method(conn, _opts), do: assign(conn, :method, conn.method)
 
   def serve_host(conn, _opts) do
-    case Map.fetch(hosts(), request_host(conn)) do
-      {:ok, host} -> Plug.Static.call(conn, static_for(conn, host))
+    case fetch_variant(conn) do
+      {:ok, variant} -> Plug.Static.call(conn, static_for(conn, variant))
       :error -> conn |> send_resp(404, "Not Found") |> halt()
+    end
+  end
+
+  defp fetch_variant(conn) do
+    with {:ok, variants} <- Map.fetch(hosts(), request_host(conn)) do
+      Map.fetch(variants, request_variant(conn))
+    end
+  end
+
+  defp request_variant(conn) do
+    case get_req_header(conn, "x-smi-variant") do
+      ["draft" | _] -> "draft"
+      _ -> ""
     end
   end
 
@@ -103,8 +119,8 @@ defmodule SmiServeFiles do
   defp clean(text), do: String.replace(text, ~r/[^\x20-\x7e]|"/, "?")
 
   get _ do
-    case Map.fetch(hosts(), request_host(conn)) do
-      {:ok, host} -> send_index(conn, fallback_index(conn, host))
+    case fetch_variant(conn) do
+      {:ok, variant} -> send_index(conn, fallback_index(conn, variant))
       :error -> send_resp(conn, 404, "Not Found")
     end
   end
@@ -149,8 +165,9 @@ end
     websocket_options: [enabled: false]
   )
 
-for {host, %{index: index, apps_dir: apps_dir}} <- Enum.sort(hosts) do
-  IO.puts("Serving #{host} brand from #{Path.dirname(index)} and apps from #{apps_dir}")
+for {host, variants} <- Enum.sort(hosts), {name, %{index: index, apps_dir: apps_dir}} <- Enum.sort(variants) do
+  label = if name == "", do: "live", else: name
+  IO.puts("Serving #{host} #{label} brand from #{Path.dirname(index)} and apps from #{apps_dir}")
 end
 
 IO.puts("Listening on http://127.0.0.1:#{port} as #{System.get_env("USER")}")

@@ -1,8 +1,10 @@
 #!/usr/bin/env groovy
 import org.openqa.selenium.By
+import org.openqa.selenium.UnexpectedAlertBehaviour
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxOptions
+import org.openqa.selenium.firefox.FirefoxProfile
 import picocli.CommandLine
 import picocli.CommandLine.Option
 
@@ -131,7 +133,7 @@ class Firefox implements Browser {
 
     @Override
     void init() {
-        options = new FirefoxOptions(binary: getPath())
+        options = BrowserOptions.of(getPath())
         driver = new FirefoxDriver(options)
     }
 
@@ -165,13 +167,36 @@ class Librewolf implements Browser {
 
     @Override
     void init() {
-        options = new FirefoxOptions(binary: getPath())
+        options = BrowserOptions.of(getPath())
         driver = new FirefoxDriver(options)
     }
 
     @Override
     void close() {
         driver.close()
+    }
+}
+
+/**
+ * Options shared by Firefox and LibreWolf.
+ *
+ * LibreWolf enables privacy.resistFingerprinting, which makes the browser ask on the first page
+ * whether English versions of web pages should be requested. That dialog is a confirmEx, and
+ * geckodriver reports an unexpected dialog for it, which ended the crawl of whatever package was
+ * being read at the time. privacy.spoof_english = 1 answers it once and for all: do not ask and
+ * do not spoof. The prompt behaviour is DISMISS rather than the default "dismiss and notify", so
+ * any other dialog a release page opens is closed without failing the command as well.
+ */
+class BrowserOptions {
+
+    static FirefoxOptions of(String binary) {
+        final FirefoxProfile profile = new FirefoxProfile()
+        profile.setPreference("privacy.spoof_english", 1)
+        profile.setPreference("intl.accept_languages", "en-US, en")
+        final FirefoxOptions options = new FirefoxOptions(binary: binary)
+        options.setProfile(profile)
+        options.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS)
+        return options
     }
 }
 

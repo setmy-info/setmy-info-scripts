@@ -1,4 +1,4 @@
-NGINX_VERSION=1.30.4-1
+NGINX_VERSION=1.30.5-1
 
 # https://nginx.org/en/download.html
 # https://nginx.org/en/linux_packages.html

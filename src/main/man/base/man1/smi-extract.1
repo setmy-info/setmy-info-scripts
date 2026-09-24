@@ -1,0 +1,118 @@
+.TH smi-extract "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-extract, smi-xvzf, smi-xvjf, smi-xvJf \- Extract a tar archive into a directory
+.SH SYNOPSIS
+.B smi-xvzf
+.I TAR_FILE DESTINATION_DIR
+.RB [ ALL_IN_ROOT= true ]
+.RB [ VERBOSE= false ]
+.SH DESCRIPTION
+.PP
+.B smi-extract
+extracts
+.I TAR_FILE
+into
+.IR DESTINATION_DIR ,
+creating the directory when it does not exist.
+By default the first path component of the archive is dropped, so an archive whose files sit
+under one top directory unpacks its contents directly into
+.IR DESTINATION_DIR .
+.PP
+The tar flags come from the name the command is started under: the part after the last
+.B -
+is appended to
+.BR tar\ -x .
+It is therefore used through its links, not by the name
+.BR smi-extract :
+.TP
+.B smi-xvzf
+gzip,
+.B .tar.gz
+and
+.BR .tgz .
+.TP
+.B smi-xvjf
+bzip2,
+.BR .tar.bz2 .
+.TP
+.B smi-xvJf
+xz,
+.BR .tar.xz .
+.PP
+The links are created in
+.I /opt/setmy.info/bin
+by the rpm and deb install scripts and removed again on uninstall.
+A link named
+.BI smi-x[v] {z|j|J} f
+works the same way, so
+.B smi-xzf
+is gzip as well.
+.SH ARGUMENTS
+.TP
+.I TAR_FILE
+Archive to extract.
+.TP
+.I DESTINATION_DIR
+Directory to extract into, created with
+.B mkdir -p
+when missing.
+.SH OPTIONS
+.PP
+Options are given after the two arguments, as
+.IR KEY = VALUE ,
+in any order. They are shell assignments, evaluated as written.
+.TP
+.B ALL_IN_ROOT=true
+Keeps the archive layout as it is,
+.BR --strip-components=0 ,
+for an archive whose files are already in its root.
+The default,
+.BR false ,
+drops the first path component,
+.BR --strip-components=1 .
+.TP
+.B VERBOSE=false
+Leaves out the
+.B v
+this option adds.
+The extracted files are listed by default.
+The links named
+.BI smi-xv ... f
+carry a
+.B v
+in the name as well, and that one is always part of the flags, so a quiet extraction needs both a
+link without it and the option:
+.B smi-xzf
+.I TAR_FILE DESTINATION_DIR
+.BR VERBOSE=false .
+.SH EXIT STATUS
+.PP
+The exit status of
+.BR tar (1).
+.SH EXAMPLES
+.PP
+Unpack a release whose files are under one top directory:
+.RS
+.nf
+smi-xvzf app-1.0.0.tar.gz /var/opt/a/deploy
+.fi
+.RE
+.PP
+Unpack an archive that has its files in the root:
+.RS
+.nf
+smi-xvJf site.tar.xz /usr/share/nginx/html ALL_IN_ROOT=true
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-extract bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR tar (1),
+.BR smi-download (1),
+.BR smi-restorecon (1),
+.BR smi-incoming-deploy (1)

@@ -51,6 +51,8 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-setup"            DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/quicklisp-user-setup"       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/microservice"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-download"               DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-extract"                DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-restorecon"             DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-download-package"       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-upload"                 DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-remote-exec"            DESTINATION bin)

@@ -29,6 +29,9 @@ if command -v systemctl >/dev/null 2>&1; then
 fi
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-test
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-stealer
+ln -f -s /opt/${SMI_PROVIDER}/bin/smi-extract /opt/${SMI_PROVIDER}/bin/smi-xvzf
+ln -f -s /opt/${SMI_PROVIDER}/bin/smi-extract /opt/${SMI_PROVIDER}/bin/smi-xvjf
+ln -f -s /opt/${SMI_PROVIDER}/bin/smi-extract /opt/${SMI_PROVIDER}/bin/smi-xvJf
 mkdir -p /opt/${SMI_PROVIDER}/lib/incoming
 ln -f -s /opt/${SMI_PROVIDER}/lib/smi-incoming-deploy.sh /opt/${SMI_PROVIDER}/lib/incoming/angular-start-project.sh
 mkdir -p /var/opt/${SMI_PROVIDER}

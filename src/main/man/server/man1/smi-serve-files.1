@@ -58,6 +58,30 @@ the same layout
 .BR nginx (8)
 serves from
 .IR /usr/share/nginx/vhosts/ .
+.PP
+Each host has a second, unreleased copy of that layout in
+.IR DIRECTORY/draft/ ,
+with its own
+.I brand
+and
+.I apps
+folders.
+A request is served from it, at the very same paths, when the proxy sends
+.PP
+.RS
+.B X-Smi-Variant: draft
+.RE
+.PP
+which the proxy does for a request carrying a valid preview cookie, and never on a client's say-so:
+the proxy deletes the header before it sets its own.
+A new build is copied to
+.I draft
+first, checked in place, and copied to the live folders once it is accepted.
+A host without a
+.I draft
+folder answers
+.B 404
+for such requests, so the header is harmless where no draft exists.
 The host is taken from
 .BR X-Forwarded-Host ,
 when the proxy sets it, otherwise from the
@@ -100,7 +124,10 @@ so a single page application resolves its own routes: for a path under
 it is
 .IR DIRECTORY/apps/APP/index.html ,
 for every other path
-.IR DIRECTORY/brand/index.html .
+.IR DIRECTORY/brand/index.html ,
+and below
+.I DIRECTORY/draft
+for a draft request.
 If that file is missing, the request gets
 .BR 404 .
 .PP
@@ -170,6 +197,13 @@ A directory is validated before it is served: it must be absolute, must not be
 must exist, and must contain only regular files and directories.
 It is then set to
 .BR root:root .
+.PP
+The last line counts even when the file does not end with a newline.
+A directory name must not contain whitespace, because the server reads the rest of the line as
+the directory while the shell wrapper reads one field, and the two would then secure and serve
+different directories; such a line is refused.
+The same host name twice is refused as well: the server would keep only the last mapping while
+the wrapper had already secured both directories.
 .SH REVERSE PROXY
 .PP
 The server listens on
@@ -203,6 +237,11 @@ backend files
     http-request set-header X-Forwarded-Host %[req.hdr(host),host_only,lower]
 
     server files 127.0.0.1:8140 maxconn 512
+
+frontend web_https
+    acl draft req.cook(draft) -m str -f /etc/haproxy/vhosts/draft-tokens.lst
+    http-request del-header X-Smi-Variant
+    http-request set-header X-Smi-Variant draft if draft
 .ft
 .fi
 .RE

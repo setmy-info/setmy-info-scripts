@@ -1,0 +1,48 @@
+.TH smi-restorecon "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-restorecon \- Restore the SELinux file contexts of a directory tree
+.SH SYNOPSIS
+.B smi-restorecon
+.I DIRECTORY
+.SH DESCRIPTION
+.PP
+.B smi-restorecon
+runs
+.B restorecon -Rv
+on
+.IR DIRECTORY ,
+resetting the SELinux file contexts of the whole tree to what the policy says they should be and
+printing every change.
+It is what a directory needs after files have been copied or unpacked into it from somewhere
+else, for example a web root filled from a deployment archive, which otherwise keeps the context
+of where it came from and is then refused by the service that should read it.
+.PP
+Changing the contexts of files of other users needs root.
+.SH ARGUMENTS
+.TP
+.I DIRECTORY
+Directory tree to relabel.
+.SH EXIT STATUS
+.PP
+The exit status of
+.BR restorecon (8).
+.SH EXAMPLES
+.PP
+After unpacking a site into the nginx web root:
+.RS
+.nf
+smi-xvzf site.tar.gz /usr/share/nginx/html ALL_IN_ROOT=true
+sudo smi-restorecon /usr/share/nginx/html
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-restorecon bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR restorecon (8),
+.BR selinux (8),
+.BR smi-extract (1)

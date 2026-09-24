@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+
+EXTRACT_PART=${0##*-}
+
+TAR_NAME=$1
+DESTINATION=$2
+shift 2
+
+ALL_IN_ROOT=false
+VERBOSE=true
+
+for OPTION
+do
+    eval "$OPTION"
+done
+
+mkdir -p "$DESTINATION"
+
+if [ "$VERBOSE" = true ]; then
+    TAR_VERBOSE=v
+else
+    TAR_VERBOSE=
+fi
+
+if [ "$ALL_IN_ROOT" = true ]; then
+    STRIP_COMPONENTS=0
+else
+    STRIP_COMPONENTS=1
+fi
+
+tar "-x${TAR_VERBOSE}${EXTRACT_PART#x}" "$TAR_NAME" \
+    -C "$DESTINATION" \
+    --strip-components="$STRIP_COMPONENTS"

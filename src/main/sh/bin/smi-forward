@@ -1,0 +1,67 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+
+ZONE=public
+NGINX_HTTP_PORT=8080
+NGINX_HTTPS_PORT=8081
+HAPROXY_HTTP_PORT=8090
+HAPROXY_HTTPS_PORT=8091
+
+COMMAND_NAME=${0##*/}
+
+error_exit() {
+    printf '%s: %s\n' "${COMMAND_NAME}" "$*" >&2
+    exit 1
+}
+
+case ${1:-} in
+    nginx)
+        TO_HTTP_PORT=${NGINX_HTTP_PORT}
+        TO_HTTPS_PORT=${NGINX_HTTPS_PORT}
+        FROM_HTTP_PORT=${HAPROXY_HTTP_PORT}
+        FROM_HTTPS_PORT=${HAPROXY_HTTPS_PORT}
+        ;;
+    haproxy)
+        TO_HTTP_PORT=${HAPROXY_HTTP_PORT}
+        TO_HTTPS_PORT=${HAPROXY_HTTPS_PORT}
+        FROM_HTTP_PORT=${NGINX_HTTP_PORT}
+        FROM_HTTPS_PORT=${NGINX_HTTPS_PORT}
+        ;;
+    *)
+        echo "Usage: ${COMMAND_NAME} nginx|haproxy" >&2
+        echo "       forwards 80 and 443 of the ${ZONE} zone to ${NGINX_HTTP_PORT} and ${NGINX_HTTPS_PORT} (nginx)" >&2
+        echo "       or to ${HAPROXY_HTTP_PORT} and ${HAPROXY_HTTPS_PORT} (haproxy)" >&2
+        exit 1
+        ;;
+esac
+
+[ "$(id -u)" -eq 0 ] || error_exit "must be run as root"
+command -v firewall-cmd > /dev/null 2>&1 || error_exit "firewall-cmd not found, is firewalld installed?"
+firewall-cmd --state > /dev/null 2>&1 || error_exit "firewalld is not running"
+
+# PERMANENT is empty for the running configuration and --permanent for the stored one, so it has
+# to stay unquoted. The forward port rule is IPv4, the rich rule is the same forward for IPv6.
+forward() {
+    PERMANENT=$1
+    ACTION=$2
+    PORT=$3
+    TO_PORT=$4
+    RICH_RULE="rule family=\"ipv6\" forward-port port=\"${PORT}\" protocol=\"tcp\" to-port=\"${TO_PORT}\""
+    firewall-cmd ${PERMANENT} --zone=${ZONE} --${ACTION}-forward-port=port=${PORT}:proto=tcp:toport=${TO_PORT}
+    firewall-cmd ${PERMANENT} --zone=${ZONE} --${ACTION}-rich-rule="${RICH_RULE}"
+}
+
+# The removals only make sure the other target's rules are gone, so a rule that is not there is
+# not a failure; the additions are the work and must succeed.
+for PERMANENT in "" --permanent; do
+    forward "${PERMANENT}" remove 80 ${FROM_HTTP_PORT} || true
+    forward "${PERMANENT}" remove 443 ${FROM_HTTPS_PORT} || true
+    forward "${PERMANENT}" add 80 ${TO_HTTP_PORT}
+    forward "${PERMANENT}" add 443 ${TO_HTTPS_PORT}
+done
+
+firewall-cmd --zone=${ZONE} --list-forward-ports
+firewall-cmd --zone=${ZONE} --list-rich-rules

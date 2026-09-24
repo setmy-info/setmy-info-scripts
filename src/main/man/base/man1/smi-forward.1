@@ -1,0 +1,101 @@
+.TH smi-forward "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-forward \- Switch the port forwarding of 80 and 443 between nginx and HAProxy
+.SH SYNOPSIS
+.B smi-forward
+.BR nginx | haproxy
+.SH DESCRIPTION
+.PP
+.B smi-forward
+points the privileged ports of the
+.B public
+firewalld zone at one of the two web fronts:
+.PP
+.RS
+.nf
+nginx      80 -> 8080    443 -> 8081
+haproxy    80 -> 8090    443 -> 8091
+.fi
+.RE
+.PP
+The rules of the other one are removed first, so the two never forward the same port at once, and
+each switch is made twice: in the running configuration and, with
+.BR --permanent ,
+in the stored one, so it survives a reload and a reboot without a
+.B firewall-cmd --reload
+of its own.
+.PP
+Each port is forwarded twice as well: with a
+.B forward-port
+rule, which firewalld applies to IPv4, and with the matching
+.B rich-rule
+of
+.BR "family=ipv6" ,
+so a request over IPv6 lands on the same web front.
+.PP
+Removing a rule that is not there is not an error, so the command can be run when the other front
+was never forwarded, or twice in a row.
+Adding has to succeed; the command stops at the first failure.
+The forwarded ports and the rich rules of the zone are printed at the end.
+.PP
+It has to be run as root, and firewalld has to be installed and running.
+.SH ARGUMENTS
+.TP
+.B nginx
+Forward to 8080 and 8081, the nginx ports.
+.TP
+.B haproxy
+Forward to 8090 and 8091, the HAProxy ports.
+.SH EXIT STATUS
+.TP
+.B 0
+The zone forwards to the chosen web front.
+.TP
+.B 1
+Wrong or missing argument, not root, no
+.BR firewall-cmd ,
+or firewalld is not running.
+.TP
+.I other
+Exit status of
+.BR firewall-cmd (1)
+for a failed addition.
+.SH EXAMPLES
+.PP
+Serve the sites straight from nginx:
+.RS
+.nf
+sudo smi-forward nginx
+.fi
+.RE
+.PP
+Put HAProxy in front, for example to give draft previews their cookie check:
+.RS
+.nf
+sudo smi-forward haproxy
+.fi
+.RE
+.PP
+What is forwarded now:
+.RS
+.nf
+sudo firewall-cmd --zone=public --list-forward-ports
+.fi
+.RE
+.SH NOTES
+.PP
+The zone and the four ports are fixed in the command, matching the nginx and HAProxy
+configuration of the web front: nginx listens on 8080 and 8081, HAProxy on 8090 and 8091, and
+neither needs a privileged port of its own.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-forward bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR firewall-cmd (1),
+.BR firewalld.richlanguage (5),
+.BR smi-create-vhost (1),
+.BR smi-nginx-fix-permissions (1)

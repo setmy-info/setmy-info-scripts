@@ -1,4 +1,10 @@
-# smi-serve-files host to web root mapping.
+# smi-serve-files host to web root mapping, example.
+#
+# The package installs this file as smi-serve-files.config.example and never
+# overwrites a configuration of yours. Copy it once and edit the copy:
+#
+#   sudo cp /opt/setmy.info/etc/smi-serve-files.config.example \
+#           /opt/setmy.info/etc/smi-serve-files.config
 #
 # One mapping per line: a host name, whitespace, an absolute directory.
 # Blank lines and lines starting with # are ignored.

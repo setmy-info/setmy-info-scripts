@@ -164,7 +164,11 @@ Header values in the log have quotes and non-printable characters replaced by
 .I CONFIG_FILE
 The host to web root mapping.
 Defaults to
-.IR $(smi-etc-location)/smi-serve-files.config .
+.IR $(smi-etc-location)/smi-serve-files.config ,
+which is not shipped: the package installs
+.I smi-serve-files.config.example
+beside it, to be copied once and edited, so an upgrade never overwrites a configuration of
+yours.
 .TP
 .I PORT
 Port to listen on, 1 to 65535.
@@ -281,15 +285,23 @@ replaces one line of text, so a correct render means the HTML, the stylesheet, t
 .I assets/
 file were all served.
 .PP
-The default config ships two ready to test mappings,
+The installed
+.I smi-serve-files.config.example
+has two ready to test mappings,
 .B tenant1.test
 and
 .BR tenant2.test ,
 pointing at web roots under
 .IR $(smi-applications-location\ ee\ has) .
-Fill both web roots with a copy of the example page and start the server:
+Copy it to
+.IR smi-serve-files.config ,
+fill both web roots with a copy of the example page and start the server:
 .PP
 .RS
+.B ETC=$(smi-etc-location)
+.br
+.B sudo cp ${ETC}/smi-serve-files.config.example ${ETC}/smi-serve-files.config
+.br
 .B APPS=$(smi-applications-location ee has)
 .br
 .B sudo mkdir -p ${APPS}/tenant1/www ${APPS}/tenant2/www
@@ -390,7 +402,10 @@ in
 .SH FILES
 .TP
 .I $(smi-etc-location)/smi-serve-files.config
-The host to web root mapping.
+The host to web root mapping. Not shipped, copied from the example below.
+.TP
+.I $(smi-etc-location)/smi-serve-files.config.example
+The example mapping installed by the package, with the two test hosts.
 .TP
 .I $(smi-var-location)/smi-serve-files/workingdir
 Service user's home, dependency cache and runtime state.

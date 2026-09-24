@@ -27,8 +27,16 @@ defmodule SmiServeFiles do
     |> Map.new(fn line ->
       [host, dir] = String.split(line, ~r/\s+/, parts: 2)
       dir = Path.expand(String.trim(dir))
+      brand_dir = Path.join(dir, "brand")
+      apps_dir = Path.join(dir, "apps")
+
       {String.downcase(host),
-       %{static: Plug.Static.init(at: "/", from: dir), index: Path.join(dir, "index.html")}}
+       %{
+         brand: Plug.Static.init(at: "/", from: brand_dir),
+         apps: Plug.Static.init(at: "/apps", from: apps_dir),
+         index: Path.join(brand_dir, "index.html"),
+         apps_dir: apps_dir
+       }}
     end)
   end
 
@@ -55,10 +63,13 @@ defmodule SmiServeFiles do
 
   def serve_host(conn, _opts) do
     case Map.fetch(hosts(), request_host(conn)) do
-      {:ok, %{static: static}} -> Plug.Static.call(conn, static)
+      {:ok, host} -> Plug.Static.call(conn, static_for(conn, host))
       :error -> conn |> send_resp(404, "Not Found") |> halt()
     end
   end
+
+  defp static_for(%{path_info: ["apps" | _]}, %{apps: apps}), do: apps
+  defp static_for(_conn, %{brand: brand}), do: brand
 
   defp hosts, do: :persistent_term.get({__MODULE__, :hosts})
 
@@ -93,20 +104,27 @@ defmodule SmiServeFiles do
 
   get _ do
     case Map.fetch(hosts(), request_host(conn)) do
-      {:ok, %{index: index}} ->
-        if File.regular?(index) do
-          conn |> put_resp_content_type("text/html") |> send_file(200, index)
-        else
-          send_resp(conn, 404, "Not Found")
-        end
-
-      :error ->
-        send_resp(conn, 404, "Not Found")
+      {:ok, host} -> send_index(conn, fallback_index(conn, host))
+      :error -> send_resp(conn, 404, "Not Found")
     end
   end
 
   match _ do
     conn |> put_resp_header("allow", "GET, HEAD") |> send_resp(405, "Method Not Allowed")
+  end
+
+  defp fallback_index(%{path_info: ["apps", app | _]}, %{apps_dir: apps_dir, index: index}) do
+    if bad_segment?(app), do: index, else: Path.join([apps_dir, app, "index.html"])
+  end
+
+  defp fallback_index(_conn, %{index: index}), do: index
+
+  defp send_index(conn, index) do
+    if File.regular?(index) do
+      conn |> put_resp_content_type("text/html") |> send_file(200, index)
+    else
+      send_resp(conn, 404, "Not Found")
+    end
   end
 end
 
@@ -131,8 +149,8 @@ end
     websocket_options: [enabled: false]
   )
 
-for {host, %{index: index}} <- Enum.sort(hosts) do
-  IO.puts("Serving #{host} from #{Path.dirname(index)}")
+for {host, %{index: index, apps_dir: apps_dir}} <- Enum.sort(hosts) do
+  IO.puts("Serving #{host} brand from #{Path.dirname(index)} and apps from #{apps_dir}")
 end
 
 IO.puts("Listening on http://127.0.0.1:#{port} as #{System.get_env("USER")}")

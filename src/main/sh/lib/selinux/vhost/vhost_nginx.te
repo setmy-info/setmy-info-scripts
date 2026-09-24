@@ -1,0 +1,9 @@
+module vhost_nginx 1.0.0;
+
+require {
+    type httpd_t;
+    type vhost_nginx_port_t;
+    class tcp_socket name_bind;
+}
+
+allow httpd_t vhost_nginx_port_t:tcp_socket name_bind;

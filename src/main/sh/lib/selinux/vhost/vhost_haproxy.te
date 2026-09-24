@@ -1,0 +1,11 @@
+module vhost_haproxy 1.0.0;
+
+require {
+    type haproxy_t;
+    type vhost_haproxy_port_t;
+    type vhost_app_port_t;
+    class tcp_socket { name_bind name_connect };
+}
+
+allow haproxy_t vhost_haproxy_port_t:tcp_socket name_bind;
+allow haproxy_t vhost_app_port_t:tcp_socket name_connect;

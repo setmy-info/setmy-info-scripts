@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+LC_ALL=C
+export LC_ALL
+
+conf="${1:-/etc/nginx/nginx.conf}"
+if [ ! -f "$conf" ]; then
+    printf 'smi-nginx-flatten: %s not found\n' "$conf" >&2
+    exit 1
+fi
+prefix=$(dirname "$conf")
+
+awk -v prefix="$prefix" -v root="$conf" '
+function expand(pattern, list,    cmd, f, n) {
+    if (pattern !~ /^\//) {
+        pattern = prefix "/" pattern
+    }
+    cmd = "for f in " pattern "; do [ -f \"$f\" ] && printf \"%s\\n\" \"$f\"; done"
+    n = 0
+    while ((cmd | getline f) > 0) {
+        list[++n] = f
+    }
+    close(cmd)
+    return n
+}
+
+function flatten(file, indent, depth,    line, lead, pat, list, n, i) {
+    if (depth > 30) {
+        print "smi-nginx-flatten: includes nested deeper than 30 at " file > "/dev/stderr"
+        exit 1
+    }
+    print indent "# ---- " file
+    while ((getline line < file) > 0) {
+        if (line ~ /^[ \t]*include[ \t]+[^;]+;/) {
+            lead = line
+            sub(/include.*$/, "", lead)
+            pat = line
+            sub(/^[ \t]*include[ \t]+/, "", pat)
+            sub(/[ \t]*;.*$/, "", pat)
+            gsub(/"/, "", pat)
+            n = expand(pat, list)
+            for (i = 1; i <= n; i++) {
+                flatten(list[i], indent lead, depth + 1)
+            }
+        } else {
+            print indent line
+        }
+    }
+    close(file)
+}
+
+BEGIN {
+    flatten(root, "", 0)
+}
+'

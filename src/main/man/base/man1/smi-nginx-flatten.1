@@ -1,0 +1,82 @@
+.TH smi-nginx-flatten "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-nginx-flatten \- Print an nginx configuration with every include expanded in place
+.SH SYNOPSIS
+.B smi-nginx-flatten
+.RI [ CONF_FILE ]
+.SH DESCRIPTION
+.PP
+.B smi-nginx-flatten
+prints
+.IR CONF_FILE ,
+.I /etc/nginx/nginx.conf
+by default, with the contents of every
+.B include
+put where the include line was, so the whole configuration nginx actually reads can be read as
+one file.
+.PP
+Each file that is opened is announced with a
+.BI "# ----" " file"
+comment line, and the lines of an included file keep the indentation the include line had, so the
+nesting stays visible.
+An include pattern is expanded by the shell, relative to the directory of
+.IR CONF_FILE ,
+so
+.B include conf.d/*.conf
+expands to the files that match, in the order the shell sorts them, with
+.B LC_ALL=C
+so that order does not depend on the machine's language.
+A pattern that matches nothing, and an include of a file that does not exist, expand to nothing
+and are not reported.
+.PP
+Nothing is changed on disk and nginx is not started;
+it is a reading aid, and
+.B nginx -T
+remains the one that shows what the running nginx has loaded.
+.SH ARGUMENTS
+.TP
+.I CONF_FILE
+Configuration to print.
+Default
+.IR /etc/nginx/nginx.conf .
+Includes are resolved relative to its directory.
+.SH EXIT STATUS
+.TP
+.B 0
+The configuration was printed.
+.TP
+.B 1
+.I CONF_FILE
+does not exist, or includes are nested deeper than 30 levels.
+.SH EXAMPLES
+.PP
+The whole configuration in a pager:
+.RS
+.nf
+smi-nginx-flatten | less
+.fi
+.RE
+.PP
+Where a setting really comes from:
+.RS
+.nf
+smi-nginx-flatten | grep -n -B20 ssl_protocols | grep "# ----"
+.fi
+.RE
+.PP
+A virtual host of its own:
+.RS
+.nf
+smi-nginx-flatten /etc/nginx/conf.d/vhosts/customer.com.conf
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-nginx-flatten bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR nginx (8),
+.BR smi-create-vhost (1)

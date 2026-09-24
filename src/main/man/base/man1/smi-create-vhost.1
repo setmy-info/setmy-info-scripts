@@ -1,0 +1,111 @@
+.TH smi-create-vhost "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-create-vhost \- Create an nginx virtual host configuration from the example template
+.SH SYNOPSIS
+.B smi-create-vhost
+.I DOMAIN BRAND APPS
+.br
+.B smi-create-vhost
+.RB [ \-h | \-\-help | help ]
+.SH DESCRIPTION
+.PP
+.B smi-create-vhost
+copies
+.I /etc/nginx/conf.d/vhosts/example.com_conf
+to
+.I /etc/nginx/conf.d/vhosts/DOMAIN.conf
+in the same directory, replaces the example name with
+.IR DOMAIN ,
+and comments out the
+.B include
+line of whichever of brand and apps was switched off.
+The file is written mode
+.B 0644
+and an existing one is never overwritten.
+.PP
+The template is the one of the nginx configuration itself: two
+.B server
+blocks, plain HTTP and HTTPS, which include the shared files under
+.IR /etc/nginx/commons/server/ .
+Writing into
+.I /etc/nginx
+needs root.
+.PP
+Without arguments, or with
+.BR \-h ,
+.B \-\-help
+or
+.BR help ,
+the usage is printed and the command exits 0.
+.SH ARGUMENTS
+.TP
+.I DOMAIN
+DNS name to serve, for example
+.BR customer.com .
+It is lowercased, must be a valid domain name of at most 253 characters, and becomes the
+.B server_name
+of both blocks and the file name.
+.TP
+.I BRAND
+Whether the brand page is served at
+.BR / .
+.BR true ,
+.BR false ,
+.BR yes ,
+.BR no ,
+.BR y ,
+.BR n ,
+.BR on ,
+.BR off ,
+.B 1
+or
+.BR 0 ,
+in any case.
+.TP
+.I APPS
+Whether the applications are served at
+.BI /apps/ APP /\fR,
+the same values.
+Both off is refused, because the virtual host would serve nothing.
+.SH EXIT STATUS
+.TP
+.B 0
+The file was written, or the usage was printed.
+.TP
+.B 1
+Wrong argument count, an invalid domain or switch value, both switches off, a missing vhosts
+directory or template, or the target file exists already.
+.SH EXAMPLES
+.PP
+Brand page and applications:
+.RS
+.nf
+sudo smi-create-vhost customer.com yes yes
+.fi
+.RE
+.PP
+Only the applications, then reload nginx:
+.RS
+.nf
+sudo smi-create-vhost apps.customer.com no yes
+sudo nginx -t && sudo systemctl reload nginx
+.fi
+.RE
+.SH FILES
+.TP
+.I /etc/nginx/conf.d/vhosts/example.com_conf
+Template that is copied.
+.TP
+.I /etc/nginx/conf.d/vhosts/DOMAIN.conf
+Virtual host that is written.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-create-vhost bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR nginx (8),
+.BR smi-pki-create-domain-cert (1),
+.BR smi-serve-files (1)

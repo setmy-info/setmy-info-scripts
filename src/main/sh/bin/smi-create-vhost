@@ -1,0 +1,95 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+umask 022
+
+dir=/etc/nginx/conf.d/vhosts
+template="$dir/example.com_conf"
+
+usage() {
+    cat <<'EOF2'
+Usage: smi-create-vhost DOMAIN BRAND APPS
+
+  DOMAIN   DNS name to serve, for example customer.com
+  BRAND    serve the brand page at /           true false yes no on off 1 0
+  APPS     serve the apps at /apps/<app>/      true false yes no on off 1 0
+
+Copies /etc/nginx/conf.d/vhosts/example.com_conf to DOMAIN.conf in the same
+directory, replaces the example name with DOMAIN, and comments out the include
+line of whichever of brand and apps was switched off.
+
+Examples:
+  smi-create-vhost customer.com yes yes
+  smi-create-vhost customer.com yes no
+  smi-create-vhost customer.com no yes
+EOF2
+}
+
+error_exit() {
+    printf 'smi-create-vhost: %s\n' "$*" >&2
+    exit 1
+}
+
+parse_bool() {
+    case $(printf '%s' "$1" | tr '[:upper:]' '[:lower:]') in
+        true | yes | y | on | 1) printf 'yes' ;;
+        false | no | n | off | 0) printf 'no' ;;
+        *) error_exit "$2 must be true/false, yes/no, on/off or 1/0, got '$1'" ;;
+    esac
+}
+
+sed_in_place() {
+    sed "$1" "$target" >"$tmp"
+    cat "$tmp" >"$target"
+}
+
+case ${1:-} in
+    -h | --help | help | "")
+        usage
+        exit 0
+        ;;
+esac
+
+[ "$#" -eq 3 ] || error_exit "expected 3 arguments, got $#. Run smi-create-vhost --help"
+
+domain=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+brand=$(parse_bool "$2" BRAND)
+apps=$(parse_bool "$3" APPS)
+
+case $domain in
+    *[!a-z0-9.-]*) error_exit "invalid domain '$domain'" ;;
+esac
+[ "${#domain}" -le 253 ] || error_exit "domain too long"
+printf '%s\n' "$domain" |
+    grep -Eq '^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]([a-z0-9-]{0,61}[a-z0-9])?$' ||
+    error_exit "invalid domain '$domain'"
+
+if [ "$brand" = "no" ] && [ "$apps" = "no" ]; then
+    error_exit "BRAND and APPS are both off, the vhost would serve nothing"
+fi
+
+[ -d "$dir" ] || error_exit "missing vhosts directory $dir"
+[ -f "$template" ] || error_exit "missing template $template"
+
+target="$dir/$domain.conf"
+if [ -e "$target" ]; then
+    error_exit "$target exists already"
+fi
+
+tmp="$dir/.$domain.$$"
+trap 'rm -f "$tmp"' 0
+
+cp "$template" "$target"
+sed_in_place "s/example\\.com/$domain/g"
+if [ "$brand" = "no" ]; then
+    sed_in_place '/include.*brand/s/^/#/'
+fi
+if [ "$apps" = "no" ]; then
+    sed_in_place '/include.*apps/s/^/#/'
+fi
+chmod 0644 "$target"
+
+printf 'smi-create-vhost: wrote %s\n' "$target"
+printf 'smi-create-vhost: certificate, key and content for %s are still needed, see the README\n' "$domain"

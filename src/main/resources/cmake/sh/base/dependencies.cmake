@@ -1,13 +1,14 @@
 # PLACEHOLDER-BEGIN #
 MESSAGE("-- base dependencies.cmake")
 
-ADD_DEPENDENCIES(build buildMan buildShellScripts buildEtc buildLibShells buildHalfPastPlugins)
+ADD_DEPENDENCIES(build buildMan buildShellScripts buildEtc buildLibShells buildHalfPastPlugins buildSelinuxModules)
 
 ADD_DEPENDENCIES(buildMan           makeDirectories)
 ADD_DEPENDENCIES(buildShellScripts  makeDirectories)
 ADD_DEPENDENCIES(buildEtc           makeDirectories)
 ADD_DEPENDENCIES(buildLibShells     makeDirectories)
 ADD_DEPENDENCIES(buildHalfPastPlugins makeDirectories)
+ADD_DEPENDENCIES(buildSelinuxModules  makeDirectories)
 
 ADD_DEPENDENCIES(build buildServiceScripts buildYumReposScripts)
 ADD_DEPENDENCIES(buildServiceScripts buildYumReposScripts makeDirectories)

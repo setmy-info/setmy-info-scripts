@@ -1,0 +1,18 @@
+module vhost_nginx_mqtt 1.0.0;
+
+require {
+    type httpd_t;
+    type vhost_mqtt_port_t;
+    class tcp_socket name_connect;
+}
+
+allow httpd_t vhost_mqtt_port_t:tcp_socket name_connect;
+
+optional {
+    require {
+        type mosquitto_t;
+        class tcp_socket name_bind;
+    }
+
+    allow mosquitto_t vhost_mqtt_port_t:tcp_socket name_bind;
+}

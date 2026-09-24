@@ -1,0 +1,11 @@
+module vhost_ports 1.3.0;
+
+require {
+    attribute port_type;
+}
+
+type vhost_nginx_port_t, port_type;
+type vhost_haproxy_port_t, port_type;
+type vhost_app_port_t, port_type;
+type vhost_ci_port_t, port_type;
+type vhost_mqtt_port_t, port_type;

@@ -1,0 +1,150 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+umask 022
+
+usage() {
+    cat <<'EOF'
+Usage: smi-nginx-fix-permissions [-n]
+
+  -n   dry run: print what would change, change nothing
+
+Sets owners, modes and SELinux labels of the configuration and the keys:
+
+  /etc/nginx                      root:root  0755 dirs  0644 files
+  /etc/nginx/conf.d/draft-tokens.map  root:root  0600
+  /etc/pki/nginx                  root:root  0755 dirs  0644 certificates
+  /etc/pki/nginx/private          root:nginx 0750       0640 keys
+  /var/log/nginx                  nginx:root 0700
+  /etc/systemd/system/nginx.service.d  root:root  0755  0644
+
+HAProxy is handled the same way when it is installed:
+
+  /etc/haproxy                    root:root  0755 dirs  0644 files
+  /etc/haproxy/vhosts/draft-tokens.lst  root:root  0600
+  /etc/pki/haproxy                root:haproxy 0750     0640 combined PEM files
+
+Content is not touched; smi-nginx-fix-content does that.
+EOF
+}
+
+error_exit() {
+    printf 'smi-nginx-fix-permissions: %s\n' "$*" >&2
+    exit 1
+}
+
+dry_run=no
+
+case ${1:-} in
+    -h | --help | help) usage; exit 0 ;;
+    -n | --dry-run) dry_run=yes ;;
+    "") ;;
+    *) error_exit "unknown argument '$1'. Run smi-nginx-fix-permissions --help" ;;
+esac
+
+[ "$(id -u)" -eq 0 ] || error_exit "must be run as root"
+
+run() {
+    if [ "$dry_run" = yes ]; then
+        printf '    would run: %s\n' "$*"
+    else
+        "$@"
+    fi
+}
+
+group_exists() {
+    getent group "$1" >/dev/null 2>&1
+}
+
+fix_tree() {
+    tree=$1
+    owner=$2
+    dir_mode=$3
+    file_mode=$4
+
+    [ -d "$tree" ] || return 0
+    printf '%s\n' "$tree"
+    run chown -R "$owner" "$tree"
+    run find "$tree" -type d -exec chmod "$dir_mode" {} +
+    run find "$tree" -type f -exec chmod "$file_mode" {} +
+}
+
+fix_file() {
+    file=$1
+    owner=$2
+    mode=$3
+
+    [ -f "$file" ] || return 0
+    printf '%s\n' "$file"
+    run chown "$owner" "$file"
+    run chmod "$mode" "$file"
+}
+
+relabel() {
+    command -v restorecon >/dev/null 2>&1 || return 0
+    for path in "$@"; do
+        [ -e "$path" ] && run restorecon -RF "$path"
+    done
+    return 0
+}
+
+group_exists nginx || error_exit "group nginx does not exist, is nginx installed?"
+
+fix_tree /etc/nginx root:root 0755 0644
+fix_file /etc/nginx/conf.d/draft-tokens.map root:root 0600
+
+fix_tree /etc/pki/nginx root:root 0755 0644
+fix_tree /etc/pki/nginx/private root:nginx 0750 0640
+
+if [ -d /var/log/nginx ]; then
+    printf '%s\n' /var/log/nginx
+    run chown nginx:root /var/log/nginx
+    run chmod 0700 /var/log/nginx
+fi
+
+fix_tree /etc/systemd/system/nginx.service.d root:root 0755 0644
+
+if [ -d /etc/haproxy ] && group_exists haproxy; then
+    fix_tree /etc/haproxy root:root 0755 0644
+    fix_file /etc/haproxy/vhosts/draft-tokens.lst root:root 0600
+    fix_tree /etc/pki/haproxy root:haproxy 0750 0640
+    fix_tree /etc/systemd/system/haproxy.service.d root:root 0755 0644
+fi
+
+relabel /etc/nginx /etc/pki/nginx /var/log/nginx /etc/systemd/system/nginx.service.d \
+    /etc/haproxy /etc/pki/haproxy /etc/systemd/system/haproxy.service.d
+
+problems=0
+
+for key in /etc/pki/nginx/private/*.key; do
+    [ -f "$key" ] || continue
+    if ! sudo -u nginx test -r "$key"; then
+        printf 'PROBLEM the nginx user cannot read %s\n' "$key" >&2
+        problems=$((problems + 1))
+    fi
+done
+
+for pem in /etc/pki/haproxy/*.pem; do
+    [ -f "$pem" ] || continue
+    if group_exists haproxy && ! sudo -u haproxy test -r "$pem"; then
+        printf 'PROBLEM the haproxy user cannot read %s\n' "$pem" >&2
+        problems=$((problems + 1))
+    fi
+done
+
+if [ -d /etc/nginx ] && find /etc/nginx -type f \( -perm -0020 -o -perm -0002 \) | grep -q .; then
+    printf 'PROBLEM group or world writable files under /etc/nginx\n' >&2
+    problems=$((problems + 1))
+fi
+
+if [ "$problems" -ne 0 ]; then
+    error_exit "$problems problem(s) left, see the lines above"
+fi
+
+if [ "$dry_run" = yes ]; then
+    printf 'smi-nginx-fix-permissions: dry run, nothing changed\n'
+else
+    printf 'smi-nginx-fix-permissions: done\n'
+fi

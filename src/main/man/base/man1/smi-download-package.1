@@ -10,6 +10,11 @@ smi-download-package \- Download one or more SMI packages
 downloads the specified SMI packages to the packages download directory (see \fBsmi-home-packages-location\fR(1)).
 It uses the \fBpackages.sh\fR library to locate package definitions (with \fB.package\fR suffix) in either the system or home packages directories and executes their respective download functions.
 .PP
+Downloading only fetches and unpacks; nothing is built.
+A package that is built from source, the \fBpython\fR versions, \fBerlang\fR, \fBelixir\fR and \fBsmi\fR,
+is then compiled by \fBsmi-build-package\fR(1) and installed by \fBsmi-install-package\fR(1),
+so the sources can be downloaded once and built on each machine that installs them.
+.PP
 The download directory defaults to \fB~/.setmy.info/packages\fR but can be overridden by setting the
 \fBSMI_HOME_PACKAGES_DIR\fR environment variable before invoking this command.
 .SH AVAILABLE PACKAGES
@@ -300,6 +305,7 @@ Documentation written by Imre Tabur.
 Report smi-download-package bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
+.BR smi-build-package (1),
 .BR smi-install-package (1),
 .BR smi-packages-location (1),
 .BR smi-home-packages-location (1)

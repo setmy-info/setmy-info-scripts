@@ -1,0 +1,108 @@
+.TH smi-nginx-fix-permissions "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-nginx-fix-permissions \- Set owners, modes and SELinux labels of the nginx configuration and keys
+.SH SYNOPSIS
+.B smi-nginx-fix-permissions
+.RB [ \-n ]
+.SH DESCRIPTION
+.PP
+.B smi-nginx-fix-permissions
+sets the configuration and the private keys of nginx, and of HAProxy when it is installed, to what
+the services need and no more:
+.PP
+.RS
+.nf
+/etc/nginx                             root:root   0755 dirs  0644 files
+/etc/nginx/conf.d/draft-tokens.map     root:root   0600
+/etc/pki/nginx                         root:root   0755 dirs  0644 certificates
+/etc/pki/nginx/private                 root:nginx  0750       0640 keys
+/var/log/nginx                         nginx:root  0700
+/etc/systemd/system/nginx.service.d    root:root   0755       0644
+.fi
+.RE
+.PP
+and, only when
+.I /etc/haproxy
+exists and the
+.B haproxy
+group does:
+.PP
+.RS
+.nf
+/etc/haproxy                           root:root      0755 dirs  0644 files
+/etc/haproxy/vhosts/draft-tokens.lst   root:root      0600
+/etc/pki/haproxy                       root:haproxy   0750       0640 combined PEM files
+/etc/systemd/system/haproxy.service.d  root:root      0755       0644
+.fi
+.RE
+.PP
+The SELinux labels of those paths are restored with
+.B restorecon -RF
+when
+.BR restorecon (8)
+is installed.
+A path that does not exist is skipped.
+The command refuses to run when the
+.B nginx
+group is missing, which means nginx is not installed.
+It has to be run as root.
+.PP
+Afterwards it checks what matters: that the
+.B nginx
+user can read each key in
+.IR /etc/pki/nginx/private ,
+that the
+.B haproxy
+user can read each PEM file in
+.IR /etc/pki/haproxy ,
+and that no file under
+.I /etc/nginx
+is group or world writable.
+Each finding is reported and counted, and the command ends with
+.B 1
+when any are left.
+.PP
+The served content is not touched;
+.BR smi-nginx-fix-content (1)
+does that.
+.SH OPTIONS
+.TP
+.B \-n
+Dry run: print the commands that would change something, prefixed with
+.BR "would run" ,
+and change nothing. The checks still run and are still reported.
+.TP
+.BR \-h ", " \-\-help ", " help
+Print the usage and exit 0.
+.SH EXIT STATUS
+.TP
+.B 0
+Everything was set and nothing was found to report.
+.TP
+.B 1
+Not root, an unknown argument, no
+.B nginx
+group, or findings were reported.
+.SH EXAMPLES
+.PP
+After changing the configuration or installing a certificate:
+.RS
+.nf
+sudo smi-nginx-fix-permissions -n
+sudo smi-nginx-fix-permissions
+sudo nginx -t && sudo systemctl reload nginx
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-nginx-fix-permissions bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-nginx-fix-content (1),
+.BR smi-restorecon (1),
+.BR smi-pki-create-domain-cert (1),
+.BR nginx (8),
+.BR restorecon (8)

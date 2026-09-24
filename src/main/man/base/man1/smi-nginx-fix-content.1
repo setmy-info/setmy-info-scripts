@@ -1,0 +1,108 @@
+.TH smi-nginx-fix-content "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-nginx-fix-content \- Set owners, modes and SELinux labels of the served nginx content
+.SH SYNOPSIS
+.B smi-nginx-fix-content
+.RB [ \-n ]
+.RI [ DIRECTORY ]
+.SH DESCRIPTION
+.PP
+.B smi-nginx-fix-content
+makes the served files readable by nginx: owner
+.BR root:root ,
+.B 0755
+for directories,
+.B 0644
+for files, and the SELinux labels restored with
+.B restorecon -RF
+when
+.BR restorecon (8)
+is installed.
+.PP
+Without
+.I DIRECTORY
+it works on the content trees of the web front:
+.PP
+.RS
+.nf
+/usr/share/nginx/vhosts
+/usr/share/nginx/brands
+/usr/share/nginx/apps
+/usr/share/nginx/errors
+/usr/share/nginx/acme
+.fi
+.RE
+.PP
+A tree that does not exist is skipped.
+.B draft
+folders below those trees are included, so a new build copied into
+.IB name /draft
+is served with the same rights as a released one.
+.PP
+Symbolic links keep their own path but are given the owner of the tree, because nginx refuses a
+link whose owner differs from its target.
+Anything that is neither a regular file, a directory nor a symbolic link is reported and left
+alone, and so is a link pointing nowhere.
+Each such finding is counted, and the command ends with
+.B 1
+when any are left, after having done the rest of the work.
+.PP
+A missing
+.I /usr/share/nginx/html
+is reported as well; nginx needs it.
+.PP
+Run it after copying a build, after releasing a draft, and whenever a page answers
+.B 404
+for no visible reason.
+It has to be run as root.
+.SH OPTIONS
+.TP
+.B \-n
+Dry run: print the commands that would change something, prefixed with
+.BR "would run" ,
+and change nothing. The checks still run and are still reported.
+.TP
+.BR \-h ", " \-\-help ", " help
+Print the usage and exit 0.
+.SH ARGUMENTS
+.TP
+.I DIRECTORY
+One absolute directory to fix instead of all the trees. It must exist.
+.SH EXIT STATUS
+.TP
+.B 0
+Everything was set and nothing was found to report.
+.TP
+.B 1
+Not root, an unknown option, a relative or missing
+.IR DIRECTORY ,
+or findings were reported.
+.SH EXAMPLES
+.PP
+Everything, after a deployment:
+.RS
+.nf
+sudo smi-nginx-fix-content
+.fi
+.RE
+.PP
+One tree, looking first:
+.RS
+.nf
+sudo smi-nginx-fix-content -n /usr/share/nginx/apps
+sudo smi-nginx-fix-content /usr/share/nginx/apps
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-nginx-fix-content bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-nginx-fix-permissions (1),
+.BR smi-restorecon (1),
+.BR smi-create-vhost (1),
+.BR nginx (8),
+.BR restorecon (8)

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+. $(smi-include base.sh)
+. $(smi-include commons.sh)
+. $(smi-include packages.sh)
+
+buildPackages ${*}
+
+exit 0

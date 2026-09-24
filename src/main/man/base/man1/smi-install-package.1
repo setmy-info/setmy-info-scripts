@@ -16,6 +16,9 @@ which defaults to \fB~/.setmy.info/packages\fR and can be overridden via \fBSMI_
 The following package names are available.
 See \fBsmi-download-package\fR(1) for the complete annotated list with descriptions.
 Run \fBsmi-download-package\fR before \fBsmi-install-package\fR to ensure the archives are present.
+For a package that is built from source, the \fBpython\fR versions, \fBerlang\fR, \fBelixir\fR and \fBsmi\fR,
+run \fBsmi-build-package\fR(1) in between: download fetches the sources, build compiles them, and install
+puts the result in place.
 .PP
 .BR all ,
 .BR antigravity ,
@@ -117,6 +120,7 @@ Report smi-install-package bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
 .BR smi-download-package (1),
+.BR smi-build-package (1),
 .BR smi-packages-location (1),
 .BR smi-home-packages-location (1)
 

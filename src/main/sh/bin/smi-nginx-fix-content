@@ -1,0 +1,114 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+umask 022
+
+usage() {
+    cat <<'EOF'
+Usage: smi-nginx-fix-content [-n] [DIRECTORY]
+
+  -n          dry run: print what would change, change nothing
+  DIRECTORY   one tree to fix, instead of all of them
+
+Sets owners, modes and SELinux labels of the served files:
+
+  /usr/share/nginx/vhosts   root:root  0755 dirs  0644 files
+  /usr/share/nginx/brands   root:root  0755 dirs  0644 files
+  /usr/share/nginx/apps     root:root  0755 dirs  0644 files
+  /usr/share/nginx/errors   root:root  0755 dirs  0644 files
+  /usr/share/nginx/acme     root:root  0755 dirs  0644 files
+
+Draft folders below those trees are included, so a new build copied into
+<name>/draft is served with the same rights as a released one.
+
+Symbolic links keep their own path but are given the same owner as the tree,
+because nginx refuses a link whose owner differs from its target. Anything that
+is neither a regular file, a directory nor a symbolic link is reported and left
+alone.
+
+Run it after copying a build, after releasing a draft, and whenever a page
+answers 404 for no visible reason.
+EOF
+}
+
+error_exit() {
+    printf 'smi-nginx-fix-content: %s\n' "$*" >&2
+    exit 1
+}
+
+dry_run=no
+trees="/usr/share/nginx/vhosts /usr/share/nginx/brands /usr/share/nginx/apps /usr/share/nginx/errors /usr/share/nginx/acme"
+
+while [ "$#" -gt 0 ]; do
+    case $1 in
+        -h | --help | help) usage; exit 0 ;;
+        -n | --dry-run) dry_run=yes ;;
+        -*) error_exit "unknown option '$1'. Run smi-nginx-fix-content --help" ;;
+        *)
+            case $1 in
+                /*) ;;
+                *) error_exit "directory must be absolute: $1" ;;
+            esac
+            [ -d "$1" ] || error_exit "not a directory: $1"
+            trees=$1
+            ;;
+    esac
+    shift
+done
+
+[ "$(id -u)" -eq 0 ] || error_exit "must be run as root"
+
+run() {
+    if [ "$dry_run" = yes ]; then
+        printf '    would run: %s\n' "$*"
+    else
+        "$@"
+    fi
+}
+
+problems=0
+
+for tree in $trees; do
+    [ -d "$tree" ] || continue
+    printf '%s\n' "$tree"
+
+    strange=$(find "$tree" ! -type f ! -type d ! -type l)
+    if [ -n "$strange" ]; then
+        printf 'PROBLEM %s contains something that is not a file, folder or link:\n%s\n' \
+            "$tree" "$strange" >&2
+        problems=$((problems + 1))
+    fi
+
+    run chown -R -h root:root "$tree"
+    run find "$tree" -type d -exec chmod 0755 {} +
+    run find "$tree" -type f -exec chmod 0644 {} +
+
+    broken=$(find "$tree" -type l ! -exec test -e {} \; -print)
+    if [ -n "$broken" ]; then
+        printf 'PROBLEM %s has links pointing nowhere:\n%s\n' "$tree" "$broken" >&2
+        problems=$((problems + 1))
+    fi
+done
+
+if [ ! -d /usr/share/nginx/html ]; then
+    printf 'PROBLEM /usr/share/nginx/html is missing, nginx needs it to write the access logs\n' >&2
+    problems=$((problems + 1))
+fi
+
+if command -v restorecon >/dev/null 2>&1; then
+    for tree in $trees; do
+        [ -d "$tree" ] && run restorecon -RF "$tree"
+    done
+fi
+
+if [ "$problems" -ne 0 ]; then
+    error_exit "$problems problem(s) left, see the lines above"
+fi
+
+if [ "$dry_run" = yes ]; then
+    printf 'smi-nginx-fix-content: dry run, nothing changed\n'
+else
+    printf 'smi-nginx-fix-content: done\n'
+fi

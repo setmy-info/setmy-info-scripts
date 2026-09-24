@@ -8,13 +8,16 @@ ERLANG_GIT_DIR=${HOME_PACKAGES_DIR}/erlang-git
 # OTP tag so the install path is always /opt/erlang-${ERLANG_VERSION}.
 
 erlang_download_func() {
-    CUR_DIR=$(pwd)
     if [ -d "${ERLANG_GIT_DIR}/.git" ]; then
         git -C "${ERLANG_GIT_DIR}" fetch --tags
     else
         git clone ${ERLANG_GIT_URL} ${ERLANG_GIT_DIR}
     fi
     git -C "${ERLANG_GIT_DIR}" checkout "OTP-${ERLANG_VERSION}"
+}
+
+erlang_build_func() {
+    CUR_DIR=$(pwd)
     cd ${ERLANG_GIT_DIR}
     export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et --without-javac"
     ./configure --prefix=/opt/${ERLANG_NAME}-${ERLANG_VERSION} --without-wx --without-debugger --without-observer --without-et --without-javac

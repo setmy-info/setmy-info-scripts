@@ -13,6 +13,13 @@ downloadPackages() {
     done
 }
 
+buildPackages() {
+    INSTALLABLE_PACKAGES=${*}
+    for INSTALLABLE_PACKAGE in ${INSTALLABLE_PACKAGES}; do
+        buildPackage ${INSTALLABLE_PACKAGE}
+    done
+}
+
 installPackages() {
     INSTALLABLE_PACKAGES=${*}
     for INSTALLABLE_PACKAGE in ${INSTALLABLE_PACKAGES}; do
@@ -25,6 +32,17 @@ downloadPackage() {
     echo "Downloading package: ${PACKAGE_NAME}"
     includePackage ${PACKAGE_NAME}
     ${PACKAGE_NAME}_download_func
+}
+
+buildPackage() {
+    PACKAGE_NAME=${1}
+    includePackage ${PACKAGE_NAME}
+    if command -v ${PACKAGE_NAME}_build_func > /dev/null 2>&1; then
+        echo "Building package: ${PACKAGE_NAME}"
+        ${PACKAGE_NAME}_build_func
+    else
+        echo "Nothing to build for package: ${PACKAGE_NAME}"
+    fi
 }
 
 installPackage() {

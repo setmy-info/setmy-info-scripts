@@ -1,0 +1,99 @@
+.TH smi-build-package "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-build-package \- Build one or more downloaded SMI packages from source
+.SH SYNOPSIS
+.B smi-build-package
+.I PACKAGE_NAME...
+.SH DESCRIPTION
+.PP
+.B smi-build-package
+runs the build function of the named packages, the step between
+.BR smi-download-package (1)
+and
+.BR smi-install-package (1):
+.PP
+.RS
+.nf
+smi-download-package python313      fetch and unpack the sources
+smi-build-package python313         configure and make, in the download directory
+smi-install-package python313       make install, into /opt
+.fi
+.RE
+.PP
+It uses the
+.B packages.sh
+library to locate the package definitions, with the
+.B .package
+suffix, in the system or home packages directory, and calls the
+.IB package _build_func
+of each one.
+The sources are read from the packages download directory, see
+.BR smi-home-packages-location (1),
+which defaults to
+.B ~/.setmy.info/packages
+and can be overridden with
+.SM SMI_HOME_PACKAGES_DIR.
+.PP
+A package that has no build function is reported as
+.RB \(dq "Nothing to build for package" \(dq
+and is not an error: most packages ship a binary archive that only has to be unpacked, so
+downloading and installing them is all there is.
+.SH PACKAGES WITH A BUILD STEP
+.PP
+These are built from source and need this command:
+.TP
+.BR python39 ", " python310 ", " python311 ", " python312 ", " python313 ", " python314
+.B ./configure
+and
+.B make
+in the unpacked source directory.
+.TP
+.B erlang
+.B ./configure
+and
+.B make
+in the git checkout of the OTP tag, without wx, debugger, observer, et and javac.
+.TP
+.B elixir
+.B make clean compile
+in the git checkout of the version tag.
+.TP
+.B smi
+.B ./configure release
+and
+.B make all test package
+in the git clone, which produces the rpm that
+.BR smi-install-package (1)
+then installs.
+.TP
+.B all
+Builds every package of its list that has a build function and skips the rest.
+.SH EXAMPLES
+.PP
+One Python version, the three steps:
+.RS
+.nf
+smi-download-package python314 && smi-build-package python314 && smi-install-package python314
+.fi
+.RE
+.PP
+Download on one machine, build and install on each:
+.RS
+.nf
+smi-download-package erlang elixir
+smi-build-package erlang elixir
+smi-install-package erlang elixir
+.fi
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+Every build function succeeded, or the packages had none.
+.SH "SEE ALSO"
+.PP
+.BR smi-download-package (1),
+.BR smi-install-package (1),
+.BR smi-home-packages-location (1),
+.BR smi-packages-location (1)
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>

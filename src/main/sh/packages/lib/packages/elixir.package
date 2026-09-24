@@ -8,13 +8,16 @@ ELIXIR_GIT_DIR=${HOME_PACKAGES_DIR}/elixir-git
 # tag so the install path is always /opt/elixir-${ELIXIR_VERSION}.
 
 elixir_download_func() {
-    CUR_DIR=$(pwd)
     if [ -d "${ELIXIR_GIT_DIR}/.git" ]; then
         git -C "${ELIXIR_GIT_DIR}" fetch --tags
     else
         git clone ${ELIXIR_GIT_URL} ${ELIXIR_GIT_DIR}
     fi
     git -C "${ELIXIR_GIT_DIR}" checkout "v${ELIXIR_VERSION}"
+}
+
+elixir_build_func() {
+    CUR_DIR=$(pwd)
     cd ${ELIXIR_GIT_DIR}
     make clean compile
     cd ${CUR_DIR}

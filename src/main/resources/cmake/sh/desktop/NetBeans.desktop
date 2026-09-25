@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=NetBeans
+Comment=NetBeans
+Exec=/opt/netbeans/bin/netbeans
+Icon=/opt/netbeans/nb/netbeans.icns
+Path=/home/has/sources/setmy.info
+Terminal=false
+StartupNotify=false

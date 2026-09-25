@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Latest
+Comment=Latest development environment
+Exec=/opt/setmy.info/bin/term latest
+Icon=org.gnome.Terminal
+Terminal=false
+StartupNotify=true
+GenericName=Latest
+Path=/home/has/sources/setmy.info/submodules/setmy-info-scripts

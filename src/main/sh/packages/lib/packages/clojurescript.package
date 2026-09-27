@@ -1,0 +1,11 @@
+CLOJURE_SCRIPT_NAME=clojurescript
+CLOJURE_SCRIPT_FILE_URL=https://github.com/clojure/clojurescript/releases/download/r1.12.145/cljs.jar
+
+clojurescript_download_func() {
+    smi-download ${CLOJURE_SCRIPT_FILE_URL} ${HOME_PACKAGES_DIR}/cljs.jar
+}
+
+clojurescript_install_func() {
+    sudo mkdir -p /opt/${CLOJURE_SCRIPT_NAME}/lib
+    sudo cp -f ${HOME_PACKAGES_DIR}/cljs.jar /opt/${CLOJURE_SCRIPT_NAME}/lib
+}

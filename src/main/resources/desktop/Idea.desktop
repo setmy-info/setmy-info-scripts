@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Idea
+Comment=
+Exec=/opt/idea/bin/idea
+Icon=/opt/idea/bin/idea.svg
+Path=
+Terminal=false
+StartupNotify=false

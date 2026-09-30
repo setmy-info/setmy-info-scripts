@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Slack
+Comment=Slack Desktop
+Exec=/usr/bin/slack %U
+Icon=/usr/share/pixmaps/slack
+Path=
+Terminal=false
+StartupNotify=true

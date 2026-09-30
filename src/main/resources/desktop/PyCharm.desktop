@@ -2,7 +2,10 @@
 Encoding=UTF-8
 Version=1.0
 Type=Application
-Terminal=false
-Exec=/opt/pycharm/bin/pycharm
 Name=PyCharm
+Comment=PyCharm
+Exec=/opt/pycharm/bin/pycharm
 Icon=/opt/pycharm/bin/pycharm.png
+Path=
+Terminal=false
+StartupNotify=false

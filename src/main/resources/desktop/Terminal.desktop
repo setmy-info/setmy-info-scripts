@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Xfce terminal
+Comment=Terminaliemulaator
+Exec=/opt/setmy.info/bin/term latest
+Icon=org.xfce.terminal
+Path=
+Terminal=false
+StartupNotify=true

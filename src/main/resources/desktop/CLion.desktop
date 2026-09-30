@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=CLion
+Comment=
+Exec=/opt/pycharm/bin/clion
+Icon=/opt/pycharm/bin/clion.svg
+Path=
+Terminal=false
+StartupNotify=false

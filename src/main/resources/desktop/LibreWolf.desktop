@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=LibreWolf
+Comment=
+Exec=/opt/librewolf/librewolf %u
+Icon=/opt/librewolf/browser/chrome/icons/default/default64.png
+Path=
+Terminal=false
+StartupNotify=false

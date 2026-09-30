@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chromium Web Browser
+Comment=Pääs Internetti
+Exec=/usr/bin/chromium-browser %U
+Icon=chromium-browser
+Path=
+Terminal=false
+StartupNotify=false

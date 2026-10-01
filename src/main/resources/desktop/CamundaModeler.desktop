@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Camunda Modeler
+Comment=Camunda Modeler
+Exec=/opt/camunda-modeler/camunda-modeler
+Icon=/opt/camunda-modeler/support/icon_128.png
+Path=
+Terminal=false
+StartupNotify=false

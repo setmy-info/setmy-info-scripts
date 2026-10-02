@@ -1,5 +1,5 @@
 NSIS_NAME=nsis
-NSIS_VERSION=3.12
+NSIS_VERSION=3.13
 NSIS_EXE_FILE_NAME=${NSIS_NAME}-${NSIS_VERSION}-setup.exe
 NSIS_EXE_FILE_URL=https://sourceforge.net/projects/nsis/files/NSIS%203/${NSIS_VERSION}/${NSIS_EXE_FILE_NAME}/download
 

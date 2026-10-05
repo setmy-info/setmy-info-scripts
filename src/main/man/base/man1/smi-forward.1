@@ -1,15 +1,13 @@
-.TH smi-forward "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.TH smi-forward "1" "October 2026" "SMI Toolset" "SMI Base Command"
 .SH NAME
-smi-forward \- Switch the port forwarding of 80 and 443 between nginx and HAProxy
+smi-forward \- Switch the nftables redirect of 80 and 443 between nginx and HAProxy
 .SH SYNOPSIS
 .B smi-forward
 .BR nginx | haproxy
 .SH DESCRIPTION
 .PP
 .B smi-forward
-points the privileged ports of the
-.B public
-firewalld zone at one of the two web fronts:
+points ports 80 and 443 at one of the two web fronts:
 .PP
 .RS
 .nf
@@ -18,48 +16,64 @@ haproxy    80 -> 8090    443 -> 8091
 .fi
 .RE
 .PP
-The rules of the other one are removed first, so the two never forward the same port at once, and
-each switch is made twice: in the running configuration and, with
-.BR --permanent ,
-in the stored one, so it survives a reload and a reboot without a
-.B firewall-cmd --reload
-of its own.
+The
+.B web_proxy
+chain of the
+.B inet global_firewall
+table holds nothing but a jump to the chain of the front that is on duty, and this command
+replaces that jump, in one
+.B nft
+transaction:
 .PP
-Each port is forwarded twice as well: with a
-.B forward-port
-rule, which firewalld applies to IPv4, and with the matching
-.B rich-rule
-of
-.BR "family=ipv6" ,
-so a request over IPv6 lands on the same web front.
+.RS
+.nf
+flush chain inet global_firewall web_proxy; add rule inet global_firewall web_proxy jump to_nginx
+.fi
+.RE
 .PP
-Removing a rule that is not there is not an error, so the command can be run when the other front
-was never forwarded, or twice in a row.
-Adding has to succeed; the command stops at the first failure.
-The forwarded ports and the rich rules of the zone are printed at the end.
+The ports are not in this command.
+They are in the
+.B to_nginx
+and
+.B to_haproxy
+chains of the ruleset, which redirect 80 and 443 to the port pair of their front, so a port is
+defined once, in the ruleset, and changing one needs no change here.
 .PP
-It has to be run as root, and firewalld has to be installed and running.
+Because the chain is flushed first, the jump to the other front is gone by definition and the
+command can be run again and again with the same result.
+The chain is reached from
+.B pre_nat
+for arriving traffic and from
+.B out_nat
+for traffic of the machine itself, so both follow the switch; nothing else of the ruleset is
+touched.
+.PP
+It has to be run as root and needs the ruleset loaded, because it changes a chain of a table that
+has to exist already.
 .SH ARGUMENTS
 .TP
 .B nginx
-Forward to 8080 and 8081, the nginx ports.
+Jump to the
+.B to_nginx
+chain, which redirects to 8080 and 8081.
 .TP
 .B haproxy
-Forward to 8090 and 8091, the HAProxy ports.
+Jump to the
+.B to_haproxy
+chain, which redirects to 8090 and 8091.
 .SH EXIT STATUS
 .TP
 .B 0
-The zone forwards to the chosen web front.
+The chain now jumps to the chosen web front.
 .TP
 .B 1
-Wrong or missing argument, not root, no
-.BR firewall-cmd ,
-or firewalld is not running.
+Wrong or missing argument.
 .TP
 .I other
 Exit status of
-.BR firewall-cmd (1)
-for a failed addition.
+.BR nft (8),
+for example when the table or one of the chains does not exist, or the command is not run as
+root.
 .SH EXAMPLES
 .PP
 Serve the sites straight from nginx:
@@ -76,17 +90,31 @@ sudo smi-forward haproxy
 .fi
 .RE
 .PP
-What is forwarded now:
+What is redirected now:
 .RS
 .nf
-sudo firewall-cmd --zone=public --list-forward-ports
+sudo nft list chain inet global_firewall web_proxy
 .fi
 .RE
 .SH NOTES
 .PP
-The zone and the four ports are fixed in the command, matching the nginx and HAProxy
-configuration of the web front: nginx listens on 8080 and 8081, HAProxy on 8090 and 8091, and
-neither needs a privileged port of its own.
+The change is made in the running ruleset only.
+The stored configuration keeps whatever its
+.B web_proxy
+chain says, which is
+.B jump to_nginx
+in the shipped
+.IR /etc/nftables/main.nft ,
+so a reload or a reboot goes back to nginx.
+Change that one line as well when a front has to stay after a restart.
+.PP
+The table name and the three chain names are fixed in the command, matching that ruleset. The
+front ports live there too, as
+.BR PORT_NGINX_HTTP ", " PORT_NGINX_HTTPS ", " PORT_HAPROXY_HTTP
+and
+.BR PORT_HAPROXY_HTTPS ;
+nginx listens on 8080 and 8081, HAProxy on 8090 and 8091, and neither needs a privileged port of
+its own.
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
@@ -95,7 +123,6 @@ Command written by Imre Tabur.
 Report smi-forward bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
-.BR firewall-cmd (1),
-.BR firewalld.richlanguage (5),
+.BR nft (8),
 .BR smi-create-vhost (1),
 .BR smi-nginx-fix-permissions (1)

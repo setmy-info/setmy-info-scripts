@@ -62,6 +62,41 @@ verification (unit tests, integration tests incl. valgrind tests), release (no d
 ./configure [ci/release | release]
 ```
 
+# Deploy to the servers
+
+The built RPM is uploaded to the servers with the `deploy` user, whose public key is already
+installed there, so no password is asked. Installation is manual, on purpose: the upload only
+puts the package into `/home/deploy/deploy`.
+
+```sh
+./configure release && make clean && make all test package
+make upload-test            # TEST
+make upload-live            # LIVE front end, SSH port 27443
+make upload-all             # every configured environment
+make upload-help            # what the targets do, with the hosts and ports
+```
+
+The same package goes to every machine, TEST and LIVE alike: this project is the helper script
+collection every VM, container host and server needs, so there is nothing to filter per
+environment.
+
+On the server, as a user who may:
+
+```sh
+sudo dnf -y install /home/deploy/deploy/setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
+```
+
+The LIVE back end server does not exist yet. `make upload-be` is ready for it and says what is
+missing until `DEPLOY_BE_HOST` is filled in, in `src/main/resources/cmake/deploy.cmake` or on the
+command line. Every value can be overridden the same way:
+
+```sh
+make upload-live DEPLOY_LIVE_HOST=host DEPLOY_LIVE_PORT=port DEPLOY_USER=user DEPLOY_REMOTE_DIR=dir
+```
+
+Jenkins does the same: the Deploy stage of the Jenkinsfile runs `make upload-test` on a `devel*`
+branch and `make upload-live` on `master`.
+
 # Verification
 
 With Docker

@@ -119,7 +119,7 @@ pipeline {
                         branch pattern: 'devel.*', comparator: 'REGEXP'
                     }
                     steps {
-                        echo 'Put here software development installations steps'
+                        echo 'Installing on the Jenkins node itself, the development machine'
                         runCommand '(sudo rpm -e setmy-info-scripts 2>/dev/null || true)'
                         runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && sudo rpm -i setmy-info-scripts-\${SCRIPTS_VERSION}.noarch.rpm"
                         runCommand "smi-version"
@@ -143,7 +143,8 @@ pipeline {
                         }
                     }
                     steps {
-                        echo 'Put here software test installations steps'
+                        echo 'Uploading the RPM to the TEST server, installation is manual'
+                        runCommand 'make upload-test'
                     }
                 }
                 stage('prelive') {
@@ -160,7 +161,7 @@ pipeline {
                         }
                     }
                     steps {
-                        echo 'Put here software prelive installations steps'
+                        echo 'No PRELIVE machine'
                     }
                 }
                 stage('live') {
@@ -169,10 +170,10 @@ pipeline {
                         branch 'master'
                     }
                     steps {
-                        echo 'Put here software production installations steps'
-                        runCommand '(sudo rpm -e setmy-info-scripts 2>/dev/null || true)'
-                        runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && sudo rpm -i setmy-info-scripts-\${SCRIPTS_VERSION}.noarch.rpm"
-                        runCommand "smi-version"
+                        echo 'Uploading the RPM to the LIVE front end server, installation is manual'
+                        runCommand 'make upload-live'
+                        // The LIVE back end server does not exist yet, see deploy.cmake:
+                        // runCommand 'make upload-be'
                     }
                 }
             }

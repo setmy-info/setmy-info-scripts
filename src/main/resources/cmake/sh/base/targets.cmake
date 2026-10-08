@@ -19,6 +19,7 @@ ADD_CUSTOM_TARGET(makeDirectories
     mkdir -p ${LIBRARY_OUTPUT_PATH}/cl &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/half-past &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/selinux/vhost &&
+    mkdir -p ${LIBRARY_OUTPUT_PATH}/gathering &&
     mkdir -p ${ETC_PROFILED_OUTPUT_PATH} &&
     mkdir -p ${INCLUDE_OUTPUT_PATH} &&
     mkdir -p ${ETC_SYSTEM_OUTPUT_PATH} &&
@@ -33,6 +34,7 @@ ADD_CUSTOM_TARGET(buildLibShells       cp ${MAIN_SH_SOURCES_PATH}/lib/*.sh ${LIB
 ADD_CUSTOM_TARGET(buildShellScripts    cp ${MAIN_SH_SOURCES_PATH}/bin/* ${BINARY_OUTPUT_PATH})
 ADD_CUSTOM_TARGET(buildHalfPastPlugins cp ${MAIN_SH_SOURCES_PATH}/lib/half-past/*.sh ${LIBRARY_OUTPUT_PATH}/half-past)
 ADD_CUSTOM_TARGET(buildSelinuxModules  cp ${MAIN_SH_SOURCES_PATH}/lib/selinux/vhost/*.te ${LIBRARY_OUTPUT_PATH}/selinux/vhost)
+ADD_CUSTOM_TARGET(buildGatheringProfiles cp ${MAIN_SH_SOURCES_PATH}/lib/gathering/*.sh ${LIBRARY_OUTPUT_PATH}/gathering)
 ADD_CUSTOM_TARGET(buildServiceScripts  cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/*.service ${ETC_SYSTEM_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/*.path ${ETC_SYSTEM_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/*.timer ${ETC_SYSTEM_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/environment.conf ${ETC_OUTPUT_PATH} && cp ${MAIN_SH_SOURCES_PATH}/etc/systemd/system/nginx.service.d/*.conf ${ETC_SYSTEM_OUTPUT_PATH}/nginx.service.d)
 ADD_CUSTOM_TARGET(buildYumReposScripts cp ${MAIN_SH_SOURCES_PATH}/etc/yum.repos.d/*.repo ${ETC_YUM_REPOS_PATH})
 

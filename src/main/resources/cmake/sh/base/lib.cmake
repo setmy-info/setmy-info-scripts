@@ -21,6 +21,8 @@ INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/pki.sh"                        DESTINATION
 INSTALL(PROGRAMS "${LIBRARY_OUTPUT_PATH}/smi-incoming-deploy.sh"     DESTINATION lib)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/half-past"                 DESTINATION lib USE_SOURCE_PERMISSIONS)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/selinux"                   DESTINATION lib)
+INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/gathering"                 DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/gathering.sh"                  DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/remote.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/openssl.ca.ext.file.txt"       DESTINATION lib)
 

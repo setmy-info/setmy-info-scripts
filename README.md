@@ -62,40 +62,58 @@ verification (unit tests, integration tests incl. valgrind tests), release (no d
 ./configure [ci/release | release]
 ```
 
-# Deploy to the servers
+# Deploy to a server
 
-The built RPM is uploaded to the servers with the `deploy` user, whose public key is already
-installed there, so no password is asked. Installation is manual, on purpose: the upload only
-puts the package into `/home/deploy/deploy`.
+The built RPM is uploaded with the `deploy` user, whose public key is installed on the server, so
+no password is asked, and then handed to the deployment service of that machine, which installs
+it. Nothing is installed over ssh.
+
+No server is named in this repository. Every value comes from the environment, so a CI job
+configuration or a command line decides which machine is deployed to:
 
 ```sh
 ./configure release && make clean && make all test package
-make upload-test            # TEST
-make upload-live            # LIVE front end, SSH port 27443
-make upload-all             # every configured environment
-make upload-help            # what the targets do, with the hosts and ports
+SMI_DEPLOY_HOSTS="one.example.com two.example.com:2222" make deploy   # upload, then hand over
+SMI_DEPLOY_HOSTS="one.example.com" make upload                        # upload only
+make deploy-help                                                      # targets and variables
 ```
 
-The same package goes to every machine, TEST and LIVE alike: this project is the helper script
-collection every VM, container host and server needs, so there is nothing to filter per
-environment.
+| variable | meaning | default |
+|---|---|---|
+| `SMI_DEPLOY_HOSTS` | the servers, `[user@]host[:port]` each, separated by spaces or commas | required |
+| `SMI_DEPLOY_USER` | user for an entry that does not name one | `deploy` |
+| `SMI_DEPLOY_PORT` | port for an entry that does not name one | `22` |
+| `SMI_DEPLOY_REMOTE_DIR` | where to upload | `/home/<user>/deploy` |
+| `SMI_DEPLOY_INCOMING_DIR` | what the deployment service watches | `/var/opt/setmy.info/incoming` |
 
-On the server, as a user who may:
+The same package belongs on every machine, whatever its role: this project is the helper script
+collection every VM, container host and server needs, not a per environment configuration. One
+call deploys to the whole list, so one more machine is one more word in the variable. A server
+that fails does not stop the others, and the command ends with 1 when any of them failed. An IPv6
+address goes in brackets, `[2001:db8::1]:2222`, as ssh and scp write it.
+
+The hand over copies the package into the incoming directory under a `.part` name and renames it
+there, so the watcher never starts on a half written file. This project is deployed published,
+not as a draft: it is the toolset of the machine and there is nothing in it to approve.
+
+What happened on the server:
+
+```sh
+journalctl -u setmy-info-deploy.service
+```
+
+An upload without the hand over is installed by hand there, as a user who may:
 
 ```sh
 sudo dnf -y install /home/deploy/deploy/setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 ```
 
-The LIVE back end server does not exist yet. `make upload-be` is ready for it and says what is
-missing until `DEPLOY_BE_HOST` is filled in, in `src/main/resources/cmake/deploy.cmake` or on the
-command line. Every value can be overridden the same way:
-
-```sh
-make upload-live DEPLOY_LIVE_HOST=host DEPLOY_LIVE_PORT=port DEPLOY_USER=user DEPLOY_REMOTE_DIR=dir
-```
-
-Jenkins does the same: the Deploy stage of the Jenkinsfile runs `make upload-test` on a `devel*`
-branch and `make upload-live` on `master`.
+Jenkins does the same, and its own job configuration holds the servers: the Deploy stage maps its
+variables onto `SMI_DEPLOY_HOSTS` and runs `make deploy` on a `devel*`, `release*` or `hotfix*`
+branch for the test environment and on `master` for the live one. There is
+no DEV machine, the Jenkins node is the test machine itself, so the dev stage says so and the test
+stage does the work. The installed version is deliberately not read back: the service installs in
+parallel with the build and a query would race it.
 
 # Verification
 

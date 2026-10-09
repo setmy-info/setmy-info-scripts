@@ -119,10 +119,7 @@ pipeline {
                         branch pattern: 'devel.*', comparator: 'REGEXP'
                     }
                     steps {
-                        echo 'Installing on the Jenkins node itself, the development machine'
-                        runCommand '(sudo rpm -e setmy-info-scripts 2>/dev/null || true)'
-                        runCommand "SCRIPTS_VERSION=\$(sed -n 's/^SCRIPTS_VERSION=\\([0-9.]*\\)\$/\\1/p' README.md) && sudo rpm -i setmy-info-scripts-\${SCRIPTS_VERSION}.noarch.rpm"
-                        runCommand "smi-version"
+                        echo 'No DEV machine: this Jenkins node is the TEST machine itself, and the test stage deploys to it'
                     }
                 }
                 stage('test') {
@@ -143,8 +140,15 @@ pipeline {
                         }
                     }
                     steps {
-                        echo 'Uploading the RPM to the TEST server, installation is manual'
-                        runCommand 'make upload-test'
+                        echo 'Uploading the RPM to TEST and handing it to the deployment service there, which installs it'
+                        // No server belongs in this repository: the values come from the job
+                        // configuration of this pipeline, which maps its own variables onto the
+                        // ones src/main/sh/build/deploy.sh reads.
+                        runCommand 'SMI_DEPLOY_HOSTS="${SMI_DEPLOY_TEST_HOSTS}" make deploy'
+                        // The installed version is deliberately not read back: the deployment
+                        // service installs in parallel with this build and a query would race
+                        // it. journalctl -u setmy-info-deploy.service on the machine says what
+                        // happened.
                     }
                 }
                 stage('prelive') {
@@ -170,10 +174,11 @@ pipeline {
                         branch 'master'
                     }
                     steps {
-                        echo 'Uploading the RPM to the LIVE front end server, installation is manual'
-                        runCommand 'make upload-live'
-                        // The LIVE back end server does not exist yet, see deploy.cmake:
-                        // runCommand 'make upload-be'
+                        echo 'Uploading the RPM to LIVE and handing it to the deployment service there, which installs it'
+                        // The same package belongs on every machine of the environment, so the
+                        // variable of the job configuration holds them all: one more machine is
+                        // one more word in it, "host" or "host:port", and nothing changes here.
+                        runCommand 'SMI_DEPLOY_HOSTS="${SMI_DEPLOY_LIVE_HOSTS}" make deploy'
                     }
                 }
             }

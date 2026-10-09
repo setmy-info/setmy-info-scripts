@@ -13,7 +13,14 @@ fi
 
 VERSION="$1"
 
-if git rev-parse "$VERSION" >/dev/null 2>&1; then
+# Take the tags of the remote as they are first. A build machine keeps the tags of every earlier
+# build, and a tag that was moved or recreated in the meantime then differs from the remote one,
+# which the remote refuses. --force overwrites such a local tag, --prune-tags drops the ones that
+# are gone from the remote, so what is local afterwards is what the remote has.
+echo "🔄 Syncing tags with the remote..."
+git fetch --force --prune --prune-tags --tags origin
+
+if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null 2>&1; then
   echo "❌ Tag $VERSION already exists!"
   exit 1
 fi
@@ -24,9 +31,12 @@ git tag -a "$VERSION" -m "$VERSION"
 echo "🔄 Updating tag 'latest' -> $VERSION"
 git tag -f latest "$VERSION"
 
-echo "🚀 Pushing tags..."
-git push -f origin latest
-git push --tags
+# Only the two tags this script made are pushed. "git push --tags" pushes every local tag, so one
+# stale tag of an earlier build fails the whole push, and with it the build, after the new tag has
+# already arrived.
+echo "🚀 Pushing tag $VERSION and latest..."
+git push origin "refs/tags/$VERSION"
+git push -f origin "refs/tags/latest"
 
 echo "✅ Done: $VERSION tagged and pushed."
 

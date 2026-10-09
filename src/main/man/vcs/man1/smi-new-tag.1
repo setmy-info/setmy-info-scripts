@@ -12,15 +12,31 @@ and always having a pointer to the latest stable release.
 .PP
 When run, it performs the following:
 .IP \[bu] 2
-Checks if the given version tag already exists.
+Takes the tags of the remote as they are, with
+.B git fetch --force --prune --prune-tags --tags origin
+, so a local tag that was moved or recreated in the meantime is overwritten and one that is gone
+from the remote is dropped.
+.IP \[bu] 2
+Checks if the given version tag already exists, the remote ones included after that fetch.
 .IP \[bu] 2
 Creates an annotated tag with the version string as both name and message.
 .IP \[bu] 2
 Forces the \fBlatest\fR tag to point to the newly created version.
 .IP \[bu] 2
-Pushes the \fBlatest\fR and all tags to the remote repository.
+Pushes those two tags, and only those two, to the remote repository.
 .PP
 The command fails if the version tag already exists, or if the version argument is missing.
+.PP
+Only the version tag and
+.B latest
+are pushed on purpose.
+.B git push --tags
+pushes every local tag, and on a build machine, which keeps the tags of every earlier build, one
+stale tag that differs from the remote one is refused by the remote
+.RB ( "already exists" )
+and fails the whole push, and with it the build, after the new tag has already arrived. A build
+that is repeated on a version that is already tagged therefore fails on the check, not halfway
+through the push.
 .SH OPTIONS
 .PP
 This script takes a single required positional argument:

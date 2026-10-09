@@ -18,7 +18,6 @@ INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/elixir.sh"                     DESTINATION
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/cl.sh"                         DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/crypto.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/pki.sh"                        DESTINATION lib)
-INSTALL(PROGRAMS "${LIBRARY_OUTPUT_PATH}/smi-incoming-deploy.sh"     DESTINATION lib)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/half-past"                 DESTINATION lib USE_SOURCE_PERMISSIONS)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/selinux"                   DESTINATION lib)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/gathering"                 DESTINATION lib)

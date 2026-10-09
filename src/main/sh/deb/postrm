@@ -8,7 +8,6 @@ rm -f /opt/${SMI_PROVIDER}/bin/smi-test
 rm -f /opt/${SMI_PROVIDER}/bin/smi-xvzf
 rm -f /opt/${SMI_PROVIDER}/bin/smi-xvjf
 rm -f /opt/${SMI_PROVIDER}/bin/smi-xvJf
-rm -f /opt/${SMI_PROVIDER}/lib/incoming/angular-start-project.sh
 if command -v systemctl >/dev/null 2>&1; then
     systemctl disable --now setmy-info-deploy.path || true
     systemctl disable --now setmy-info-half-past.timer || true

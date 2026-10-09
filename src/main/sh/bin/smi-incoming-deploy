@@ -4,31 +4,30 @@ set -u
 
 INCOMING_DIR="/var/opt/setmy.info/incoming"
 DRAFT_INCOMING_DIR="${INCOMING_DIR}/draft"
-PLUGINS_DIR="/opt/setmy.info/lib/incoming"
 FAILED_DIR="/var/opt/setmy.info/failed"
 
 RESULT=0
 
-# Two stages, the two destinations the external system drops a package into:
+# Deployment packages are RPMs and the external system drops one into the directory of the stage
+# it wants:
 #
-#   /var/opt/setmy.info/incoming/*.tar.gz        published, publicly visible after deployment
-#   /var/opt/setmy.info/incoming/draft/*.tar.gz  draft, visible to whoever may see the draft
+#   /var/opt/setmy.info/incoming/*.rpm        published, publicly visible after deployment
+#   /var/opt/setmy.info/incoming/draft/*.rpm  draft, visible to whoever may see the draft
 #
-# The stage is given to the plugins as the second argument, "published" or "draft", so one
-# plugin deploys both and decides where from that argument. A failed package is kept in the
-# failed directory of its own stage.
+# The stage is given to the scriptlets of the package in SMI_STAGE, "published" or "draft". rpm
+# runs its scriptlets as child shells and passes its own environment on, so %pre and %post of the
+# package read SMI_STAGE and put the content where that stage belongs. One package therefore
+# serves both stages: the same file is uploaded to the draft directory, checked there, and then
+# moved to the published directory by the external system, so the bytes that are published are
+# the bytes that were approved. Nothing is built twice.
 #
-# One incoming package can have any number of handlers: every plugin is given every package and
-# decides for itself whether the package is one of its own. A plugin that is not interested ends
-# with 0 and does nothing.
+# rpm -U --replacepkgs --oldpackage, so an upgrade, a reinstall of the version that is already
+# installed, which publishing a checked draft is, and a downgrade all work with one command.
 #
-# The package file belongs to this command, not to the plugins. All plugins run over a package,
-# and only then is the file removed. The first plugin that fails ends the handling of that
-# package: the plugins after it are not run and the package is moved to the failed directory, so
-# a half deployed package is kept for inspection and is not handed to the rest.
-#
-# Nothing is ever left in an incoming directory. setmy-info-deploy.path triggers on the incoming
-# globs, so a package left behind would start this service again and again.
+# The package file belongs to this command: it is removed when the installation succeeded and
+# moved to the failed directory of its stage when it did not. Nothing is ever left in an incoming
+# directory, because setmy-info-deploy.path triggers on the incoming globs and a package left
+# behind would start this service again and again.
 moveToFailed() {
     PACKAGE=${1}
     STAGE_FAILED_DIR=${2}
@@ -48,33 +47,28 @@ deployStage() {
 
     [ -d "${STAGE_INCOMING_DIR}" ] || return 0
 
-    for PACKAGE in "${STAGE_INCOMING_DIR}"/*.tar.gz; do
+    # On a Debian based machine the packages are .deb and the installer is dpkg, which passes
+    # its environment to the maintainer scripts the same way rpm does, so SMI_STAGE reaches
+    # preinst and postinst unchanged. Uncomment the two lines here and the two .deb globs of
+    # setmy-info-deploy.path, and comment the .rpm ones, and nothing else has to change.
+    #for PACKAGE in "${STAGE_INCOMING_DIR}"/*.deb; do
+    for PACKAGE in "${STAGE_INCOMING_DIR}"/*.rpm; do
         [ -e "${PACKAGE}" ] || continue
 
         PACKAGE_NAME=${PACKAGE##*/}
-        PLUGIN_FAILED=''
 
-        if [ -d "${PLUGINS_DIR}" ]; then
-            for PLUGIN in "${PLUGINS_DIR}"/*.sh; do
-                [ -x "${PLUGIN}" ] || continue
-                if ! "${PLUGIN}" "${PACKAGE}" "${STAGE}"; then
-                    PLUGIN_FAILED=${PLUGIN##*/}
-                    echo "smi-incoming-deploy: plugin ${PLUGIN_FAILED} failed on ${STAGE} package ${PACKAGE_NAME}, the plugins after it are not run" >&2
-                    break
-                fi
-            done
-        fi
-
-        if [ -n "${PLUGIN_FAILED}" ]; then
-            moveToFailed "${PACKAGE}" "${STAGE_FAILED_DIR}" "${STAGE} package handled by ${PLUGIN_FAILED} with an error"
-            RESULT=1
-        elif [ -e "${PACKAGE}" ]; then
+        #if SMI_STAGE="${STAGE}" dpkg --install --force-confnew "${PACKAGE}"; then
+        if SMI_STAGE="${STAGE}" rpm -U --replacepkgs --oldpackage "${PACKAGE}"; then
+            echo "smi-incoming-deploy: installed ${STAGE} package ${PACKAGE_NAME}" >&2
             if rm -f "${PACKAGE}"; then
-                echo "smi-incoming-deploy: every plugin handled ${STAGE} package ${PACKAGE_NAME}, removed it" >&2
+                echo "smi-incoming-deploy: removed ${PACKAGE_NAME}" >&2
             else
-                echo "smi-incoming-deploy: every plugin handled ${STAGE} package ${PACKAGE_NAME}, but it could not be removed: ${PACKAGE}" >&2
+                echo "smi-incoming-deploy: installed ${PACKAGE_NAME}, but it could not be removed: ${PACKAGE}" >&2
                 RESULT=1
             fi
+        else
+            moveToFailed "${PACKAGE}" "${STAGE_FAILED_DIR}" "${STAGE} package ${PACKAGE_NAME} could not be installed"
+            RESULT=1
         fi
     done
 }

@@ -1,214 +1,258 @@
-.TH smi-incoming-deploy "1" "September 2026" "SMI Toolset" "SMI Base Command"
+.TH smi-incoming-deploy "1" "October 2026" "SMI Toolset" "SMI Base Command"
 .SH NAME
-smi-incoming-deploy \- Hand incoming deployment packages to deployment plugins
+smi-incoming-deploy \- Install incoming deployment packages, as a draft or published
 .SH SYNOPSIS
 .B smi-incoming-deploy
 .SH DESCRIPTION
 .PP
 .B smi-incoming-deploy
-processes deployment packages dropped into the incoming directories: for every
-.B .tar.gz
-file it runs each executable
-.B .sh
-plugin from
-.I /opt/setmy.info/lib/incoming
-with the package path and the stage as arguments, in the order of the plugin names.
+installs the RPM packages an external system drops into the incoming directories.
+It is started by
+.B setmy-info-deploy.path
+as soon as a package appears, so a deployment needs nothing but the upload.
 .SH STAGES
 .PP
 A package is deployed into one of two stages, and the external system chooses by the directory it
-drops the package into:
+uploads into. That is the whole interface it needs: it uploads a file and nothing else, it sets no
+variable and runs no command, because the directory is the signal.
 .PP
 .RS
 .nf
-/var/opt/setmy.info/incoming/*.tar.gz         published
-/var/opt/setmy.info/incoming/draft/*.tar.gz   draft
+/var/opt/setmy.info/incoming/*.rpm         published
+/var/opt/setmy.info/incoming/draft/*.rpm   draft
 .fi
 .RE
 .PP
 Both are deployed on the same machine, the live one; the stage is only how far the deployment has
-got. A draft is checked by whoever approves it, and the external system publishes it by sending
-the same package to
+got. A draft is checked by whoever approves it, and the external system publishes it by moving
+the same file to
 .IR /var/opt/setmy.info/incoming ,
-or rejects it by sending nothing. Nothing on this machine approves or rejects.
+or rejects it by deleting it. Nothing on this machine approves or rejects.
 .PP
-The stage is the second argument every plugin is given,
+The stage reaches the package in the
+.SM SMI_STAGE
+environment variable,
 .B published
 or
-.BR draft ,
-so one plugin deploys both and decides from that argument where the files go.
-A failed package is kept in the failed directory of its own stage,
-.I /var/opt/setmy.info/failed
+.BR draft .
+.B rpm
+runs the scriptlets of a package as child shells and passes its own environment on, so
+.B %pre
+and
+.B %post
+of the package read
+.SM SMI_STAGE
+and put the content where that stage belongs:
+.PP
+.RS
+.nf
+case "${SMI_STAGE:-published}" in
+    draft)     TARGET=/usr/share/nginx/vhosts/HOST/draft/apps/APP ;;
+    published) TARGET=/usr/share/nginx/vhosts/HOST/apps/APP ;;
+esac
+.fi
+.RE
+.PP
+An unset
+.SM SMI_STAGE
+means published, which the
+.B :-published
+of that
+.B case
+gives: a package installed by hand with
+.B rpm -U
 or
-.IR /var/opt/setmy.info/failed/draft .
+.BR "dnf install" ,
+without the variable, publishes. Only a deployment that says
+.B draft
+is a draft.
+.PP
+One package therefore serves both stages.
+The file that is uploaded to the draft directory, checked there and then moved to the published
+directory is one and the same file, so what is published is what was approved, and nothing is
+built twice.
 .PP
 Drafts are deployed before the published packages of the same run, so a package that is in both
 directories at once ends with the published one in place.
+.SH INSTALLATION
 .PP
-One package can have any number of handlers.
-Every plugin is given every package and decides for itself whether the package is one of its own;
-a plugin that is not interested ends with
-.B 0
-and does nothing.
-What a package means is entirely up to the plugins.
+Each package is installed with
 .PP
-A plugin does the work and says how it went with its exit status.
-The package file belongs to this command, not to the plugins:
+.RS
+.nf
+SMI_STAGE=STAGE rpm -U --replacepkgs --oldpackage PACKAGE
+.fi
+.RE
+.PP
+.B --replacepkgs
+because publishing a checked draft installs the version that is already installed, which rpm
+would otherwise refuse, and
+.B --oldpackage
+so a deliberate step back to an earlier version works as well.
+.PP
+rpm keeps one instance of a package name, so the draft and the published deployment are the same
+installation seen twice: the files of the package are installed once and the scriptlets place or
+link the content of the stage they were run for. A package that keeps its payload in a versioned
+directory and links the stage directory to it can therefore hold both stages at once, on
+different versions.
+.PP
+The package file belongs to this command:
 .IP \(bu 2
-every plugin handled the package: the file is removed
+installed: the file is removed
 .IP \(bu 2
-a plugin ended with an error: the plugins after it are
-.B not
-run, and the file is moved to
+not installed: the file is moved to
 .I /var/opt/setmy.info/failed
+or
+.IR /var/opt/setmy.info/failed/draft ,
+the failed directory of its stage, with a UTC timestamp in front of its name
 .PP
-The first error therefore ends the handling of that package, so a half deployed package is kept
-for inspection instead of being handed to the rest.
-The name in the failed directory gets a UTC timestamp in front of it, so a package that fails
-again does not overwrite the earlier one, and the reason is written to standard error, which
+Every step and every reason is written to standard error, which
 .BR journalctl (1)
 keeps for the service.
-Plugins run in the order of their names, which is also the order a failure cancels: a plugin that
-sorts after the one that failed does not run.
 .PP
-The incoming directory is empty when the command ends.
-Leaving a package in the incoming directory is what the
+The incoming directories are empty when the command ends.
+That is not tidiness:
 .B setmy-info-deploy.path
-unit triggers on, so a package left there would start the deployment again and again, burning
-processor time until systemd's start limit stopped it. That is why nothing is left behind.
+triggers on the incoming globs, so a package left there would start the deployment again and
+again, burning processor time until systemd's start limit stopped it.
+.SH LIMITS
 .PP
-A failing plugin ends the handling of its own package only: the packages after it in the incoming
-directory are still processed, and the command exits with
-.B 1
-at the end so the service is recorded as failed.
-.SH PLUGINS
+The staging only exists for packages that implement it.
+A package that does not read
+.SM SMI_STAGE
+ignores it: dropped into
+.IR /var/opt/setmy.info/incoming/draft ,
+it is given
+.BR SMI_STAGE=draft ,
+pays no attention, and installs exactly as it would have from the published directory, so it goes
+live at once.
+Nothing here refuses such a package, because nothing here knows what a package puts where.
+An upload into the draft directory that has to be refused rather than silently published needs a
+check of its own, a marker in the package or a naming convention this command tests, and that is
+not implemented.
 .PP
-The plugins shipped are symbolic links to one generic script,
-.IR /opt/setmy.info/lib/smi-incoming-deploy.sh .
-The script takes its pattern from the name it was started under, the link name without
-.BR .sh ,
-and handles a package only when the package file name contains that pattern; other packages are
-ignored with success.
+The two
+.B rpm
+options apply to every package, not only to the one being published:
+.B --replacepkgs
+lets the version that is already installed be installed again, and
+.B --oldpackage
+permits a downgrade, so an older package uploaded into either directory is installed over a newer
+one without a word.
+The version that is deployed is the version that was uploaded, and nothing here compares it with
+what is installed.
 .PP
-It deploys one application of one virtual host, and the stage decides which of the two
-directories of that application is written:
-.PP
-.RS
-.nf
-published  /usr/share/nginx/vhosts/setmy.info.gintra/apps/old
-draft      /usr/share/nginx/vhosts/setmy.info.gintra/draft/apps/old
-.fi
-.RE
-.PP
-The host and the application are the
-.B VHOST
-and
-.B APP
-values at the top of the script.
-The virtual host directory has to exist already, because the nginx configuration decides which
-names are served.
-.PP
-An archive whose files are under one top directory is unpacked without it, so an Angular build of
-.I dist/old/index.html
-becomes
-.IR apps/old/index.html ;
-an archive with its files in the root is unpacked as it is.
-The files are unpacked into a directory beside the target and moved into place with one
-.BR mv ,
-with the previous deployment moved aside first and put back when the move fails, so a request is
-served either the previous deployment or the new one and never a half unpacked directory.
-Owner
-.BR root:root ,
-.B 0755
-directories,
-.B 0644
-files and
-.B restorecon
-are applied after the move, because the SELinux type is inherited from the directory the files
-were created in.
-.PP
-A draft deployment is therefore checked under the draft variant, and the external system
-publishes it by sending the same package to
-.IR /var/opt/setmy.info/incoming .
-.PP
-Links created by the rpm and deb install scripts, and removed again on uninstall:
+.B rpm -U
+resolves no dependencies.
+A package that needs something which is not installed yet fails and is moved to the failed
+directory, where
+.BR dnf (8)
+would have pulled the dependency in.
+A package that brings its own requirements, or whose requirements are already on the machine, is
+what this command is for; anything else is installed by hand.
+.SH EXIT STATUS
 .TP
-.I angular-start-project.sh
-Deploys every incoming package whose file name contains
-.BR angular-start-project ,
-for example
-.IR angular-start-project-1.0.0.tar.gz ,
-as the application the script names.
-.PP
-Another deployment is another link, named after the packages it handles, and a copy of the script
-with its own
-.B VHOST
-and
-.B APP
-when it is another application:
-.PP
-.RS
-.nf
-ln -s ../smi-incoming-deploy.sh /opt/setmy.info/lib/incoming/my-site.sh
-.fi
-.RE
-.PP
-A pattern is matched anywhere in the file name, so a link named
-.I shop.sh
-also handles
-.IR webshop-2.0.tar.gz ;
-choose names that are not part of other package names.
-.PP
-Upload a package under a different name or directory and move it into the incoming directory when
-it is complete: the watcher reacts to the file as soon as it exists, and a package that is still
-being written fails to unpack.
-.PP
-The command is quiet by design: a missing incoming directory, an empty one, or an absent plugin
-directory all end with success, so it is safe to run from cron or a timer.
+.B 0
+Every package was installed and removed, or there was nothing to do.
+.TP
+.B 1
+A package could not be installed and was moved to the failed directory, or a package could not be
+removed from or moved out of an incoming directory. The packages after it were still processed.
 .SH FILES
 .TP
 .I /var/opt/setmy.info/incoming
-Incoming packages, one
-.B .tar.gz
-per deployment.
+Published packages, uploaded there by the external system.
+Created by the installation of this toolset, owned by
+.B deploy
+so that the external system can upload into it.
 .TP
 .I /var/opt/setmy.info/incoming/draft
-Draft packages, dropped there by the external system.
+Draft packages, the same owner.
 .TP
 .I /var/opt/setmy.info/failed
 .TQ
 .I /var/opt/setmy.info/failed/draft
-Packages that were not deployed, next to the incoming directory, one directory per stage, each
-package with a UTC timestamp in front of its name.
+Packages that could not be installed, one directory per stage, each package with a UTC timestamp
+in front of its name. Nothing prunes them.
 .TP
-.I /opt/setmy.info/lib/incoming
-Deployment plugins, executable
-.B .sh
-files; the shipped ones are links to
-.IR smi-incoming-deploy.sh .
-.TP
-.I /opt/setmy.info/lib/smi-incoming-deploy.sh
-Generic nginx deployment plugin, selected by the name of the link it is started through.
-.TP
-.I /usr/share/nginx/vhosts/HOST
-Virtual host directory, with
-.IR apps/APP ,
-.I brand
-and the
-.I draft
-variant of both.
-.TP
-.I /usr/share/nginx/vhosts/HOST/apps/APP
+.I /opt/setmy.info/etc/systemd/system/setmy-info-deploy.path
 .TQ
-.I /usr/share/nginx/vhosts/HOST/draft/apps/APP
-The published and the draft directory of one application, what the plugin writes.
-.SH EXIT STATUS
-.TP
-.B 0
-Every plugin handled every package and the files were removed, or there was nothing to do.
-.TP
-.B 1
-A plugin ended with an error and its package was moved to the failed directory, or a package
-could not be removed from or moved out of the incoming directory.
-The packages after it were still processed.
+.I /opt/setmy.info/etc/systemd/system/setmy-info-deploy.service
+The watcher and the service it starts, linked into
+.I /etc/systemd/system
+by the rpm and deb install scripts.
+.SH NOTES
+.PP
+A machine is ready to receive deployments as soon as this toolset is installed: the installation
+creates the two incoming directories and the two failed directories, creates the
+.B deploy
+user when it does not exist, gives it the incoming directories, and enables the watcher. What is
+left is the public key of the external system in
+.IR /home/deploy/.ssh/authorized_keys ,
+which belongs to whoever owns that system.
+.PP
+Upload a package under a different name or into another directory and move it in when it is
+complete: the watcher reacts to the file as soon as it exists, and rpm refuses a package that is
+still being written.
+.PP
+The machines of this toolset are Rocky Linux and Fedora, so the packages are RPMs. A Debian based
+machine needs the two
+.B .deb
+globs of
+.B setmy-info-deploy.path
+and the two
+.B dpkg
+lines of this command uncommented and the
+.B .rpm
+ones commented, and nothing else:
+.BR dpkg (1)
+passes its environment to the maintainer scripts the same way
+.B rpm
+does, so
+.SM SMI_STAGE
+reaches
+.B preinst
+and
+.B postinst
+unchanged. That is prepared, not tested.
+.PP
+.B sudo
+removes the environment of the caller, so
+.SM SMI_STAGE
+would not reach the scriptlets through
+.BR "sudo rpm" .
+This command runs as root from the service and sets the variable itself, which is why it works
+here; by hand it is
+.B SMI_STAGE=draft rpm -U ...
+as root, or
+.B sudo -E
+with the variable kept in
+.IR /etc/sudoers .
+.SH EXAMPLES
+.PP
+What the external system does for a draft, and later for publishing it:
+.RS
+.nf
+smi-upload app-1.4.2.rpm incoming/draft/app-1.4.2.rpm deploy@host:27443
+smi-upload app-1.4.2.rpm incoming/app-1.4.2.rpm deploy@host:27443
+.fi
+.RE
+.PP
+What was deployed, and what failed:
+.RS
+.nf
+journalctl -u setmy-info-deploy.service
+ls -l /var/opt/setmy.info/failed /var/opt/setmy.info/failed/draft
+.fi
+.RE
 .SH AUTHOR
 Imre Tabur <imre.tabur@mail.ee>
+.SH "REPORTING BUGS"
+.PP
+Report smi-incoming-deploy bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR rpm (8),
+.BR systemd.path (5),
+.BR smi-upload (1),
+.BR smi-nginx-fix-content (1)

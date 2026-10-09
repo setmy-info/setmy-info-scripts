@@ -3,8 +3,10 @@ Description=setmy.info incoming package watcher
 After=local-fs.target
 
 [Path]
-PathExistsGlob=/var/opt/setmy.info/incoming/*.tar.gz
-PathExistsGlob=/var/opt/setmy.info/incoming/draft/*.tar.gz
+#PathExistsGlob=/var/opt/setmy.info/incoming/*.deb
+#PathExistsGlob=/var/opt/setmy.info/incoming/draft/*.deb
+PathExistsGlob=/var/opt/setmy.info/incoming/*.rpm
+PathExistsGlob=/var/opt/setmy.info/incoming/draft/*.rpm
 Unit=setmy-info-deploy.service
 
 [Install]

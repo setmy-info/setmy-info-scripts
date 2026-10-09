@@ -6,48 +6,129 @@ smi-incoming-deploy \- Hand incoming deployment packages to deployment plugins
 .SH DESCRIPTION
 .PP
 .B smi-incoming-deploy
-processes deployment packages dropped into the incoming directory: for every
+processes deployment packages dropped into the incoming directories: for every
 .B .tar.gz
-file in
-.I /var/opt/setmy.info/incoming
-it runs each executable
+file it runs each executable
 .B .sh
 plugin from
 .I /opt/setmy.info/lib/incoming
-with the package path as the only argument.
+with the package path and the stage as arguments, in the order of the plugin names.
+.SH STAGES
+.PP
+A package is deployed into one of two stages, and the external system chooses by the directory it
+drops the package into:
+.PP
+.RS
+.nf
+/var/opt/setmy.info/incoming/*.tar.gz         published
+/var/opt/setmy.info/incoming/draft/*.tar.gz   draft
+.fi
+.RE
+.PP
+Both are deployed on the same machine, the live one; the stage is only how far the deployment has
+got. A draft is checked by whoever approves it, and the external system publishes it by sending
+the same package to
+.IR /var/opt/setmy.info/incoming ,
+or rejects it by sending nothing. Nothing on this machine approves or rejects.
+.PP
+The stage is the second argument every plugin is given,
+.B published
+or
+.BR draft ,
+so one plugin deploys both and decides from that argument where the files go.
+A failed package is kept in the failed directory of its own stage,
+.I /var/opt/setmy.info/failed
+or
+.IR /var/opt/setmy.info/failed/draft .
+.PP
+Drafts are deployed before the published packages of the same run, so a package that is in both
+directories at once ends with the published one in place.
+.PP
+One package can have any number of handlers.
+Every plugin is given every package and decides for itself whether the package is one of its own;
+a plugin that is not interested ends with
+.B 0
+and does nothing.
 What a package means is entirely up to the plugins.
 .PP
-A package whose name contains no plugin's pattern is not removed and not reported;
-it stays in the incoming directory until a plugin handles it.
+A plugin does the work and says how it went with its exit status.
+The package file belongs to this command, not to the plugins:
+.IP \(bu 2
+every plugin handled the package: the file is removed
+.IP \(bu 2
+a plugin ended with an error: the plugins after it are
+.B not
+run, and the file is moved to
+.I /var/opt/setmy.info/failed
+.PP
+The first error therefore ends the handling of that package, so a half deployed package is kept
+for inspection instead of being handed to the rest.
+The name in the failed directory gets a UTC timestamp in front of it, so a package that fails
+again does not overwrite the earlier one, and the reason is written to standard error, which
+.BR journalctl (1)
+keeps for the service.
+Plugins run in the order of their names, which is also the order a failure cancels: a plugin that
+sorts after the one that failed does not run.
+.PP
+The incoming directory is empty when the command ends.
+Leaving a package in the incoming directory is what the
+.B setmy-info-deploy.path
+unit triggers on, so a package left there would start the deployment again and again, burning
+processor time until systemd's start limit stopped it. That is why nothing is left behind.
+.PP
+A failing plugin ends the handling of its own package only: the packages after it in the incoming
+directory are still processed, and the command exits with
+.B 1
+at the end so the service is recorded as failed.
 .SH PLUGINS
 .PP
 The plugins shipped are symbolic links to one generic script,
 .IR /opt/setmy.info/lib/smi-incoming-deploy.sh .
 The script takes its pattern from the name it was started under, the link name without
 .BR .sh ,
-and handles a package only when the package file name contains that pattern;
-other packages are ignored with success.
-A handled package is unpacked with
-.B tar xzf
-into
-.IR /usr/share/nginx ,
-the nginx content directory, creating the directory when it does not exist.
-The archive paths are kept, so a package that contains
-.I html/index.html
-updates
-.IR /usr/share/nginx/html/index.html .
-After a successful unpack the package is removed from the incoming directory, so it is deployed
-once and the
-.B setmy-info-deploy.path
-unit does not start the deployment again.
-A package that matches but cannot be unpacked prints an error, exits with 1 and is kept in the
-incoming directory for inspection.
-When two links match the same package, the first one deploys and removes it; the next one
-only warns that the file was not found.
+and handles a package only when the package file name contains that pattern; other packages are
+ignored with success.
 .PP
-Upload a package under a different name or directory and move it into the incoming directory
-when it is complete: the watcher reacts to the file as soon as it exists, and a package that is
-still being written fails to unpack.
+It deploys one application of one virtual host, and the stage decides which of the two
+directories of that application is written:
+.PP
+.RS
+.nf
+published  /usr/share/nginx/vhosts/setmy.info.gintra/apps/old
+draft      /usr/share/nginx/vhosts/setmy.info.gintra/draft/apps/old
+.fi
+.RE
+.PP
+The host and the application are the
+.B VHOST
+and
+.B APP
+values at the top of the script.
+The virtual host directory has to exist already, because the nginx configuration decides which
+names are served.
+.PP
+An archive whose files are under one top directory is unpacked without it, so an Angular build of
+.I dist/old/index.html
+becomes
+.IR apps/old/index.html ;
+an archive with its files in the root is unpacked as it is.
+The files are unpacked into a directory beside the target and moved into place with one
+.BR mv ,
+with the previous deployment moved aside first and put back when the move fails, so a request is
+served either the previous deployment or the new one and never a half unpacked directory.
+Owner
+.BR root:root ,
+.B 0755
+directories,
+.B 0644
+files and
+.B restorecon
+are applied after the move, because the SELinux type is inherited from the directory the files
+were created in.
+.PP
+A draft deployment is therefore checked under the draft variant, and the external system
+publishes it by sending the same package to
+.IR /var/opt/setmy.info/incoming .
 .PP
 Links created by the rpm and deb install scripts, and removed again on uninstall:
 .TP
@@ -55,29 +136,49 @@ Links created by the rpm and deb install scripts, and removed again on uninstall
 Deploys every incoming package whose file name contains
 .BR angular-start-project ,
 for example
-.IR angular-start-project-1.0.0.tar.gz .
+.IR angular-start-project-1.0.0.tar.gz ,
+as the application the script names.
 .PP
-Another deployment only needs another link, named after the package it handles:
+Another deployment is another link, named after the packages it handles, and a copy of the script
+with its own
+.B VHOST
+and
+.B APP
+when it is another application:
+.PP
 .RS
 .nf
 ln -s ../smi-incoming-deploy.sh /opt/setmy.info/lib/incoming/my-site.sh
 .fi
 .RE
 .PP
-The pattern is matched anywhere in the file name, so a link named
+A pattern is matched anywhere in the file name, so a link named
 .I shop.sh
 also handles
 .IR webshop-2.0.tar.gz ;
 choose names that are not part of other package names.
 .PP
-The command is quiet by design: a missing incoming directory, an empty one, or an absent
-plugin directory all end with success, so it is safe to run from cron or a timer.
+Upload a package under a different name or directory and move it into the incoming directory when
+it is complete: the watcher reacts to the file as soon as it exists, and a package that is still
+being written fails to unpack.
+.PP
+The command is quiet by design: a missing incoming directory, an empty one, or an absent plugin
+directory all end with success, so it is safe to run from cron or a timer.
 .SH FILES
 .TP
 .I /var/opt/setmy.info/incoming
 Incoming packages, one
 .B .tar.gz
 per deployment.
+.TP
+.I /var/opt/setmy.info/incoming/draft
+Draft packages, dropped there by the external system.
+.TP
+.I /var/opt/setmy.info/failed
+.TQ
+.I /var/opt/setmy.info/failed/draft
+Packages that were not deployed, next to the incoming directory, one directory per stage, each
+package with a UTC timestamp in front of its name.
 .TP
 .I /opt/setmy.info/lib/incoming
 Deployment plugins, executable
@@ -88,14 +189,26 @@ files; the shipped ones are links to
 .I /opt/setmy.info/lib/smi-incoming-deploy.sh
 Generic nginx deployment plugin, selected by the name of the link it is started through.
 .TP
-.I /usr/share/nginx
-Target directory of the generic plugin.
+.I /usr/share/nginx/vhosts/HOST
+Virtual host directory, with
+.IR apps/APP ,
+.I brand
+and the
+.I draft
+variant of both.
+.TP
+.I /usr/share/nginx/vhosts/HOST/apps/APP
+.TQ
+.I /usr/share/nginx/vhosts/HOST/draft/apps/APP
+The published and the draft directory of one application, what the plugin writes.
 .SH EXIT STATUS
 .TP
 .B 0
-Every plugin ran successfully, or there was nothing to do.
+Every plugin handled every package and the files were removed, or there was nothing to do.
 .TP
-.I other
-A plugin failed; the remaining packages are not processed.
+.B 1
+A plugin ended with an error and its package was moved to the failed directory, or a package
+could not be removed from or moved out of the incoming directory.
+The packages after it were still processed.
 .SH AUTHOR
 Imre Tabur <imre.tabur@mail.ee>

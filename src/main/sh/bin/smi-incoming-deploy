@@ -1,23 +1,85 @@
 #!/bin/sh
 
-set -eu
+set -u
 
 INCOMING_DIR="/var/opt/setmy.info/incoming"
+DRAFT_INCOMING_DIR="${INCOMING_DIR}/draft"
 PLUGINS_DIR="/opt/setmy.info/lib/incoming"
+FAILED_DIR="/var/opt/setmy.info/failed"
 
-if [ ! -d "${INCOMING_DIR}" ]; then
-    exit 0
-fi
+RESULT=0
 
-for package in "${INCOMING_DIR}"/*.tar.gz; do
-    [ -e "${package}" ] || continue
-
-    if [ -d "${PLUGINS_DIR}" ]; then
-        for script in "${PLUGINS_DIR}"/*.sh; do
-            [ -x "${script}" ] || continue
-            "${script}" "${package}"
-        done
+# Two stages, the two destinations the external system drops a package into:
+#
+#   /var/opt/setmy.info/incoming/*.tar.gz        published, publicly visible after deployment
+#   /var/opt/setmy.info/incoming/draft/*.tar.gz  draft, visible to whoever may see the draft
+#
+# The stage is given to the plugins as the second argument, "published" or "draft", so one
+# plugin deploys both and decides where from that argument. A failed package is kept in the
+# failed directory of its own stage.
+#
+# One incoming package can have any number of handlers: every plugin is given every package and
+# decides for itself whether the package is one of its own. A plugin that is not interested ends
+# with 0 and does nothing.
+#
+# The package file belongs to this command, not to the plugins. All plugins run over a package,
+# and only then is the file removed. The first plugin that fails ends the handling of that
+# package: the plugins after it are not run and the package is moved to the failed directory, so
+# a half deployed package is kept for inspection and is not handed to the rest.
+#
+# Nothing is ever left in an incoming directory. setmy-info-deploy.path triggers on the incoming
+# globs, so a package left behind would start this service again and again.
+moveToFailed() {
+    PACKAGE=${1}
+    STAGE_FAILED_DIR=${2}
+    REASON=${3}
+    mkdir -p "${STAGE_FAILED_DIR}"
+    if mv -f "${PACKAGE}" "${STAGE_FAILED_DIR}/$(date -u +%Y%m%d-%H%M%SZ)-${PACKAGE##*/}"; then
+        echo "smi-incoming-deploy: ${REASON}, moved to ${STAGE_FAILED_DIR}: ${PACKAGE##*/}" >&2
+    else
+        echo "smi-incoming-deploy: ${REASON} and could not be moved out of the incoming directory: ${PACKAGE}" >&2
     fi
-done
+}
 
-exit 0
+deployStage() {
+    STAGE=${1}
+    STAGE_INCOMING_DIR=${2}
+    STAGE_FAILED_DIR=${3}
+
+    [ -d "${STAGE_INCOMING_DIR}" ] || return 0
+
+    for PACKAGE in "${STAGE_INCOMING_DIR}"/*.tar.gz; do
+        [ -e "${PACKAGE}" ] || continue
+
+        PACKAGE_NAME=${PACKAGE##*/}
+        PLUGIN_FAILED=''
+
+        if [ -d "${PLUGINS_DIR}" ]; then
+            for PLUGIN in "${PLUGINS_DIR}"/*.sh; do
+                [ -x "${PLUGIN}" ] || continue
+                if ! "${PLUGIN}" "${PACKAGE}" "${STAGE}"; then
+                    PLUGIN_FAILED=${PLUGIN##*/}
+                    echo "smi-incoming-deploy: plugin ${PLUGIN_FAILED} failed on ${STAGE} package ${PACKAGE_NAME}, the plugins after it are not run" >&2
+                    break
+                fi
+            done
+        fi
+
+        if [ -n "${PLUGIN_FAILED}" ]; then
+            moveToFailed "${PACKAGE}" "${STAGE_FAILED_DIR}" "${STAGE} package handled by ${PLUGIN_FAILED} with an error"
+            RESULT=1
+        elif [ -e "${PACKAGE}" ]; then
+            if rm -f "${PACKAGE}"; then
+                echo "smi-incoming-deploy: every plugin handled ${STAGE} package ${PACKAGE_NAME}, removed it" >&2
+            else
+                echo "smi-incoming-deploy: every plugin handled ${STAGE} package ${PACKAGE_NAME}, but it could not be removed: ${PACKAGE}" >&2
+                RESULT=1
+            fi
+        fi
+    done
+}
+
+deployStage draft "${DRAFT_INCOMING_DIR}" "${FAILED_DIR}/draft"
+deployStage published "${INCOMING_DIR}" "${FAILED_DIR}"
+
+exit ${RESULT}

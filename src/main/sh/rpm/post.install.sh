@@ -36,5 +36,8 @@ mkdir -p /opt/${SMI_PROVIDER}/lib/incoming
 ln -f -s /opt/${SMI_PROVIDER}/lib/smi-incoming-deploy.sh /opt/${SMI_PROVIDER}/lib/incoming/angular-start-project.sh
 mkdir -p /var/opt/${SMI_PROVIDER}
 mkdir -p /var/opt/${SMI_PROVIDER}/incoming
+mkdir -p /var/opt/${SMI_PROVIDER}/incoming/draft
+mkdir -p /var/opt/${SMI_PROVIDER}/failed
+mkdir -p /var/opt/${SMI_PROVIDER}/failed/draft
 
 exit ${?}

@@ -4,6 +4,7 @@ After=local-fs.target
 
 [Path]
 PathExistsGlob=/var/opt/setmy.info/incoming/*.tar.gz
+PathExistsGlob=/var/opt/setmy.info/incoming/draft/*.tar.gz
 Unit=setmy-info-deploy.service
 
 [Install]

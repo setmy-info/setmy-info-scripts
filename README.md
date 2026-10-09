@@ -20,7 +20,7 @@ sudo dnf install -y openssl-devel sqlite sqlite-devel libffi-devel
 ## Build
 
 ```sh
-SCRIPTS_VERSION=0.122.1
+SCRIPTS_VERSION=0.122.2
 # Or
 # SCRIPTS_VERSION=$(sed -n 's/^SCRIPTS_VERSION=\([0-9.]*\)$/\1/p' README.md)
 ./configure release
@@ -34,7 +34,7 @@ sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 All in a single line:
 
 ```sh
-SCRIPTS_VERSION=0.122.1 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
+SCRIPTS_VERSION=0.122.2 && ./configure release && make clean && make all test package && sudo rpm -e setmy-info-scripts && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
 
 # Or
 # SCRIPTS_VERSION=$(sed -n 's/^SCRIPTS_VERSION=\([0-9.]*\)$/\1/p' README.md) && ./configure release && make clean && make all test package && (sudo rpm -e setmy-info-scripts 2>/dev/null || true) && sudo rpm -i setmy-info-scripts-${SCRIPTS_VERSION}.noarch.rpm
@@ -78,13 +78,13 @@ SMI_DEPLOY_HOSTS="one.example.com" make upload                        # upload o
 make deploy-help                                                      # targets and variables
 ```
 
-| variable | meaning | default |
-|---|---|---|
-| `SMI_DEPLOY_HOSTS` | the servers, `[user@]host[:port]` each, separated by spaces or commas | required |
-| `SMI_DEPLOY_USER` | user for an entry that does not name one | `deploy` |
-| `SMI_DEPLOY_PORT` | port for an entry that does not name one | `22` |
-| `SMI_DEPLOY_REMOTE_DIR` | where to upload | `/home/<user>/deploy` |
-| `SMI_DEPLOY_INCOMING_DIR` | what the deployment service watches | `/var/opt/setmy.info/incoming` |
+| variable                  | meaning                                                               | default                        |
+|---------------------------|-----------------------------------------------------------------------|--------------------------------|
+| `SMI_DEPLOY_HOSTS`        | the servers, `[user@]host[:port]` each, separated by spaces or commas | required                       |
+| `SMI_DEPLOY_USER`         | user for an entry that does not name one                              | `deploy`                       |
+| `SMI_DEPLOY_PORT`         | port for an entry that does not name one                              | `22`                           |
+| `SMI_DEPLOY_REMOTE_DIR`   | where to upload                                                       | `/home/<user>/deploy`          |
+| `SMI_DEPLOY_INCOMING_DIR` | what the deployment service watches                                   | `/var/opt/setmy.info/incoming` |
 
 The same package belongs on every machine, whatever its role: this project is the helper script
 collection every VM, container host and server needs, not a per environment configuration. One

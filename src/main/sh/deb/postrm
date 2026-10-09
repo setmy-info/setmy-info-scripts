@@ -2,6 +2,19 @@
 
 # De-install script, executed at uninstall end.
 echo "### Post-Uninstall"
+
+# Only on a real removal. dpkg calls this script of the old package on an upgrade as well, with
+# "upgrade" as its first argument, and removing the links of the new package there would undo the
+# installation that just happened.
+case "${1:-}" in
+    remove|purge)
+        ;;
+    *)
+        echo "Not a removal (${1:-no argument}), keeping the installation"
+        exit 0
+        ;;
+esac
+
 SMI_PROVIDER=setmy.info
 rm -f /etc/profile.d/setmy-info.sh
 rm -f /opt/${SMI_PROVIDER}/bin/smi-test

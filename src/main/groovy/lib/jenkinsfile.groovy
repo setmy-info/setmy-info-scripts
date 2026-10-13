@@ -180,13 +180,15 @@ class SleepRewriter extends CompilationCustomizer {
 }
 
 /**
- * SMI_JENKINSFILE_DEPLOY switches the steps of the Publish and Deploy stages on.
+ * SMI_JENKINSFILE_DEPLOY switches the steps of the Publish, Deploy and Tag stages on.
  * true, yes, on or 1 runs them; anything else, including unset, does not. Off by default,
- * because this runner executes `sh` for real.
+ * because this runner executes `sh` for real. Tag is one of them because a tag stage pushes
+ * a tag to the remote of the repository, which is as real as a deployment: the starter only
+ * echoes there, a project fills it with its tagging command.
  */
 class Deployment {
     static final String VARIABLE = "SMI_JENKINSFILE_DEPLOY"
-    static final List<String> STAGES = ["publish", "deploy"]
+    static final List<String> STAGES = ["publish", "deploy", "tag"]
 
     private static final List<String> ON = ["true", "yes", "on", "1"]
 

@@ -99,15 +99,21 @@ On top of that the following variables are provided before the Jenkinsfile is re
 .TP
 .B SMI_JENKINSFILE_DEPLOY
 Runs the steps of the
-.B Publish
-and
+.BR Publish ,
 .B Deploy
+and
+.B Tag
 stages.
 .BR true ,\  yes ,\  on \  or \  1
 switches them on; any other value, including unset, switches them off.
 Off by default.
 Stages switched off are reported as
 .BR BLOCKED .
+.B Tag
+is one of them because a tag stage pushes a tag to the remote of the repository, which is
+as real as a deployment.
+Every other stage, the build among them, always runs: a local run builds the software for
+real and only what leaves the machine is held back.
 .SH EXIT STATUS
 .TP
 .B 0

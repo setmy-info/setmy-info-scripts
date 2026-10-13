@@ -23,6 +23,8 @@ pipeline {
     }
 
     environment {
+        SMI_PROFILES = 'ci'
+
         MASTER_TO_LIVE = 'DEPLOY'
 
         RELEASE_TO_PRELIVE = 'DEPLOY'
@@ -45,6 +47,11 @@ pipeline {
                         echo "PATH is: $PATH"
                         runCommand 'cmake --version'
                         runCommand 'make --version'
+                        script {
+                            if (!fileExists('README.md')) {
+                                error('README.md missing')
+                            }
+                        }
                     }
                 }
                 stage('Build tools') {
@@ -83,7 +90,7 @@ pipeline {
                     }
                     steps {
                         echo 'Put here software release steps'
-                   }
+                    }
                 }
                 stage('Snapshot') {
                     when {

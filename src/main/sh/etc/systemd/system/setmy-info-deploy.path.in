@@ -1,0 +1,13 @@
+[Unit]
+Description=@PROVIDER@ incoming package watcher
+After=local-fs.target
+
+[Path]
+#PathExistsGlob=@SMI_RUNTIME_VAR_PATH@/incoming/*.deb
+#PathExistsGlob=@SMI_RUNTIME_VAR_PATH@/incoming/draft/*.deb
+PathExistsGlob=@SMI_RUNTIME_VAR_PATH@/incoming/*.rpm
+PathExistsGlob=@SMI_RUNTIME_VAR_PATH@/incoming/draft/*.rpm
+Unit=setmy-info-deploy.service
+
+[Install]
+WantedBy=multi-user.target

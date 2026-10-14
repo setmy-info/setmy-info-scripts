@@ -1,0 +1,156 @@
+.TH smi-deploy "1" "October 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-deploy \- Upload a package to the servers of an environment and hand it to their deployment service
+.SH SYNOPSIS
+.B smi-deploy
+.I upload|handover|deploy
+.I PACKAGE
+.SH DESCRIPTION
+.PP
+.B smi-deploy
+puts a package on every server of an environment and hands it to
+.BR smi-incoming-deploy (1)
+there, which installs it. It is the deploying side of that command, and the only one our projects
+need: the
+.BR scp ,
+the
+.BR ssh ,
+and the atomic hand-over exist once, here, so that a project's own build file says which package
+goes to which environment and nothing else.
+.SH ACTIONS
+.TP
+.B upload
+Copies the package into the upload directory, where nothing watches it. Creates the directory,
+and lists it afterwards.
+.TP
+.B handover
+Copies the package from the upload directory into the incoming directory, which is what starts
+the installation. The package is not read from the local machine, so this works on its own, after
+an upload of any age.
+.TP
+.B deploy
+Both, for a caller that wants no step in between.
+.PP
+The two steps are separate on purpose. An upload takes as long as the line is slow, and
+.B setmy-info-deploy.path
+reacts to a name appearing in the incoming directory, not to a transfer finishing: uploading
+straight into it would install a file that is still arriving. Keeping them apart also leaves the
+decision when a machine installs to whoever runs the second step, which is what makes a release
+by hand pleasant \- upload now, look at what is there, hand it over when it suits.
+.PP
+The hand-over copies the package in under
+.IR NAME .part ,
+which the watcher's
+.I *.rpm
+glob does not match, and renames it inside the incoming directory. A rename in one directory is
+atomic, so the service never sees a package that is still being written. A plain
+.B mv
+from the upload directory would not do: the two are usually on different file systems, where
+.B mv
+copies.
+.SH ENVIRONMENT
+.PP
+Nothing about any installation is in this toolset: no host, no address, no port, no count of
+machines. A CI job configuration or a command line says where a package goes.
+.TP
+.SM SMI_DEPLOY_HOSTS
+The servers, required.
+.I [user@]host[:port]
+entries separated by spaces or commas, an IPv6 address in brackets as
+.B ssh
+writes it. One more machine is one more word.
+.TP
+.SM SMI_DEPLOY_USER
+User for an entry that does not name one, default
+.BR deploy .
+.TP
+.SM SMI_DEPLOY_PORT
+Port for an entry that does not name one, default 22.
+.TP
+.SM SMI_DEPLOY_REMOTE_DIR
+Where to upload, default the
+.I deploy
+directory of that user.
+.TP
+.SM SMI_DEPLOY_INCOMING_DIR
+What the deployment service watches, default
+.IR /var/opt/setmy.info/incoming .
+Set it to
+.I /var/opt/setmy.info/incoming/draft
+to deploy into the draft stage, which reaches the scriptlets of the package as
+.BR SMI_STAGE=draft ;
+see
+.BR smi-incoming-deploy (1).
+.SH "ONE PACKAGE PER CALL"
+.PP
+A call deploys one package. A set is a call per package, in an order where every state in between
+is installable, because the service can start while the rest of the set is still being handed
+over: a package that requires another is handed over after it.
+.PP
+.B smi-incoming-deploy
+installs what it finds in one transaction, so a set that arrives together is installed together
+and its packages satisfy each other. A package that arrives after the service has started is
+installed by the next run, which the watcher triggers by itself.
+.SH "EXIT STATUS"
+.TP
+.B 0
+The package reached every server of the list, and the asked-for actions succeeded there.
+.TP
+.B 1
+No action or no package was given, the action is not one of the three,
+.SM SMI_DEPLOY_HOSTS
+is unset, a host entry could not be read, the package does not exist for an
+.B upload
+or a
+.BR deploy ,
+or a server failed. A server that fails does not stop the others.
+.SH EXAMPLES
+.PP
+Both steps, to one machine:
+.RS
+.nf
+SMI_DEPLOY_HOSTS=lithium.gintra smi-deploy deploy app-1.4.2.rpm
+.fi
+.RE
+.PP
+A set of packages, uploaded first and handed over afterwards, to two machines, one of them on
+another port:
+.RS
+.nf
+export SMI_DEPLOY_HOSTS='one.example.com two.example.com:27443'
+for p in smi-nginx-config-*.rpm smi-nginx-config-test-*.rpm; do
+    smi-deploy upload "${p}"
+done
+for p in smi-nginx-config-*.rpm smi-nginx-config-test-*.rpm; do
+    smi-deploy handover "${p}"
+done
+.fi
+.RE
+.PP
+Into the draft stage:
+.RS
+.nf
+SMI_DEPLOY_HOSTS=live.example.com \\
+SMI_DEPLOY_INCOMING_DIR=/var/opt/setmy.info/incoming/draft \\
+    smi-deploy deploy app-1.4.2.rpm
+.fi
+.RE
+.PP
+What happened on the other side:
+.RS
+.nf
+journalctl -u setmy-info-deploy.service -n 50
+ls -l /var/opt/setmy.info/failed
+.fi
+.RE
+.SH AUTHOR
+Imre Tabur <imre.tabur@mail.ee>
+.SH "REPORTING BUGS"
+.PP
+Report smi-deploy bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-incoming-deploy (1),
+.BR smi-upload (1),
+.BR scp (1),
+.BR systemd.path (5)

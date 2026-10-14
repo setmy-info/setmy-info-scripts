@@ -1,0 +1,12 @@
+# Environment of the services of this toolset, read with EnvironmentFile.
+#
+# systemd reads neither /etc/profile.d nor any login shell file, so a service starts with the
+# PATH systemd was built with and knows nothing about this toolset. Every smi command a service
+# or a package scriptlet calls by name would then not be found. PATH is therefore set here, once,
+# and the services read this file.
+#
+# The installation directory is written by the build, from PROVIDER in variables.cmake, so
+# renaming the project changes it in that one place and not here.
+
+JAVA_HOME=/opt/jdk
+PATH=@SCRIPTS_INSTALL_PREFIX@/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin

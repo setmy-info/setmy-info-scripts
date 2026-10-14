@@ -1,7 +1,7 @@
 # nginx service hardening, ready to activate with a symbolic link:
 #
 #   sudo mkdir -p /etc/systemd/system/nginx.service.d
-#   sudo ln -f -s /opt/setmy.info/etc/systemd/system/nginx.service.d/hardening.conf /etc/systemd/system/nginx.service.d/hardening.conf
+#   sudo ln -f -s @SCRIPTS_INSTALL_PREFIX@/etc/systemd/system/nginx.service.d/hardening.conf /etc/systemd/system/nginx.service.d/hardening.conf
 #   sudo systemctl daemon-reload && sudo systemctl restart nginx
 
 [Service]

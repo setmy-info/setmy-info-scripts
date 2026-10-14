@@ -1,0 +1,10 @@
+[Unit]
+Description=@PROVIDER@ half past plugins
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=@SCRIPTS_INSTALL_PREFIX@/etc/environment.conf
+ExecStart=@SCRIPTS_INSTALL_PREFIX@/bin/smi-half-past-run

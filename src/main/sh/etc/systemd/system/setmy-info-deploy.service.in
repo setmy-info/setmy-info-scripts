@@ -1,0 +1,9 @@
+[Unit]
+Description=@PROVIDER@ incoming package deploy service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=@SCRIPTS_INSTALL_PREFIX@/etc/environment.conf
+ExecStart=@SCRIPTS_INSTALL_PREFIX@/bin/smi-incoming-deploy

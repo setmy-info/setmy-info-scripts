@@ -1,0 +1,14 @@
+[Unit]
+Description=Dagu workflow engine
+After=syslog.service network.target
+
+[Service]
+Type=simple
+User=dagu
+Group=dagu
+WorkingDirectory=@SMI_RUNTIME_VAR_PATH@/gintra/organizations/ee/has/operations/dagu
+EnvironmentFile=@SCRIPTS_INSTALL_PREFIX@/etc/environment.conf
+ExecStart=/opt/dagu/bin/dagu start-all --dags @SMI_RUNTIME_VAR_PATH@/gintra/organizations/ee/has/operations/dagu/dags --host=127.0.0.1 --port=7700
+
+[Install]
+WantedBy=multi-user.target

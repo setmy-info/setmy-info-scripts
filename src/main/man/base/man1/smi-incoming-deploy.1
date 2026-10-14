@@ -76,13 +76,32 @@ Drafts are deployed before the published packages of the same run, so a package 
 directories at once ends with the published one in place.
 .SH INSTALLATION
 .PP
-Each package is installed with
+Every package of a stage is installed with one command, which is one transaction:
 .PP
 .RS
 .nf
-SMI_STAGE=STAGE rpm -U --replacepkgs --oldpackage PACKAGE
+SMI_STAGE=STAGE rpm -U --replacepkgs --oldpackage PACKAGE...
 .fi
 .RE
+.PP
+One transaction, because a set whose packages need each other cannot be installed one file at a
+time:
+.B rpm
+sees only what it is given, so the package that goes first is refused by what the set has not
+installed yet, and a version that an installed package pins can only be replaced together with
+the package that pins it. Given the whole set,
+.B rpm
+orders it by its dependencies itself and the requirements of the set are satisfied by the set,
+the way
+.B dnf install ./*.rpm
+does it by hand. A transaction is all or nothing: on success every file of the set is installed
+and removed, on failure nothing was installed.
+.PP
+A set that fails is then installed one package at a time, which is what this command did before.
+A set can fail for a reason that belongs to one package alone - a dependency that is on no
+machine, a corrupt file - and the packages beside it have nothing to do with it, so each is given
+its own chance instead of waiting for the next deployment, and only what really belongs to one
+package ends in the failed directory. The journal says which way a stage went.
 .PP
 .B --replacepkgs
 because publishing a checked draft installs the version that is already installed, which rpm
@@ -143,13 +162,14 @@ The version that is deployed is the version that was uploaded, and nothing here 
 what is installed.
 .PP
 .B rpm -U
-resolves no dependencies.
-A package that needs something which is not installed yet fails and is moved to the failed
-directory, where
+resolves no dependencies outside the set.
+Packages of one upload satisfy each other, because they are installed in one transaction, but
+nothing is fetched from a repository: a package that needs something which is on no machine fails
+and is moved to the failed directory, where
 .BR dnf (8)
 would have pulled the dependency in.
-A package that brings its own requirements, or whose requirements are already on the machine, is
-what this command is for; anything else is installed by hand.
+A set that brings its own requirements, or whose requirements are already on the machine, is what
+this command is for; anything else is installed by hand.
 .SH EXIT STATUS
 .TP
 .B 0
@@ -157,7 +177,9 @@ Every package was installed and removed, or there was nothing to do.
 .TP
 .B 1
 A package could not be installed and was moved to the failed directory, or a package could not be
-removed from or moved out of an incoming directory. The packages after it were still processed.
+removed from or moved out of an incoming directory. A set that failed as a transaction installed
+nothing by it, and its packages were then tried one at a time, so the ones beside the failing
+package are in.
 .SH FILES
 .TP
 .I /var/opt/setmy.info/incoming

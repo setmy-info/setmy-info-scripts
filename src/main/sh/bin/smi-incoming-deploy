@@ -40,6 +40,28 @@ moveToFailed() {
     fi
 }
 
+# One package at a time is one transaction at a time, and that cannot install a set whose
+# packages need each other: rpm sees only the file it is given, so the one that is installed
+# first is refused by what the set has not installed yet, and a version an installed package
+# pins can only be replaced together with it. The whole stage therefore goes to rpm in a single
+# command, which is one transaction: rpm orders the packages by their dependencies itself and
+# the requirements of the set are satisfied by the set, the way "dnf install ./*.rpm" does it by
+# hand. A transaction is all or nothing, so on success every file of the set is in and is
+# removed, and on failure nothing was installed.
+#
+# A failed set is then installed one by one, which is what this command did before. The set can
+# fail for a reason that belongs to a single package - a missing dependency on the machine, a
+# corrupt file, a downgrade - and the packages beside it have nothing to do with it, so they are
+# given their own chance instead of waiting for the next deployment. What really belongs to one
+# package ends up in the failed directory alone.
+installPackages() {
+    STAGE=${1}
+    shift
+
+    #SMI_STAGE="${STAGE}" dpkg --install --force-confnew "$@"
+    SMI_STAGE="${STAGE}" rpm -U --replacepkgs --oldpackage "$@"
+}
+
 deployStage() {
     STAGE=${1}
     STAGE_INCOMING_DIR=${2}
@@ -49,16 +71,46 @@ deployStage() {
 
     # On a Debian based machine the packages are .deb and the installer is dpkg, which passes
     # its environment to the maintainer scripts the same way rpm does, so SMI_STAGE reaches
-    # preinst and postinst unchanged. Uncomment the two lines here and the two .deb globs of
-    # setmy-info-deploy.path, and comment the .rpm ones, and nothing else has to change.
+    # preinst and postinst unchanged. Uncomment the .deb lines here and in installPackages and
+    # the two .deb globs of setmy-info-deploy.path, comment the .rpm ones, and nothing else has
+    # to change. dpkg --install also takes the whole set and configures it afterwards, so one
+    # command is one set there too.
+    set --
     #for PACKAGE in "${STAGE_INCOMING_DIR}"/*.deb; do
     for PACKAGE in "${STAGE_INCOMING_DIR}"/*.rpm; do
+        [ -e "${PACKAGE}" ] || continue
+        set -- "$@" "${PACKAGE}"
+    done
+
+    [ ${#} -gt 0 ] || return 0
+
+    PACKAGE_NAMES=''
+    for PACKAGE in "$@"; do
+        PACKAGE_NAMES="${PACKAGE_NAMES} ${PACKAGE##*/}"
+    done
+
+    if installPackages "${STAGE}" "$@"; then
+        echo "smi-incoming-deploy: installed ${STAGE} packages:${PACKAGE_NAMES}" >&2
+        for PACKAGE in "$@"; do
+            PACKAGE_NAME=${PACKAGE##*/}
+            if rm -f "${PACKAGE}"; then
+                echo "smi-incoming-deploy: removed ${PACKAGE_NAME}" >&2
+            else
+                echo "smi-incoming-deploy: installed ${PACKAGE_NAME}, but it could not be removed: ${PACKAGE}" >&2
+                RESULT=1
+            fi
+        done
+        return 0
+    fi
+
+    echo "smi-incoming-deploy: the ${STAGE} set could not be installed in one transaction, trying one by one:${PACKAGE_NAMES}" >&2
+
+    for PACKAGE in "$@"; do
         [ -e "${PACKAGE}" ] || continue
 
         PACKAGE_NAME=${PACKAGE##*/}
 
-        #if SMI_STAGE="${STAGE}" dpkg --install --force-confnew "${PACKAGE}"; then
-        if SMI_STAGE="${STAGE}" rpm -U --replacepkgs --oldpackage "${PACKAGE}"; then
+        if installPackages "${STAGE}" "${PACKAGE}"; then
             echo "smi-incoming-deploy: installed ${STAGE} package ${PACKAGE_NAME}" >&2
             if rm -f "${PACKAGE}"; then
                 echo "smi-incoming-deploy: removed ${PACKAGE_NAME}" >&2

@@ -82,6 +82,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-encrypt"                DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-decrypt"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-ca-create"          DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-create-domain-cert" DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-create-server-cert" DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-generate-private-key"           DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-generate-public-key"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pki-create-csr"                     DESTINATION bin)

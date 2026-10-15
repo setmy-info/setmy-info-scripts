@@ -1,0 +1,100 @@
+.TH smi-pki-create-server-cert "1" "October 2026" "SMI Toolset" "SMI PKI Command"
+.SH NAME
+smi-pki-create-server-cert \- Create a server certificate with one or several host names
+.SH SYNOPSIS
+.B smi-pki-create-server-cert
+.I DIRECTORY
+.I ROOT_DOMAIN
+.I DOMAIN_NAME
+.RI [ ALT_NAME ...]
+.SH DESCRIPTION
+.PP
+.B smi-pki-create-server-cert
+generates a private key and a signed TLS server certificate that is valid for
+\fIDOMAIN_NAME\fR and for every \fIALT_NAME\fR given after it, all in one
+\fBsubjectAltName\fR.
+It requires that \fBsmi-pki-ca-create\fR(1) has already created the Root CA and
+Intermediate CA of \fIROOT_DOMAIN\fR in \fIDIRECTORY\fR.
+.PP
+This is the command for a server that is reached by more than one name, for example an
+internal name and the public name its clients dial.
+A client validates the name it dialed against the \fBsubjectAltName\fR list and nothing
+else, so every name the server answers to has to be in the same certificate.
+With a single name the result is identical to \fBsmi-pki-create-domain-cert\fR(1), which
+remains the shorter form for that case.
+.PP
+The host names have nothing to do with the domain the CA is named by: a CA created for
+\fBgintra\fR signs a certificate for \fBsetmy.info\fR without anything further, because
+trust comes from the chain and not from the name.
+This is why \fIROOT_DOMAIN\fR comes before the names and is not optional here \- the
+names have to be the last arguments, as there may be any number of them.
+.PP
+The process:
+.IP 1.
+Checks the Intermediate CA of \fIROOT_DOMAIN\fR before anything is generated; when it is
+missing, the command names the file it looked for, creates no files and exits with 1.
+.IP 2.
+Generates a 2048-bit RSA private key (mode \fB600\fR) and public key, named by
+\fIDOMAIN_NAME\fR.
+.IP 3.
+Creates a CSR with \fIDOMAIN_NAME\fR as Common Name and
+\fBDNS:\fIDOMAIN_NAME\fB,DNS:\fIALT_NAME\fB,...\fR as \fBsubjectAltName\fR, exact hosts,
+no wildcard.
+.IP 4.
+Signs the CSR with the \fBIntermediate\fR CA key and certificate from the \fBca\fR
+subdirectory, never with the Root CA.
+The certificate is \fBCA:FALSE\fR with critical \fBkeyUsage\fR
+\fBdigitalSignature,keyEncipherment\fR, \fBextendedKeyUsage=serverAuth\fR and the same
+\fBsubjectAltName\fR, valid for 825 days.
+.PP
+The server key, public key, CSR, extension file and certificate are written in
+\fIDIRECTORY\fR itself, outside the \fBca\fR subdirectory, all named by
+\fIDOMAIN_NAME\fR.
+.SH ARGUMENTS
+.TP
+.I DIRECTORY
+PKI directory: the CA files are read from its \fBca\fR subdirectory, the server files are
+written into it.
+.TP
+.I ROOT_DOMAIN
+Root domain given to \fBsmi-pki-ca-create\fR(1), which selects
+\fBca/\fIROOT_DOMAIN\fB.intermediate.crt\fR and \fB.intermediate.priv.key\fR.
+.TP
+.I DOMAIN_NAME
+First host name: the Common Name, the name every generated file is called by, and the
+first \fBsubjectAltName\fR entry.
+.TP
+.I ALT_NAME
+Each further host name the same server answers to, added to \fBsubjectAltName\fR.
+.SH EXAMPLES
+.PP
+An MQTT server behind a stream proxy, reached internally as \fBmqtt.gintra\fR and
+publicly as \fBsetmy.info\fR, under a CA created for \fBgintra\fR:
+.RS
+.nf
+smi-pki-create-server-cert /var/opt/pki gintra mqtt.gintra setmy.info
+.fi
+.RE
+.PP
+The certificate and its key are then \fBmqtt.gintra.crt\fR and
+\fBmqtt.gintra.priv.key\fR, and both names validate.
+.SH EXIT STATUS
+.TP
+.B 0
+The certificate was created.
+.TP
+.B 1
+Wrong usage, the Intermediate CA was not found, or an OpenSSL step failed.
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-pki-create-server-cert bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-pki-create-domain-cert (1),
+.BR smi-pki-ca-create (1),
+.BR smi-pki-create-client-cert (1),
+.BR smi-pki-do-ca-signing (1),
+.BR openssl (1)

@@ -283,11 +283,13 @@ pkiStartIntermediateCA() {
 
 # Create the private key, public key and CSR for a server certificate. The CSR
 # carries the requested host name in subjectAltName as DNS:<domain>, exact match,
-# no wildcard.
-# Args: TANK_CERTS_DIR DOMAIN_NAME   DOMAIN_NAME for example "ldap.has.ee.gintra"
+# no wildcard. SAN, when given, replaces that single name with a ready made
+# subjectAltName value, see pkiSanList, for a server reached by several names.
+# Args: TANK_CERTS_DIR DOMAIN_NAME [SAN]   DOMAIN_NAME for example "ldap.has.ee.gintra"
 pkiDoCertRequest() {
     local tank_certs_dir="${1}"
     local domain_name="${2}"
+    local san="${3:-DNS:${2}}"
 
     if [ -f "${tank_certs_dir}/${SUBJECT_FILE}" ]; then
         . "${tank_certs_dir}/${SUBJECT_FILE}"
@@ -303,7 +305,7 @@ pkiDoCertRequest() {
     pkiGeneratePrivateKey "${priv_key}" "${SERVER_KEY_BITS}" || return 1
     chmod 600 "${priv_key}" || return 1
     pkiGeneratePublicKey "${priv_key}" "${pub_key}" || return 1
-    pkiCreateCSR "${priv_key}" "${csr}" "${subject}" "DNS:${domain_name}" || return 1
+    pkiCreateCSR "${priv_key}" "${csr}" "${subject}" "${san}" || return 1
 }
 
 # Print the root domain the CA files are named by: ROOT_DOMAIN when given, otherwise
@@ -341,11 +343,13 @@ pkiRequireIntermediateCA() {
 
 # Sign a server CSR with the Intermediate CA, not the Root CA. The Intermediate
 # CA key and certificate are resolved from the ca directory by root domain, see
-# pkiRootDomain.
-# Args: TANK_CERTS_DIR DOMAIN_NAME [ROOT_DOMAIN]
+# pkiRootDomain. SAN, when given, is the subjectAltName written into the
+# certificate instead of the single DNS:<domain>, see pkiSanList.
+# Args: TANK_CERTS_DIR DOMAIN_NAME [ROOT_DOMAIN] [SAN]
 pkiDoCASigning() {
     local tank_certs_dir="${1}"
     local domain_name="${2}"
+    local san="${4:-DNS:${2}}"
 
     local root_domain
     root_domain="$(pkiRootDomain "${domain_name}" "${3:-}")"
@@ -357,7 +361,7 @@ pkiDoCASigning() {
     local ext="${tank_certs_dir}/${domain_name}.${CERT_EXTENSION_SUFFIX}"
 
     pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
-    pkiServerExtensions "${ext}" "DNS:${domain_name}" || return 1
+    pkiServerExtensions "${ext}" "${san}" || return 1
     pkiSignCSR "${csr}" "${int_cert}" "${int_priv_key}" "${cert}" \
         "${SERVER_CERT_VALIDITY_DAYS}" "${ext}" || return 1
     echo "${domain_name}"
@@ -377,6 +381,46 @@ pkiCreateDomainCert() {
     pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
     pkiDoCertRequest "${tank_certs_dir}" "${domain_name}" || return 1
     pkiDoCASigning "${tank_certs_dir}" "${domain_name}" "${root_domain}" || return 1
+}
+
+# Join host names into one subjectAltName value, "DNS:<first>,DNS:<second>,...". A
+# server that is reached by more than one name - an internal name and the public one
+# the clients dial - needs every one of them in the same certificate, because a client
+# validates the name it dialed against the SAN list and nothing else.
+# Args: DNS_NAME [DNS_NAME...]
+pkiSanList() {
+    local san=""
+    local name
+    for name in "$@"; do
+        if [ -z "${san}" ]; then
+            san="DNS:${name}"
+        else
+            san="${san},DNS:${name}"
+        fi
+    done
+    printf '%s' "${san}"
+}
+
+# Create a complete server certificate for a server known by several names: key, public
+# key, CSR and the certificate signed by the Intermediate CA. DOMAIN_NAME is the Common
+# Name and the name every file is called by; it and each ALT_NAME go into subjectAltName.
+# With a single name this does exactly what pkiCreateDomainCert does.
+#
+# The root domain comes first here and is not optional, because the host names have to be
+# the last arguments: a server certificate is the one place where the host names of the
+# certificate have nothing to do with the domain the CA is named by.
+# Args: TANK_CERTS_DIR ROOT_DOMAIN DOMAIN_NAME [ALT_NAME...]
+pkiCreateServerCert() {
+    local tank_certs_dir="${1}"
+    local root_domain="${2}"
+    local domain_name="${3}"
+    shift 3
+    local san
+    san="$(pkiSanList "${domain_name}" "$@")"
+
+    pkiRequireIntermediateCA "${tank_certs_dir}" "${root_domain}" || return 1
+    pkiDoCertRequest "${tank_certs_dir}" "${domain_name}" "${san}" || return 1
+    pkiDoCASigning "${tank_certs_dir}" "${domain_name}" "${root_domain}" "${san}" || return 1
 }
 
 # ==========================================================================

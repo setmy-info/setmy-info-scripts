@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include pki.sh)
+
+if [ "$#" -lt 3 ]; then
+    echo "Usage: $(basename "$0") DIRECTORY ROOT_DOMAIN DOMAIN_NAME [ALT_NAME...]" >&2
+    exit 1
+fi
+
+# smi-pki-create-server-cert /tmp/abc gintra mqtt.gintra                 # One name
+# smi-pki-create-server-cert /tmp/abc gintra mqtt.gintra setmy.info      # Two names
+#
+# The files are named by DOMAIN_NAME, which is also the Common Name; DOMAIN_NAME and
+# every ALT_NAME end up in subjectAltName, which is what a client validates. The root
+# domain comes before the names, because the names are as many as the server has.
+
+pkiCreateServerCert "$@"
+
+exit ${?}

@@ -1738,6 +1738,85 @@ class TelegramDriverExecute extends DriverExecuteBase implements DriverExecute, 
     }
 }
 
+class FreenginxDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // The page carries two tables, the mainline one first and the stable one after the
+        // "Stable version" heading. Only the stable tarball is wanted, so the text is cut at
+        // that heading before the first freenginx-<version>.tar.gz link is read.
+        // https://freenginx.org/download/freenginx-1.30.1.tar.gz
+        def pageText = new URL(getUrl()).text
+        def stableIndex = pageText.indexOf("Stable version")
+        if (stableIndex < 0) throw new RuntimeException("No stable version section at ${getUrl()}")
+        def stableText = pageText.substring(stableIndex)
+        def matcher = (stableText =~ /\/download\/freenginx-(\d+\.\d+\.\d+)\.tar\.gz/)
+        if (!matcher.find()) throw new RuntimeException("No stable freenginx tarball found at ${getUrl()}")
+        def version = matcher.group(1)
+        // The package builds from Mercurial, so the tag that carries this version is printed
+        // with it: https://freenginx.org/hg/nginx/tags lists release-<version>.
+        println "https://freenginx.org/download/freenginx-${version}.tar.gz  hg tag release-${version}"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://freenginx.org/en/download.html"
+    }
+
+    @Override
+    String getName() {
+        return "freenginx"
+    }
+}
+
+class SaplingDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://github.com/facebook/sapling/releases/download/0.2.20260929-102736%2B288e0c2d/sapling-0.2.20260929-102736%2B288e0c2d-linux-x64.tar.xz
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        // The release also ships linux-arm64, windows-x64 and a macOS bottle.
+        def asset = json.assets.find { it.name.endsWith("-linux-x64.tar.xz") }
+        if (!asset) throw new RuntimeException("No sapling linux x64 tar.xz found in latest release")
+        println asset.browser_download_url
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/facebook/sapling/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "sapling"
+    }
+}
+
+class ForgejoDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // code.forgejo.org runs Forgejo itself, so it answers the same REST API as a Gitea
+        // host and /releases/latest is the newest stable one, drafts and pre-releases left out.
+        // https://code.forgejo.org/forgejo/forgejo/releases/download/v17.0.0/forgejo-17.0.0-linux-amd64.xz
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name.endsWith("-linux-amd64.xz") }
+        if (!asset) throw new RuntimeException("No forgejo linux amd64 xz found in latest release")
+        println asset.browser_download_url
+        // The systemd unit is fetched by the package on every download, not pinned to a
+        // version, so it is printed beside the binary as the second file to expect.
+        println "https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://code.forgejo.org/api/v1/repos/forgejo/forgejo/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "forgejo"
+    }
+}
+
+
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
     final FilePath geckoDriver = new GeckoDriver(operatingSystem: operatingSystem)
@@ -1843,6 +1922,9 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new ZookeeperDriverExecute(), rulesRegister)
     fillWithRules(new TelegramDriverExecute(), rulesRegister)
     fillWithRules(new JenkinsPluginManagerDriverExecute(), rulesRegister)
+    fillWithRules(new FreenginxDriverExecute(), rulesRegister)
+    fillWithRules(new SaplingDriverExecute(), rulesRegister)
+    fillWithRules(new ForgejoDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

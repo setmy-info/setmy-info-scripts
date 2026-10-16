@@ -1,0 +1,60 @@
+FREENGINX_NAME=freenginx
+FREENGINX_VERSION=1.30.1
+FREENGINX_HG_URL=https://freenginx.org/hg/nginx
+FREENGINX_HG_DIR=${HOME_PACKAGES_DIR}/${FREENGINX_NAME}-hg
+FREENGINX_HG_TAG=release-${FREENGINX_VERSION}
+FREENGINX_OPT_DIR=/opt/${FREENGINX_NAME}-${FREENGINX_VERSION}
+
+# https://freenginx.org/en/download.html
+# https://freenginx.org/hg/nginx
+# https://freenginx.org/hg/nginx/branches  stable-1.30 is the stable branch
+# https://freenginx.org/hg/nginx/tags      release-1.30.1 is the stable tag
+
+# There is no binary release: freenginx is built from the Mercurial source, the way the
+# elixir and python packages are built from theirs. To upgrade, change FREENGINX_VERSION
+# to the stable version printed by "smi-versions-spider -n=freenginx"; the hg tag and the
+# install directory follow it. The build needs mercurial, gcc, make and the pcre2, openssl
+# and zlib development packages.
+
+freenginx_download_func() {
+    if [ -d "${FREENGINX_HG_DIR}/.hg" ]; then
+        hg --cwd "${FREENGINX_HG_DIR}" pull
+    else
+        hg clone ${FREENGINX_HG_URL} ${FREENGINX_HG_DIR}
+    fi
+    hg --cwd "${FREENGINX_HG_DIR}" update -r ${FREENGINX_HG_TAG} --clean
+}
+
+freenginx_build_func() {
+    CUR_DIR=$(pwd)
+    cd ${FREENGINX_HG_DIR}
+    # Everything lives under the prefix, so /opt/freenginx is one self contained tree:
+    # the binary in sbin, the configuration in conf, the logs in logs.
+    auto/configure \
+        --prefix=${FREENGINX_OPT_DIR} \
+        --sbin-path=sbin/nginx \
+        --conf-path=conf/nginx.conf \
+        --pid-path=logs/nginx.pid \
+        --error-log-path=logs/error.log \
+        --http-log-path=logs/access.log \
+        --with-http_ssl_module \
+        --with-http_v2_module \
+        --with-http_realip_module \
+        --with-http_gzip_static_module \
+        --with-http_stub_status_module \
+        --with-stream \
+        --with-stream_ssl_module
+    make
+    cd ${CUR_DIR}
+}
+
+freenginx_install_func() {
+    CUR_DIR=$(pwd)
+    cd ${FREENGINX_HG_DIR}
+    # No rm -Rf of the install directory first: nginx "make install" keeps an existing
+    # conf/nginx.conf, so a reinstall of the same version does not throw away the
+    # configuration that was edited under /opt/freenginx/conf.
+    sudo make install
+    makeOptLink /opt/${FREENGINX_NAME} ${FREENGINX_OPT_DIR}
+    cd ${CUR_DIR}
+}

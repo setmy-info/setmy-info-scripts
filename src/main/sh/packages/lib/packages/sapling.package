@@ -1,0 +1,27 @@
+SAPLING_NAME=sapling
+SAPLING_VERSION=0.2.20260929-102736+288e0c2d
+# The release tag carries a + and GitHub serves it percent encoded, so the download URL
+# needs %2B where the version has +.
+SAPLING_URL_VERSION=$(echo ${SAPLING_VERSION} | sed 's/+/%2B/g')
+SAPLING_TAR_XZ_FILE_NAME=${SAPLING_NAME}-${SAPLING_VERSION}-linux-x64.tar.xz
+SAPLING_URL_FILE_NAME=${SAPLING_NAME}-${SAPLING_URL_VERSION}-linux-x64.tar.xz
+SAPLING_FILE_URL=https://github.com/facebook/sapling/releases/download/${SAPLING_URL_VERSION}/${SAPLING_URL_FILE_NAME}
+SAPLING_OPT_DIR=/opt/${SAPLING_NAME}-${SAPLING_VERSION}
+
+# https://github.com/facebook/sapling/releases
+# https://github.com/facebook/sapling/releases/download/0.2.20260929-102736%2B288e0c2d/sapling-0.2.20260929-102736%2B288e0c2d-linux-x64.tar.xz
+
+# The archive has no top level directory: it holds the sl binary, lib/ and isl-dist.tar.xz
+# side by side, so it is unpacked into a directory of its own. sl sits in the root of that
+# directory, not in a bin subdirectory, which is what the sapling profile puts on the PATH.
+
+sapling_download_func() {
+    smi-download ${SAPLING_FILE_URL} ${HOME_PACKAGES_DIR}/${SAPLING_TAR_XZ_FILE_NAME}
+}
+
+sapling_install_func() {
+    sudo rm -Rf ${SAPLING_OPT_DIR}
+    sudo mkdir -p ${SAPLING_OPT_DIR}
+    sudo tar --overwrite -xvJf ${HOME_PACKAGES_DIR}/${SAPLING_TAR_XZ_FILE_NAME} -C ${SAPLING_OPT_DIR}
+    makeOptLink /opt/${SAPLING_NAME} ${SAPLING_OPT_DIR}
+}

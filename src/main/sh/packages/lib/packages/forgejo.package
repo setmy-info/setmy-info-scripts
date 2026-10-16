@@ -1,0 +1,56 @@
+FORGEJO_NAME=forgejo
+FORGEJO_VERSION=17.0.0
+FORGEJO_BIN_FILE_NAME=${FORGEJO_NAME}-${FORGEJO_VERSION}-linux-amd64
+FORGEJO_XZ_FILE_NAME=${FORGEJO_BIN_FILE_NAME}.xz
+FORGEJO_SHA256_FILE_NAME=${FORGEJO_XZ_FILE_NAME}.sha256
+FORGEJO_FILE_URL=https://code.forgejo.org/forgejo/forgejo/releases/download/v${FORGEJO_VERSION}/${FORGEJO_XZ_FILE_NAME}
+FORGEJO_SHA256_FILE_URL=${FORGEJO_FILE_URL}.sha256
+FORGEJO_SERVICE_FILE_NAME=${FORGEJO_NAME}.service
+FORGEJO_SERVICE_FILE_URL=https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/${FORGEJO_SERVICE_FILE_NAME}
+FORGEJO_OPT_DIR=/opt/${FORGEJO_NAME}-${FORGEJO_VERSION}
+
+# https://forgejo.org/releases/
+# https://code.forgejo.org/forgejo/forgejo/releases
+# https://code.forgejo.org/forgejo/forgejo/releases/download/v17.0.0/forgejo-17.0.0-linux-amd64.xz
+# https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service
+
+# Three files come down in one go, the way the selenium package fetches its drivers: the
+# compressed binary, its sha256 and the systemd unit. The unit is fetched on every run so
+# the prepared copy follows upstream rather than a copy that was right once.
+
+forgejo_download_func() {
+    smi-download ${FORGEJO_FILE_URL}         ${HOME_PACKAGES_DIR}/${FORGEJO_XZ_FILE_NAME}
+    smi-download ${FORGEJO_SHA256_FILE_URL}  ${HOME_PACKAGES_DIR}/${FORGEJO_SHA256_FILE_NAME}
+    smi-download ${FORGEJO_SERVICE_FILE_URL} ${HOME_PACKAGES_DIR}/${FORGEJO_SERVICE_FILE_NAME}
+}
+
+forgejo_build_func() {
+    CUR_DIR=$(pwd)
+    # The sha256 file names the .xz beside it, so the check runs in the packages directory.
+    cd ${HOME_PACKAGES_DIR}
+    sha256sum -c ${FORGEJO_SHA256_FILE_NAME}
+    rm -f ${FORGEJO_BIN_FILE_NAME}
+    xz --decompress --keep ${FORGEJO_XZ_FILE_NAME}
+    cd ${CUR_DIR}
+}
+
+forgejo_install_func() {
+    FORGEJO_SYSTEMD_DIR=$(smi-etc-location)/systemd/system
+    sudo rm -Rf ${FORGEJO_OPT_DIR}
+    sudo mkdir -p ${FORGEJO_OPT_DIR}/bin
+    sudo cp ${HOME_PACKAGES_DIR}/${FORGEJO_BIN_FILE_NAME} ${FORGEJO_OPT_DIR}/bin/${FORGEJO_NAME}
+    sudo chmod 755 ${FORGEJO_OPT_DIR}/bin/${FORGEJO_NAME}
+    makeOptLink /opt/${FORGEJO_NAME} ${FORGEJO_OPT_DIR}
+
+    # The unit is prepared, never written into /etc: it is installed beside the other
+    # setmy.info units so it can be symlinked into /etc/systemd/system when the host is
+    # ready for it. Upstream starts /usr/local/bin/forgejo; this install puts the binary
+    # under /opt, so only that one path is rewritten. User, work directory and app.ini
+    # are left exactly as upstream ships them, for the administrator to arrange.
+    sudo mkdir -p ${FORGEJO_SYSTEMD_DIR}
+    sed "s|^ExecStart=/usr/local/bin/forgejo|ExecStart=/opt/${FORGEJO_NAME}/bin/${FORGEJO_NAME}|" \
+        ${HOME_PACKAGES_DIR}/${FORGEJO_SERVICE_FILE_NAME} \
+        | sudo tee ${FORGEJO_SYSTEMD_DIR}/${FORGEJO_SERVICE_FILE_NAME} > /dev/null
+    echo "Prepared ${FORGEJO_SYSTEMD_DIR}/${FORGEJO_SERVICE_FILE_NAME}"
+    echo "Enable it with: sudo ln -s ${FORGEJO_SYSTEMD_DIR}/${FORGEJO_SERVICE_FILE_NAME} /etc/systemd/system/${FORGEJO_SERVICE_FILE_NAME}"
+}

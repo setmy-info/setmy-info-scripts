@@ -37,14 +37,33 @@ must be one of the registered package names listed below.
 .SH PACKAGES
 The following package names are registered:
 .PP
-.BR argo ,\  bazel ,\  chromedriver ,\  clion ,\  cmake ,\  cm ,
-.BR dagu ,\  elixir ,\  firefox ,\  geckodriver ,\  go ,\  gradle ,
-.BR grails ,\  graphviz ,\  greenmail ,\  groovy ,\  h2 ,\  hsqldb ,
-.BR idea ,
-.BR infinispan ,\  innosetup ,\  janet ,\  jdk ,\  jenkins ,\  jpm ,\  julia ,
-.BR keycloak ,\  lfe ,\  libreoffice ,\  librewolf ,\  mitmproxy ,\  mvn ,\  mvnd ,
-.BR netbeans ,\  nginx ,\  ninja ,\  node ,\  nsis ,\  openbao ,\  pycharm ,\  python ,
-.BR sbcl ,\  selenium ,\  solr ,\  telegram ,\  thunderbird ,\  tomcat ,\  zookeeper
+\fBargo\fP, \fBbazel\fP, \fBchromedriver\fP, \fBclion\fP, \fBcmake\fP,
+\fBcm\fP, \fBdagu\fP, \fBelixir\fP, \fBfirefox\fP, \fBforgejo\fP,
+\fBfreenginx\fP, \fBgeckodriver\fP, \fBgo\fP, \fBgradle\fP,
+\fBgrails\fP, \fBgraphviz\fP, \fBgreenmail\fP, \fBgroovy\fP, \fBh2\fP,
+\fBhsqldb\fP, \fBidea\fP, \fBinfinispan\fP, \fBinnosetup\fP,
+\fBjanet\fP, \fBjdk\fP, \fBjenkins\fP, \fBjpm\fP, \fBjulia\fP,
+\fBkeycloak\fP, \fBlfe\fP, \fBlibreoffice\fP, \fBlibrewolf\fP,
+\fBmitmproxy\fP, \fBmvn\fP, \fBmvnd\fP, \fBnetbeans\fP, \fBnginx\fP,
+\fBninja\fP, \fBnode\fP, \fBnsis\fP, \fBopenbao\fP, \fBpycharm\fP,
+\fBpython\fP, \fBsapling\fP, \fBsbcl\fP, \fBselenium\fP, \fBsolr\fP,
+\fBtelegram\fP, \fBthunderbird\fP, \fBtomcat\fP, \fBzookeeper\fP
+.PP
+Three of them report something other than one binary download URL.
+.TP
+.B freenginx
+has no binary release. The download page carries a mainline table and a stable
+table; only the stable one is read. The line names the stable source tarball and,
+after it, the Mercurial tag that holds the same version. That tag is what the
+package builds from.
+.TP
+.B forgejo
+prints two lines, the server binary and the systemd unit, because the package
+downloads both.
+.TP
+.B sapling
+prints the Linux x64 archive of the newest release. The release tag carries a
+plus sign and the URL shows it percent encoded.
 .SH EXIT STATUS
 .TP
 .B 0
@@ -67,6 +86,10 @@ smi-versions-spider \-n=idea \-n=pycharm \-n=clion
 Report only the latest Maven release:
 .IP
 smi-versions-spider \-n=mvn
+.PP
+Report the stable freenginx version and the Mercurial tag that carries it:
+.IP
+smi-versions-spider \-n=freenginx
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.

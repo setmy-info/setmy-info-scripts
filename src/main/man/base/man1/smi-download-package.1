@@ -191,6 +191,13 @@ Apache Tomcat servlet container.
 .TP
 .B nginx
 Nginx web server.
+.TP
+.B freenginx
+freenginx web server, the nginx fork. Built from the Mercurial source at
+.IR https://freenginx.org/hg/nginx ,
+the stable release tag, and installed whole under
+.IR /opt/freenginx .
+Needs mercurial, gcc, make and the pcre2, openssl and zlib development packages.
 .SS Databases and Data Stores
 .TP
 .B h2
@@ -258,6 +265,11 @@ Camunda modeler and platform tools.
 .TP
 .B awscli
 Amazon Web Services CLI.
+.TP
+.B forgejo
+Forgejo git forge server. Downloads the Linux amd64 binary, its sha256 and the
+upstream systemd unit, checks the sum, and installs the binary under
+.IR /opt/forgejo .
 .SS Desktop Applications
 .TP
 .B firefox
@@ -285,6 +297,12 @@ Interactive HTTPS proxy for debugging.
 .TP
 .B selenium
 Selenium WebDriver for browser automation.
+.TP
+.B sapling
+Sapling source control client from Meta. Installs the
+.B sl
+command under
+.IR /opt/sapling .
 .TP
 .B nsis
 NSIS Windows installer builder.

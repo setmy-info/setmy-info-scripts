@@ -974,13 +974,23 @@ class ChromedriverDriverExecute extends DriverExecuteBase implements DriverExecu
 class TomcatDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
-        //TODO
-        driver.get(getUrl())
+        // The rule was a TODO that only opened the project page and printed nothing, so tomcat was
+        // crawled and reported nothing, and the version of the package file was left behind until
+        // its download was a 404: the mirror carries only the current releases of a branch. The
+        // branch is the one the package installs, TOMCAT_MAJOR_VERSION=11, and the newest version
+        // of the listing is the one that can be downloaded at all.
+        // https://dlcdn.apache.org/tomcat/tomcat-11/v11.0.27/bin/apache-tomcat-11.0.27.tar.gz
+        def pageText = new URL(getUrl()).text
+        def urls = (pageText =~ /href="v(\d+\.\d+\.\d+)\//).collect { match ->
+            "${getUrl()}v${match[1]}/bin/apache-tomcat-${match[1]}.tar.gz".toString()
+        }
+        if (urls.isEmpty()) throw new RuntimeException("No tomcat versions found at ${getUrl()}")
+        println sortByVersionAndLast(urls)
     }
 
     @Override
     String getUrl() {
-        return "https://tomcat.apache.org/"
+        return "https://dlcdn.apache.org/tomcat/tomcat-11/"
     }
 
     @Override
@@ -1721,10 +1731,14 @@ class ZookeeperDriverExecute extends DriverExecuteBase implements DriverExecute,
 class TelegramDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
-        // https://github.com/telegramdesktop/tdesktop/releases/download/v7.1.1/tsetup.7.1.1.tar.xz
+        // https://github.com/telegramdesktop/tdesktop/releases/download/v7.3.1/td-setup-linux-x64-7.3.1.tar.xz
+        // The name of the asset is taken from the release and not built out of the version, because
+        // the project has renamed it once already, from tsetup.<version>.tar.xz, and a built name
+        // that no longer exists is a URL this spider reports as if it were good.
         def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
-        def version = json.tag_name.replaceAll(/^v/, '')
-        println "https://github.com/telegramdesktop/tdesktop/releases/download/v${version}/tsetup.${version}.tar.xz"
+        def asset = json.assets.find { it.name.startsWith("td-setup-linux-x64-") && it.name.endsWith(".tar.xz") }
+        if (!asset) throw new RuntimeException("No telegram linux x64 tar.xz found in latest release")
+        println asset.browser_download_url
     }
 
     @Override
@@ -1752,9 +1766,10 @@ class FreenginxDriverExecute extends DriverExecuteBase implements DriverExecute,
         def matcher = (stableText =~ /\/download\/freenginx-(\d+\.\d+\.\d+)\.tar\.gz/)
         if (!matcher.find()) throw new RuntimeException("No stable freenginx tarball found at ${getUrl()}")
         def version = matcher.group(1)
-        // The package builds from Mercurial, so the tag that carries this version is printed
-        // with it: https://freenginx.org/hg/nginx/tags lists release-<version>.
-        println "https://freenginx.org/download/freenginx-${version}.tar.gz  hg tag release-${version}"
+        // Only the URL is printed, as by every other package here. The package builds from
+        // Mercurial and not from this tarball, but its hg tag is release-<version> and follows
+        // from FREENGINX_VERSION, so the version in this URL is all the package file needs.
+        println "https://freenginx.org/download/freenginx-${version}.tar.gz"
     }
 
     @Override

@@ -53,9 +53,10 @@ Three of them report something other than one binary download URL.
 .TP
 .B freenginx
 has no binary release. The download page carries a mainline table and a stable
-table; only the stable one is read. The line names the stable source tarball and,
-after it, the Mercurial tag that holds the same version. That tag is what the
-package builds from.
+table; only the stable one is read, and the URL is the stable source tarball.
+The package builds from Mercurial rather than from that tarball, so the version
+in the URL is what it needs: its tag is \fBrelease\-\fIversion\fR and follows
+from \fBFREENGINX_VERSION\fR.
 .TP
 .B forgejo
 prints two lines, the server binary and the systemd unit, because the package
@@ -87,7 +88,7 @@ Report only the latest Maven release:
 .IP
 smi-versions-spider \-n=mvn
 .PP
-Report the stable freenginx version and the Mercurial tag that carries it:
+Report the stable freenginx source tarball, whose version the package builds from:
 .IP
 smi-versions-spider \-n=freenginx
 .SH AUTHOR

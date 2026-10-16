@@ -10,9 +10,25 @@ if [ ! -d "$PARENT_DIR" ]; then
     mkdir -p ${PARENT_DIR}
 fi
 
+# --fail makes curl report an HTTP error instead of saving the body of the error page as the
+# file that was asked for: without it a renamed or withdrawn download is a nine byte "Not Found"
+# under the name of the archive, the download looks successful, and the install step is the first
+# to notice, with "File format not recognized". The exit code is the caller's to see as well.
+#
+# The transfer goes to NAME.part and gets its real name only when curl is happy with it, so the
+# name a caller asks for exists only as a complete download: this function skips a file that is
+# already there, and a failed or an interrupted download would otherwise stay behind as a package
+# that is considered downloaded and is never fetched again.
 if [ ! -f "${TO_FILE}" ]; then
-    echo "Downloading: curl -L ${FROM_URL} -o ${TO_FILE}"
-    curl -L ${FROM_URL} -o ${TO_FILE}
+    echo "Downloading: curl -L --fail ${FROM_URL} -o ${TO_FILE}.part"
+    curl -L --fail ${FROM_URL} -o ${TO_FILE}.part
+    RESULT_CODE=${?}
+    if [ "${RESULT_CODE}" -ne 0 ]; then
+        rm -f ${TO_FILE}.part
+        echo "ERROR: download of ${FROM_URL} failed, curl exit ${RESULT_CODE}." >&2
+        exit ${RESULT_CODE}
+    fi
+    mv ${TO_FILE}.part ${TO_FILE}
 fi
 
 exit 0

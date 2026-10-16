@@ -1,0 +1,31 @@
+PYTHON315_NAME=python
+PYTHON315_VERSION=3.15.0
+PYTHON315_NAME_VERSION=${PYTHON315_NAME}-${PYTHON315_VERSION}
+PYTHON315_OPT_DIR_NAME=/opt/${PYTHON315_NAME_VERSION}
+PYTHON315_DIR_NAME=Python-${PYTHON315_VERSION}
+PYTHON315_TGZ_GZ_FILE_NAME=${PYTHON315_DIR_NAME}.tgz
+PYTHON315_TGZ_FILE_URL=https://www.python.org/ftp/python/${PYTHON315_VERSION}/${PYTHON315_TGZ_GZ_FILE_NAME}
+
+# https://www.python.org/ftp/python/3.15.0/Python-3.15.0.tgz
+
+python315_download_func() {
+    smi-download ${PYTHON315_TGZ_FILE_URL} ${HOME_PACKAGES_DIR}/${PYTHON315_TGZ_GZ_FILE_NAME}
+    tar xvzf ${HOME_PACKAGES_DIR}/${PYTHON315_TGZ_GZ_FILE_NAME} -C ${HOME_PACKAGES_DIR}
+}
+
+python315_build_func() {
+    CUR_DIR=$(pwd)
+    cd ${HOME_PACKAGES_DIR}/${PYTHON315_DIR_NAME}
+    ./configure --prefix=${PYTHON315_OPT_DIR_NAME} --exec-prefix=${PYTHON315_OPT_DIR_NAME}
+    make
+    cd ${CUR_DIR}
+}
+
+python315_install_func() {
+    CUR_DIR=$(pwd)
+    cd ${HOME_PACKAGES_DIR}/${PYTHON315_DIR_NAME}
+    sudo make install
+    makeOptLink /opt/${PYTHON315_NAME}315 ${PYTHON315_OPT_DIR_NAME}
+    makeOptLink /opt/${PYTHON315_NAME}    ${PYTHON315_OPT_DIR_NAME}
+    cd ${CUR_DIR}
+}

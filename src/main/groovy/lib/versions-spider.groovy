@@ -1036,13 +1036,21 @@ class PythonDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     @Override
     void execute(WebDriver driver) {
         driver.get(getUrl())
+        // One line per series, the newest release of each, as there is a package per series from
+        // python39 to python315. The page lists every release of every series, newest first, so
+        // the first match of a prefix is the newest release of that series.
+        //
+        // The list is not cut to the first ten entries any more. The ten newest releases of the
+        // page are the ten newest of all series together, which in practice is the current series
+        // and the one before it: 3.15.0 and the nine 3.14.x releases filled all ten, so python39
+        // to python313 were reported as nothing at all and their packages were never seen to be
+        // behind. The page holds no pre-release in this list, so the newest match is a real one.
         def allowedPrefixes = ['3.9.', '3.10.', '3.11.', '3.12.', '3.13.', '3.14.', '3.15.', '3.16.']
         def versions = driver
             .findElements(cssSelector("li span.release-number a"))
             .collect { it.getText() }
             .findAll { it != null }
             .collect { it.replace('Python ', '') }
-            .take(10)
 
         def filteredVersions = allowedPrefixes.collect { prefix ->
             versions.find { v -> v.startsWith(prefix) }

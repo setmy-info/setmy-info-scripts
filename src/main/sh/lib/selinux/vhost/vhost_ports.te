@@ -1,4 +1,4 @@
-module vhost_ports 1.5.0;
+module vhost_ports 1.4.0;
 
 require {
     attribute port_type;
@@ -10,4 +10,3 @@ type vhost_app_port_t, port_type;
 type vhost_ci_port_t, port_type;
 type vhost_mqtt_port_t, port_type;
 type vhost_iam_port_t, port_type;
-type vhost_pki_port_t, port_type;

@@ -5,7 +5,7 @@ PYCHARM_TAR_FILE_NAME=${PYCHARM_NAME}-${PYCHARM_VERSION}.tar
 PYCHARM_TAR_GZ_FILE_NAME=${PYCHARM_TAR_FILE_NAME}.gz
 PYCHARM_JAR_FILE_URL=https://download.jetbrains.com/python/${PYCHARM_TAR_GZ_FILE_NAME}
 
-# https://download-cdn.jetbrains.com/python/pycharm-2026.2.0.1.tar.gz
+# https://download.jetbrains.com/python/pycharm-2026.2.3.tar.gz
 
 pycharm_download_func() {
     smi-download ${PYCHARM_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${PYCHARM_TAR_GZ_FILE_NAME}

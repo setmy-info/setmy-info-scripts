@@ -4,7 +4,7 @@ SELENIUM_VERSION=${SELENIUM_BASE_VERSION}.0
 SELENIUM_JAR_FILE_NAME=${SELENIUM_NAME}-server-${SELENIUM_VERSION}.jar
 SELENIUM_FILE_URL=https://github.com/SeleniumHQ/selenium/releases/download/${SELENIUM_NAME}-${SELENIUM_BASE_VERSION}.0/${SELENIUM_JAR_FILE_NAME}
 
-# https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.40.0/selenium-server-4.40.0.jar
+# https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.51.0/selenium-server-4.51.0.jar
 # https://github.com/mozilla/geckodriver/releases/download/v0.37.1/geckodriver-v0.37.1-linux64.tar.gz
 # https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.47/linux64/chromedriver-linux64.zip
 

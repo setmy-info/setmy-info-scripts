@@ -28,7 +28,7 @@ CMake shorthand aliases.
 .B gradle, gradle49, gradle50, gradle52, gradle56, gradle63, gradle71
 Gradle build tool — default and versioned variants.
 .TP
-.B mvn, mvn33, mvn35, mvn36, mvn38
+.B mvn, mvn33, mvn35, mvn36, mvn38, mvn39, mvn310
 Apache Maven — default and versioned variants.
 .TP
 .B mvnd
@@ -91,8 +91,15 @@ Julia scientific computing language.
 .B node, node8, node8.11, node9, node10, node11, node12, node16
 Node.js JavaScript runtime — default and versioned variants.
 .TP
-.B python, python39, python310, python311, python312, python313, python314, python315
+.B python, python311, python312, python313, python314, python315
 Python — default and versioned profiles.
+A versioned profile uses the
+.I /opt/python3NN
+link; the
+.I /opt/python-MAJOR.MINOR
+series link beside it, described in
+.BR smi-install-package (1),
+names the same directory.
 .TP
 .B sbcl
 Steel Bank Common Lisp.
@@ -175,6 +182,7 @@ Report smi-profiles-location bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
 .BR smi-lib-location (1),
+.BR smi-install-package (1),
 .BR term-activate (1),
 .BR term-profile (1)
 

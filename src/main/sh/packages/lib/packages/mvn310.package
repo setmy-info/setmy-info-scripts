@@ -1,0 +1,19 @@
+MAVEN310_NAME=maven
+MAVEN310_VERSION=3.10.0
+MAVEN310_DIR_NAME=apache-maven-${MAVEN310_VERSION}
+MAVEN310_TAR_FILE_NAME=${MAVEN310_DIR_NAME}-bin.tar
+MAVEN310_TAR_GZ_FILE_NAME=${MAVEN310_TAR_FILE_NAME}.gz
+MAVEN310_TAR_GZ_FILE_URL=https://dlcdn.apache.org/maven/maven-3/${MAVEN310_VERSION}/binaries/${MAVEN310_TAR_GZ_FILE_NAME}
+
+# https://dlcdn.apache.org/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz
+
+# No /opt link: the mvn310 profile names the unpacked directory, as every versioned mvn profile
+# does, and /opt/maven belongs to the unversioned mvn package.
+
+mvn310_download_func() {
+    smi-download ${MAVEN310_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MAVEN310_TAR_GZ_FILE_NAME}
+}
+
+mvn310_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${MAVEN310_TAR_GZ_FILE_NAME} -C /opt
+}

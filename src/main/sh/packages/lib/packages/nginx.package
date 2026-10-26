@@ -5,7 +5,7 @@ NGINX_VERSION=1.30.6-1
 # https://nginx.org/en/linux_packages.html#RHEL
 
 # https://nginx.org/packages/centos/10/x86_64/RPMS/
-# https://nginx.org/packages/centos/10/x86_64/RPMS/nginx-1.30.4-1.el10.ngx.x86_64.rpm
+# https://nginx.org/packages/centos/10/x86_64/RPMS/nginx-1.30.6-1.el10.ngx.x86_64.rpm
 
 nginx_download_func() {
     return

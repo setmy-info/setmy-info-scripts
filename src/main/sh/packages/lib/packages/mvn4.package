@@ -6,7 +6,7 @@ MAVEN4_TAR_FILE_NAME=${MAVEN4_DIR_NAME}-bin.tar
 MAVEN4_TAR_GZ_FILE_NAME=${MAVEN4_TAR_FILE_NAME}.gz
 MAVEN4_TAR_GZ_FILE_URL=https://dlcdn.apache.org/maven/maven-4/${MAVEN4_VERSION}-${MAVEN4_BETA_VERSION}/binaries/${MAVEN4_TAR_GZ_FILE_NAME}
 
-# https://dlcdn.apache.org/maven/maven-4/4.0.0-rc-5/binaries/apache-maven-4.0.0-rc-5-bin.tar.gz
+# https://dlcdn.apache.org/maven/maven-4/4.0.0-rc-7/binaries/apache-maven-4.0.0-rc-7-bin.tar.gz
 # The release candidate part belongs in the directory name as well, as that is what the archive
 # unpacks into; the mirror keeps only the newest candidates, so an old one is a 404.
 

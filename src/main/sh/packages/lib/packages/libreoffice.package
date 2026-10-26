@@ -7,7 +7,7 @@ LIBREOFFICE_TAR_FILE_NAME=${LIBREOFFICE_PACKAGE_NAME}.tar
 LIBREOFFICE_TAR_GZ_FILE_NAME=${LIBREOFFICE_TAR_FILE_NAME}.gz
 LIBREOFFICE_TAR_GZ_FILE_URL=https://download.documentfoundation.org/libreoffice/stable/${LIBREOFFICE_VERSION}/rpm/x86_64/${LIBREOFFICE_TAR_GZ_FILE_NAME}
 
-# https://download.documentfoundation.org/libreoffice/stable/26.2.3/rpm/x86_64/LibreOffice_26.2.3_Linux_x86-64_rpm.tar.gz
+# https://download.documentfoundation.org/libreoffice/stable/26.8.1/rpm/x86_64/LibreOffice_26.8.1_Linux_x86-64_rpm.tar.gz
 
 libreoffice_download_func() {
     smi-download ${LIBREOFFICE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${LIBREOFFICE_TAR_GZ_FILE_NAME}

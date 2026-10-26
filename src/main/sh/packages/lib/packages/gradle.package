@@ -4,7 +4,7 @@ GRADLE_DIR_NAME=gradle-${GRADLE_VERSION}
 GRADLE_ZIP_FILE_NAME=${GRADLE_DIR_NAME}-bin.zip
 GRADLE_ZIP_FILE_URL=https://services.gradle.org/distributions/${GRADLE_ZIP_FILE_NAME}
 
-# https://services.gradle.org/distributions/gradle-9.4.1-bin.zip
+# https://services.gradle.org/distributions/gradle-9.8.2-bin.zip
 
 gradle_download_func() {
     smi-download ${GRADLE_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${GRADLE_ZIP_FILE_NAME}

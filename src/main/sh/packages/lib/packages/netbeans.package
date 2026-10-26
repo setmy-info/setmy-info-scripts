@@ -4,7 +4,7 @@ NETBEANS_DIR_NAME=${NETBEANS_NAME}-${NETBEANS_VERSION}
 NETBEANS_ZIP_FILE_NAME=${NETBEANS_DIR_NAME}-bin.zip
 NETBEANS_ZIP_FILE_URL=https://dlcdn.apache.org/${NETBEANS_NAME}/${NETBEANS_NAME}/${NETBEANS_VERSION}/${NETBEANS_ZIP_FILE_NAME}
 
-# https://dlcdn.apache.org/netbeans/netbeans/30/netbeans-30-bin.zip
+# https://dlcdn.apache.org/netbeans/netbeans/31/netbeans-31-bin.zip
 
 netbeans_download_func() {
     smi-download ${NETBEANS_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${NETBEANS_ZIP_FILE_NAME}

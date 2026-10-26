@@ -337,29 +337,23 @@ class MavenDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
         driver.get(getUrl())
         def links = driver.findElements(tag("a"))
         def filteredHrefs = packageHrefs(links)
-        //filteredHrefs.each { println it }
+        // The binary archive of the maven 3 line, which is what the mvn package installs: the page
+        // carries the maven 4 line as well, and maven 4 is the mvn4 package. -bin.tar.gz keeps the
+        // source archive out, whose name ends in -src.tar.gz.
         def finalFiltered = filteredHrefs.findAll { href ->
             href = href.toLowerCase()
-            if (!href.endsWith(".tar.gz")) return false
-            if (!href.contains("apache-maven-")) return false
-            if (href.contains("rc")) return false
+            if (!href.endsWith("-bin.tar.gz")) return false
+            if (!href.contains("apache-maven-3.")) return false
+            if (href.contains("rc") || href.contains("alpha") || href.contains("beta")) return false
 
             return true
         }
-        //finalFiltered.each { println it }
-        def sortedByUrl = finalFiltered.sort { a, b -> a <=> b }
-        //sortedByUrl.each { println it }
-        if (!sortedByUrl) {
+        if (!finalFiltered) {
             throw new RuntimeException("No maven packages found at ${getUrl()}")
         }
-        def lastItem = sortedByUrl.last()
-        def versionPattern = ~/(?<![a-zA-Z0-9])(\d+\.\d+\.\d+)(?![a-zA-Z0-9])/
-        def matcher = (lastItem =~ versionPattern)
-        if (matcher.find()) {
-            def version = matcher.group(1)
-            //println "${version}"
-        }
-        println "${lastItem}"
+        // By version segments and not alphabetically: a string sort puts 3.9.16 after 3.10.0 and
+        // reports the older one as the newest.
+        println "${sortByVersionAndLast(finalFiltered)}"
     }
 
     @Override
@@ -1037,15 +1031,18 @@ class PythonDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     void execute(WebDriver driver) {
         driver.get(getUrl())
         // One line per series, the newest release of each, as there is a package per series from
-        // python39 to python315. The page lists every release of every series, newest first, so
-        // the first match of a prefix is the newest release of that series.
+        // python311 to python315. The page lists every release of every series, newest first, so
+        // the first match of a prefix is the newest release of that series. 3.9 and 3.10 are end
+        // of life and are not packaged any more, so they are not reported either, and a series
+        // that is not packaged yet is not listed here: a prefix is added when a package for that
+        // series is added, so a new series is adopted deliberately and not the day it appears.
         //
         // The list is not cut to the first ten entries any more. The ten newest releases of the
         // page are the ten newest of all series together, which in practice is the current series
-        // and the one before it: 3.15.0 and the nine 3.14.x releases filled all ten, so python39
-        // to python313 were reported as nothing at all and their packages were never seen to be
-        // behind. The page holds no pre-release in this list, so the newest match is a real one.
-        def allowedPrefixes = ['3.9.', '3.10.', '3.11.', '3.12.', '3.13.', '3.14.', '3.15.', '3.16.']
+        // and the one before it, so the older series were reported as nothing at all and their
+        // packages were never seen to be behind. The page holds no pre-release in this list, so
+        // the newest match is a real one.
+        def allowedPrefixes = ['3.11.', '3.12.', '3.13.', '3.14.', '3.15.']
         def versions = driver
             .findElements(cssSelector("li span.release-number a"))
             .collect { it.getText() }

@@ -1,0 +1,20 @@
+MAVEN39_NAME=maven
+MAVEN39_VERSION=3.9.16
+MAVEN39_DIR_NAME=apache-maven-${MAVEN39_VERSION}
+MAVEN39_TAR_FILE_NAME=${MAVEN39_DIR_NAME}-bin.tar
+MAVEN39_TAR_GZ_FILE_NAME=${MAVEN39_TAR_FILE_NAME}.gz
+MAVEN39_TAR_GZ_FILE_URL=https://archive.apache.org/dist/maven/maven-3/${MAVEN39_VERSION}/binaries/${MAVEN39_TAR_GZ_FILE_NAME}
+
+# https://archive.apache.org/dist/maven/maven-3/3.9.16/binaries/apache-maven-3.9.16-bin.tar.gz
+
+# From the archive and not from dlcdn: the mirror carries only the current release of the maven 3
+# line, which is 3.10.0, so an older version is only in archive.apache.org. No /opt link, as the
+# mvn39 profile names the unpacked directory.
+
+mvn39_download_func() {
+    smi-download ${MAVEN39_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MAVEN39_TAR_GZ_FILE_NAME}
+}
+
+mvn39_install_func() {
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${MAVEN39_TAR_GZ_FILE_NAME} -C /opt
+}

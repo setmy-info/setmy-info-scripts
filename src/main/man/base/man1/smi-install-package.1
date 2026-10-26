@@ -11,6 +11,26 @@ installs the specified SMI packages.
 It uses the \fBpackages.sh\fR library to locate package definitions (with \fB.package\fR suffix) in either the system or home packages directories and executes their respective install functions.
 The package archives are read from the packages download directory (see \fBsmi-home-packages-location\fR(1)),
 which defaults to \fB~/.setmy.info/packages\fR and can be overridden via \fBSMI_HOME_PACKAGES_DIR\fR.
+.SH PYTHON OPT LINKS
+.PP
+A Python install puts the interpreter in a fully versioned directory,
+for example
+.IR /opt/python-3.14.10 ,
+and points symbolic links at it:
+.I /opt/python314
+for the
+.B python314
+profile,
+.I /opt/python-3.14
+as the series link without the patch number, and, from the 3.13 series upwards,
+.I /opt/python
+as the unversioned default.
+Installing a new patch release of a series moves the links to it, so a path written against
+.I /opt/python-3.14
+needs no editing after an upgrade.
+The unversioned
+.I /opt/python
+link is shared by the 3.13 and newer series, so the series installed last owns it.
 .SH AVAILABLE PACKAGES
 .PP
 The following package names are available.
@@ -77,6 +97,8 @@ puts the result in place.
 .BR mitmproxy ,
 .BR mn ,
 .BR mvn ,
+.BR mvn39 ,
+.BR mvn310 ,
 .BR mvn4 ,
 .BR mvnd ,
 .BR neo4j ,
@@ -87,8 +109,6 @@ puts the result in place.
 .BR nsis ,
 .BR openbao ,
 .BR pycharm ,
-.BR python39 ,
-.BR python310 ,
 .BR python311 ,
 .BR python312 ,
 .BR python313 ,

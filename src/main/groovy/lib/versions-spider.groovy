@@ -1791,7 +1791,7 @@ class FreenginxDriverExecute extends DriverExecuteBase implements DriverExecute,
 class SaplingDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
-        // https://github.com/facebook/sapling/releases/download/0.2.20260929-102736%2B288e0c2d/sapling-0.2.20260929-102736%2B288e0c2d-linux-x64.tar.xz
+        // https://github.com/meta/sapling/releases/download/0.2.20261103-145137%2B6282ac56/sapling-0.2.20261103-145137%2B6282ac56-linux-x64.tar.xz
         def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
         // The release also ships linux-arm64, windows-x64 and a macOS bottle.
         def asset = json.assets.find { it.name.endsWith("-linux-x64.tar.xz") }
@@ -1801,7 +1801,9 @@ class SaplingDriverExecute extends DriverExecuteBase implements DriverExecute, N
 
     @Override
     String getUrl() {
-        return "https://api.github.com/repos/facebook/sapling/releases/latest"
+        // The repository moved from the facebook organisation to meta. The old path answers
+        // 301 and Java would follow it, but the canonical owner is asked for directly.
+        return "https://api.github.com/repos/meta/sapling/releases/latest"
     }
 
     @Override

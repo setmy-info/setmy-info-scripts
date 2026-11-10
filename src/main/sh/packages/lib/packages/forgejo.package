@@ -1,5 +1,5 @@
 FORGEJO_NAME=forgejo
-FORGEJO_VERSION=17.0.0
+FORGEJO_VERSION=17.0.1
 FORGEJO_BIN_FILE_NAME=${FORGEJO_NAME}-${FORGEJO_VERSION}-linux-amd64
 FORGEJO_XZ_FILE_NAME=${FORGEJO_BIN_FILE_NAME}.xz
 FORGEJO_SHA256_FILE_NAME=${FORGEJO_XZ_FILE_NAME}.sha256
@@ -11,7 +11,7 @@ FORGEJO_OPT_DIR=/opt/${FORGEJO_NAME}-${FORGEJO_VERSION}
 
 # https://forgejo.org/releases/
 # https://code.forgejo.org/forgejo/forgejo/releases
-# https://code.forgejo.org/forgejo/forgejo/releases/download/v17.0.0/forgejo-17.0.0-linux-amd64.xz
+# https://code.forgejo.org/forgejo/forgejo/releases/download/v17.0.1/forgejo-17.0.1-linux-amd64.xz
 # https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service
 
 # Three files come down in one go, the way the selenium package fetches its drivers: the

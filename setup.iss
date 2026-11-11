@@ -1,6 +1,6 @@
 [Setup]
 AppName=setmy.info scripts
-AppVersion=0.136.0
+AppVersion=0.137.0
 DefaultDirName=C:\pub\setmy.info
 DefaultGroupName=setmy.info scripts
 UninstallDisplayIcon={app}\bin\smi-location.cmd

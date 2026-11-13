@@ -14,8 +14,6 @@ CONFIGURE_FILE("${SYSTEMD_SOURCES_PATH}/environment.conf.in"
     "${ETC_OUTPUT_PATH}/environment.conf" @ONLY)
 CONFIGURE_FILE("${SYSTEMD_SOURCES_PATH}/example.service.in"
     "${ETC_SYSTEM_OUTPUT_PATH}/example.service" @ONLY)
-CONFIGURE_FILE("${SYSTEMD_SOURCES_PATH}/dagu.service.in"
-    "${ETC_SYSTEM_OUTPUT_PATH}/dagu.service" @ONLY)
 CONFIGURE_FILE("${SYSTEMD_SOURCES_PATH}/setmy-info-deploy.path.in"
     "${ETC_SYSTEM_OUTPUT_PATH}/setmy-info-deploy.path" @ONLY)
 CONFIGURE_FILE("${SYSTEMD_SOURCES_PATH}/setmy-info-deploy.service.in"

@@ -1493,27 +1493,6 @@ class LibrewolfDriverExecute extends DriverExecuteBase implements DriverExecute,
     }
 }
 
-class DaguDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
-    @Override
-    void execute(WebDriver driver) {
-        // https://github.com/dagucloud/dagu/releases/download/v2.13.0/dagu_2.13.0_linux_amd64.tar.gz
-        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
-        def asset = json.assets.find { it.name.endsWith("_linux_amd64.tar.gz") }
-        if (!asset) throw new RuntimeException("No dagu linux amd64 tar.gz found in latest release")
-        println asset.browser_download_url
-    }
-
-    @Override
-    String getUrl() {
-        return "https://api.github.com/repos/dagucloud/dagu/releases/latest"
-    }
-
-    @Override
-    String getName() {
-        return "dagu"
-    }
-}
-
 class NsisDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
@@ -1934,7 +1913,6 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new PycharmDriverExecute(), rulesRegister)
     fillWithRules(new ClionDriverExecute(), rulesRegister)
     fillWithRules(new LibrewolfDriverExecute(), rulesRegister)
-    fillWithRules(new DaguDriverExecute(), rulesRegister)
     fillWithRules(new GreenMailDriverExecute(), rulesRegister)
     fillWithRules(new NginxDriverExecute(), rulesRegister)
     fillWithRules(new KeycloakDriverExecute(), rulesRegister)

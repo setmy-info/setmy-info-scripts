@@ -10,11 +10,6 @@ if ! id "${USER_NAME}" >/dev/null 2>&1; then
     useradd --system ${USER_NAME}
 fi
 
-DAGU_USER_NAME=dagu
-if ! id "${DAGU_USER_NAME}" >/dev/null 2>&1; then
-    useradd --system --shell /sbin/nologin --no-create-home ${DAGU_USER_NAME}
-fi
-
 DEPLOY_USER_NAME=deploy
 if ! id "${DEPLOY_USER_NAME}" >/dev/null 2>&1; then
     # The uploader needs a shell, scp does not work with nologin, and a home for its

@@ -4,5 +4,6 @@ MESSAGE("-- hello lib.cmake")
 INSTALL(FILES "${LIBRARY_ELIXIR_OUTPUT_PATH}/hello-elixir.exs" DESTINATION lib/elixir)
 INSTALL(FILES "${LIBRARY_COMMON_LISP_OUTPUT_PATH}/hello-lisp.lisp"      DESTINATION lib/cl)
 INSTALL(FILES "${LIBRARY_GROOVY_OUTPUT_PATH}/hello-groovy.groovy" DESTINATION lib/groovy)
+INSTALL(FILES "${LIBRARY_PYTHON_OUTPUT_PATH}/hello-python.py" DESTINATION lib/python)
 
 # PLACEHOLDER-END #

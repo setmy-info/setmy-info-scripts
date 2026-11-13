@@ -17,6 +17,7 @@ INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/quicklisp-user-setup.lisp"     DESTINATION
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/elixir.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/cl.sh"                         DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/groovy.sh"                     DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/python.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/crypto.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/pki.sh"                        DESTINATION lib)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/half-past"                 DESTINATION lib USE_SOURCE_PERMISSIONS)

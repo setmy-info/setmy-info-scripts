@@ -1,0 +1,55 @@
+.TH smi-vscode "1" "November 2026" "SMI Toolset" "SMI Workstation Command"
+.SH NAME
+smi-vscode \- Start Visual Studio Code with the Erlang and Elixir environment
+.SH SYNOPSIS
+.B smi-vscode
+.RI [ CODE_ARGUMENTS ...]
+.SH DESCRIPTION
+.PP
+Starts Visual Studio Code with the Erlang and Elixir environment set, which an IDE started from the
+desktop does not otherwise get: the desktop session does not read the shell profiles, and VS Code
+has no setting of its own that reaches every extension and language server it starts.
+.PP
+The
+.I erlang
+and
+.I elixir
+profiles of
+.BR smi-profiles-location (1)
+are sourced, the same ones
+.BR term (1)
+uses, so
+.BR ERLANG_HOME ,
+.BR ELIXIR_HOME ,
+.B ELIXIR_ERL_OPTIONS
+and
+.B PATH
+are what a terminal with those profiles has, and VS Code is then started in place of this
+command. Every argument is passed to VS Code unchanged.
+.PP
+The
+.I VSCode.desktop
+entry of the toolset starts VS Code through this command.
+.SH FILES
+.TP
+.I $(smi-profiles-location)/erlang.profile
+.TP
+.I $(smi-profiles-location)/elixir.profile
+The profiles sourced before VS Code starts.
+.TP
+.I /usr/share/code/code
+The VS Code executable, as the vscode package installs it.
+.SH EXIT STATUS
+The exit status of VS Code, or non-zero when a profile or VS Code is missing.
+.SH EXAMPLES
+.PP
+Open the current directory:
+.RS
+smi-vscode .
+.RE
+.SH SEE ALSO
+.BR code (1),
+.BR smi-profiles-location (1),
+.BR term (1)
+.SH AUTHOR
+setmy.info

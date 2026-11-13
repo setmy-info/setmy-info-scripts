@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+. "$(smi-profiles-location)/erlang.profile"
+. "$(smi-profiles-location)/elixir.profile"
+
+exec /usr/share/code/code "$@"

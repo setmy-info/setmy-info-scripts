@@ -2,5 +2,6 @@
 MESSAGE("-- workstation bin.cmake")
 
 INSTALL(PROGRAMS "${BINARY_OUTPUT_PATH}/smi-backup" DESTINATION bin)
+INSTALL(PROGRAMS "${BINARY_OUTPUT_PATH}/smi-vscode" DESTINATION bin)
 
 # PLACEHOLDER-END #

@@ -150,7 +150,7 @@ pipeline {
                         echo 'Uploading the RPM to TEST and handing it to the deployment service there, which installs it'
                         // No server belongs in this repository: the values come from the job
                         // configuration of this pipeline, which maps its own variables onto the
-                        // ones src/main/sh/build/deploy.sh reads.
+                        // ones smi-deploy reads.
                         runCommand 'SMI_DEPLOY_HOSTS="${SMI_DEPLOY_TEST_HOSTS}" make deploy'
                         // The installed version is deliberately not read back: the deployment
                         // service installs in parallel with this build and a query would race

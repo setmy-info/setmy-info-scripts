@@ -1,3 +1,7 @@
+* 2026-11-13 Imre Tabur <imre.tabur@mail.ee>
+- Removed src/main/sh/build/deploy.sh: the toolset is installed on every machine before the build runs, so deploy.cmake calls the installed smi-deploy directly instead of a wrapper that only looked it up.
+- smi-deploy and deploy.cmake lost their explanatory comments, which repeated the smi-deploy man page. make deploy-help opens that man page.
+
 * 2026-11-10 Imre Tabur <imre.tabur@mail.ee>
 - Refreshed the commented example download URL in every package whose version moved, 22 of them: bazel, camundam, clion, cmake, dagu, firefox, forgejo, go, gradle, janet, jenkins, jpm, julia, keycloak, libreoffice, librewolf, node, openbao, sbcl, selenium, thunderbird and zookeeper. Those comments are there to be opened and tried by hand, so a comment naming last release is worse than no comment: it reads as a URL that was checked. Each one now holds exactly the URL the package builds. clion, firefox and thunderbird needed naming by hand rather than pattern matching, because the number of dot separated parts in the version changed: CLion gained a build number, Firefox and Thunderbird dropped a patch level.
 - Checked all 86 commented URLs across the packages, example downloads and reference pages together. Every one answers, with one that could not be verified from here: downloads.mitmproxy.org serves a chain this machine cannot complete, "unable to get local issuer certificate", so the mitmproxy URL was neither confirmed nor refuted; the version in the comment does match the package.

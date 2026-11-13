@@ -209,6 +209,19 @@ H2 in-memory relational database.
 .B hsqldb
 HyperSQL database engine.
 .TP
+.B liquibase
+Liquibase database schema change management command line tool in
+.IR /opt/liquibase ,
+and
+.I liquibase-core.jar
+in the SMI lib directory.
+.TP
+.B pgjdbc
+PostgreSQL JDBC driver,
+.I postgresql.jar
+in the SMI lib directory, which the liquibase profile puts on the classpath of
+.BR liquibase .
+.TP
 .B neo4j
 Neo4j graph database.
 .TP

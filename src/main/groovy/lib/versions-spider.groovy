@@ -1641,6 +1641,47 @@ class JenkinsPluginManagerDriverExecute extends DriverExecuteBase implements Dri
     }
 }
 
+class LiquibaseDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://github.com/liquibase/liquibase/releases/download/v5.0.4/liquibase-5.0.4.tar.gz
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name ==~ /liquibase-[0-9.]+\.tar\.gz/ }
+        if (!asset) throw new RuntimeException("No liquibase tar.gz found in latest release")
+        println asset.browser_download_url
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/liquibase/liquibase/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "liquibase"
+    }
+}
+
+class PgjdbcDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://jdbc.postgresql.org/download/postgresql-42.7.14.jar
+        def matcher = new URL(getUrl()).text =~ /https:\/\/jdbc\.postgresql\.org\/download\/postgresql-[0-9.]+\.jar/
+        if (!matcher.find()) throw new RuntimeException("No postgresql jar found on the download page")
+        println matcher.group()
+    }
+
+    @Override
+    String getUrl() {
+        return "https://jdbc.postgresql.org/download/"
+    }
+
+    @Override
+    String getName() {
+        return "pgjdbc"
+    }
+}
+
 class NinjaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
@@ -1918,6 +1959,8 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new KeycloakDriverExecute(), rulesRegister)
     fillWithRules(new OpenbaoDriverExecute(), rulesRegister)
     fillWithRules(new NinjaDriverExecute(), rulesRegister)
+    fillWithRules(new LiquibaseDriverExecute(), rulesRegister)
+    fillWithRules(new PgjdbcDriverExecute(), rulesRegister)
     fillWithRules(new LFEDriverExecute(), rulesRegister)
     fillWithRules(new ZookeeperDriverExecute(), rulesRegister)
     fillWithRules(new TelegramDriverExecute(), rulesRegister)

@@ -1,0 +1,16 @@
+PGJDBC_NAME=postgresql
+PGJDBC_VERSION=42.7.14
+PGJDBC_JAR_FILE_NAME=${PGJDBC_NAME}-${PGJDBC_VERSION}.jar
+PGJDBC_JAR_FILE_URL=https://jdbc.postgresql.org/download/${PGJDBC_JAR_FILE_NAME}
+
+# https://jdbc.postgresql.org/download/postgresql-42.7.14.jar
+
+pgjdbc_download_func() {
+    smi-download ${PGJDBC_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${PGJDBC_JAR_FILE_NAME}
+}
+
+pgjdbc_install_func() {
+    PGJDBC_LIB_DIR=$(smi-lib-location)
+    sudo rm -f ${PGJDBC_LIB_DIR}/${PGJDBC_NAME}.jar
+    sudo cp ${HOME_PACKAGES_DIR}/${PGJDBC_JAR_FILE_NAME} ${PGJDBC_LIB_DIR}/${PGJDBC_NAME}.jar
+}

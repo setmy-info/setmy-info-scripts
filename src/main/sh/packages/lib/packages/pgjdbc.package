@@ -10,7 +10,8 @@ pgjdbc_download_func() {
 }
 
 pgjdbc_install_func() {
-    PGJDBC_LIB_DIR=$(smi-lib-location)
+    PGJDBC_LIB_DIR=$(smi-lib-location)/jdbc
+    sudo mkdir -p ${PGJDBC_LIB_DIR}
     sudo rm -f ${PGJDBC_LIB_DIR}/${PGJDBC_NAME}.jar
     sudo cp ${HOME_PACKAGES_DIR}/${PGJDBC_JAR_FILE_NAME} ${PGJDBC_LIB_DIR}/${PGJDBC_NAME}.jar
 }

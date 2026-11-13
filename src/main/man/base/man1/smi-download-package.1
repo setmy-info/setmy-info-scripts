@@ -204,23 +204,23 @@ Needs mercurial, gcc, make and the pcre2, openssl and zlib development packages.
 .SS Databases and Data Stores
 .TP
 .B h2
-H2 in-memory relational database.
+H2 in-memory relational database and its JDBC driver,
+.I jdbc/h2.jar
+in the SMI lib directory.
 .TP
 .B hsqldb
 HyperSQL database engine.
 .TP
 .B liquibase
-Liquibase database schema change management command line tool in
+Liquibase database schema change management command line, in
 .IR /opt/liquibase ,
-and
-.I liquibase-core.jar
-in the SMI lib directory.
+see
+.BR smi-liquibase (1).
 .TP
 .B pgjdbc
 PostgreSQL JDBC driver,
-.I postgresql.jar
-in the SMI lib directory, which the liquibase profile puts on the classpath of
-.BR liquibase .
+.I jdbc/postgresql.jar
+in the SMI lib directory.
 .TP
 .B neo4j
 Neo4j graph database.

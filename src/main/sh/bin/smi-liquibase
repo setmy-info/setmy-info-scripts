@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+SMI_LIB_DIR=$(smi-lib-location)
+
+export LIQUIBASE_COMMAND_PASSWORD="${SMI_DB_PASSWORD:-}"
+
+exec /opt/liquibase/liquibase \
+    --show-banner=false \
+    --classpath="$(printf '%s:' "${SMI_LIB_DIR}"/jdbc/*.jar)" \
+    --url="${SMI_DB_URL:-jdbc:postgresql://${SMI_DB_HOST:-localhost}:${SMI_DB_PORT:-5432}/${SMI_DB_NAME:-postgres}}" \
+    --username="${SMI_DB_USER:-postgres}" \
+    --changelog-file="${SMI_DB_CHANGELOG:-db/changelog/db.changelog-master.yaml}" \
+    "$@"

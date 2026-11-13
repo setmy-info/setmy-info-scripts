@@ -111,6 +111,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jenkins-node"           DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/jenkins-cli"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-jenkinsfile"            DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-greenmail"              DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-liquibase"              DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-sendmail"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-new-tag"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/tab"                        DESTINATION bin)

@@ -3,16 +3,11 @@ LIQUIBASE_VERSION=5.0.4
 LIQUIBASE_DIR_NAME=${LIQUIBASE_NAME}-${LIQUIBASE_VERSION}
 LIQUIBASE_TAR_GZ_FILE_NAME=${LIQUIBASE_DIR_NAME}.tar.gz
 LIQUIBASE_TAR_GZ_FILE_URL=https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/${LIQUIBASE_TAR_GZ_FILE_NAME}
-LIQUIBASE_CORE_NAME=${LIQUIBASE_NAME}-core
-LIQUIBASE_CORE_JAR_FILE_NAME=${LIQUIBASE_CORE_NAME}-${LIQUIBASE_VERSION}.jar
-LIQUIBASE_CORE_JAR_FILE_URL=https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/${LIQUIBASE_CORE_JAR_FILE_NAME}
 
 # https://github.com/liquibase/liquibase/releases/download/v5.0.4/liquibase-5.0.4.tar.gz
-# https://github.com/liquibase/liquibase/releases/download/v5.0.4/liquibase-core-5.0.4.jar
 
 liquibase_download_func() {
     smi-download ${LIQUIBASE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${LIQUIBASE_TAR_GZ_FILE_NAME}
-    smi-download ${LIQUIBASE_CORE_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${LIQUIBASE_CORE_JAR_FILE_NAME}
 }
 
 liquibase_install_func() {
@@ -20,7 +15,4 @@ liquibase_install_func() {
     sudo mkdir -p /opt/${LIQUIBASE_DIR_NAME}
     sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${LIQUIBASE_TAR_GZ_FILE_NAME} -C /opt/${LIQUIBASE_DIR_NAME}
     makeOptLink /opt/${LIQUIBASE_NAME} /opt/${LIQUIBASE_DIR_NAME}
-    LIQUIBASE_LIB_DIR=$(smi-lib-location)
-    sudo rm -f ${LIQUIBASE_LIB_DIR}/${LIQUIBASE_CORE_NAME}.jar
-    sudo cp ${HOME_PACKAGES_DIR}/${LIQUIBASE_CORE_JAR_FILE_NAME} ${LIQUIBASE_LIB_DIR}/${LIQUIBASE_CORE_NAME}.jar
 }

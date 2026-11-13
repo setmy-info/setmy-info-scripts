@@ -1,0 +1,115 @@
+.TH smi-liquibase "1" "November 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-liquibase \- Run Liquibase database migrations against a PostgreSQL database
+.SH SYNOPSIS
+.B smi-liquibase
+.I COMMAND
+.RI [ LIQUIBASE_OPTIONS ...]
+.SH DESCRIPTION
+.PP
+.B smi-liquibase
+runs the Liquibase command line installed in
+.I /opt/liquibase
+with the connection taken
+from the
+.B SMI_DB_
+environment variables, so an administrator can apply, check and revert database changes from the
+directory that holds the changelogs.
+.PP
+Every jar in the
+.I jdbc
+directory of the SMI lib directory is on the classpath, so a further database is a further driver
+package and an
+.B SMI_DB_URL
+of its own. Every argument is passed to
+.BR liquibase ,
+so every Liquibase command and option works, and an option given here wins over the one this
+command sets.
+.SH ENVIRONMENT
+.TP
+.B SMI_DB_HOST
+Database host, default
+.BR localhost .
+.TP
+.B SMI_DB_PORT
+Database port, default
+.BR 5432 .
+.TP
+.B SMI_DB_NAME
+Database name, default
+.BR postgres .
+.TP
+.B SMI_DB_USER
+Database user, default
+.BR postgres .
+.TP
+.B SMI_DB_PASSWORD
+Password of that user. It reaches Liquibase as
+.BR LIQUIBASE_COMMAND_PASSWORD ,
+not as an argument, so it is not visible in the process list.
+.TP
+.B SMI_DB_URL
+The whole JDBC URL, replacing the one built from host, port and name, for another database or
+for URL parameters.
+.TP
+.B SMI_DB_CHANGELOG
+The entry changelog relative to the working directory, default
+.IR db/changelog/db.changelog-master.yaml ,
+the default of Spring Boot, so the changelogs of a Spring Boot project work as they are. XML, YAML,
+JSON and SQL changelogs are all accepted.
+.SH FILES
+.TP
+.I /opt/liquibase/
+The Liquibase command line, installed by the
+.B liquibase
+package.
+.TP
+.I $(smi-lib-location)/jdbc/
+The JDBC drivers, installed by the
+.B pgjdbc
+package for PostgreSQL and the
+.B h2
+package for H2.
+.SH EXIT STATUS
+The exit status of
+.BR liquibase .
+.SH EXAMPLES
+.PP
+Show what is not applied yet, apply it, and revert the last change:
+.RS
+.nf
+export SMI_DB_HOST=db.example.com SMI_DB_NAME=app SMI_DB_USER=app_owner
+read -rs SMI_DB_PASSWORD; export SMI_DB_PASSWORD
+smi-liquibase status --verbose
+smi-liquibase update
+smi-liquibase rollback-count --count=1
+.fi
+.RE
+.PP
+Write the SQL an update would run, without running it:
+.RS
+.nf
+smi-liquibase update-sql
+.fi
+.RE
+.PP
+Tag the current state, and return to it later:
+.RS
+.nf
+smi-liquibase tag --tag=before-import
+smi-liquibase rollback --tag=before-import
+.fi
+.RE
+.PP
+Try changelogs on a local H2 database file instead of a server:
+.RS
+.nf
+SMI_DB_URL=jdbc:h2:./trial SMI_DB_USER=sa smi-liquibase update
+.fi
+.RE
+.SH SEE ALSO
+.BR smi-download-package (1),
+.BR smi-install-package (1),
+.BR smi-lib-location (1)
+.SH AUTHOR
+setmy.info

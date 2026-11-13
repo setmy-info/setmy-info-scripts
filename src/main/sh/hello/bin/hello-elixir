@@ -1,5 +1,7 @@
 #!/bin/sh
 
-. `smi-include elixir.sh`
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+. $(smi-include elixir.sh)
 
 exec elixir "${SMI_ELIXIR_LIB_DIR}/hello-elixir.exs" "$@"

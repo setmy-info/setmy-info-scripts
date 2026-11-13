@@ -17,6 +17,7 @@ ADD_CUSTOM_TARGET(makeDirectories
     mkdir -p ${LIBRARY_OUTPUT_PATH}/packages &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/elixir &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/cl &&
+    mkdir -p ${LIBRARY_OUTPUT_PATH}/groovy &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/half-past &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/selinux/vhost &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/gathering &&

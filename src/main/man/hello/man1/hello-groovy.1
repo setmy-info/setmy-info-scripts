@@ -1,0 +1,74 @@
+.TH hello-groovy "1" "November 2026" "SMI Toolset" "SMI Hello Command"
+.SH NAME
+hello-groovy \- Print a greeting and a fresh UUID using a Groovy script
+.SH SYNOPSIS
+.B hello-groovy
+.RI [ EXIT_CODE ]
+.SH DESCRIPTION
+.PP
+.B hello-groovy
+is a minimal example command that runs a Groovy script with
+.BR groovy (1)
+from the
+.I lib/groovy/
+directory of the SMI toolset installation.
+It demonstrates that Groovy scripting is correctly set up: the
+.B groovy
+interpreter is on the PATH and the SMI library location is resolvable.
+.PP
+The command prints a greeting naming the current working directory and a fresh version 4 UUID,
+then exits with the requested code.
+The exit code is echoed on a second line only when it is non-zero.
+It mirrors
+.BR hello-elixir (1)
+and
+.BR hello-lisp (1),
+exit code handling included.
+.PP
+The script is located by sourcing
+.I groovy.sh
+via
+.BR smi-include (1),
+which sets
+.BR SMI_GROOVY_LIB_DIR .
+.SH ARGUMENTS
+.TP
+.I EXIT_CODE
+Optional integer to exit with, in the range
+.B 0
+to
+.BR 255 .
+Defaults to
+.B 0
+when omitted.
+An argument that is not an integer, or that falls outside that range, makes the command exit
+.BR 1 .
+Any further arguments are ignored.
+.SH EXIT STATUS
+.TP
+.B 0
+Success, or no
+.I EXIT_CODE
+argument was given.
+.TP
+.B 1
+The
+.I EXIT_CODE
+argument was not an integer in the range
+.B 0
+to
+.BR 255 .
+.TP
+.I EXIT_CODE
+The value passed on the command line, when valid.
+.SH FILES
+.TP
+.I $(smi-lib-location)/groovy/hello-groovy.groovy
+The Groovy script executed by this command.
+.SH SEE ALSO
+.BR groovy (1),
+.BR hello-elixir (1),
+.BR hello-lisp (1),
+.BR smi-include (1)
+.SH AUTHOR
+setmy.info

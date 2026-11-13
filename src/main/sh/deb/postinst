@@ -21,6 +21,7 @@ ln -f -s /opt/${SMI_PROVIDER}/bin/smi-binary /opt/${SMI_PROVIDER}/bin/smi-steale
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-extract /opt/${SMI_PROVIDER}/bin/smi-xvzf
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-extract /opt/${SMI_PROVIDER}/bin/smi-xvjf
 ln -f -s /opt/${SMI_PROVIDER}/bin/smi-extract /opt/${SMI_PROVIDER}/bin/smi-xvJf
+ln -f -s /opt/${SMI_PROVIDER}/bin/smi-extract /opt/${SMI_PROVIDER}/bin/smi-xvf
 # The external system uploads a package as the deploy user and says what it wants by the
 # directory it uploads into, draft or published, so both have to exist and be writable by that
 # user when this package is installed. It cannot set an environment variable, which is why the

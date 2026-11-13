@@ -3,4 +3,21 @@
 # Executed by installer before install step.
 echo "### Pre-Install"
 
+USER_NAME=microservice
+if ! id "${USER_NAME}" >/dev/null 2>&1; then
+    # useradd --shell /sbin/nologin --no-create-home ${USER_NAME}
+    # useradd --system --shell /sbin/nologin --no-create-home
+    useradd --system ${USER_NAME}
+fi
+
+DEPLOY_USER_NAME=deploy
+if ! id "${DEPLOY_USER_NAME}" >/dev/null 2>&1; then
+    # The uploader needs a shell, scp does not work with nologin, and a home for its
+    # authorized_keys. The key itself is installed by whoever owns the external system.
+    mkdir -p /etc/skel/deploy/draft
+    useradd --create-home --home-dir /home/${DEPLOY_USER_NAME} --shell /bin/sh ${DEPLOY_USER_NAME}
+    printf '%s:%s\n' "${DEPLOY_USER_NAME}" "$(head -c 48 /dev/urandom | base64 | tr -d '\n')" | chpasswd
+    rmdir /etc/skel/deploy/draft /etc/skel/deploy 2>/dev/null || true
+fi
+
 exit 0

@@ -1,0 +1,117 @@
+.TH smi-aws-eks-create-tf "1" "November 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-aws-eks-create-tf \- Print an OpenTofu and Terraform configuration that creates a Kubernetes cluster on AWS from an empty account
+.SH SYNOPSIS
+.B smi-aws-eks-create-tf
+.I CLIENT_NAME
+.RI [ AWS_REGION ]
+.SH DESCRIPTION
+.PP
+Prints, on standard output, one configuration file that builds a running Amazon EKS Kubernetes
+cluster in an AWS account where nothing exists yet. Nothing is created by this command: the
+output is saved as
+.I main.tf
+and applied with
+.BR tofu (1)
+or
+.BR terraform (1),
+which read the same language; it uses AWS provider resources only, no external modules, so all
+that is created is in the one file.
+.PP
+It creates:
+.TP
+.B Network
+A VPC of its own, an internet gateway, a public and a private subnet in each of two availability
+zones, one NAT gateway, and the routes between them. The subnets carry the tags Kubernetes looks
+for when it places internet facing and internal load balancers.
+.TP
+.B Firewall
+A security group opening HTTP and HTTPS for web load balancers.
+.TP
+.B Cluster
+The IAM roles of the control plane and of the nodes, the EKS cluster with access entries as its
+authentication, and the control plane audit and authenticator logs in CloudWatch Logs. Whoever
+runs the apply becomes administrator of the cluster.
+.TP
+.B Nodes
+A managed node group in the private subnets, two nodes by default, scaling between one and three,
+on Amazon Linux 2023.
+.TP
+.B Add-ons
+vpc-cni, kube-proxy, coredns and eks-pod-identity-agent, managed and updated by EKS.
+.PP
+The client name and region are written in as variable defaults. Everything else is a variable
+with a default as well: address range, number of availability zones, Kubernetes version,
+addresses allowed to the API, instance types, spot or on demand capacity, image, disk size and
+node counts, changed with
+.B -var
+or a
+.I terraform.tfvars
+file.
+.SH ARGUMENTS
+.TP
+.I CLIENT_NAME
+Lower case letters, digits and hyphens, starting with a letter and not ending with a hyphen, at
+most 32 characters, so every name built from it fits the AWS limits. It is the name of the
+cluster and the prefix of every other name.
+.TP
+.I AWS_REGION
+Default
+.BR eu-central-1 .
+.SH REQUIREMENTS
+.PP
+OpenTofu or Terraform 1.6 or newer,
+.BR aws (1)
+with credentials allowed to create VPC, EC2, IAM and EKS resources, and
+.BR kubectl (1)
+to use the cluster. The state is kept in the working directory, so that directory has to be kept,
+or a backend configured before the first apply when several people manage the cluster.
+.SH SECURITY
+.PP
+The Kubernetes API is reachable from every address by default, protected by AWS authentication;
+.B cluster_endpoint_public_access_cidrs
+restricts it to the given addresses. The nodes have no public address and reach the internet only
+through the NAT gateway.
+.SH COSTS
+.PP
+An EKS cluster, a NAT gateway with its address and the nodes are charged by the hour even when
+idle.
+.B tofu destroy
+or
+.B terraform destroy
+in the same directory removes everything again.
+.SH EXIT STATUS
+.TP
+.B 0
+The configuration was printed.
+.TP
+.B 1
+Wrong number of arguments, an invalid client name or an invalid region.
+.SH EXAMPLES
+.PP
+Create a cluster and use it:
+.RS
+.nf
+mkdir acme && cd acme
+smi-aws-eks-create-tf acme eu-north-1 > main.tf
+tofu init
+tofu apply
+aws eks update-kubeconfig --region eu-north-1 --name acme
+kubectl get nodes
+.fi
+.RE
+.PP
+Three availability zones, larger spot nodes and the API open to one office only:
+.RS
+.nf
+tofu apply -var availability_zone_count=3 \e
+    -var 'node_instance_types=["m6i.large"]' -var node_capacity_type=SPOT \e
+    -var 'cluster_endpoint_public_access_cidrs=["203.0.113.10/32"]'
+.fi
+.RE
+.SH SEE ALSO
+.BR aws (1),
+.BR kubectl (1),
+.BR smi-postgresql-create-db-sql (1)
+.SH AUTHOR
+setmy.info

@@ -1,0 +1,92 @@
+.TH smi-postgresql-create-db-sql "1" "November 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-postgresql-create-db-sql \- Print the SQL that creates a PostgreSQL database with an application user and a Liquibase user
+.SH SYNOPSIS
+.B smi-postgresql-create-db-sql
+.I NAME
+.B live|test
+.SH DESCRIPTION
+.PP
+Prints, on standard output, the SQL that creates the database
+.IB NAME _ ENVIRONMENT
+and two users for it, each with a new random password from
+.BR smi-password-gen (1).
+Nothing is executed: the output is meant for
+.BR psql (1)
+as a superuser, and it uses the
+.B \econnect
+command of
+.BR psql ,
+because the schema privileges have to be set inside the new database.
+.TP
+.IB ENVIRONMENT NAME liquibase
+The Liquibase user. It owns the database and its
+.I public
+schema, so it creates, changes and drops tables and other objects, and changes data, through
+.BR smi-liquibase (1).
+.TP
+.IB ENVIRONMENT NAME
+The application user, for the service that uses the database. It can connect, read and change
+rows with
+.BR SELECT ,
+.BR INSERT ,
+.B UPDATE
+and
+.BR DELETE ,
+use sequences with
+.B nextval
+and
+.BR currval ,
+and call the functions the Liquibase user creates. It can not create, change or drop any object,
+truncate a table, set a sequence, create temporary tables or grant anything to anyone.
+.PP
+These privileges reach the tables, sequences and functions the Liquibase user creates later,
+through default privileges, so no grant is needed after a migration. Other roles of the server
+can not connect to the database, and functions created there are not executable by
+.B PUBLIC .
+.SH ARGUMENTS
+.TP
+.I NAME
+Lower case letters, digits and underscores, not starting with a digit, as an unquoted PostgreSQL
+identifier is.
+.TP
+.B live|test
+The environment, part of the database name and of both user names, so one server can hold both
+without a clash.
+.SH EXIT STATUS
+.TP
+.B 0
+The SQL was printed.
+.TP
+.B 1
+Wrong number of arguments, an invalid name or an unknown environment.
+.SH EXAMPLES
+.PP
+Look at the SQL, keep it for the passwords, and apply it:
+.RS
+.nf
+smi-postgresql-create-db-sql shop test > shop_test.sql
+sudo -u postgres psql -v ON_ERROR_STOP=1 -f shop_test.sql
+.fi
+.RE
+.PP
+This creates the database
+.IR shop_test ,
+the application user
+.I testshop
+and the Liquibase user
+.IR testshopliquibase .
+The passwords are in the file only, so it is kept somewhere safe or removed once they are stored.
+.PP
+Then apply the changelogs as the Liquibase user:
+.RS
+.nf
+SMI_DB_NAME=shop_test SMI_DB_USER=testshopliquibase smi-liquibase update
+.fi
+.RE
+.SH SEE ALSO
+.BR psql (1),
+.BR smi-liquibase (1),
+.BR smi-password-gen (1)
+.SH AUTHOR
+setmy.info

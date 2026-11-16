@@ -1,0 +1,17 @@
+SQLITEJDBC_NAME=sqlite-jdbc
+SQLITEJDBC_VERSION=3.54.1.0
+SQLITEJDBC_JAR_FILE_NAME=${SQLITEJDBC_NAME}-${SQLITEJDBC_VERSION}.jar
+SQLITEJDBC_JAR_FILE_URL=https://github.com/xerial/sqlite-jdbc/releases/download/${SQLITEJDBC_VERSION}/${SQLITEJDBC_JAR_FILE_NAME}
+
+# https://github.com/xerial/sqlite-jdbc/releases/download/3.54.1.0/sqlite-jdbc-3.54.1.0.jar
+
+sqlitejdbc_download_func() {
+    smi-download ${SQLITEJDBC_JAR_FILE_URL} ${HOME_PACKAGES_DIR}/${SQLITEJDBC_JAR_FILE_NAME}
+}
+
+sqlitejdbc_install_func() {
+    SQLITEJDBC_LIB_DIR=$(smi-lib-location)/jdbc
+    sudo mkdir -p ${SQLITEJDBC_LIB_DIR}
+    sudo rm -f ${SQLITEJDBC_LIB_DIR}/sqlite.jar
+    sudo cp ${HOME_PACKAGES_DIR}/${SQLITEJDBC_JAR_FILE_NAME} ${SQLITEJDBC_LIB_DIR}/sqlite.jar
+}

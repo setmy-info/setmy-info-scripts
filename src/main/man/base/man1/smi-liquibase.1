@@ -1,6 +1,6 @@
 .TH smi-liquibase "1" "November 2026" "SMI Toolset" "SMI Base Command"
 .SH NAME
-smi-liquibase \- Run Liquibase database migrations against a PostgreSQL database
+smi-liquibase \- Run Liquibase database migrations against PostgreSQL, H2, Derby or SQLite
 .SH SYNOPSIS
 .B smi-liquibase
 .I COMMAND
@@ -25,6 +25,14 @@ of its own. Every argument is passed to
 .BR liquibase ,
 so every Liquibase command and option works, and an option given here wins over the one this
 command sets.
+.PP
+Java gets
+.B \-\-enable\-native\-access=ALL\-UNNAMED
+through
+.BR JAVA_OPTS ,
+because the SQLite driver loads the SQLite library it carries; a
+.B JAVA_OPTS
+of the caller is kept after it.
 .SH ENVIRONMENT
 .TP
 .B SMI_DB_HOST
@@ -67,9 +75,15 @@ package.
 .I $(smi-lib-location)/jdbc/
 The JDBC drivers, installed by the
 .B pgjdbc
-package for PostgreSQL and the
+package for PostgreSQL, the
 .B h2
-package for H2.
+package for H2, the
+.B derby
+package for Derby and the
+.B sqlitejdbc
+package for SQLite. The Liquibase distribution carries an H2 driver of its own, which the
+.B liquibase
+package leaves out, so only one H2 version is on the classpath.
 .SH EXIT STATUS
 The exit status of
 .BR liquibase .
@@ -107,6 +121,19 @@ Try changelogs on a local H2 database file instead of a server:
 SMI_DB_URL=jdbc:h2:./trial SMI_DB_USER=sa smi-liquibase update
 .fi
 .RE
+.PP
+The same on an embedded Derby database and on an SQLite file:
+.RS
+.nf
+SMI_DB_URL='jdbc:derby:./trial;create=true' smi-liquibase update
+SMI_DB_URL=jdbc:sqlite:./trial.db smi-liquibase update
+.fi
+.RE
+.PP
+SQLite unpacks its library into the temporary directory first; where
+.I /tmp
+is mounted noexec, point it elsewhere with
+.BR JAVA_OPTS=\-Dorg.sqlite.tmpdir=\fIdirectory\fR .
 .SH SEE ALSO
 .BR smi-download-package (1),
 .BR smi-install-package (1),

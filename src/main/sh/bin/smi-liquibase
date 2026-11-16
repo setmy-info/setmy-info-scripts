@@ -5,6 +5,7 @@
 SMI_LIB_DIR=$(smi-lib-location)
 
 export LIQUIBASE_COMMAND_PASSWORD="${SMI_DB_PASSWORD:-}"
+export JAVA_OPTS="--enable-native-access=ALL-UNNAMED ${JAVA_OPTS:-}"
 
 exec /opt/liquibase/liquibase \
     --show-banner=false \

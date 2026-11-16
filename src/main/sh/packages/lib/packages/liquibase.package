@@ -13,6 +13,6 @@ liquibase_download_func() {
 liquibase_install_func() {
     sudo rm -rf /opt/${LIQUIBASE_DIR_NAME}
     sudo mkdir -p /opt/${LIQUIBASE_DIR_NAME}
-    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${LIQUIBASE_TAR_GZ_FILE_NAME} -C /opt/${LIQUIBASE_DIR_NAME}
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${LIQUIBASE_TAR_GZ_FILE_NAME} -C /opt/${LIQUIBASE_DIR_NAME} --exclude=internal/lib/h2.jar
     makeOptLink /opt/${LIQUIBASE_NAME} /opt/${LIQUIBASE_DIR_NAME}
 }

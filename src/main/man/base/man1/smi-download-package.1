@@ -214,12 +214,28 @@ HyperSQL database engine.
 .B liquibase
 Liquibase database schema change management command line, in
 .IR /opt/liquibase ,
-see
+without the H2 driver of its own, as the
+.B h2
+package installs that, see
 .BR smi-liquibase (1).
 .TP
 .B pgjdbc
 PostgreSQL JDBC driver,
 .I jdbc/postgresql.jar
+in the SMI lib directory.
+.TP
+.B derby
+Apache Derby embedded database and its JDBC drivers,
+.IR jdbc/derby.jar ,
+.IR jdbc/derbyshared.jar ,
+.I jdbc/derbytools.jar
+and the network client
+.I jdbc/derbyclient.jar
+in the SMI lib directory. It needs Java 21 or newer.
+.TP
+.B sqlitejdbc
+SQLite JDBC driver with the SQLite library built in for Linux, macOS and Windows,
+.I jdbc/sqlite.jar
 in the SMI lib directory.
 .TP
 .B neo4j

@@ -1682,6 +1682,48 @@ class PgjdbcDriverExecute extends DriverExecuteBase implements DriverExecute, Na
     }
 }
 
+class DerbyDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://dlcdn.apache.org/db/derby/db-derby-10.17.1.0/db-derby-10.17.1.0-bin.tar.gz
+        def versions = (new URL(getUrl()).text =~ /db-derby-([0-9.]+)\//).collect { it[1] }.unique()
+        if (!versions) throw new RuntimeException("No derby release found at ${getUrl()}")
+        def version = sortByVersionAndLast(versions)
+        println "${getUrl()}db-derby-${version}/db-derby-${version}-bin.tar.gz"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://dlcdn.apache.org/db/derby/"
+    }
+
+    @Override
+    String getName() {
+        return "derby"
+    }
+}
+
+class SqliteJdbcDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://github.com/xerial/sqlite-jdbc/releases/download/3.54.1.0/sqlite-jdbc-3.54.1.0.jar
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name ==~ /sqlite-jdbc-[0-9.]+\.jar/ }
+        if (!asset) throw new RuntimeException("No sqlite-jdbc jar found in latest release")
+        println asset.browser_download_url
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/xerial/sqlite-jdbc/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "sqlitejdbc"
+    }
+}
+
 class NinjaDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
     @Override
     void execute(WebDriver driver) {
@@ -1961,6 +2003,8 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new NinjaDriverExecute(), rulesRegister)
     fillWithRules(new LiquibaseDriverExecute(), rulesRegister)
     fillWithRules(new PgjdbcDriverExecute(), rulesRegister)
+    fillWithRules(new DerbyDriverExecute(), rulesRegister)
+    fillWithRules(new SqliteJdbcDriverExecute(), rulesRegister)
     fillWithRules(new LFEDriverExecute(), rulesRegister)
     fillWithRules(new ZookeeperDriverExecute(), rulesRegister)
     fillWithRules(new TelegramDriverExecute(), rulesRegister)

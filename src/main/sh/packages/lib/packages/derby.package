@@ -1,0 +1,22 @@
+DERBY_NAME=derby
+DERBY_VERSION=10.17.1.0
+DERBY_DIR_NAME=db-derby-${DERBY_VERSION}-bin
+DERBY_TAR_GZ_FILE_NAME=${DERBY_DIR_NAME}.tar.gz
+DERBY_TAR_GZ_FILE_URL=https://dlcdn.apache.org/db/derby/db-derby-${DERBY_VERSION}/${DERBY_TAR_GZ_FILE_NAME}
+DERBY_JARS="derby.jar derbyshared.jar derbytools.jar derbyclient.jar"
+
+# https://dlcdn.apache.org/db/derby/db-derby-10.17.1.0/db-derby-10.17.1.0-bin.tar.gz
+
+derby_download_func() {
+    smi-download ${DERBY_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${DERBY_TAR_GZ_FILE_NAME}
+}
+
+derby_install_func() {
+    DERBY_LIB_DIR=$(smi-lib-location)/jdbc
+    sudo mkdir -p ${DERBY_LIB_DIR}
+    for DERBY_JAR in ${DERBY_JARS}; do
+        sudo rm -f ${DERBY_LIB_DIR}/${DERBY_JAR}
+    done
+    sudo tar -xzf ${HOME_PACKAGES_DIR}/${DERBY_TAR_GZ_FILE_NAME} -C ${DERBY_LIB_DIR} --strip-components=2 \
+        $(for DERBY_JAR in ${DERBY_JARS}; do printf '%s ' ${DERBY_DIR_NAME}/lib/${DERBY_JAR}; done)
+}

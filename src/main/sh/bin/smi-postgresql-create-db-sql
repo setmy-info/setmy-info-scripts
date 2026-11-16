@@ -32,8 +32,8 @@ APP_USER="${ENVIRONMENT}${DB_NAME}"
 LIQUIBASE_USER="${APP_USER}liquibase"
 DB_NAME="${DB_NAME}_${ENVIRONMENT}"
 
-APP_PASSWORD=$(smi-password-gen 24)
-LIQUIBASE_PASSWORD=$(smi-password-gen 24)
+APP_PASSWORD=$(printf '%s' "${SMI_DB_APP_PASSWORD:-$(smi-password-gen 24)}" | sed "s/'/''/g")
+LIQUIBASE_PASSWORD=$(printf '%s' "${SMI_DB_LIQUIBASE_PASSWORD:-$(smi-password-gen 24)}" | sed "s/'/''/g")
 
 cat <<EOF
 CREATE USER $APP_USER;

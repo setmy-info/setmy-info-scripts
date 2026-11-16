@@ -10,7 +10,8 @@ smi-postgresql-create-db-sql \- Print the SQL that creates a PostgreSQL database
 Prints, on standard output, the SQL that creates the database
 .IB NAME _ ENVIRONMENT
 and two users for it, each with a new random password from
-.BR smi-password-gen (1).
+.BR smi-password-gen (1),
+unless the password is given in the environment.
 Nothing is executed: the output is meant for
 .BR psql (1)
 as a superuser, and it uses the
@@ -53,6 +54,16 @@ identifier is.
 .B live|test
 The environment, part of the database name and of both user names, so one server can hold both
 without a clash.
+.SH ENVIRONMENT
+.TP
+.B SMI_DB_APP_PASSWORD
+The password of the application user. Unset or empty, a random one is generated.
+.TP
+.B SMI_DB_LIQUIBASE_PASSWORD
+The password of the Liquibase user. Unset or empty, a random one is generated.
+.PP
+A given password is written into the SQL as a string literal with its single quotes doubled, so
+any character is safe.
 .SH EXIT STATUS
 .TP
 .B 0
@@ -82,6 +93,14 @@ Then apply the changelogs as the Liquibase user:
 .RS
 .nf
 SMI_DB_NAME=shop_test SMI_DB_USER=testshopliquibase smi-liquibase update
+.fi
+.RE
+.PP
+Keep a password the service already has, for example when the database is created again on
+another server:
+.RS
+.nf
+SMI_DB_APP_PASSWORD='secret from the vault' smi-postgresql-create-db-sql shop live > shop_live.sql
 .fi
 .RE
 .SH SEE ALSO

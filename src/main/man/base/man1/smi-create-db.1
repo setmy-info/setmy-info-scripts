@@ -1,0 +1,350 @@
+.TH smi-create-db "1" "November 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-create-db \- Create an empty database, on a PostgreSQL server or as H2, Derby or SQLite files, ready for Liquibase and applications
+.SH SYNOPSIS
+.B smi-create-db
+.B h2|derby|sqlite|postgres
+.I NAME
+.RI [ VARIABLE = value ...]
+.SH DESCRIPTION
+.PP
+.B smi-create-db
+creates an empty database of the type given as the sub command, with the users and passwords it
+needs, and prints, on standard output, the
+.B SMI_DB_
+variables to connect to it, as
+.B export
+lines for
+.B eval
+or a file to source. These are the variables
+.BR smi-liquibase (1)
+reads, so the database structure is applied next with no further setting.
+.PP
+.B postgres
+creates the database on a server.
+.BR h2 ,
+.B derby
+and
+.B sqlite
+create it as files, in the current directory or in
+.BR SMI_DB_DIR .
+The file databases are created by connecting to them once through
+.BR smi-liquibase ,
+with the driver of the
+.I jdbc
+directory of the SMI lib directory, so the database is made by the same driver that later uses
+it.
+.PP
+A database that already exists is never touched: the command stops with an error before it
+changes anything.
+Everything but the variables goes to standard error.
+.SH SUB COMMANDS
+.TP
+.B h2
+Creates
+.IB DIR / NAME .mv.db
+with the user
+.B SMI_DB_USER
+and the password
+.BR SMI_DB_PASSWORD ,
+default
+.B sa
+and a new random password. H2 makes the first user of a new database its administrator.
+Needs the
+.B h2
+package.
+.TP
+.B derby
+Creates the embedded Derby database directory
+.IB DIR / NAME .
+Derby runs without authentication by default, so the user
+.B app
+is printed only to select the default schema
+.BR APP ,
+and the password is empty. Needs the
+.B derby
+package and Java 21 or newer.
+.TP
+.B sqlite
+Creates
+.IB DIR / NAME .db .
+SQLite has no users, so user and password are empty. Needs the
+.B sqlitejdbc
+package.
+.TP
+.B postgres
+Creates the database
+.IB NAME _ ENVIRONMENT
+with the application user
+.IB ENVIRONMENT NAME
+and the Liquibase user
+.IB ENVIRONMENT NAME liquibase ,
+by running the SQL of
+.BR smi-postgresql-create-db-sql (1)
+with
+.BR psql (1)
+as an administrator of the server, with the same privileges as described there.
+It first checks that neither the database nor the users exist. Needs
+.BR psql .
+.SH ARGUMENTS
+.TP
+.I NAME
+Lower case letters, digits and underscores, not starting with a digit.
+.TP
+.IR VARIABLE = value
+Sets one of the variables below for this run, the same as setting it in the environment before
+the command. Only the variables of the sub command are accepted, anything else is an error.
+The value is taken as it is, nothing in it is run.
+.SH VARIABLES
+.SS h2, derby, sqlite
+.TP
+.B SMI_DB_DIR
+Directory of the database files, created when missing, default the current directory.
+The printed URL holds its absolute path, so the database is found from any directory.
+.TP
+.B SMI_DB_USER
+.B h2
+only: the user, default
+.BR sa .
+.TP
+.B SMI_DB_PASSWORD
+.B h2
+only: the password, default a new one from
+.BR smi-password-gen (1).
+.SS postgres
+.TP
+.B SMI_DB_HOST
+Server host, default
+.BR localhost .
+Set empty,
+.BR SMI_DB_HOST= ,
+to connect through the local Unix socket, for peer authentication as the
+.B postgres
+system user.
+.TP
+.B SMI_DB_PORT
+Server port, default
+.BR 5432 .
+.TP
+.B SMI_DB_ADMIN_USER
+The administrator that creates the database and the users, default
+.BR postgres .
+.TP
+.B SMI_DB_ADMIN_PASSWORD
+Its password, passed to
+.B psql
+as
+.BR PGPASSWORD ,
+so it is not visible in the process list. Unset,
+.B psql
+uses
+.IR ~/.pgpass ,
+peer authentication, or asks.
+.TP
+.B SMI_DB_ENVIRONMENT
+.B live
+or
+.BR test ,
+default
+.BR test .
+.TP
+.BR SMI_DB_APP_PASSWORD ", " SMI_DB_LIQUIBASE_PASSWORD
+The passwords of the new users, default new random ones, see
+.BR smi-postgresql-create-db-sql (1).
+.SH OUTPUT
+.PP
+Shell
+.B export
+lines, single quoted, safe for
+.B eval
+whatever the password holds:
+.TP
+.B SMI_DB_TYPE
+The sub command.
+.TP
+.B SMI_DB_NAME
+The database name.
+.TP
+.B SMI_DB_URL
+The JDBC URL.
+.TP
+.BR SMI_DB_USER ", " SMI_DB_PASSWORD
+The user that changes the structure, the one
+.B smi-liquibase
+connects as: the Liquibase user for
+.BR postgres ,
+the only user otherwise.
+.TP
+.BR SMI_DB_APP_USER ", " SMI_DB_APP_PASSWORD
+The user of the application: the application user for
+.BR postgres ,
+the same as
+.B SMI_DB_USER
+otherwise.
+.TP
+.BR SMI_DB_HOST ", " SMI_DB_PORT
+.B postgres
+only.
+.PP
+The output holds the passwords. Keep it in a file only the owner can read, or move the passwords
+to where the application reads them, and remove it.
+.SH DATABASE TOOLS AND WORKFLOW
+.PP
+The database tools of the toolset hand over to one another through the
+.B SMI_DB_
+variables, so each step needs no setting the previous step did not print.
+.TP
+.BR smi-download-package "(1), " smi-install-package (1)
+Install the tools:
+.B liquibase
+for
+.IR /opt/liquibase ,
+and the JDBC driver of the database,
+.BR pgjdbc ,
+.BR h2 ,
+.B derby
+or
+.BR sqlitejdbc ,
+into the
+.I jdbc
+directory of the SMI lib directory.
+.TP
+.B smi-create-db
+Creates the empty database and its users, and prints the variables.
+.TP
+.BR smi-postgresql-create-db-sql (1)
+Prints the SQL that
+.B smi-create-db postgres
+runs, for a server where an administrator reviews or applies the SQL by hand instead.
+.TP
+.BR smi-password-gen (1)
+Generates the passwords.
+.TP
+.BR smi-liquibase (1)
+Applies, checks and reverts the structure and data changes, from XML, YAML, JSON or SQL
+changelogs, as the user in
+.BR SMI_DB_USER .
+.TP
+.BR smi-query-db (1)
+Runs SQL, one statement, a script or interactively, as any user of the database, to check the
+result of a migration, look at data or run reports.
+.PP
+The main flow, from nothing to a database an application can use:
+.IP 1. 4
+Install Liquibase and the driver, once per machine:
+.RS
+.nf
+smi-download-package liquibase pgjdbc
+smi-install-package liquibase pgjdbc
+.fi
+.RE
+.IP 2. 4
+Create the database and keep its variables:
+.RS
+.nf
+umask 077
+smi-create-db postgres shop SMI_DB_HOST=db.example.com > shop.env
+.fi
+.RE
+.IP 3. 4
+Apply the structure, from the directory of the changelogs:
+.RS
+.nf
+\&. ./shop.env
+smi-liquibase update
+smi-liquibase status --verbose
+smi-query-db postgres "SELECT tablename FROM pg_tables WHERE schemaname = 'public'"
+.fi
+.RE
+.IP 4. 4
+Give the application
+.BR SMI_DB_URL ,
+.B SMI_DB_APP_USER
+and
+.BR SMI_DB_APP_PASSWORD ,
+for example as the Spring Boot
+.BR SPRING_DATASOURCE_URL ,
+.B SPRING_DATASOURCE_USERNAME
+and
+.BR SPRING_DATASOURCE_PASSWORD .
+Later changes are new changelogs and another
+.BR "smi-liquibase update" .
+.PP
+A file database follows the same flow, without a server, for development, tests or a local
+application:
+.RS
+.nf
+eval "$(smi-create-db sqlite shop SMI_DB_DIR=data)"
+smi-liquibase update
+smi-query-db sqlite "SELECT name FROM sqlite_master WHERE type = 'table'"
+.fi
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+The database was created and the variables printed.
+.TP
+.B 1
+Wrong arguments, an unknown variable, an invalid name, a missing driver or
+.BR psql ,
+a database that already exists, or a failed creation; the error of the database is on standard
+error.
+.SH EXAMPLES
+.PP
+An H2 database in the current directory, with the structure applied right away:
+.RS
+.nf
+eval "$(smi-create-db h2 trial)"
+smi-liquibase update
+.fi
+.RE
+.PP
+A Derby database in another directory:
+.RS
+.nf
+smi-create-db derby orders SMI_DB_DIR=/srv/data > orders.env
+.fi
+.RE
+.PP
+A live PostgreSQL database on the local server, as the
+.B postgres
+system user through the socket:
+.RS
+.nf
+sudo -u postgres smi-create-db postgres shop SMI_DB_HOST= SMI_DB_ENVIRONMENT=live > shop_live.env
+.fi
+.RE
+.PP
+A remote server with the administrator password from the environment:
+.RS
+.nf
+read -rs SMI_DB_ADMIN_PASSWORD; export SMI_DB_ADMIN_PASSWORD
+smi-create-db postgres shop SMI_DB_HOST=db.example.com SMI_DB_ADMIN_USER=admin > shop_test.env
+.fi
+.RE
+.SH FILES
+.TP
+.I derby.log
+Derby writes its log into the current directory, as it always does.
+.TP
+.IB NAME .trace.db
+H2 writes it next to the database when it logs an error; the first one is the check of Liquibase
+for its lock table in the still empty database, and is harmless.
+.PP
+Liquibase can not export the data of a Derby database with
+.BR generate-changelog ;
+the Derby procedure
+.B SYSCS_UTIL.SYSCS_EXPORT_TABLE
+writes a table as CSV, run through
+.BR "smi-liquibase execute-sql" .
+.SH SEE ALSO
+.BR psql (1),
+.BR smi-download-package (1),
+.BR smi-install-package (1),
+.BR smi-liquibase (1),
+.BR smi-neo4j-create-db (1),
+.BR smi-password-gen (1),
+.BR smi-postgresql-create-db-sql (1),
+.BR smi-query-db (1)
+.SH AUTHOR
+setmy.info

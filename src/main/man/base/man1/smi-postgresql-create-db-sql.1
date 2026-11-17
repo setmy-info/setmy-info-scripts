@@ -103,8 +103,13 @@ another server:
 SMI_DB_APP_PASSWORD='secret from the vault' smi-postgresql-create-db-sql shop live > shop_live.sql
 .fi
 .RE
+.PP
+.BR smi-create-db (1)
+runs this SQL against a server itself and prints the connection variables for
+.BR smi-liquibase .
 .SH SEE ALSO
 .BR psql (1),
+.BR smi-create-db (1),
 .BR smi-liquibase (1),
 .BR smi-password-gen (1)
 .SH AUTHOR

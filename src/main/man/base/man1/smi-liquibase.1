@@ -26,6 +26,21 @@ of its own. Every argument is passed to
 so every Liquibase command and option works, and an option given here wins over the one this
 command sets.
 .PP
+The variables printed by
+.BR smi-create-db (1)
+are the ones read here, so a database it created is migrated after
+.B eval
+of its output, or sourcing the file it was written to, with no further setting.
+.PP
+Liquibase takes its lock in
+.I DATABASECHANGELOGLOCK
+for every command, even
+.BR execute-sql ,
+so the user here is the one that owns the structure. An application or read only user queries
+with
+.BR smi-query-db (1)
+instead, as it can not change the Liquibase tables.
+.PP
 Java gets
 .B \-\-enable\-native\-access=ALL\-UNNAMED
 through
@@ -135,9 +150,11 @@ SQLite unpacks its library into the temporary directory first; where
 is mounted noexec, point it elsewhere with
 .BR JAVA_OPTS=\-Dorg.sqlite.tmpdir=\fIdirectory\fR .
 .SH SEE ALSO
+.BR smi-create-db (1),
 .BR smi-download-package (1),
 .BR smi-install-package (1),
 .BR smi-lib-location (1),
-.BR smi-postgresql-create-db-sql (1)
+.BR smi-postgresql-create-db-sql (1),
+.BR smi-query-db (1)
 .SH AUTHOR
 setmy.info

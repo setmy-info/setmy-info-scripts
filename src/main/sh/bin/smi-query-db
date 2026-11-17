@@ -1,0 +1,157 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+
+usage() {
+    echo "Usage: $0 h2|derby|sqlite|postgres [VARIABLE=value...] [SQL]" >&2
+    exit 1
+}
+
+die() {
+    echo "ERROR: $*" >&2
+    exit 1
+}
+
+need_driver() {
+    [ -f "$(smi-lib-location)/jdbc/$1" ] || die "$(smi-lib-location)/jdbc/$1 not found, install the $2 package."
+}
+
+file_db_url() {
+    if [ -n "${SMI_DB_URL:-}" ]; then
+        DB_URL=$SMI_DB_URL
+    else
+        [ -n "${SMI_DB_NAME:-}" ] || die "Set SMI_DB_URL, or SMI_DB_NAME with SMI_DB_DIR."
+        DB_DIR=$(cd "${SMI_DB_DIR:-.}" && pwd)
+        DB_URL="jdbc:$TYPE:$DB_DIR/$SMI_DB_NAME$1"
+    fi
+    case "$DB_URL" in
+        "jdbc:$TYPE:"*)
+            ;;
+        *)
+            die "Not a $TYPE URL: $DB_URL"
+            ;;
+    esac
+}
+
+jdbc_query() {
+    JAVA="${JAVA_HOME:+$JAVA_HOME/bin/}java"
+    CLASSPATH_JDBC="$(smi-lib-location)/jdbc/*"
+    if [ -n "$SQL" ]; then
+        STATUS=0
+        OUTPUT=$("$JAVA" --enable-native-access=ALL-UNNAMED ${JAVA_OPTS:-} -cp "$CLASSPATH_JDBC" org.h2.tools.Shell \
+            -url "$DB_URL" -user "$1" -password "$2" -sql "$SQL") || STATUS=$?
+        printf '%s\n' "$OUTPUT"
+        [ "$STATUS" -eq 0 ] || exit "$STATUS"
+        if printf '%s\n' "$OUTPUT" | grep -q '^Error: '; then
+            exit 1
+        fi
+    elif [ -t 0 ]; then
+        exec "$JAVA" --enable-native-access=ALL-UNNAMED ${JAVA_OPTS:-} -cp "$CLASSPATH_JDBC" org.h2.tools.Shell \
+            -url "$DB_URL" -user "$1" -password "$2"
+    else
+        "$JAVA" --enable-native-access=ALL-UNNAMED ${JAVA_OPTS:-} -cp "$CLASSPATH_JDBC" org.h2.tools.RunScript \
+            -url "$DB_URL" -user "$1" -password "$2" -script /dev/stdin -showResults
+        echo
+    fi
+}
+
+[ "$#" -ge 1 ] || usage
+
+TYPE=$1
+shift
+
+case "$TYPE" in
+    h2|derby|sqlite)
+        OPTIONS="SMI_DB_URL SMI_DB_DIR SMI_DB_NAME SMI_DB_USER SMI_DB_PASSWORD"
+        ;;
+    postgres)
+        OPTIONS="SMI_DB_HOST SMI_DB_PORT SMI_DB_NAME SMI_DB_USER SMI_DB_PASSWORD"
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        *=*)
+            ;;
+        *)
+            break
+            ;;
+    esac
+    case " $OPTIONS " in
+        *" ${1%%=*} "*)
+            export "$1"
+            shift
+            ;;
+        *)
+            case "${1%%=*}" in
+                SMI_DB_*[!A-Z_]*)
+                    break
+                    ;;
+                SMI_DB_*)
+                    die "Unknown option for $TYPE: ${1%%=*}, allowed: $OPTIONS"
+                    ;;
+            esac
+            break
+            ;;
+    esac
+done
+
+SQL="$*"
+
+case "$TYPE" in
+    h2)
+        need_driver h2.jar h2
+        file_db_url ""
+        case "$DB_URL" in
+            *[Ii][Ff][Ee][Xx][Ii][Ss][Tt][Ss]=*)
+                ;;
+            *)
+                DB_URL="$DB_URL;IFEXISTS=TRUE"
+                ;;
+        esac
+        jdbc_query "${SMI_DB_USER:-sa}" "${SMI_DB_PASSWORD:-}"
+        ;;
+    derby)
+        need_driver h2.jar h2
+        need_driver derbytools.jar derby
+        file_db_url ""
+        jdbc_query "${SMI_DB_USER:-app}" "${SMI_DB_PASSWORD:-}"
+        ;;
+    sqlite)
+        need_driver h2.jar h2
+        need_driver sqlite.jar sqlitejdbc
+        file_db_url ".db"
+        DB_FILE=${DB_URL#jdbc:sqlite:}
+        DB_FILE=${DB_FILE%%\?*}
+        case "$DB_FILE" in
+            :memory:|file:*)
+                ;;
+            *)
+                [ -f "$DB_FILE" ] || die "Database not found: $DB_FILE"
+                ;;
+        esac
+        jdbc_query "" ""
+        ;;
+    postgres)
+        command -v psql >/dev/null || die "psql not found, install the PostgreSQL client."
+        DB_HOST=${SMI_DB_HOST-localhost}
+        if [ -n "$DB_HOST" ]; then
+            export PGHOST="$DB_HOST"
+        else
+            unset PGHOST
+        fi
+        export PGPORT="${SMI_DB_PORT:-5432}" PGDATABASE="${SMI_DB_NAME:-postgres}" PGUSER="${SMI_DB_USER:-postgres}"
+        if [ -n "${SMI_DB_PASSWORD:-}" ]; then
+            export PGPASSWORD="$SMI_DB_PASSWORD"
+        fi
+        if [ -n "$SQL" ]; then
+            exec psql -X -v ON_ERROR_STOP=1 -c "$SQL"
+        fi
+        exec psql -X -v ON_ERROR_STOP=1
+        ;;
+esac

@@ -1,0 +1,88 @@
+.TH smi-neo4j-query "1" "November 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-neo4j-query \- Run Cypher against an embedded Neo4j database
+.SH SYNOPSIS
+.B smi-neo4j-query
+.RB [ \-H
+.IR DIR ]
+.RB [ \-p
+.IR NAME = VALUE ]...
+.RI [ CYPHER ...]
+.SH DESCRIPTION
+.PP
+.B smi-neo4j-query
+opens the embedded Neo4j database made by
+.BR smi-neo4j-create-db (1)
+and runs Cypher: the statement given as arguments, or, without one, the statements read from
+standard input, each ended with
+.B ;
+at the end of a line. Each statement runs in a transaction of its own and is printed with its
+result, a table of the returned rows or the counts of what it created, set or deleted. Lines
+starting with
+.B //
+are comments.
+.PP
+The first statement that fails ends the command with exit status 1; the statements before it
+stay committed.
+.PP
+A directory that is not a Neo4j database is an error, so a wrong path never creates a new one.
+The database is embedded, so it can not be queried while another process has it open.
+.SH OPTIONS
+.TP
+.BR \-H ", " \-\-home " " \fIDIR\fR
+The database directory, default
+.BR SMI_NEO4J_HOME .
+.TP
+.BR \-p ", " \-\-param " " \fINAME\fR=\fIVALUE\fR
+A parameter, used as
+.BI $ NAME
+in the Cypher, as a string. Repeat for more.
+.TP
+.BR \-h ", " \-\-help
+Show the usage.
+.SH ENVIRONMENT
+.TP
+.B SMI_NEO4J_HOME
+The database directory, as printed by
+.BR smi-neo4j-create-db .
+.TP
+.B JAVA_OPTS
+Further Java options, kept after the ones the command sets.
+.SH EXIT STATUS
+.TP
+.B 0
+Every statement ran.
+.TP
+.B 1
+No database, no statement, or a failed statement, with the error of Neo4j on standard error.
+.SH EXAMPLES
+.PP
+Populate from a file and query:
+.RS
+.nf
+\&. ./graph.env
+smi-neo4j-query < populate.cypher
+smi-neo4j-query "MATCH (p:Person)-[:WORKS_AT]->(c:Company) RETURN p.name, c.name"
+.fi
+.RE
+.PP
+With a parameter, quoted for the shell so that
+.B $name
+reaches Cypher:
+.RS
+.nf
+smi-neo4j-query -p name=Alice 'MATCH (:Person {name: $name})-[:KNOWS*]->(f) RETURN f.name'
+.fi
+.RE
+.PP
+Another database than the one of the environment:
+.RS
+.nf
+smi-neo4j-query -H /srv/graphs/sales "MATCH (n) RETURN count(n)"
+.fi
+.RE
+.SH SEE ALSO
+.BR smi-neo4j-create-db (1),
+.BR smi-query-db (1)
+.SH AUTHOR
+setmy.info

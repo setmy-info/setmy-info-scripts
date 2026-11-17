@@ -1,0 +1,152 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+
+usage() {
+    echo "Usage: $0 h2|derby|sqlite|postgres NAME [VARIABLE=value...]" >&2
+    exit 1
+}
+
+die() {
+    echo "ERROR: $*" >&2
+    exit 1
+}
+
+emit() {
+    printf "export %s='%s'\n" "$1" "$(printf '%s' "$2" | sed "s/'/'\\\\''/g")"
+}
+
+need_driver() {
+    [ -f "$(smi-lib-location)/jdbc/$1" ] || die "$(smi-lib-location)/jdbc/$1 not found, install the $2 package."
+}
+
+file_db_dir() {
+    mkdir -p "${SMI_DB_DIR:-.}"
+    DB_DIR=$(cd "${SMI_DB_DIR:-.}" && pwd)
+}
+
+liquibase_sql() {
+    SMI_DB_URL="$1" SMI_DB_USER="$2" SMI_DB_PASSWORD="$3" smi-liquibase execute-sql --sql="$4" >&2
+}
+
+emit_all() {
+    emit SMI_DB_TYPE "$TYPE"
+    emit SMI_DB_NAME "$1"
+    emit SMI_DB_URL "$2"
+    emit SMI_DB_USER "$3"
+    emit SMI_DB_PASSWORD "$4"
+    emit SMI_DB_APP_USER "$5"
+    emit SMI_DB_APP_PASSWORD "$6"
+}
+
+[ "$#" -ge 2 ] || usage
+
+TYPE=$1
+NAME=$2
+shift 2
+
+case "$TYPE" in
+    h2)
+        OPTIONS="SMI_DB_DIR SMI_DB_USER SMI_DB_PASSWORD"
+        ;;
+    derby|sqlite)
+        OPTIONS="SMI_DB_DIR"
+        ;;
+    postgres)
+        OPTIONS="SMI_DB_HOST SMI_DB_PORT SMI_DB_ADMIN_USER SMI_DB_ADMIN_PASSWORD SMI_DB_ENVIRONMENT SMI_DB_APP_PASSWORD SMI_DB_LIQUIBASE_PASSWORD"
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+case "$NAME" in
+    ''|[0-9]*|*[!a-z0-9_]*)
+        die "Invalid database name: $NAME"
+        ;;
+esac
+
+for OPTION in "$@"; do
+    case "$OPTION" in
+        *=*)
+            ;;
+        *)
+            die "Not a VARIABLE=value option: $OPTION"
+            ;;
+    esac
+    case "${OPTION%%=*}" in
+        ''|*[!A-Z_]*)
+            die "Invalid variable name: ${OPTION%%=*}"
+            ;;
+    esac
+    case " $OPTIONS " in
+        *" ${OPTION%%=*} "*)
+            export "$OPTION"
+            ;;
+        *)
+            die "Unknown option for $TYPE: ${OPTION%%=*}, allowed: $OPTIONS"
+            ;;
+    esac
+done
+
+case "$TYPE" in
+    h2)
+        need_driver h2.jar h2
+        file_db_dir
+        [ ! -e "$DB_DIR/$NAME.mv.db" ] || die "Database exists: $DB_DIR/$NAME.mv.db"
+        DB_URL="jdbc:h2:$DB_DIR/$NAME"
+        DB_USER=${SMI_DB_USER:-sa}
+        DB_PASSWORD=${SMI_DB_PASSWORD:-$(smi-password-gen 24)}
+        liquibase_sql "$DB_URL" "$DB_USER" "$DB_PASSWORD" "SELECT 1"
+        [ -f "$DB_DIR/$NAME.mv.db" ] || die "Database not created: $DB_DIR/$NAME.mv.db"
+        emit_all "$NAME" "$DB_URL" "$DB_USER" "$DB_PASSWORD" "$DB_USER" "$DB_PASSWORD"
+        ;;
+    derby)
+        need_driver derbytools.jar derby
+        file_db_dir
+        [ ! -e "$DB_DIR/$NAME" ] || die "Database exists: $DB_DIR/$NAME"
+        DB_URL="jdbc:derby:$DB_DIR/$NAME"
+        liquibase_sql "$DB_URL;create=true" app "" "VALUES 1"
+        [ -f "$DB_DIR/$NAME/service.properties" ] || die "Database not created: $DB_DIR/$NAME"
+        emit_all "$NAME" "$DB_URL" app "" app ""
+        ;;
+    sqlite)
+        need_driver sqlite.jar sqlitejdbc
+        file_db_dir
+        [ ! -e "$DB_DIR/$NAME.db" ] || die "Database exists: $DB_DIR/$NAME.db"
+        DB_URL="jdbc:sqlite:$DB_DIR/$NAME.db"
+        liquibase_sql "$DB_URL" "" "" "CREATE TABLE smi_create_db (id INTEGER); DROP TABLE smi_create_db"
+        [ -s "$DB_DIR/$NAME.db" ] || die "Database not created: $DB_DIR/$NAME.db"
+        emit_all "$NAME" "$DB_URL" "" "" "" ""
+        ;;
+    postgres)
+        command -v psql >/dev/null || die "psql not found, install the PostgreSQL client."
+        ENVIRONMENT=${SMI_DB_ENVIRONMENT:-test}
+        DB_HOST=${SMI_DB_HOST-localhost}
+        DB_PORT=${SMI_DB_PORT:-5432}
+        APP_USER="${ENVIRONMENT}${NAME}"
+        LIQUIBASE_USER="${APP_USER}liquibase"
+        DB_NAME="${NAME}_${ENVIRONMENT}"
+        SMI_DB_APP_PASSWORD=${SMI_DB_APP_PASSWORD:-$(smi-password-gen 24)}
+        SMI_DB_LIQUIBASE_PASSWORD=${SMI_DB_LIQUIBASE_PASSWORD:-$(smi-password-gen 24)}
+        export SMI_DB_APP_PASSWORD SMI_DB_LIQUIBASE_PASSWORD
+        SQL=$(smi-postgresql-create-db-sql "$NAME" "$ENVIRONMENT")
+        if [ -n "$DB_HOST" ]; then
+            export PGHOST="$DB_HOST"
+        else
+            unset PGHOST
+        fi
+        export PGPORT="$DB_PORT" PGUSER="${SMI_DB_ADMIN_USER:-postgres}" PGDATABASE=postgres
+        if [ -n "${SMI_DB_ADMIN_PASSWORD:-}" ]; then
+            export PGPASSWORD="$SMI_DB_ADMIN_PASSWORD"
+        fi
+        EXISTING=$(psql -X -q -tA -v ON_ERROR_STOP=1 -c "SELECT datname FROM pg_database WHERE datname = '$DB_NAME' UNION ALL SELECT rolname FROM pg_roles WHERE rolname IN ('$APP_USER', '$LIQUIBASE_USER')")
+        [ -z "$EXISTING" ] || die "Already exists on the server: $(echo $EXISTING)"
+        printf '%s\n' "$SQL" | psql -X -q -v ON_ERROR_STOP=1 >&2
+        emit SMI_DB_HOST "${DB_HOST:-localhost}"
+        emit SMI_DB_PORT "$DB_PORT"
+        emit_all "$DB_NAME" "jdbc:postgresql://${DB_HOST:-localhost}:$DB_PORT/$DB_NAME" "$LIQUIBASE_USER" "$SMI_DB_LIQUIBASE_PASSWORD" "$APP_USER" "$SMI_DB_APP_PASSWORD"
+        ;;
+esac

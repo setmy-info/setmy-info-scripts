@@ -1,0 +1,90 @@
+.TH smi-neo4j-create-db "1" "November 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-neo4j-create-db \- Create an empty embedded Neo4j Community Edition database
+.SH SYNOPSIS
+.B smi-neo4j-create-db
+.RB [ \-d
+.IR DIR ]
+.I NAME
+.SH DESCRIPTION
+.PP
+.B smi-neo4j-create-db
+creates the embedded Neo4j database directory
+.IB DIR / NAME
+and prints, on standard output, the variables to use it, as
+.B export
+lines for
+.B eval
+or a file to source:
+.BR SMI_DB_TYPE ,
+.B SMI_DB_NAME
+and
+.BR SMI_NEO4J_HOME ,
+the absolute path that
+.BR smi-neo4j-query (1)
+reads.
+.PP
+The database is embedded: no server runs, the process that opens the directory is the database,
+and only one process can open it at a time. Community Edition has the one database
+.B neo4j
+and no users, so there is nothing to log in with; the rights are those of the directory.
+.PP
+Creating and querying are separate commands, so the database is created once and queried, or
+populated, as many times as needed.
+.PP
+The command is a Groovy script,
+.I neo4j.groovy
+in the SMI lib directory, that takes Neo4j and picocli with
+.BR @Grab ;
+the first run downloads them into the Grape cache,
+.IR ~/.groovy/grapes .
+.SH ARGUMENTS
+.TP
+.I NAME
+Lower case letters, digits and underscores, starting with a letter.
+.TP
+.BR \-d ", " \-\-dir " " \fIDIR\fR
+The parent directory, default
+.B SMI_DB_DIR
+or the current directory.
+.TP
+.BR \-h ", " \-\-help
+Show the usage.
+.SH ENVIRONMENT
+.TP
+.B SMI_DB_DIR
+Default of
+.BR \-\-dir .
+.TP
+.B JAVA_OPTS
+Further Java options, kept after the ones the command sets.
+.SH REQUIREMENTS
+.PP
+The
+.B groovy
+package, Groovy 6, and the
+.B jdk
+package, Java 23 or newer.
+.SH EXIT STATUS
+.TP
+.B 0
+The database was created and the variables printed.
+.TP
+.B 1
+An invalid name, a directory that already exists, or a failed start.
+.SH EXAMPLES
+.PP
+Create, populate and query:
+.RS
+.nf
+smi-neo4j-create-db -d data graph > graph.env
+\&. ./graph.env
+smi-neo4j-query < populate.cypher
+smi-neo4j-query "MATCH (p:Person) RETURN p.name"
+.fi
+.RE
+.SH SEE ALSO
+.BR smi-create-db (1),
+.BR smi-neo4j-query (1)
+.SH AUTHOR
+setmy.info

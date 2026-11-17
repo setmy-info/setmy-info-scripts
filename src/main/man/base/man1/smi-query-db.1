@@ -1,0 +1,196 @@
+.TH smi-query-db "1" "November 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-query-db \- Run SQL against an H2, Derby, SQLite or PostgreSQL database, one statement, a script or interactively
+.SH SYNOPSIS
+.B smi-query-db
+.B h2|derby|sqlite|postgres
+.RI [ VARIABLE = value ...]
+.RI [ SQL ]
+.SH DESCRIPTION
+.PP
+.B smi-query-db
+connects to the database of the type given as the sub command, with the
+.B SMI_DB_
+variables that
+.BR smi-create-db (1)
+prints and
+.BR smi-liquibase (1)
+reads, and runs SQL with the client of that database:
+.TP
+.I SQL
+given: that one statement, its result as a table.
+.TP
+standard input not a terminal: the SQL script read from it, statements ended with
+.BR ; ,
+each shown with its result, stopping at the first error.
+.TP
+standard input a terminal: an interactive SQL shell.
+.PP
+.BR h2 ,
+.B derby
+and
+.B sqlite
+run through the JDBC tools of H2,
+.B org.h2.tools.Shell
+and
+.BR org.h2.tools.RunScript ,
+with every driver of the
+.I jdbc
+directory of the SMI lib directory, so one client works for all of them.
+.B postgres
+runs
+.BR psql (1).
+.PP
+Unlike
+.BR smi-liquibase ,
+it takes no Liquibase lock, so any user of the database can use it, the application and read only
+users as well, with exactly the rights that user has.
+.PP
+A database that does not exist is never created: H2 is opened with
+.BR IFEXISTS=TRUE ,
+a Derby URL has no
+.BR create=true ,
+and a missing SQLite file is an error.
+.SH SUB COMMANDS
+.TP
+.B h2
+User default
+.BR sa .
+Needs the
+.B h2
+package.
+.TP
+.B derby
+User default
+.BR app ,
+which selects the schema
+.BR APP .
+Needs the
+.B derby
+and
+.B h2
+packages.
+.TP
+.B sqlite
+No user or password. Needs the
+.B sqlitejdbc
+and
+.B h2
+packages.
+.TP
+.B postgres
+Needs
+.BR psql .
+.SH ARGUMENTS
+.TP
+.IR VARIABLE = value
+Sets one of the variables below for this run, the same as setting it in the environment. The
+first argument that is not a variable of the sub command starts the SQL; an
+.B SMI_DB_
+variable the sub command does not take is an error.
+.TP
+.I SQL
+The statement. More arguments are joined with spaces, so quoting the whole statement is only
+needed for the characters of the shell.
+.SH VARIABLES
+.SS h2, derby, sqlite
+.TP
+.B SMI_DB_URL
+The JDBC URL, as printed by
+.BR smi-create-db .
+.TP
+.BR SMI_DB_DIR ", " SMI_DB_NAME
+Used when
+.B SMI_DB_URL
+is not set: the database
+.I NAME
+in the directory, default the current one, named as
+.B smi-create-db
+names it.
+.TP
+.BR SMI_DB_USER ", " SMI_DB_PASSWORD
+User and password.
+.TP
+.BR JAVA_HOME ", " JAVA_OPTS
+The Java to run and its options.
+.SS postgres
+.TP
+.BR SMI_DB_HOST ", " SMI_DB_PORT ", " SMI_DB_NAME ", " SMI_DB_USER
+Defaults
+.BR localhost ,
+.BR 5432 ,
+.B postgres
+and
+.BR postgres ,
+as in
+.BR smi-liquibase .
+An empty
+.B SMI_DB_HOST
+connects through the local Unix socket.
+.TP
+.B SMI_DB_PASSWORD
+Passed as
+.BR PGPASSWORD ,
+not visible in the process list. Unset,
+.B psql
+uses
+.IR ~/.pgpass ,
+peer authentication, or asks.
+.SH EXIT STATUS
+.TP
+.B 0
+The SQL ran.
+.TP
+.B 1
+Wrong arguments, an unknown variable, a missing driver, client or database, or an SQL error.
+.PP
+For
+.BR postgres ,
+the exit status of
+.BR psql .
+.SH EXAMPLES
+.PP
+Query the database
+.BR smi-create-db
+made, with the variables it printed:
+.RS
+.nf
+\&. ./shop.env
+smi-query-db sqlite "SELECT id, name FROM customer ORDER BY id"
+.fi
+.RE
+.PP
+Run a script and keep its output:
+.RS
+.nf
+smi-query-db h2 < reports/monthly.sql > monthly.txt
+.fi
+.RE
+.PP
+Query as the application user instead of the structure owner:
+.RS
+.nf
+smi-query-db postgres SMI_DB_USER="$SMI_DB_APP_USER" SMI_DB_PASSWORD="$SMI_DB_APP_PASSWORD" "SELECT count(*) FROM customer"
+.fi
+.RE
+.PP
+A Derby database by directory and name, without an environment file:
+.RS
+.nf
+smi-query-db derby SMI_DB_DIR=/srv/data SMI_DB_NAME=orders "SELECT * FROM purchase_order"
+.fi
+.RE
+.PP
+An interactive shell:
+.RS
+.nf
+smi-query-db h2
+.fi
+.RE
+.SH SEE ALSO
+.BR psql (1),
+.BR smi-create-db (1),
+.BR smi-liquibase (1),
+.BR smi-neo4j-query (1)
+.SH AUTHOR
+setmy.info

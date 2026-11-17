@@ -1,5 +1,5 @@
 ERLANG_NAME=erlang
-ERLANG_VERSION=29.0.5
+ERLANG_VERSION=29.1.2
 ERLANG_GIT_URL=https://github.com/erlang/otp.git
 ERLANG_GIT_DIR=${HOME_PACKAGES_DIR}/erlang-git
 

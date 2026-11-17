@@ -1286,6 +1286,40 @@ class CmDriverExecute extends DriverExecuteBase implements DriverExecute, Name, 
     }
 }
 
+class ZeebeDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
+    @Override
+    void execute(WebDriver driver) {
+        driver.get(getUrl())
+        // The release assets of the page are loaded by JS, so the tag href is read and the
+        // download URL is built from it, the way the cm rule does it for the modeler.
+        def last = sortByVersionAndLast(getHrefs(driver).findAll(getSearcher()))
+        def version = last.split("/camunda/camunda/releases/tag/")[1]
+        println "https://github.com/camunda/camunda/releases/download/${version}/camunda-zeebe-${version}.tar.gz"
+    }
+
+    Closure<Boolean> getSearcher() {
+        return { href ->
+            // https://github.com/camunda/camunda/releases/tag/8.10.9
+            if (!href.contains("/camunda/camunda/releases/tag/")) return false
+            def parts = href.split("/camunda/camunda/releases/tag/")
+            if (parts.size() < 2) return false
+            // The page carries the maintained 8.8, 8.9 and 8.10 lines beside the alpha and rc
+            // tags of the next one, so only a plain three part version is taken.
+            return parts[1] ==~ /\d+\.\d+\.\d+/
+        }
+    }
+
+    @Override
+    String getUrl() {
+        return "https://github.com/camunda/camunda/releases"
+    }
+
+    @Override
+    String getName() {
+        return "zeebe"
+    }
+}
+
 class GitFlowNextDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
@@ -1987,6 +2021,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new LibreOfficeDriverExecute(), rulesRegister)
     fillWithRules(new MvndDriverExecute(), rulesRegister)
     fillWithRules(new CmDriverExecute(), rulesRegister)
+    fillWithRules(new ZeebeDriverExecute(), rulesRegister)
     fillWithRules(new GitFlowNextDriverExecute(), rulesRegister)
     fillWithRules(new GraphvizDriverExecute(), rulesRegister)
     fillWithRules(new InnosetupDriverExecute(), rulesRegister)

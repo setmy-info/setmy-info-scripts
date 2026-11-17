@@ -1,0 +1,14 @@
+OPENTOFU_NAME=opentofu
+OPENTOFU_INSTALL_SCRIPT_NAME=install-${OPENTOFU_NAME}.sh
+OPENTOFU_INSTALL_SCRIPT_URL=https://get.opentofu.org/${OPENTOFU_INSTALL_SCRIPT_NAME}
+
+# https://get.opentofu.org/install-opentofu.sh
+
+opentofu_download_func() {
+    smi-download ${OPENTOFU_INSTALL_SCRIPT_URL} ${HOME_PACKAGES_DIR}/${OPENTOFU_INSTALL_SCRIPT_NAME}
+    chmod +x ${HOME_PACKAGES_DIR}/${OPENTOFU_INSTALL_SCRIPT_NAME}
+}
+
+opentofu_install_func() {
+    ${HOME_PACKAGES_DIR}/${OPENTOFU_INSTALL_SCRIPT_NAME} --install-method standalone
+}

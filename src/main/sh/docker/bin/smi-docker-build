@@ -10,4 +10,4 @@
 
 dockerBuild
 
-exit 0
+exit ${?}

@@ -1,39 +1,66 @@
-.TH smi-docker-build "1" "October 2025" "SMI Toolset 0.100.0" "SMI Docker Command"
+.TH smi-docker-build "1" "November 2026" "SMI Toolset" "SMI Docker Command"
 .SH NAME
-smi-docker-build \- Build, tag, and push a Docker image
+smi-docker-build \- Build and tag a Docker image
 .SH SYNOPSIS
 .B smi-docker-build
 .SH DESCRIPTION
 .PP
 .B smi-docker-build
-is an automated Docker build utility. It sources the \fBdocker.sh\fR library and a local \fBbuild.sh\fR script to execute a full build pipeline.
+is the second step of the Docker build process of the toolset:
+.BR smi-docker-prepare (1),
+.BR smi-docker-build ,
+.BR smi-docker-push (1).
+It sources the \fBdocker.sh\fR library and the \fBbuild.sh\fR script of the current directory, and
+builds the image locally. It pushes nothing, so the image can be checked or run before
+.BR smi-docker-push (1)
+publishes it.
 .PP
-The pipeline includes:
+The steps are:
 .IP 1.
-\fBdocker_build\fR: Sourcing local build context.
+\fBdocker_build\fR: the function of \fBbuild.sh\fR, for the work before the build.
 .IP 2.
-\fBbuild_image\fR: Running \fBdocker build\fR with \fBVERSION\fR, \fBBUILD_DATE\fR, and \fBVCS_REF\fR build arguments.
+\fBbuild_image\fR: \fBdocker build\fR of the current directory as
+\fIDOCKER_ID_ORGANIZATION\fB/\fIDOCKER_PROJECT_NAME\fB:\fIDOCKER_PROJECT_VERSION\fR,
+with the build arguments \fBVERSION\fR, \fBBUILD_DATE\fR and \fBVCS_REF\fR, the short
+\fBgit\fR commit.
 .IP 3.
-\fBbuild_latest_tag\fR: Tagging the image as \fBlatest\fR.
+\fBbuild_latest_tag\fR: tags the image also as \fBlatest\fR.
 .IP 4.
-\fBbuild_inspect_latest_tag\fR: Running \fBdocker inspect\fR on the new image.
+\fBbuild_inspect_latest_tag\fR: \fBdocker inspect\fR of the \fBlatest\fR tag.
 .IP 5.
-\fBbuild_show_images\fR: Listing images to verify the result.
-.IP 6.
-\fBbuild_login\fR: Prompting for Docker Hub login.
-.IP 7.
-\fBbuild_push\fR: Pushing both the versioned tag and \fBlatest\fR tag to the registry.
-.SH ENVIRONMENT VARIABLES
-The following variables are used for tagging and build arguments:
+\fBbuild_show_images\fR: lists the local images.
+.PP
+Steps 2 to 5 run while the previous one succeeds.
+.SH ENVIRONMENT
+Set by \fBbuild.sh\fR:
 .TP
 \fBDOCKER_ID_ORGANIZATION\fR
-Docker registry organization/user ID.
+Docker registry organization or user.
 .TP
 \fBDOCKER_PROJECT_NAME\fR
-Name of the Docker project/image.
+Name of the image.
 .TP
 \fBDOCKER_PROJECT_VERSION\fR
-Version tag for the image.
+Version tag of the image.
+.SH FILES
+.TP
+.I ./build.sh
+Sets the variables above and defines \fBdocker_prepare\fR and \fBdocker_build\fR.
+.TP
+.I ./Dockerfile
+The image definition.
+.SH EXIT STATUS
+The exit status of the last step that ran, so a failed build fails the command.
+.SH EXAMPLES
+.PP
+The whole process, from the directory of \fBbuild.sh\fR:
+.RS
+.nf
+smi-docker-prepare
+smi-docker-build
+smi-docker-push
+.fi
+.RE
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
@@ -43,4 +70,5 @@ Report smi-docker-build bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
 .BR smi-docker-prepare (1),
+.BR smi-docker-push (1),
 .BR docker (1)

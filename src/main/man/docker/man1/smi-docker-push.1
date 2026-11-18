@@ -1,0 +1,66 @@
+.TH smi-docker-push "1" "November 2026" "SMI Toolset" "SMI Docker Command"
+.SH NAME
+smi-docker-push \- Push a built Docker image to the registry
+.SH SYNOPSIS
+.B smi-docker-push
+.SH DESCRIPTION
+.PP
+.B smi-docker-push
+is the third step of the Docker build process of the toolset:
+.BR smi-docker-prepare (1),
+.BR smi-docker-build (1),
+.BR smi-docker-push .
+It sources the \fBdocker.sh\fR library and the \fBbuild.sh\fR script of the current directory, and
+pushes the image that
+.BR smi-docker-build (1)
+built and tagged. Nothing is built here, so a push can be repeated, or left out for a local
+build, without building again.
+.PP
+The steps are:
+.IP 1.
+\fBbuild_login\fR: \fBdocker login\fR, which uses stored credentials or asks for them.
+.IP 2.
+\fBbuild_push\fR: pushes the \fBlatest\fR tag, then the
+\fIDOCKER_PROJECT_VERSION\fR tag, of
+\fIDOCKER_ID_ORGANIZATION\fB/\fIDOCKER_PROJECT_NAME\fR.
+.PP
+Each step runs while the previous one succeeds.
+.SH ENVIRONMENT
+Set by \fBbuild.sh\fR:
+.TP
+\fBDOCKER_ID_ORGANIZATION\fR
+Docker registry organization or user.
+.TP
+\fBDOCKER_PROJECT_NAME\fR
+Name of the image.
+.TP
+\fBDOCKER_PROJECT_VERSION\fR
+Version tag of the image.
+.SH FILES
+.TP
+.I ./build.sh
+Sets the variables above.
+.SH EXIT STATUS
+The exit status of the last step that ran, so a failed login or push fails the command.
+.SH EXAMPLES
+.PP
+Build, check the image, then publish it:
+.RS
+.nf
+smi-docker-prepare
+smi-docker-build
+docker run --rm example/app:latest --version
+smi-docker-push
+.fi
+.RE
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report smi-docker-push bugs to \fIinfo@setmy.info\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-docker-prepare (1),
+.BR smi-docker-build (1),
+.BR docker (1)

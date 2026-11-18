@@ -7,7 +7,10 @@ dockerBuild() {
     build_image && \
     build_latest_tag && \
     build_inspect_latest_tag && \
-    build_show_images && \
+    build_show_images
+}
+
+dockerPush() {
     build_login && \
     build_push
 }
@@ -34,7 +37,7 @@ build_latest_tag() {
 }
 
 build_inspect_latest_tag() {
-    echo "Setting latest tag"
+    echo "Inspecting latest tag"
     docker inspect ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:latest
 }
 
@@ -50,6 +53,6 @@ build_login() {
 
 build_push() {
     echo "Start pushing image"
-    docker image push ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:latest
+    docker image push ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:latest && \
     docker image push ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:${DOCKER_PROJECT_VERSION}
 }

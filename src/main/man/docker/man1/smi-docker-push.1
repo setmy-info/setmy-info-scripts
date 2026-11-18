@@ -18,28 +18,32 @@ build, without building again.
 .PP
 The steps are:
 .IP 1.
-\fBbuild_login\fR: \fBdocker login\fR, which uses stored credentials or asks for them.
+\fBdocker_push\fR: the function of \fBbuild.sh\fR, which does nothing by default.
 .IP 2.
+\fBbuild_login\fR: \fBdocker login\fR, which uses stored credentials or asks for them.
+.IP 3.
 \fBbuild_push\fR: pushes the \fBlatest\fR tag, then the
 \fIDOCKER_PROJECT_VERSION\fR tag, of
 \fIDOCKER_ID_ORGANIZATION\fB/\fIDOCKER_PROJECT_NAME\fR.
 .PP
-Each step runs while the previous one succeeds.
+Each step runs while the previous one succeeds. Steps 2 and 3 run only when the current directory has a
+\fBDockerfile\fR, so a directory of several images has a \fBbuild.sh\fR whose \fBdocker_push\fR runs
+\fBsmi-docker-push\fR in each image directory.
 .SH ENVIRONMENT
 Set by \fBbuild.sh\fR:
 .TP
 \fBDOCKER_ID_ORGANIZATION\fR
-Docker registry organization or user.
+Docker registry organization or user, \fBsetmyinfo\fR by default.
 .TP
 \fBDOCKER_PROJECT_NAME\fR
-Name of the image.
+Name of the image, the name of the current directory by default.
 .TP
 \fBDOCKER_PROJECT_VERSION\fR
 Version tag of the image.
 .SH FILES
 .TP
 .I ./build.sh
-Sets the variables above.
+Sets the variables above, and defines \fBdocker_push\fR when it has work to do.
 .SH EXIT STATUS
 The exit status of the last step that ran, so a failed login or push fails the command.
 .SH EXAMPLES

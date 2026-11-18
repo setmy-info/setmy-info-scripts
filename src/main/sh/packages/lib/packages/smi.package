@@ -21,6 +21,6 @@ smi_build_func() {
 smi_install_func() {
     CUR_DIR=$(pwd)
     cd "$(smi-home-packages-location)"
-    sudo rpm -Uvh ${SMI_NAME}-${SMI_VERSION}.noarch.rpm
+    sudo rpm -Uvh --replacepkgs ${SMI_NAME}-${SMI_VERSION}.noarch.rpm
     cd ${CUR_DIR}
 }

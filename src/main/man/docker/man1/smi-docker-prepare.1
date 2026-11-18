@@ -16,7 +16,9 @@ gathering artifacts into the build context.
 .SH FILES
 .TP
 .I ./build.sh
-Defines \fBdocker_prepare\fR.
+Defines \fBdocker_prepare\fR, which does nothing by default.
+.SH EXIT STATUS
+The exit status of \fBdocker_prepare\fR, so a failed step fails the command.
 .SH EXAMPLES
 .PP
 The whole process, from the directory of \fBbuild.sh\fR:

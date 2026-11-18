@@ -21,8 +21,9 @@ The steps are:
 .IP 2.
 \fBbuild_image\fR: \fBdocker build\fR of the current directory as
 \fIDOCKER_ID_ORGANIZATION\fB/\fIDOCKER_PROJECT_NAME\fB:\fIDOCKER_PROJECT_VERSION\fR,
-with the build arguments \fBVERSION\fR, \fBBUILD_DATE\fR and \fBVCS_REF\fR, the short
-\fBgit\fR commit.
+with BuildKit and plain progress output, and the build arguments \fBVERSION\fR, \fBBUILD_DATE\fR,
+\fBVCS_REF\fR, the short \fBgit\fR commit, and every variable named in \fBDOCKER_BUILD_ARGS\fR.
+A variable named there that is empty stops the build.
 .IP 3.
 \fBbuild_latest_tag\fR: tags the image also as \fBlatest\fR.
 .IP 4.
@@ -30,22 +31,30 @@ with the build arguments \fBVERSION\fR, \fBBUILD_DATE\fR and \fBVCS_REF\fR, the 
 .IP 5.
 \fBbuild_show_images\fR: lists the local images.
 .PP
-Steps 2 to 5 run while the previous one succeeds.
+Each step runs while the previous one succeeds. Steps 2 to 5 run only when the current directory has a
+\fBDockerfile\fR, so a directory of several images has a \fBbuild.sh\fR whose \fBdocker_build\fR runs
+\fBsmi-docker-build\fR in each image directory.
 .SH ENVIRONMENT
 Set by \fBbuild.sh\fR:
 .TP
 \fBDOCKER_ID_ORGANIZATION\fR
-Docker registry organization or user.
+Docker registry organization or user, \fBsetmyinfo\fR by default.
 .TP
 \fBDOCKER_PROJECT_NAME\fR
-Name of the image.
+Name of the image, the name of the current directory by default.
 .TP
 \fBDOCKER_PROJECT_VERSION\fR
 Version tag of the image.
+.TP
+\fBDOCKER_BUILD_ARGS\fR
+Names of further variables passed as build arguments, empty by default. For example
+\fBDOCKER_BUILD_ARGS="JDK_VERSION"\fR after \fBincludePackages jdk\fR passes the version of the
+package file, so the \fBDockerfile\fR declares \fBARG JDK_VERSION\fR without a value.
 .SH FILES
 .TP
 .I ./build.sh
-Sets the variables above and defines \fBdocker_prepare\fR and \fBdocker_build\fR.
+Sets the variables above, and defines \fBdocker_prepare\fR and \fBdocker_build\fR when they have
+work to do; both do nothing by default.
 .TP
 .I ./Dockerfile
 The image definition.

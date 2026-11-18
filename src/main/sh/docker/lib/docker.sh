@@ -1,9 +1,26 @@
+DOCKER_ID_ORGANIZATION=setmyinfo
+DOCKER_PROJECT_NAME=$(basename "$(pwd)")
+DOCKER_BUILD_ARGS=""
+
+docker_prepare() {
+    :
+}
+
+docker_build() {
+    :
+}
+
+docker_push() {
+    :
+}
+
 dockerPrepare() {
     docker_prepare
 }
 
 dockerBuild() {
-    docker_build
+    docker_build || return
+    [ -f Dockerfile ] || return 0
     build_image && \
     build_latest_tag && \
     build_inspect_latest_tag && \
@@ -11,6 +28,8 @@ dockerBuild() {
 }
 
 dockerPush() {
+    docker_push || return
+    [ -f Dockerfile ] || return 0
     build_login && \
     build_push
 }
@@ -20,15 +39,19 @@ build_image() {
     VERSION="${DOCKER_PROJECT_VERSION}"
     BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
     VCS_REF=$(git rev-parse --short HEAD)
-    echo "DOCKER_PROJECT_VERSION= ${DOCKER_PROJECT_VERSION}"
-    echo "BUILD_DATE= ${BUILD_DATE}"
-    echo "VCS_REF= ${VCS_REF}"
-    export BUILDKIT_PROGRESS=plain
-    export DOCKER_BUILDKIT=0
-    docker build --build-arg VERSION="${VERSION}" --build-arg BUILD_DATE="${BUILD_DATE}" --build-arg VCS_REF="${VCS_REF}" -t ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:${DOCKER_PROJECT_VERSION} .
-    unset BUILDKIT_PROGRESS
-    unset DOCKER_BUILDKIT
-    docker image list
+    export VERSION BUILD_DATE VCS_REF ${DOCKER_BUILD_ARGS}
+    for BUILD_ARG in ${DOCKER_BUILD_ARGS}; do
+        if [ -z "$(printenv ${BUILD_ARG})" ]; then
+            echo "Build argument ${BUILD_ARG} is not set"
+            return 1
+        fi
+    done
+    BUILD_ARGS=""
+    for BUILD_ARG in VERSION BUILD_DATE VCS_REF ${DOCKER_BUILD_ARGS}; do
+        echo "${BUILD_ARG}=$(printenv ${BUILD_ARG})"
+        BUILD_ARGS="${BUILD_ARGS} --build-arg ${BUILD_ARG}"
+    done
+    BUILDKIT_PROGRESS=plain docker build ${BUILD_ARGS} -t ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:${DOCKER_PROJECT_VERSION} .
 }
 
 build_latest_tag() {

@@ -2,20 +2,40 @@
 
 # Copyright (C) 2024 Imre Tabur <imre.tabur@mail.ee>
 
-# Input as environment variables:
-# MICROSERVICE_LOG_DIR_PATH=
-# MICROSERVICE_LOG_FILE_NAME=
-# MICROSERVICE_PROFILES=
-# MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH=
-# MICROSERVICE_JAR_FILE_PATH=
-
+# Starts a Spring Boot executable jar, web/API application or CLI tool: every argument goes to the application.
+# Input as environment variables, an unset or empty one adds nothing:
+#
+# MICROSERVICE_JAR_FILE_PATH              the executable jar
+# MICROSERVICE_PROFILES                   spring.profiles.active
+# MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH  spring.config.additional-location, optional: a missing file is skipped
+# MICROSERVICE_LOG_DIR_PATH               logging.file.path
+# MICROSERVICE_LOG_FILE_NAME              logging.file.name, inside MICROSERVICE_LOG_DIR_PATH when that is set
+# MICROSERVICE_LOG_CONFIG_FILE_PATH       logging.config
+#
 # https://docs.spring.io/spring-boot/appendix/application-properties/index.html
-java  -Dlogging.file.path=${MICROSERVICE_LOG_DIR_PATH} \
-      -Dlogging.file.name=${MICROSERVICE_LOG_FILE_NAME} \
-      -Dspring.profiles.active=${MICROSERVICE_PROFILES} \
-      -Dspring.config.additional-location=optional:${MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH} \
-      -cp ${MICROSERVICE_JAR_FILE_PATH} \
-      org.springframework.boot.loader.launch.JarLauncher \
-      ${*}
 
-exit ${?}
+set -- -cp "${MICROSERVICE_JAR_FILE_PATH}" org.springframework.boot.loader.launch.JarLauncher "$@"
+
+if [ -n "${MICROSERVICE_PROFILES:-}" ]; then
+    set -- "-Dspring.profiles.active=${MICROSERVICE_PROFILES}" "$@"
+fi
+
+if [ -n "${MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH:-}" ]; then
+    set -- "-Dspring.config.additional-location=optional:${MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH}" "$@"
+fi
+
+if [ -n "${MICROSERVICE_LOG_DIR_PATH:-}" ]; then
+    set -- "-Dlogging.file.path=${MICROSERVICE_LOG_DIR_PATH}" "$@"
+fi
+
+if [ -n "${MICROSERVICE_LOG_FILE_NAME:-}" ]; then
+    # Spring Boot ignores logging.file.path when logging.file.name is set, so the name gets the directory here
+    set -- "-Dlogging.file.name=${MICROSERVICE_LOG_DIR_PATH:+${MICROSERVICE_LOG_DIR_PATH%/}/}${MICROSERVICE_LOG_FILE_NAME}" "$@"
+fi
+
+if [ -n "${MICROSERVICE_LOG_CONFIG_FILE_PATH:-}" ]; then
+    set -- "-Dlogging.config=file:${MICROSERVICE_LOG_CONFIG_FILE_PATH}" "$@"
+fi
+
+# exec: the signals of systemd reach the JVM, and the exit status is the one of the application
+exec java "$@"

@@ -1,3 +1,14 @@
+* 2026-11-19 Imre Tabur <imre.tabur@mail.ee>
+- DOCKER_FILE names the Dockerfile, Dockerfile of the current directory by default, and the current directory stays the build context, so a project keeps build.sh in its root and the Dockerfile in, for example, src/main/docker, runs smi-docker-prepare, smi-docker-build and smi-docker-push from the root, and the Dockerfile copies from target/ without a prepare step. smi-docker-build(1) and smi-docker-push(1) describe it.
+- smi-docker-build and smi-docker-push say when there is no DOCKER_FILE, instead of ending silently without building or pushing.
+- smi-spring-boot passes the arguments of the command to the application unchanged, quoted as "$@": ${*} split an argument with spaces into several and dropped an empty one, so a CLI tool got other arguments than it was given. A web/API application and a CLI tool start the same way.
+- smi-spring-boot starts java with exec, so the SIGTERM of systemctl stop reaches the JVM, which shuts Spring Boot down in order, and the exit status of the service is that of the application, 143 after SIGTERM.
+- smi-spring-boot adds a -D option only for an environment variable that is set and not empty. An unset MICROSERVICE_PROFILES gave -Dspring.profiles.active= with an empty value, which as a system property won over SPRING_PROFILES_ACTIVE; an unset log or configuration variable gave empty logging.file.* and an optional: location without a path.
+- MICROSERVICE_LOG_FILE_NAME is the name of the log file inside MICROSERVICE_LOG_DIR_PATH. Spring Boot ignores logging.file.path when logging.file.name is set, so the log went to the working directory whatever the directory said.
+- New MICROSERVICE_LOG_CONFIG_FILE_PATH sets logging.config, a logging configuration outside the jar, so an administrator changes levels, appenders or patterns without a new build.
+- The values are taken as given, the caller sets them right: no checks of the files.
+- smi-spring-boot(1) describes the variables, the order of the configuration, an application logback.xml that has to refer to LOG_PATH and LOG_FILE for the log location to apply, and a systemd unit and a CLI example.
+
 * 2026-11-18 Imre Tabur <imre.tabur@mail.ee>
 - docker.sh sets the defaults DOCKER_ID_ORGANIZATION=setmyinfo, DOCKER_PROJECT_NAME as the name of the current directory and an empty DOCKER_BUILD_ARGS, and defines docker_prepare and docker_build as doing nothing. build.sh is sourced after it, so a build.sh sets only what differs and defines a function only when it has work to do.
 - DOCKER_BUILD_ARGS names further variables that build_image passes as build arguments, for example DOCKER_BUILD_ARGS="JDK_VERSION" after includePackages jdk, so the Dockerfile declares ARG JDK_VERSION without a value and the package file is the one place the version is written. A variable named there that is empty stops the build before docker build runs.

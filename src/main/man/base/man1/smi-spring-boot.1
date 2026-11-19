@@ -1,29 +1,86 @@
-.TH smi-spring-boot "1" "January 2024" "SMI Toolset 0.100.0" "SMI Base Command"
+.TH smi-spring-boot "1" "November 2026" "SMI Toolset" "SMI Base Command"
 .SH NAME
-smi-spring-boot \- Launch a Spring Boot application with standard properties
+smi-spring-boot \- Start a Spring Boot executable jar, web/API application or CLI tool, with an optional administrator configuration file and the log location
 .SH SYNOPSIS
 .B smi-spring-boot
-.RI [ ARGUMENTS ]
+.RI [ ARGUMENT ...]
 .SH DESCRIPTION
 .PP
 .B smi-spring-boot
-is a utility script to launch a Spring Boot application using \fBjava\fR. it configures several system properties based on environment variables.
+starts the Spring Boot executable jar of \fBMICROSERVICE_JAR_FILE_PATH\fR with \fBjava\fR(1) of \fBPATH\fR and the Spring Boot
+launcher \fBorg.springframework.boot.loader.launch.JarLauncher\fR, and sets Spring Boot properties from the
+environment variables below. Every \fIARGUMENT\fR goes to the application unchanged, spaces and empty arguments
+included: options such as \fB\-\-server.port=8082\fR for a web/API application, or the arguments of a CLI tool.
+.PP
+An environment variable that is unset or empty adds nothing, so the value inside the jar stays in force. The
+values are taken as given: the caller, for example the systemd unit, sets them right.
+.PP
+The shell is replaced by \fBjava\fR (exec): the signals of a service manager, for example SIGTERM of
+\fBsystemctl stop\fR, reach the JVM, and the exit status of the command is the exit status of the application,
+143 after SIGTERM.
 .SH ENVIRONMENT VARIABLES
 .TP
-\fBMICROSERVICE_LOG_DIR_PATH\fR
-Path to the directory where logs should be stored. Sets \fBlogging.file.path\fR.
-.TP
-\fBMICROSERVICE_LOG_FILE_NAME\fR
-Name of the log file. Sets \fBlogging.file.name\fR.
+\fBMICROSERVICE_JAR_FILE_PATH\fR
+The executable Spring Boot jar.
 .TP
 \fBMICROSERVICE_PROFILES\fR
-Active Spring profiles. Sets \fBspring.profiles.active\fR.
+Sets \fBspring.profiles.active\fR, several profiles separated by commas.
 .TP
 \fBMICROSERVICE_OPTIONAL_CONFIG_FILE_PATH\fR
-Path to an optional additional configuration file. Sets \fBspring.config.additional-location\fR.
+Sets \fBspring.config.additional-location\fR, marked \fBoptional:\fR: a file that does not exist is skipped
+without an error. The file is the place for an
+administrator to change values without a new build: it is read after the configuration inside the jar, the
+profile specific files included, so every value written in it wins over the jar. Environment variables and command
+line arguments still win over the file.
 .TP
-\fBMICROSERVICE_JAR_FILE_PATH\fR
-Path to the executable Spring Boot JAR file.
+\fBMICROSERVICE_LOG_DIR_PATH\fR
+Sets \fBlogging.file.path\fR, the directory of the log files.
+.TP
+\fBMICROSERVICE_LOG_FILE_NAME\fR
+Sets \fBlogging.file.name\fR, the name of the log file inside \fBMICROSERVICE_LOG_DIR_PATH\fR when that is set:
+Spring Boot itself would ignore the directory when the name is set.
+.TP
+\fBMICROSERVICE_LOG_CONFIG_FILE_PATH\fR
+Sets \fBlogging.config\fR, a logging configuration file (for example logback.xml) outside the jar, for an
+administrator to change levels, appenders or patterns. Set it only when the file is there.
+.TP
+\fBJDK_JAVA_OPTIONS\fR
+Options of the JVM, for example memory settings. Read by \fBjava\fR itself, not by this command.
+.SH LOGGING CONFIGURATION OF THE APPLICATION
+.PP
+Spring Boot passes \fBlogging.file.path\fR and \fBlogging.file.name\fR to the logging system as \fBLOG_PATH\fR
+and \fBLOG_FILE\fR. The default configuration of Spring Boot uses them. An application with a logback.xml of its
+own uses them only when it refers to them with defaults instead of setting them, for example
+\fB<property name="LOG_PATH" value="${LOG_PATH:-.}"/>\fR and \fB<file>${LOG_FILE}</file>\fR; a fixed value in the
+file wins over the environment variables.
+.SH EXIT STATUS
+.TP
+0
+The exit status of the application, 0 when it ended successfully.
+.SH EXAMPLES
+.PP
+A systemd unit of a web/API application:
+.PP
+.nf
+.RS
+Environment=PATH=/opt/jdk/bin:/usr/bin:/bin
+Environment=MICROSERVICE_JAR_FILE_PATH=/opt/setmy.info/lib/example.jar
+Environment=MICROSERVICE_PROFILES=live
+Environment=MICROSERVICE_OPTIONAL_CONFIG_FILE_PATH=/opt/setmy.info/etc/example/example.yaml
+Environment=MICROSERVICE_LOG_DIR_PATH=/var/opt/setmy.info/microservice
+Environment=MICROSERVICE_LOG_FILE_NAME=example.log
+ExecStart=/opt/setmy.info/bin/smi-spring-boot
+SuccessExitStatus=143
+.RE
+.fi
+.PP
+A CLI tool with its arguments:
+.PP
+.nf
+.RS
+MICROSERVICE_JAR_FILE_PATH=/opt/setmy.info/lib/tool.jar smi-spring-boot import --dry-run "file name.csv"
+.RE
+.fi
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.
@@ -32,5 +89,5 @@ Command written by Imre Tabur.
 Report smi-spring-boot bugs to \fIinfo@setmy.info\fR
 .SH "SEE ALSO"
 .PP
-.BR microservice (1)
-
+.BR java (1),
+.BR systemd.exec (5)

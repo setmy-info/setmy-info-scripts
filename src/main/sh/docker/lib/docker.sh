@@ -1,6 +1,7 @@
 DOCKER_ID_ORGANIZATION=setmyinfo
 DOCKER_PROJECT_NAME=$(basename "$(pwd)")
 DOCKER_BUILD_ARGS=""
+DOCKER_FILE=Dockerfile
 
 docker_prepare() {
     :
@@ -20,7 +21,7 @@ dockerPrepare() {
 
 dockerBuild() {
     docker_build || return
-    [ -f Dockerfile ] || return 0
+    [ -f "${DOCKER_FILE}" ] || { echo "No ${DOCKER_FILE}, no image to build"; return 0; }
     build_image && \
     build_latest_tag && \
     build_inspect_latest_tag && \
@@ -29,7 +30,7 @@ dockerBuild() {
 
 dockerPush() {
     docker_push || return
-    [ -f Dockerfile ] || return 0
+    [ -f "${DOCKER_FILE}" ] || { echo "No ${DOCKER_FILE}, no image to push"; return 0; }
     build_login && \
     build_push
 }
@@ -51,7 +52,7 @@ build_image() {
         echo "${BUILD_ARG}=$(printenv ${BUILD_ARG})"
         BUILD_ARGS="${BUILD_ARGS} --build-arg ${BUILD_ARG}"
     done
-    BUILDKIT_PROGRESS=plain docker build ${BUILD_ARGS} -t ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:${DOCKER_PROJECT_VERSION} .
+    BUILDKIT_PROGRESS=plain docker build ${BUILD_ARGS} -f ${DOCKER_FILE} -t ${DOCKER_ID_ORGANIZATION}/${DOCKER_PROJECT_NAME}:${DOCKER_PROJECT_VERSION} .
 }
 
 build_latest_tag() {

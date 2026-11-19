@@ -19,7 +19,7 @@ The steps are:
 .IP 1.
 \fBdocker_build\fR: the function of \fBbuild.sh\fR, for the work before the build.
 .IP 2.
-\fBbuild_image\fR: \fBdocker build\fR of the current directory as
+\fBbuild_image\fR: \fBdocker build\fR of \fBDOCKER_FILE\fR with the current directory as context, as
 \fIDOCKER_ID_ORGANIZATION\fB/\fIDOCKER_PROJECT_NAME\fB:\fIDOCKER_PROJECT_VERSION\fR,
 with BuildKit and plain progress output, and the build arguments \fBVERSION\fR, \fBBUILD_DATE\fR,
 \fBVCS_REF\fR, the short \fBgit\fR commit, and every variable named in \fBDOCKER_BUILD_ARGS\fR.
@@ -31,8 +31,7 @@ A variable named there that is empty stops the build.
 .IP 5.
 \fBbuild_show_images\fR: lists the local images.
 .PP
-Each step runs while the previous one succeeds. Steps 2 to 5 run only when the current directory has a
-\fBDockerfile\fR, so a directory of several images has a \fBbuild.sh\fR whose \fBdocker_build\fR runs
+Each step runs while the previous one succeeds. Steps 2 to 5 run only when \fBDOCKER_FILE\fR exists, so a directory of several images has a \fBbuild.sh\fR whose \fBdocker_build\fR runs
 \fBsmi-docker-build\fR in each image directory.
 .SH ENVIRONMENT
 Set by \fBbuild.sh\fR:
@@ -50,13 +49,18 @@ Version tag of the image.
 Names of further variables passed as build arguments, empty by default. For example
 \fBDOCKER_BUILD_ARGS="JDK_VERSION"\fR after \fBincludePackages jdk\fR passes the version of the
 package file, so the \fBDockerfile\fR declares \fBARG JDK_VERSION\fR without a value.
+.TP
+\fBDOCKER_FILE\fR
+The \fBDockerfile\fR, \fBDockerfile\fR of the current directory by default. For example
+\fBDOCKER_FILE=src/main/docker/Dockerfile\fR keeps \fBbuild.sh\fR in the project root, and the
+\fBDockerfile\fR copies from the project, such as \fBtarget/\fR.
 .SH FILES
 .TP
 .I ./build.sh
 Sets the variables above, and defines \fBdocker_prepare\fR and \fBdocker_build\fR when they have
 work to do; both do nothing by default.
 .TP
-.I ./Dockerfile
+.I DOCKER_FILE
 The image definition.
 .SH EXIT STATUS
 The exit status of the last step that ran, so a failed build fails the command.

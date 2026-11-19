@@ -5,7 +5,7 @@
 set -eu
 
 if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <database_name> <live|test>" >&2
+    echo "Usage: $0 <database_name> <local|dev|ci|test|prelive|live>" >&2
     exit 1
 fi
 
@@ -20,10 +20,10 @@ case "$DB_NAME" in
 esac
 
 case "$ENVIRONMENT" in
-    live|test)
+    local|dev|ci|test|prelive|live)
         ;;
     *)
-        echo "ERROR: Environment must be 'live' or 'test'." >&2
+        echo "ERROR: Environment must be one of: local, dev, ci, test, prelive, live." >&2
         exit 1
         ;;
 esac

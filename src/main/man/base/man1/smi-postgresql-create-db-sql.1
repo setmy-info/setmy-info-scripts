@@ -3,8 +3,7 @@
 smi-postgresql-create-db-sql \- Print the SQL that creates a PostgreSQL database with an application user and a Liquibase user
 .SH SYNOPSIS
 .B smi-postgresql-create-db-sql
-.I NAME
-.B live|test
+.I NAME ENVIRONMENT
 .SH DESCRIPTION
 .PP
 Prints, on standard output, the SQL that creates the database
@@ -51,9 +50,29 @@ can not connect to the database, and functions created there are not executable 
 Lower case letters, digits and underscores, not starting with a digit, as an unquoted PostgreSQL
 identifier is.
 .TP
-.B live|test
-The environment, part of the database name and of both user names, so one server can hold both
-without a clash.
+.I ENVIRONMENT
+One of the SMI standard profiles, part of the database name and of both user names, so one
+server can hold several environments without a clash:
+.RS
+.TP
+.B local
+developer local machine
+.TP
+.B dev
+developer and team playground
+.TP
+.B ci
+automatic test environment
+.TP
+.B test
+user and acceptance test environment with fake data
+.TP
+.B prelive
+user and acceptance test environment with real data
+.TP
+.B live
+end-user and production environment
+.RE
 .SH ENVIRONMENT
 .TP
 .B SMI_DB_APP_PASSWORD

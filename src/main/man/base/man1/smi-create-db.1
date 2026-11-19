@@ -142,11 +142,19 @@ uses
 peer authentication, or asks.
 .TP
 .B SMI_DB_ENVIRONMENT
-.B live
-or
+The SMI standard profile:
+.BR local ,
+.BR dev ,
+.BR ci ,
 .BR test ,
+.B prelive
+or
+.BR live ,
 default
 .BR test .
+See
+.BR smi-postgresql-create-db-sql (1)
+for their meaning.
 .TP
 .BR SMI_DB_APP_PASSWORD ", " SMI_DB_LIQUIBASE_PASSWORD
 The passwords of the new users, default new random ones, see

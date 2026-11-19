@@ -1,4 +1,5 @@
 * 2026-11-19 Imre Tabur <imre.tabur@mail.ee>
+- smi-postgresql-create-db-sql, and SMI_DB_ENVIRONMENT of smi-create-db postgres, accept all SMI standard profiles: local, dev, ci, test, prelive and live, instead of live and test only. smi-postgresql-create-db-sql(1) describes each profile.
 - DOCKER_FILE names the Dockerfile, Dockerfile of the current directory by default, and the current directory stays the build context, so a project keeps build.sh in its root and the Dockerfile in, for example, src/main/docker, runs smi-docker-prepare, smi-docker-build and smi-docker-push from the root, and the Dockerfile copies from target/ without a prepare step. smi-docker-build(1) and smi-docker-push(1) describe it.
 - smi-docker-build and smi-docker-push say when there is no DOCKER_FILE, instead of ending silently without building or pushing.
 - smi-spring-boot passes the arguments of the command to the application unchanged, quoted as "$@": ${*} split an argument with spaces into several and dropped an empty one, so a CLI tool got other arguments than it was given. A web/API application and a CLI tool start the same way.

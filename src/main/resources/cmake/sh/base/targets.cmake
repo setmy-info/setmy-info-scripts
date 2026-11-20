@@ -19,6 +19,7 @@ ADD_CUSTOM_TARGET(makeDirectories
     mkdir -p ${LIBRARY_COMMON_LISP_OUTPUT_PATH} &&
     mkdir -p ${LIBRARY_GROOVY_OUTPUT_PATH} &&
     mkdir -p ${LIBRARY_PYTHON_OUTPUT_PATH} &&
+    mkdir -p ${LIBRARY_CLOJURE_OUTPUT_PATH} &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/half-past &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/selinux/vhost &&
     mkdir -p ${LIBRARY_OUTPUT_PATH}/gathering &&

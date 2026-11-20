@@ -1,0 +1,123 @@
+.TH hello-clojure "1" "November 2026" "SMI Toolset" "SMI Hello Command"
+.SH NAME
+hello-clojure \- Print a greeting message using a Clojure script
+.SH SYNOPSIS
+.B hello-clojure
+.RI [ EXIT_CODE ]
+.SH DESCRIPTION
+.PP
+.B hello-clojure
+is a minimal example command that runs a Clojure script installed in the
+.I lib/clojure/
+directory of the SMI toolset installation.
+It demonstrates that Clojure scripting is correctly set up: the
+.B clojure
+command of the Clojure CLI is on the PATH, Maven and Clojars dependencies resolve, and the SMI
+library location is resolvable.
+.PP
+The command prints a greeting naming the current working directory and a random UUID made by the
+.B clj-uuid
+library, and then exits with the requested code.
+The exit code is echoed on a second line only when it is non-zero;
+a successful run prints the greeting alone.
+Passing an explicit
+.I EXIT_CODE
+makes it possible to verify that exit statuses propagate correctly from the
+Clojure script, through the shell wrapper, to the calling shell.
+.PP
+The script is located by sourcing
+.I clojure.sh
+via
+.BR smi-include (1),
+which sets
+.BR SMI_CLOJURE_LIB_DIR .
+The wrapper then does two things, with the same dependencies given to both as
+.B \-Sdeps
+data:
+.IP 1.
+.B clojure \-P
+downloads the dependencies into
+.I ~/.m2/repository
+and caches the classpath, without running anything. Its messages, such as
+.BR Downloading: ,
+go to standard error, so standard output carries the greeting only.
+Once the dependencies are there, this step only checks the cache.
+.IP 2.
+.B clojure \-M
+runs the script with the arguments of the command.
+.PP
+A failed download stops the command before the script runs.
+.SH ARGUMENTS
+.TP
+.I EXIT_CODE
+Optional integer to exit with, in the range
+.B 0
+to
+.BR 255 ,
+the range a POSIX shell can report as the status of a command.
+Defaults to
+.B 0
+when omitted.
+An argument that is not an integer, or that falls outside that range, is
+rejected and the command exits
+.BR 1 ,
+rather than raising an error.
+Rejected values include
+.BR abc ,
+.BR 42abc ,
+.BR 3.9 ,
+.BR \-1 ,
+and
+.BR 256 .
+Any further arguments are ignored.
+.SH EXIT STATUS
+.TP
+.B 0
+Success, or no
+.I EXIT_CODE
+argument was given.
+.TP
+.B 1
+The
+.I EXIT_CODE
+argument was not an integer in the range
+.B 0
+to
+.BR 255 .
+.TP
+.I EXIT_CODE
+The value passed on the command line, when valid.
+.TP
+.B other
+The status of
+.BR "clojure \-P" ,
+when the dependencies could not be downloaded.
+.SH FILES
+.TP
+.I $(smi-lib-location)/clojure/hello-clojure.clj
+The Clojure script executed by this command.
+.TP
+.I ~/.m2/repository
+Where the dependencies are downloaded.
+.SH NOTES
+The current directory is the project directory of the Clojure CLI, so a
+.I deps.edn
+there is merged with the dependencies of the command.
+.SH EXAMPLES
+.PP
+.RS
+.nf
+hello-clojure
+hello-clojure 7; echo $?
+.fi
+.RE
+.SH SEE ALSO
+.BR clojure (1),
+.BR hello-elixir (1),
+.BR hello-groovy (1),
+.BR hello-lisp (1),
+.BR hello-python (1),
+.BR smi-include (1),
+.BR smi-lib-location (1)
+.SH AUTHOR
+setmy.info

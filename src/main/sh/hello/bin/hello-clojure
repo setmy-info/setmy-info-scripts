@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+
+. $(smi-include clojure.sh)
+
+HELLO_CLOJURE_DEPS='{:deps {danlentz/clj-uuid {:mvn/version "0.2.5"}}}'
+
+clojure -Sdeps "${HELLO_CLOJURE_DEPS}" -P >&2
+
+exec clojure -Sdeps "${HELLO_CLOJURE_DEPS}" -M "${SMI_CLOJURE_LIB_DIR}/hello-clojure.clj" "$@"

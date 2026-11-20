@@ -1,3 +1,8 @@
+* 2026-11-20 Imre Tabur <imre.tabur@mail.ee>
+- Package versions updated from the versions spider run: bazel 9.3.2 -> 9.3.3, cmake 4.5.0 -> 4.5.1, firefox 160.0 -> 160.0.1, forgejo 17.0.1 -> 17.0.2, gradle 9.9.1 -> 9.9.2, infinispan 16.3.1 -> 16.3.2, librewolf 160.0-1 -> 160.0.1-1, nginx 1.30.6-1 -> 1.30.7-1, openbao 2.7.2 -> 2.7.3, pycharm 2026.3 -> 2026.3.0.1, zeebe 8.10.9 -> 8.10.10, and the chromedriver pinned inside the selenium package 157.0.8103.78 -> 158.0.8127.36. The commented reference URL of every changed package is the URL it now builds, and every changed download URL was checked to answer 200.
+- jdk27 and jdk upgraded from 27.0.1.0.3 to 27.0.1.1: the build hash is c3a705caf5044be8aa0b09e62be69b20 and the build number 4. The directory jdk-27.0.1.1 and the /opt/jdk27 and /opt/jdk links follow from the version.
+- Left alone: git-flow-next, graphviz and innosetup, which have no package to version. Everything else the spider reported already matched.
+
 * 2026-11-19 Imre Tabur <imre.tabur@mail.ee>
 - smi-postgresql-create-db-sql, and SMI_DB_ENVIRONMENT of smi-create-db postgres, accept all SMI standard profiles: local, dev, ci, test, prelive and live, instead of live and test only. smi-postgresql-create-db-sql(1) describes each profile.
 - DOCKER_FILE names the Dockerfile, Dockerfile of the current directory by default, and the current directory stays the build context, so a project keeps build.sh in its root and the Dockerfile in, for example, src/main/docker, runs smi-docker-prepare, smi-docker-build and smi-docker-push from the root, and the Dockerfile copies from target/ without a prepare step. smi-docker-build(1) and smi-docker-push(1) describe it.

@@ -1,0 +1,18 @@
+FLOWABLE_NAME=flowable
+FLOWABLE_VERSION=8.0.0
+FLOWABLE_DIR_NAME=${FLOWABLE_NAME}-${FLOWABLE_VERSION}
+FLOWABLE_ZIP_FILE_NAME=${FLOWABLE_DIR_NAME}.zip
+FLOWABLE_ZIP_FILE_URL=https://github.com/flowable/flowable-engine/releases/download/${FLOWABLE_DIR_NAME}/${FLOWABLE_ZIP_FILE_NAME}
+
+# https://github.com/flowable/flowable-engine/releases/download/flowable-8.0.0/flowable-8.0.0.zip
+# The zip has no top directory (wars, libs, database, docs, ...), so it is unpacked into a directory of its own.
+# Server: java -jar /opt/flowable/wars/flowable-rest.war
+
+flowable_download_func() {
+    smi-download ${FLOWABLE_ZIP_FILE_URL} ${HOME_PACKAGES_DIR}/${FLOWABLE_ZIP_FILE_NAME}
+}
+
+flowable_install_func() {
+    sudo unzip -o ${HOME_PACKAGES_DIR}/${FLOWABLE_ZIP_FILE_NAME} -d /opt/${FLOWABLE_DIR_NAME}
+    makeOptLink /opt/${FLOWABLE_NAME} /opt/${FLOWABLE_DIR_NAME}
+}

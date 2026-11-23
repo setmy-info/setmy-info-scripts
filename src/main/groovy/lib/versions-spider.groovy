@@ -1320,6 +1320,29 @@ class ZeebeDriverExecute extends DriverExecuteBase implements DriverExecute, Nam
     }
 }
 
+class FlowableDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // GitHub release assets are loaded via JS — use the REST API instead.
+        // https://github.com/flowable/flowable-engine/releases/download/flowable-8.0.0/flowable-8.0.0.zip
+        // releases/latest is the newest release that is not a pre-release.
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name ==~ /flowable-\d+\.\d+\.\d+\.zip/ }
+        if (!asset) throw new RuntimeException("No flowable zip found in latest release")
+        println asset.browser_download_url
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/flowable/flowable-engine/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "flowable"
+    }
+}
+
 class GitFlowNextDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
@@ -2022,6 +2045,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new MvndDriverExecute(), rulesRegister)
     fillWithRules(new CmDriverExecute(), rulesRegister)
     fillWithRules(new ZeebeDriverExecute(), rulesRegister)
+    fillWithRules(new FlowableDriverExecute(), rulesRegister)
     fillWithRules(new GitFlowNextDriverExecute(), rulesRegister)
     fillWithRules(new GraphvizDriverExecute(), rulesRegister)
     fillWithRules(new InnosetupDriverExecute(), rulesRegister)

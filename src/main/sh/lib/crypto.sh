@@ -56,6 +56,7 @@ encryptFile() {
 
 decryptFile() {
     ENCRYPTED_FILE="${1}"
+    OUTPUT="${2:-}"
     if [ ! -f "${ENCRYPTED_FILE}" ]; then
         printf 'ERROR: "%s" does not exist or is not a regular file.\n' "${ENCRYPTED_FILE}" >&2
         exit 1
@@ -67,7 +68,16 @@ decryptFile() {
         exit 1
     fi
 
-    DECRYPTED_FILE="${ENCRYPTED_FILE%.${ENCRYPTED_FILE_SUFFIX}}"
+    if [ -z "${OUTPUT}" ]; then
+        DECRYPTED_FILE="${ENCRYPTED_FILE%.${ENCRYPTED_FILE_SUFFIX}}"
+    else
+        DECRYPTED_FILE="${OUTPUT}"
+    fi
+
+    if [ "${DECRYPTED_FILE}" != "-" ] && [ -e "${DECRYPTED_FILE}" ]; then
+        printf 'ERROR: "%s" exists already, it is not overwritten.\n' "${DECRYPTED_FILE}" >&2
+        exit 1
+    fi
 
     printf 'Enter passphrase: ' >&2
     stty -echo 2>/dev/null
@@ -84,17 +94,27 @@ decryptFile() {
         exit 3
     fi
 
-    printf '%s\n' "${PASSPHRASE}" | \
-        openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
-            -iter "${ENCRYPTION_ITERATIONS}" \
-            -in "${ENCRYPTED_FILE}" -out "${DECRYPTED_FILE}" -pass stdin
-    RESULT_CODE=${?}
+    if [ "${DECRYPTED_FILE}" = "-" ]; then
+        # Standard output: no file. Messages go to standard error, the output is the decrypted content only.
+        printf '%s\n' "${PASSPHRASE}" | \
+            openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
+                -iter "${ENCRYPTION_ITERATIONS}" \
+                -in "${ENCRYPTED_FILE}" -pass stdin
+        RESULT_CODE=${?}
+    else
+        printf '%s\n' "${PASSPHRASE}" | \
+            openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
+                -iter "${ENCRYPTION_ITERATIONS}" \
+                -in "${ENCRYPTED_FILE}" -out "${DECRYPTED_FILE}" -pass stdin
+        RESULT_CODE=${?}
+    fi
 
     if [ "${RESULT_CODE}" -ne 0 ]; then
         printf 'ERROR: decryption failed.\n' >&2
-        rm -f "${DECRYPTED_FILE}"
+        # The file of this run only: an existing one stopped the decryption above
+        if [ "${DECRYPTED_FILE}" != "-" ]; then
+            rm -f "${DECRYPTED_FILE}"
+        fi
         exit 2
     fi
-
-    rm "${ENCRYPTED_FILE}" "${HMAC_FILE}"
 }

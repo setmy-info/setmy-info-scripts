@@ -2,6 +2,6 @@
 
 . $(smi-include crypto.sh)
 
-decryptFile ${1}
+decryptFile "${1}" "${2:-}"
 
 exit 0

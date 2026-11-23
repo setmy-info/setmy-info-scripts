@@ -4,6 +4,7 @@ smi-decrypt \- Decrypt and verify a file encrypted with smi-encrypt
 .SH SYNOPSIS
 .B smi-decrypt
 .I ENCRYPTED_FILE
+.RI [ OUTPUT ]
 .SH DESCRIPTION
 .PP
 .B smi-decrypt
@@ -37,11 +38,33 @@ imposed by the key or block size.
 The passphrase is entered via the terminal (stdin) without any graphical or TUI pinentry dialog,
 making the command safe to use over SSH and in non-graphical environments.
 .PP
-Upon successful decryption both
+Without
+.IR OUTPUT ,
+the decrypted file is written next to
+.I ENCRYPTED_FILE
+without the
+.B .enc
+suffix. With
+.IR OUTPUT ,
+it is written to that file, and
+.B \-
+writes the decrypted content to standard output instead of a file.
 .I ENCRYPTED_FILE
 and its
 .I .hmac
-file are removed and the original file is restored.
+file are kept unchanged, so the file can be decrypted again later.
+.PP
+An existing decrypted file, the default one or
+.IR OUTPUT ,
+is never overwritten: it may be from an earlier run and changed since.
+When it exists,
+.B smi-decrypt
+stops with exit code
+.B 1
+before asking for the passphrase. Remove or rename it to decrypt again.
+This also protects a file without the
+.B .enc
+suffix, whose decrypted name would be its own name.
 .PP
 .B Note:
 files encrypted with earlier versions of this tool (10\,000 iterations, no HMAC file) are not
@@ -55,14 +78,34 @@ Must be an existing regular file.
 A corresponding
 .I ENCRYPTED_FILE.hmac
 integrity file must also be present.
-Both files are removed after successful decryption.
+Both files are kept.
+.TP
+.I OUTPUT
+Optional. Where the decrypted content goes:
+.RS
+.TP
+.B \-
+standard output. No file is written. The passphrase prompt and the error messages go to standard error, so
+standard output carries the decrypted content only. Nothing is written when the integrity check fails; when the
+decryption itself fails, part of the content may have been written already.
+.TP
+empty or not given
+.I ENCRYPTED_FILE
+without the
+.B .enc
+suffix.
+.TP
+any other value
+the name of the file to write. It must not exist.
+.RE
 .SH EXIT STATUS
 .TP
 .B 0
-File decrypted successfully; encrypted file and HMAC file removed.
+File decrypted successfully; encrypted file and HMAC file kept.
 .TP
 .B 1
-Invalid usage: wrong number of arguments, encrypted file does not exist, or HMAC file not found.
+Invalid usage: wrong number of arguments, encrypted file does not exist, HMAC file not found,
+or the decrypted file exists already.
 .TP
 .B 2
 Decryption failed.
@@ -77,8 +120,20 @@ Decrypt a previously encrypted configuration file:
 .IP
 smi-decrypt secrets.conf.enc
 .PP
-The decrypted output is restored to
-.IR secrets.conf .
+The decrypted output is written to
+.IR secrets.conf ;
+.I secrets.conf.enc
+and
+.I secrets.conf.enc.hmac
+stay.
+.PP
+Decrypt to another file:
+.IP
+smi-decrypt secrets.conf.enc /tmp/secrets.conf
+.PP
+Show the content without writing a file:
+.IP
+smi-decrypt secrets.conf.enc \- | less
 Encrypt a file first with:
 .IP
 smi-encrypt secrets.conf

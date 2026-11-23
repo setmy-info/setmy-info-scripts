@@ -1,0 +1,25 @@
+OPENSEARCH_DASHBOARD_NAME=opensearch-dashboards
+OPENSEARCH_DASHBOARD_VERSION=3.10.0
+OPENSEARCH_DASHBOARD_REPO_ID=opensearch-dashboards-3.x
+OPENSEARCH_DASHBOARD_REPO_FILE_NAME=${OPENSEARCH_DASHBOARD_REPO_ID}.repo
+OPENSEARCH_DASHBOARD_GPG_KEY_URL=https://artifacts.opensearch.org/publickeys/opensearch-release.pgp
+
+# https://opensearch.org/downloads/
+# https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/3.x/opensearch-dashboards-3.x.repo
+# https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/3.10.0/opensearch-dashboards-3.10.0-linux-x64.rpm
+# From the OpenSearch Dashboards yum repository, 3.x line, the version of the opensearch package. The version is
+# pinned: a newer one is installed only when OPENSEARCH_DASHBOARD_VERSION changes. The RPM has its own Node.js and
+# brings the opensearch-dashboards systemd service.
+#   sudo systemctl enable --now opensearch-dashboards
+#   http://localhost:5601
+
+opensearch_dashboard_download_func() {
+    # From the yum repository at install
+    return
+}
+
+opensearch_dashboard_install_func() {
+    sudo install -m 644 $(smi-etc-location)/yum.repos.d/${OPENSEARCH_DASHBOARD_REPO_FILE_NAME} /etc/yum.repos.d/${OPENSEARCH_DASHBOARD_REPO_FILE_NAME}
+    sudo rpm --import ${OPENSEARCH_DASHBOARD_GPG_KEY_URL}
+    sudo dnf install -y --enablerepo=${OPENSEARCH_DASHBOARD_REPO_ID} ${OPENSEARCH_DASHBOARD_NAME}-${OPENSEARCH_DASHBOARD_VERSION}
+}

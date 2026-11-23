@@ -12,6 +12,9 @@ IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     INSTALL(FILES "${ETC_OUTPUT_PATH}/systemd/system/nginx.service.d/hardening.conf"  DESTINATION etc/systemd/system/nginx.service.d)
     INSTALL(FILES "${ETC_OUTPUT_PATH}/yum.repos.d/kubernetes.repo"    DESTINATION etc/yum.repos.d)
     INSTALL(FILES "${ETC_OUTPUT_PATH}/yum.repos.d/nginx.repo"         DESTINATION etc/yum.repos.d)
+    INSTALL(FILES "${ETC_OUTPUT_PATH}/yum.repos.d/neo4j.repo"         DESTINATION etc/yum.repos.d)
+    INSTALL(FILES "${ETC_OUTPUT_PATH}/yum.repos.d/opensearch-3.x.repo"            DESTINATION etc/yum.repos.d)
+    INSTALL(FILES "${ETC_OUTPUT_PATH}/yum.repos.d/opensearch-dashboards-3.x.repo" DESTINATION etc/yum.repos.d)
 ENDIF()
 
 # PLACEHOLDER-END #

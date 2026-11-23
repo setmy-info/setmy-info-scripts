@@ -27,19 +27,27 @@ installPackages() {
     done
 }
 
+# Prefix of the functions of a package: a - of the package name is _ in the function names, because sh does not
+# allow - in a function name. opensearch-dashboard.package has opensearch_dashboard_install_func.
+packageFunctionPrefix() {
+    echo "${1}" | tr '-' '_'
+}
+
 downloadPackage() {
     PACKAGE_NAME=${1}
+    PACKAGE_FUNCTION_PREFIX=$(packageFunctionPrefix ${PACKAGE_NAME})
     echo "Downloading package: ${PACKAGE_NAME}"
     includePackage ${PACKAGE_NAME}
-    ${PACKAGE_NAME}_download_func
+    ${PACKAGE_FUNCTION_PREFIX}_download_func
 }
 
 buildPackage() {
     PACKAGE_NAME=${1}
+    PACKAGE_FUNCTION_PREFIX=$(packageFunctionPrefix ${PACKAGE_NAME})
     includePackage ${PACKAGE_NAME}
-    if command -v ${PACKAGE_NAME}_build_func > /dev/null 2>&1; then
+    if command -v ${PACKAGE_FUNCTION_PREFIX}_build_func > /dev/null 2>&1; then
         echo "Building package: ${PACKAGE_NAME}"
-        ${PACKAGE_NAME}_build_func
+        ${PACKAGE_FUNCTION_PREFIX}_build_func
     else
         echo "Nothing to build for package: ${PACKAGE_NAME}"
     fi
@@ -47,9 +55,10 @@ buildPackage() {
 
 installPackage() {
     PACKAGE_NAME=${1}
+    PACKAGE_FUNCTION_PREFIX=$(packageFunctionPrefix ${PACKAGE_NAME})
     echo "Installing package: ${PACKAGE_NAME}"
     includePackage ${PACKAGE_NAME}
-    ${PACKAGE_NAME}_install_func
+    ${PACKAGE_FUNCTION_PREFIX}_install_func
 }
 
 includePackages() {

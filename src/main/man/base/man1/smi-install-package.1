@@ -9,6 +9,9 @@ smi-install-package \- Install one or more SMI packages
 .B smi-install-package
 installs the specified SMI packages.
 It uses the \fBpackages.sh\fR library to locate package definitions (with \fB.package\fR suffix) in either the system or home packages directories and executes their respective install functions.
+A \fB-\fR in a package name is \fB_\fR in the names of its functions, because sh does not allow \fB-\fR in a function name:
+.I opensearch-dashboard.package
+has \fBopensearch_dashboard_install_func\fR.
 The package archives are read from the packages download directory (see \fBsmi-home-packages-location\fR(1)),
 which defaults to \fB~/.setmy.info/packages\fR and can be overridden via \fBSMI_HOME_PACKAGES_DIR\fR.
 .SH PYTHON OPT LINKS
@@ -110,6 +113,8 @@ puts the result in place.
 .BR node ,
 .BR nsis ,
 .BR openbao ,
+.BR opensearch ,
+.BR opensearch-dashboard ,
 .BR opentofu ,
 .BR pgjdbc ,
 .BR pycharm ,

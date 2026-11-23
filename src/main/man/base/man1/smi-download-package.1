@@ -239,10 +239,48 @@ SQLite JDBC driver with the SQLite library built in for Linux, macOS and Windows
 in the SMI lib directory.
 .TP
 .B neo4j
-Neo4j graph database.
+Neo4j graph database, community edition. Nothing is downloaded: the install adds the
+.I neo4j
+yum repository
+.RI ( https://yum.neo4j.com/stable/latest ,
+shipped disabled in
+.IR etc/yum.repos.d/neo4j.repo )
+to
+.IR /etc/yum.repos.d ,
+imports the Neo4j signing key and installs the RPM of the pinned
+.BR NEO4J_VERSION ,
+with cypher-shell, the
+.B neo4j
+systemd service and the system java-25 or java-21 package it needs.
 .TP
 .B solr
 Apache Solr search platform.
+.TP
+.B opensearch
+OpenSearch search and analytics engine. Nothing is downloaded: the install adds the
+.I opensearch-3.x
+yum repository
+.RI ( etc/yum.repos.d/opensearch-3.x.repo ,
+shipped disabled) to
+.IR /etc/yum.repos.d ,
+imports the OpenSearch signing key and installs the RPM of the pinned
+.BR OPENSEARCH_VERSION ,
+with its own JDK and the
+.B opensearch
+systemd service.
+.B OPENSEARCH_INITIAL_ADMIN_PASSWORD
+is passed on to the install when it is set: the demo security configuration needs it.
+.TP
+.B opensearch-dashboard
+OpenSearch Dashboards, the web interface of OpenSearch, from the
+.I opensearch-dashboards-3.x
+yum repository the same way: the
+.B opensearch-dashboards
+RPM of the pinned
+.BR OPENSEARCH_DASHBOARD_VERSION ,
+with its own Node.js and the
+.B opensearch-dashboards
+systemd service.
 .TP
 .B infinispan
 Infinispan distributed data grid.

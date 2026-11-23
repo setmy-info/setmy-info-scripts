@@ -1,0 +1,6 @@
+[neo4j]
+name=Neo4j Yum Repo
+baseurl=https://yum.neo4j.com/stable/latest
+enabled=0
+gpgcheck=1
+gpgkey=https://debian.neo4j.com/neotechnology.gpg.key

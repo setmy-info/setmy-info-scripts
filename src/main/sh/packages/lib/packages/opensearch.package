@@ -1,0 +1,33 @@
+OPENSEARCH_NAME=opensearch
+OPENSEARCH_VERSION=3.10.0
+OPENSEARCH_REPO_ID=opensearch-3.x
+OPENSEARCH_REPO_FILE_NAME=${OPENSEARCH_REPO_ID}.repo
+OPENSEARCH_GPG_KEY_URL=https://artifacts.opensearch.org/publickeys/opensearch-release.pgp
+
+# https://opensearch.org/downloads/
+# https://artifacts.opensearch.org/releases/bundle/opensearch/3.x/opensearch-3.x.repo
+# https://artifacts.opensearch.org/releases/bundle/opensearch/3.10.0/opensearch-3.10.0-linux-x64.rpm
+# From the OpenSearch yum repository, 3.x line. The version is pinned: a newer one is installed only when
+# OPENSEARCH_VERSION changes. The RPM has its own JDK and brings the opensearch systemd service.
+# The demo security configuration needs an initial admin password at the install:
+#   OPENSEARCH_INITIAL_ADMIN_PASSWORD='<strong password>' smi-install-package opensearch
+#   sudo systemctl enable --now opensearch
+#   curl -k -u admin:<password> https://localhost:9200
+
+opensearch_download_func() {
+    # From the yum repository at install
+    return
+}
+
+opensearch_install_func() {
+    sudo install -m 644 $(smi-etc-location)/yum.repos.d/${OPENSEARCH_REPO_FILE_NAME} /etc/yum.repos.d/${OPENSEARCH_REPO_FILE_NAME}
+    sudo rpm --import ${OPENSEARCH_GPG_KEY_URL}
+    if [ -n "${OPENSEARCH_INITIAL_ADMIN_PASSWORD:-}" ]; then
+        # sudo does not keep the environment, env passes the password to the install script of the RPM
+        sudo env OPENSEARCH_INITIAL_ADMIN_PASSWORD="${OPENSEARCH_INITIAL_ADMIN_PASSWORD}" \
+            dnf install -y --enablerepo=${OPENSEARCH_REPO_ID} ${OPENSEARCH_NAME}-${OPENSEARCH_VERSION}
+    else
+        echo "OPENSEARCH_INITIAL_ADMIN_PASSWORD is not set: no demo security configuration, see opensearch.package"
+        sudo dnf install -y --enablerepo=${OPENSEARCH_REPO_ID} ${OPENSEARCH_NAME}-${OPENSEARCH_VERSION}
+    fi
+}

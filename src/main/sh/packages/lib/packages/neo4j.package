@@ -1,16 +1,26 @@
 NEO4J_NAME=neo4j
-NEO4J_VERSION=2026.07.1
-NEO4J_DIR_NAME=${NEO4J_NAME}-community-${NEO4J_VERSION}
-NEO4J_TAR_GZ_FILE_NAME=${NEO4J_DIR_NAME}-unix.tar.gz
-NEO4J_TAR_GZ_FILE_URL=https://dist.neo4j.org/${NEO4J_TAR_GZ_FILE_NAME}
+NEO4J_VERSION=2026.10.2
+NEO4J_REPO_FILE_NAME=${NEO4J_NAME}.repo
+NEO4J_GPG_KEY_URL=https://debian.neo4j.com/neotechnology.gpg.key
 
-# https://dist.neo4j.org/neo4j-community-2026.07.1-unix.tar.gz
+# https://yum.neo4j.com/
+# https://neo4j.com/deployment-center/?gdb-selfmanaged&community
+# https://dist.neo4j.org/rpm/neo4j-2026.10.2-1.noarch.rpm
+# Community edition from the Neo4j yum repository, stable/latest line. The version is pinned: a newer one is
+# installed only when NEO4J_VERSION changes, so dnf upgrade does not upgrade the database by accident.
+# The RPM needs the system java-25 or java-21 package (dnf installs it) and brings cypher-shell and the neo4j
+# systemd service. After the install:
+#   sudo neo4j-admin dbms set-initial-password <password>
+#   sudo systemctl enable --now neo4j
+#   http://localhost:7474, bolt://localhost:7687
 
 neo4j_download_func() {
-    smi-download ${NEO4J_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${NEO4J_TAR_GZ_FILE_NAME}
+    # From the yum repository at install
+    return
 }
 
 neo4j_install_func() {
-    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${NEO4J_TAR_GZ_FILE_NAME} -C /opt
-    makeOptLink /opt/${NEO4J_NAME} /opt/${NEO4J_DIR_NAME}
+    sudo install -m 644 $(smi-etc-location)/yum.repos.d/${NEO4J_REPO_FILE_NAME} /etc/yum.repos.d/${NEO4J_REPO_FILE_NAME}
+    sudo rpm --import ${NEO4J_GPG_KEY_URL}
+    sudo dnf install -y --enablerepo=${NEO4J_NAME} ${NEO4J_NAME}-${NEO4J_VERSION}
 }

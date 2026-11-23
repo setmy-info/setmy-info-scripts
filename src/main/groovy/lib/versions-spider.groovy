@@ -1343,6 +1343,91 @@ class FlowableDriverExecute extends DriverExecuteBase implements DriverExecute, 
     }
 }
 
+/**
+ * Newest version of a package in the metadata of a yum repository: repomd.xml names primary.xml.gz, which lists
+ * every package with its version and release. For download pages that are built by JS.
+ */
+class YumMetadata {
+    static Map newest(String baseUrl, String packageName, String arch) {
+        def repomd = new URL(baseUrl + "repodata/repomd.xml").text
+        def primary = (repomd =~ /href="(repodata\/[^"]*primary\.xml\.gz)"/)[0][1]
+        def xml = new java.util.zip.GZIPInputStream(new URL(baseUrl + primary).openStream()).getText("UTF-8")
+        def pattern = ~("<name>" + java.util.regex.Pattern.quote(packageName) + "</name>\\s*<arch>"
+            + java.util.regex.Pattern.quote(arch) + "</arch>\\s*<version epoch=\"\\d+\" ver=\"([^\"]+)\" rel=\"([^\"]+)\"")
+        def releases = (xml =~ pattern).collect { [version: it[1], release: it[2]] }
+        if (!releases) throw new RuntimeException("No ${packageName} ${arch} package found in ${baseUrl}")
+        return releases.max { a, b ->
+            def vA = a.version.split("\\.").collect { it.toInteger() }
+            def vB = b.version.split("\\.").collect { it.toInteger() }
+            for (int i = 0; i < Math.max(vA.size(), vB.size()); i++) {
+                def diff = (i < vA.size() ? vA[i] : 0) <=> (i < vB.size() ? vB[i] : 0)
+                if (diff != 0) return diff
+            }
+            return a.release.toInteger() <=> b.release.toInteger()
+        }
+    }
+}
+
+class Neo4jDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // The deployment center page is built by JS, the yum repository lists every release of the stable/latest
+        // line instead. neo4j is the community package, neo4j-enterprise the enterprise one.
+        // https://dist.neo4j.org/rpm/neo4j-2026.10.2-1.noarch.rpm
+        def last = YumMetadata.newest(getUrl(), "neo4j", "noarch")
+        println "https://dist.neo4j.org/rpm/neo4j-${last.version}-${last.release}.noarch.rpm"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://yum.neo4j.com/stable/latest/"
+    }
+
+    @Override
+    String getName() {
+        return "neo4j"
+    }
+}
+
+class OpensearchDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // The downloads page is built by JS, the yum repository of the 3.x line lists every release instead.
+        // https://artifacts.opensearch.org/releases/bundle/opensearch/3.10.0/opensearch-3.10.0-linux-x64.rpm
+        def last = YumMetadata.newest(getUrl(), "opensearch", "x86_64")
+        println "https://artifacts.opensearch.org/releases/bundle/opensearch/${last.version}/opensearch-${last.version}-linux-x64.rpm"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://artifacts.opensearch.org/releases/bundle/opensearch/3.x/yum/"
+    }
+
+    @Override
+    String getName() {
+        return "opensearch"
+    }
+}
+
+class OpensearchDashboardDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        // https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/3.10.0/opensearch-dashboards-3.10.0-linux-x64.rpm
+        def last = YumMetadata.newest(getUrl(), "opensearch-dashboards", "x86_64")
+        println "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${last.version}/opensearch-dashboards-${last.version}-linux-x64.rpm"
+    }
+
+    @Override
+    String getUrl() {
+        return "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/3.x/yum/"
+    }
+
+    @Override
+    String getName() {
+        return "opensearch-dashboard"
+    }
+}
+
 class GitFlowNextDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url, Search {
     @Override
     void execute(WebDriver driver) {
@@ -2046,6 +2131,9 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new CmDriverExecute(), rulesRegister)
     fillWithRules(new ZeebeDriverExecute(), rulesRegister)
     fillWithRules(new FlowableDriverExecute(), rulesRegister)
+    fillWithRules(new Neo4jDriverExecute(), rulesRegister)
+    fillWithRules(new OpensearchDriverExecute(), rulesRegister)
+    fillWithRules(new OpensearchDashboardDriverExecute(), rulesRegister)
     fillWithRules(new GitFlowNextDriverExecute(), rulesRegister)
     fillWithRules(new GraphvizDriverExecute(), rulesRegister)
     fillWithRules(new InnosetupDriverExecute(), rulesRegister)

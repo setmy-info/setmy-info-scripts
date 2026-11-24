@@ -44,6 +44,19 @@ These privileges reach the tables, sequences and functions the Liquibase user cr
 through default privileges, so no grant is needed after a migration. Other roles of the server
 can not connect to the database, and functions created there are not executable by
 .B PUBLIC .
+.PP
+The SQL ends with
+.BR "CREATE EXTENSION IF NOT EXISTS postgis" ,
+in the new database. PostGIS is not a trusted extension, so the Liquibase user can not create it
+itself; a changelog with the same statement finds it already there. The PostGIS package of the
+PostgreSQL server has to be installed on the machine before, for example
+.B postgis
+of the distribution or
+.B postgis36_18
+of the PostgreSQL repository for PostgreSQL 18, otherwise
+.B psql
+stops there with
+.BR "extension \(dqpostgis\(dq is not available" .
 .SH ARGUMENTS
 .TP
 .I NAME

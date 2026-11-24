@@ -57,6 +57,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-create-vhost"           DESTINATION
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-nginx-flatten"          DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-nginx-fix-content"      DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-nginx-fix-permissions"  DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-format"                 DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-forward"                DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-pentest-gather"         DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-restorecon"             DESTINATION bin)

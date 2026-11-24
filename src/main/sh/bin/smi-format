@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Imre Tabur <imre.tabur@mail.ee>
+
+set -eu
+
+usage() {
+    echo "Usage: $0 PATH..." >&2
+    exit 1
+}
+
+die() {
+    echo "ERROR: $*" >&2
+    exit 1
+}
+
+[ "$#" -ge 1 ] || usage
+
+FORMATTER="${SMI_IDEA_HOME:-/opt/idea}/bin/format.sh"
+[ -x "$FORMATTER" ] || die "$FORMATTER not found, install the idea package."
+
+for FORMAT_PATH in "$@"; do
+    [ -e "$FORMAT_PATH" ] || die "Not found: $FORMAT_PATH"
+done
+
+STATUS_FILE=$(mktemp)
+trap 'rm -f "$STATUS_FILE"' EXIT
+echo 0 > "$STATUS_FILE"
+
+{
+    find "$@" \
+        \( -type d \( \
+            -name .git -o -name .hg -o -name .svn \
+            -o -name .idea -o -name .vscode \
+            -o -name target -o -name build -o -name out -o -name dist \
+            -o -name .gradle -o -name .mvn -o -name node_modules \
+            -o -name .venv -o -name venv -o -name __pycache__ -o -name '*.egg-info' -o -name .eggs \
+            -o -name .tox -o -name .mypy_cache -o -name .pytest_cache -o -name .ruff_cache -o -name .ipynb_checkpoints \
+            -o -name .cpcache -o -name .shadow-cljs -o -name .clj-kondo -o -name .lsp -o -name .calva -o -name .cache \
+        \) -prune \) \
+        -o \( -type f \
+            ! -name '*.min.js' ! -name '*.min.css' ! -name package-lock.json \
+            \( \
+                -name '*.java' -o -name '*.kt' -o -name '*.kts' -o -name '*.groovy' -o -name '*.gradle' \
+                -o -name Jenkinsfile -o -name '*.properties' -o -name '*.xml' -o -name '*.xsd' \
+                -o -name '*.py' -o -name '*.pyi' -o -name '*.pyw' \
+                -o -name '*.clj' -o -name '*.cljs' -o -name '*.cljc' -o -name '*.cljd' -o -name '*.edn' -o -name '*.bb' \
+                -o -name '*.lisp' -o -name '*.lsp' -o -name '*.cl' -o -name '*.asd' \
+                -o -name '*.json' -o -name '*.yaml' -o -name '*.yml' -o -name '*.toml' -o -name '*.md' \
+                -o -name '*.sql' -o -name '*.sh' \
+                -o -name '*.html' -o -name '*.htm' -o -name '*.css' -o -name '*.js' \
+            \) \
+            -exec "$FORMATTER" -allowDefaults {} + \) \
+        || echo "$?" > "$STATUS_FILE"
+} 2>&1 | awk '
+    /^Formatting .*\.\.\.OK$/ {
+        sub(/^Formatting /, "")
+        sub(/\.\.\.OK$/, "")
+        print
+        fflush()
+        next
+    }
+    /^Formatting / || /Formatter$/ || /^[0-9]+ file\(s\) / || /^$/ {
+        next
+    }
+    {
+        print | "cat 1>&2"
+    }
+'
+
+exit "$(cat "$STATUS_FILE")"

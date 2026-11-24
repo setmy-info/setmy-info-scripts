@@ -1,0 +1,169 @@
+.TH smi-format "1" "November 2026" "SMI Toolset" "SMI Base Command"
+.SH NAME
+smi-format \- Format the source files of a project recursively
+.SH SYNOPSIS
+.B smi-format
+.IR PATH ...
+.SH DESCRIPTION
+.PP
+.B smi-format
+finds, under every
+.IR PATH ,
+recursively, the source and configuration files a Java, Python, Clojure or Common Lisp project
+contains, formats them in place, and prints the path of each formatted file on its own line.
+A
+.I PATH
+is usually the project directory; a single file is formatted too when its name is in the list
+below.
+.PP
+The formatter is the command line formatter of IntelliJ IDEA,
+.IR /opt/idea/bin/format.sh ,
+which the
+.B idea
+package installs. The file list, the directories left out and the output stay the same if the
+formatter is replaced, so a script or a habit that uses
+.B smi-format
+does not depend on it.
+.PP
+The code style is that of the IDEA project the file belongs to, from its
+.I .idea
+directory, and the IDEA defaults for a file outside any IDEA project.
+All the found files are given to one run of the formatter, which takes some
+seconds to start.
+.SH FILES FORMATTED
+.TP
+Java and the JVM
+.IR *.java ,
+.IR *.kt ,
+.IR *.kts ,
+.IR *.groovy ,
+.IR *.gradle ,
+.IR Jenkinsfile ,
+.IR *.properties ,
+.IR *.xml ,
+.I *.xsd
+.TP
+Python
+.IR *.py ,
+.IR *.pyi ,
+.I *.pyw
+.TP
+Clojure
+.IR *.clj ,
+.IR *.cljs ,
+.IR *.cljc ,
+.IR *.cljd ,
+.IR *.edn ,
+.I *.bb
+.TP
+Common Lisp
+.IR *.lisp ,
+.IR *.lsp ,
+.IR *.cl ,
+.I *.asd
+.TP
+Common to all
+.IR *.json ,
+.IR *.yaml ,
+.IR *.yml ,
+.IR *.toml ,
+.IR *.md ,
+.IR *.sql ,
+.IR *.sh ,
+.IR *.html ,
+.IR *.htm ,
+.IR *.css ,
+.I *.js
+.PP
+Left out are minified
+.I *.min.js
+and
+.I *.min.css
+files and
+.IR package-lock.json ,
+which are generated.
+.SH DIRECTORIES LEFT OUT
+.PP
+Version control, IDE, build output, dependency and cache directories, wherever they are under
+.IR PATH ,
+because what they hold is not source, or is not the project's own:
+.IR .git ,
+.IR .hg ,
+.IR .svn ,
+.IR .idea ,
+.IR .vscode ,
+.IR target ,
+.IR build ,
+.IR out ,
+.IR dist ,
+.IR .gradle ,
+.IR .mvn ,
+.IR node_modules ,
+.IR .venv ,
+.IR venv ,
+.IR __pycache__ ,
+.IR *.egg-info ,
+.IR .eggs ,
+.IR .tox ,
+.IR .mypy_cache ,
+.IR .pytest_cache ,
+.IR .ruff_cache ,
+.IR .ipynb_checkpoints ,
+.IR .cpcache ,
+.IR .shadow-cljs ,
+.IR .clj-kondo ,
+.IR .lsp ,
+.I .calva
+and
+.IR .cache .
+.SH OUTPUT
+.PP
+Standard output lists the absolute path of each formatted file, one per line, as the formatter
+reaches it. A file already in style is listed too, as the formatter reports it the same way.
+A file the formatter has no support for is not listed: IntelliJ IDEA formats Python only with the
+Python plugin, Clojure only with a Clojure plugin such as Cursive, and has no Common Lisp
+formatter, so with a bare installation those files are found but left as they are.
+Messages of the formatter, other than its banner and counts, go to standard error.
+.SH ENVIRONMENT
+.TP
+.B SMI_IDEA_HOME
+The IntelliJ IDEA installation,
+.I /opt/idea
+by default.
+.SH EXIT STATUS
+.TP
+.B 0
+Every found file was given to the formatter, and it succeeded. Also when nothing was found.
+.TP
+.B 1
+No
+.IR PATH ,
+a
+.I PATH
+that does not exist, or no formatter installed.
+.TP
+.B other
+The status of the formatter.
+.SH EXAMPLES
+.PP
+Format a project and see what was formatted:
+.RS
+.nf
+smi-format ~/sources/my-project
+.fi
+.RE
+.PP
+Format two modules and count the files:
+.RS
+.nf
+smi-format api client | wc -l
+.fi
+.RE
+.SH NOTES
+.PP
+The files are changed in place. Commit, or otherwise keep, the work before the first run, so the
+changes of the formatter can be reviewed.
+.SH SEE ALSO
+.BR smi-install-package (1)
+.SH AUTHOR
+setmy.info

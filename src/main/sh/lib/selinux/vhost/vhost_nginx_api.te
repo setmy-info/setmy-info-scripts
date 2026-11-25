@@ -1,0 +1,9 @@
+module vhost_nginx_api 1.0.0;
+
+require {
+    type httpd_t;
+    type vhost_api_port_t;
+    class tcp_socket name_connect;
+}
+
+allow httpd_t vhost_api_port_t:tcp_socket name_connect;

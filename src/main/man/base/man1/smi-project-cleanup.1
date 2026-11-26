@@ -44,6 +44,18 @@ Renames \fIFROM\fR to \fITO\fR when \fIFROM\fR exists.
 .BI projectReplaceInFile " FILE FROM TO"
 Replaces every \fIFROM\fR (a sed regular expression, without |) with \fITO\fR in \fIFILE\fR.
 .TP
+.BI projectReplaceWordInFile " FILE FROM TO"
+Replaces \fIFROM\fR, taken literally, with \fITO\fR in \fIFILE\fR only where it stands as a whole word:
+neither the character before nor the one after is a letter, digit, _ or \-. So app is renamed in
+app.jar or /app/, but not in my\-app or app\-api, and running it again changes nothing.
+.TP
+.BI projectRemoveXmlElement " FILE TAG " [ TEXT ]
+Removes each element <\fITAG\fR>...</\fITAG\fR> of \fIFILE\fR that starts on a line of its own, or
+with \fITEXT\fR only those that contain \fITEXT\fR, such as one plugin of a pom by its artifactId.
+.TP
+.BI projectWriteFile " FILE CONTENT"
+Writes \fICONTENT\fR into \fIFILE\fR.
+.TP
 .BI projectDeleteLinesInFile " FILE PATTERN" ...
 Deletes the lines of \fIFILE\fR that match a \fIPATTERN\fR (a sed regular expression, without |).
 .TP

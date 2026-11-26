@@ -32,8 +32,8 @@ The command fails if an argument is missing, if \fIPRIVATE_REPOS_URL\fR is not a
 and a folder, if the project name is empty, has a slash or starts with a dot, or if
 \&./\fINEW_PROJECT_NAME\fR already exists.
 .PP
-The template code is left as it is. A cleanup of the copy, such as \fBsmi-project-cleanup\fR of the
-Spring Boot template app, is a separate step.
+The template code is left as it is. Cleaning up and renaming the copy is the next step, done by
+\fBsmi-project-cleanup\fR(1) in ./\fINEW_PROJECT_NAME\fR.
 .SH OPTIONS
 .TP
 \fINEW_PROJECT_NAME\fR
@@ -83,4 +83,5 @@ Report bugs to \fIimre.tabur@mail.ee\fR
 .BR git-clone (1),
 .BR git-remote (1),
 .BR git-push (1),
-.BR smi-new-tag (1)
+.BR smi-new-tag (1),
+.BR smi-project-cleanup (1)

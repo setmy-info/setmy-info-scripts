@@ -121,6 +121,7 @@ INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-neo4j-query"              DESTINATI
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-aws-eks-create-tf"        DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-sendmail"               DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-new-tag"                DESTINATION bin)
+INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/smi-project-cleanup"        DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/tab"                        DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/tabs"                       DESTINATION bin)
 INSTALL(PROGRAMS  "${BINARY_OUTPUT_PATH}/jira"                       DESTINATION bin)

@@ -1,0 +1,102 @@
+.TH smi-project-cleanup "1" "November 2026" "SMI Toolset 0.156.0" "SMI Project Command"
+.SH NAME
+smi-project-cleanup \- clean up and rename a new project made from a template
+.SH SYNOPSIS
+.B smi-project-cleanup
+.SH DESCRIPTION
+.PP
+The \fBsmi-project-cleanup\fR command is run in the root folder of a new project, normally one made by
+\fBsmi-project-prepare\fR(1). It takes no arguments. The project says what to do in the file
+\fB.smi-project-cleanup\fR of that folder, a shell file that the command includes.
+.PP
+The command runs two stages, in this order:
+.IP 1. 4
+\fBcleanup\fR: the function \fBdoCleanup\fR of the file, removing what the new project does not need.
+.IP 2. 4
+\fBrename\fR: the function \fBdoRename\fR of the file, renaming the template names to the new project.
+.PP
+A stage whose function the file does not define is skipped, so a project implements only what it needs.
+The command stops on the first failing command.
+.SH "THE .smi-project-cleanup FILE"
+.PP
+\fBdoCleanup\fR and \fBdoRename\fR call one small function per step through \fBprojectStep\fR, which
+prints the stage and the step name before it runs it, so the output lists every step done. The helper
+functions of the library \fBproject.sh\fR are available:
+.TP
+.B projectName
+The name of the new project: the name of the current folder.
+.TP
+.BI projectStep " FUNCTION " [ ARGUMENT ...]
+Prints the stage and the step name, and runs it.
+.TP
+.BI projectRemove " PATH" ...
+Removes files and folders recursively, a missing one is no error.
+.TP
+.BI projectRemoveExcept " KEEP PATH" ...
+Removes every \fIPATH\fR whose file name is not \fIKEEP\fR.
+.TP
+.BI projectRemoveEmptyFile " FILE"
+Removes \fIFILE\fR when it is empty.
+.TP
+.BI projectRename " FROM TO"
+Renames \fIFROM\fR to \fITO\fR when \fIFROM\fR exists.
+.TP
+.BI projectReplaceInFile " FILE FROM TO"
+Replaces every \fIFROM\fR (a sed regular expression, without |) with \fITO\fR in \fIFILE\fR.
+.TP
+.BI projectDeleteLinesInFile " FILE PATTERN" ...
+Deletes the lines of \fIFILE\fR that match a \fIPATTERN\fR (a sed regular expression, without |).
+.TP
+.BI projectEditFile " FILE COMMAND " [ ARGUMENT ...]
+Runs \fICOMMAND\fR, such as sed or awk, with \fIFILE\fR as standard input and writes its output back
+into \fIFILE\fR.
+.TP
+.BI projectRemoveMavenModulesWithoutFolder " DIRECTORY"
+Removes the <module> lines of \fIDIRECTORY\fR/pom.xml whose module folder does not exist.
+.TP
+.B projectRemoveGitSubmodulesWithoutFolder
+Removes the entries of .gitmodules whose path does not exist, and .gitmodules when it is left empty.
+.PP
+Every helper edits nothing when its file is missing, so the steps can be run again.
+.SH EXAMPLES
+.PP
+A .smi-project-cleanup that removes the folder attic and renames the folder example-app to the project
+name:
+.PP
+.nf
+removeAttic() {
+    projectRemove attic
+}
+
+renameApp() {
+    projectRename example-app "$(projectName)"
+}
+
+doCleanup() {
+    projectStep removeAttic
+}
+
+doRename() {
+    projectStep renameApp
+}
+.fi
+.PP
+Run in the project root folder:
+.PP
+.B cd myproject && smi-project-cleanup
+.PP
+It prints:
+.PP
+.nf
+cleanup: removeAttic
+rename: renameApp
+.fi
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-project-prepare (1)

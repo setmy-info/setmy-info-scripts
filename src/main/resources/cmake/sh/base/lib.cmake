@@ -22,6 +22,7 @@ INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/python.sh"                     DESTINATION
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/clojure.sh"                    DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/crypto.sh"                     DESTINATION lib)
 INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/pki.sh"                        DESTINATION lib)
+INSTALL(FILES "${LIBRARY_OUTPUT_PATH}/project.sh"                    DESTINATION lib)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/half-past"                 DESTINATION lib USE_SOURCE_PERMISSIONS)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/selinux"                   DESTINATION lib)
 INSTALL(DIRECTORY "${LIBRARY_OUTPUT_PATH}/gathering"                 DESTINATION lib)

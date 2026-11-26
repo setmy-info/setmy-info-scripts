@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -eu
+
+. "$(smi-include project.sh)"
+
+main() {
+    . ./.smi-project-cleanup
+    projectRunStage cleanup doCleanup
+    projectRunStage rename doRename
+}
+
+main "$@"

@@ -35,6 +35,10 @@ Removes files and folders recursively, a missing one is no error.
 .BI projectRemoveExcept " KEEP PATH" ...
 Removes every \fIPATH\fR whose file name is not \fIKEEP\fR.
 .TP
+.BI projectRemoveEmptyFolders " FOLDER" ...
+Removes each \fIFOLDER\fR that is empty, in the order given, so a folder emptied by the one before it
+goes too.
+.TP
 .BI projectRemoveEmptyFile " FILE"
 Removes \fIFILE\fR when it is empty.
 .TP
@@ -70,6 +74,11 @@ Removes the <module> lines of \fIDIRECTORY\fR/pom.xml whose module folder does n
 Renames the artifactId and the name \fIFROM\fR to \fITO\fR in every \fIPOM\fR: the module itself and the
 dependencies on it, so the new project installs its own artifacts beside the template ones in the local
 Maven repository instead of overwriting them.
+.TP
+.BI projectRemoveGitignoreEntriesWithoutFolder " " [ FILE ]
+Removes the entries of \fIFILE\fR, default .gitignore, that are paths into a folder that does not exist,
+such as removed/build/ when removed is gone. Patterns without a folder, such as target/ or **/*.log, stay.
+A section, the lines between empty lines, whose entries are all removed goes with its comment lines.
 .TP
 .B projectRemoveGitSubmodulesWithoutFolder
 Removes the entries of .gitmodules whose path does not exist, and .gitmodules when it is left empty.

@@ -37,6 +37,12 @@ projectRemoveExcept() {
     done
 }
 
+projectRemoveEmptyFolders() {
+    for project_folder in "$@"; do
+        [ -d "${project_folder}" ] && rmdir "${project_folder}" 2>/dev/null || :
+    done
+}
+
 projectRemoveEmptyFile() {
     [ -s "$1" ] || rm -f "$1"
 }
@@ -108,6 +114,30 @@ projectRenameMavenArtifact() {
         projectReplaceInFile "${project_pom}" "<artifactId>${project_from}</artifactId>" "<artifactId>${project_to}</artifactId>"
         projectReplaceInFile "${project_pom}" "<name>${project_from}</name>" "<name>${project_to}</name>"
     done
+}
+
+projectRemoveGitignoreEntriesWithoutFolder() {
+    projectEditFile "${1:-.gitignore}" awk '
+        function emit(text) {
+            if (text == "") { if (!lastBlank) print ""; lastBlank = 1 }
+            else { printf "%s", text; lastBlank = 0 }
+        }
+        function flush() {
+            if (buf != "" && !(dropped > 0 && kept == 0)) emit(buf)
+            buf = ""; kept = 0; dropped = 0
+        }
+        function folderMissing(line,    first) {
+            first = line
+            sub(/^\//, "", first)
+            if (first !~ /^[A-Za-z0-9._-]+\/./) return 0
+            sub(/\/.*/, "", first)
+            return system("test -e \"" first "\"") != 0
+        }
+        /^[ \t]*$/ { flush(); emit(""); next }
+        /^[ \t]*[#!]/ { buf = buf $0 "\n"; next }
+        folderMissing($0) { dropped++; next }
+        { kept++; buf = buf $0 "\n" }
+        END { flush() }'
 }
 
 projectRemoveGitSubmodulesWithoutFolder() {

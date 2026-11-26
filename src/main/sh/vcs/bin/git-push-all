@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+BRANCH="$(git symbolic-ref --short HEAD)"
+STATUS=0
+
+for REMOTE in $(git remote); do
+    PUSH_URL="$(git remote get-url --push "${REMOTE}")"
+    case "${PUSH_URL}" in
+        DISABLED|disabled|no_push|no-push)
+            echo "${REMOTE}: push disabled, skipped"
+            continue
+            ;;
+    esac
+    echo "${REMOTE}: git push ${REMOTE} ${BRANCH}"
+    git push "${REMOTE}" "${BRANCH}" || STATUS=1
+done
+
+exit "${STATUS}"

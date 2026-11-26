@@ -1,0 +1,25 @@
+.TH git-state "1" "November 2026" "SMI Toolset 0.156.0" "SMI Git Command"
+.SH NAME
+git-state \- show the branches and the working tree status of a Git repository
+.SH SYNOPSIS
+.B git state
+.SH DESCRIPTION
+.PP
+The \fBgit state\fR command shows the local branches, the current one marked, and then the status of the
+working tree, the same as \fBgit branch\fR followed by \fBgit status\fR.
+.PP
+Git runs it as a subcommand because the executable \fBgit-state\fR is in the \fBPATH\fR.
+.SH EXAMPLES
+.PP
+.B git state
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR git-branch (1),
+.BR git-status (1),
+.BR git-save (1)

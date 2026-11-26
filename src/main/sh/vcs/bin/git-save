@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+if [ "$#" -ne 1 ] || [ -z "$1" ]; then
+    echo "Usage: git save \"COMMIT MESSAGE\"" >&2
+    exit 1
+fi
+
+git state
+git add .
+git commit -m "$1"
+git push

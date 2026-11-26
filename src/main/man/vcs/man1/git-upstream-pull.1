@@ -1,0 +1,49 @@
+.TH git-upstream-pull "1" "November 2026" "SMI Toolset 0.156.0" "SMI Git Command"
+.SH NAME
+git-upstream-pull \- merge the changes of the template repository into the current branch
+.SH SYNOPSIS
+.B git upstream-pull
+.SH DESCRIPTION
+.PP
+The \fBgit upstream-pull\fR command is for a private project made from a template by
+\fBsmi-project-prepare\fR(1), where the template is the remote \fBupstream\fR. It brings the later
+changes of the template into the project:
+.IP 1. 4
+\fBgit fetch \-\-prune upstream\fR.
+.IP 2. 4
+\fBgit merge \-\-no\-edit upstream/master\fR into the checked out branch, with the default merge message.
+.PP
+On a merge conflict Git stops as with any merge: resolve the files, then \fBgit add\fR and
+\fBgit commit\fR, or \fBgit merge \-\-abort\fR. Nothing is pushed, \fBgit push\fR or \fBgit save\fR
+publishes the merge to \fBorigin\fR afterwards.
+.PP
+The project cleanup of \fBsmi-project-cleanup\fR(1) is part of the project history, so files removed
+there stay removed. A file the template changed after the cleanup removed it gives a modify/delete
+conflict: \fBgit rm\fR it to keep it removed.
+.PP
+Pushing to the template is not done: its push URL is \fBDISABLED\fR, so the private code can not reach
+it by accident.
+.PP
+Git runs it as a subcommand because the executable \fBgit-upstream-pull\fR is in the \fBPATH\fR.
+.SH EXAMPLES
+.PP
+Merge the template changes into develop and publish them:
+.PP
+.nf
+.B git checkout develop
+.B git upstream-pull
+.B git push
+.fi
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR git-fetch (1),
+.BR git-merge (1),
+.BR git-pull-all (1),
+.BR smi-project-prepare (1),
+.BR smi-project-cleanup (1)

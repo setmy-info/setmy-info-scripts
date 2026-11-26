@@ -1,0 +1,51 @@
+.TH git-pull-all "1" "November 2026" "SMI Toolset 0.156.0" "SMI Git Command"
+.SH NAME
+git-pull-all \- update every local branch from its upstream branch, whichever branch is checked out
+.SH SYNOPSIS
+.B git pull-all
+.SH DESCRIPTION
+.PP
+The \fBgit pull-all\fR command brings every local branch that has a remote upstream branch up to date,
+without checking any of them out. On the branch \fBother\fR, it updates the local \fBmaster\fR from
+origin/master and the local \fBother\fR from origin/other.
+.IP 1. 4
+\fBgit fetch \-\-all \-\-prune\fR: fetches every remote.
+.IP 2. 4
+For each local branch, printing the branch and the command first:
+.RS
+.IP \[bu] 2
+the checked out branch: \fBgit merge \-\-ff\-only @{upstream}\fR, so the working tree is updated too;
+.IP \[bu] 2
+any other branch: \fBgit fetch\fR \fIREMOTE REMOTE_BRANCH\fR:\fIBRANCH\fR, which moves the branch
+without touching the working tree;
+.IP \[bu] 2
+a branch without a remote upstream branch is skipped.
+.RE
+.PP
+Only fast-forwards are made: a branch that has commits of its own, not on its upstream branch, is left as
+it is and reported by Git. Then rebase or merge it by hand. When one branch fails, the others are still
+updated and the command exits with status 1.
+.PP
+Git runs it as a subcommand because the executable \fBgit-pull-all\fR is in the \fBPATH\fR.
+.SH EXAMPLES
+.PP
+.B git pull-all
+.PP
+On the branch other, it prints after the fetch:
+.PP
+.nf
+master: git fetch origin refs/heads/master:refs/heads/master
+other: git merge \-\-ff\-only origin/other
+.fi
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR git-fetch (1),
+.BR git-merge (1),
+.BR git-pull (1),
+.BR git-push-all (1)

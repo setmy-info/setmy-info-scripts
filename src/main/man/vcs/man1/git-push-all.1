@@ -1,0 +1,43 @@
+.TH git-push-all "1" "November 2026" "SMI Toolset 0.156.0" "SMI Git Command"
+.SH NAME
+git-push-all \- push the current branch to every remote that allows pushing
+.SH SYNOPSIS
+.B git push-all
+.SH DESCRIPTION
+.PP
+The \fBgit push-all\fR command pushes the current branch to each remote of the repository with
+\fBgit push\fR \fIREMOTE BRANCH\fR, one after the other, printing the remote before each push.
+.PP
+A remote whose push URL is \fBDISABLED\fR (or disabled, no_push, no-push) is skipped. That is how
+\fBsmi-project-prepare\fR(1) protects the template remote \fBupstream\fR:
+.PP
+.B git remote set-url --push upstream DISABLED
+.PP
+When one push fails, the others are still tried and the command exits with status 1. It fails at once
+when no branch is checked out (detached HEAD).
+.PP
+Git runs it as a subcommand because the executable \fBgit-push-all\fR is in the \fBPATH\fR.
+.SH EXAMPLES
+.PP
+.B git push-all
+.PP
+In a project made by \fBsmi-project-prepare\fR(1), on master, it prints:
+.PP
+.nf
+origin: git push origin master
+\&...
+upstream: push disabled, skipped
+.fi
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR git-push (1),
+.BR git-remote (1),
+.BR git-pull-all (1),
+.BR git-save (1),
+.BR smi-project-prepare (1)

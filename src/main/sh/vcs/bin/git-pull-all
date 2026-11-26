@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -e
+
+CURRENT="$(git symbolic-ref --quiet --short HEAD || :)"
+
+git fetch --all --prune
+
+git for-each-ref --format='%(refname:short) %(upstream:remotename) %(upstream:remoteref)' refs/heads | {
+    STATUS=0
+    while read -r BRANCH REMOTE REMOTE_REF; do
+        if [ -z "${REMOTE}" ] || [ "${REMOTE}" = "." ]; then
+            echo "${BRANCH}: no remote upstream, skipped"
+        elif [ "${BRANCH}" = "${CURRENT}" ]; then
+            echo "${BRANCH}: git merge --ff-only ${REMOTE}/${REMOTE_REF#refs/heads/}"
+            git merge --ff-only "@{upstream}" || STATUS=1
+        else
+            echo "${BRANCH}: git fetch ${REMOTE} ${REMOTE_REF}:refs/heads/${BRANCH}"
+            git fetch "${REMOTE}" "${REMOTE_REF}:refs/heads/${BRANCH}" || STATUS=1
+        fi
+    done
+    exit "${STATUS}"
+}

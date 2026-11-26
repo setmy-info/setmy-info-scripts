@@ -1,0 +1,41 @@
+.TH git-save "1" "November 2026" "SMI Toolset 0.156.0" "SMI Git Command"
+.SH NAME
+git-save \- show the state, commit all changes and push them
+.SH SYNOPSIS
+.B git save
+\fIMESSAGE\fR
+.SH DESCRIPTION
+.PP
+The \fBgit save\fR command saves the work of the current folder to the remote in one go:
+.IP 1. 4
+\fBgit state\fR: the branches and the working tree status, before anything is changed.
+.IP 2. 4
+\fBgit add .\fR: every change of the current folder and below it, new files included.
+.IP 3. 4
+\fBgit commit \-m\fR \fIMESSAGE\fR.
+.IP 4. 4
+\fBgit push\fR: to the push target of the current branch.
+.PP
+It stops on the first failing step, so nothing is pushed when there is nothing to commit or the commit
+fails. The message is required and is one argument, so it is quoted when it has spaces.
+.PP
+Git runs it as a subcommand because the executable \fBgit-save\fR is in the \fBPATH\fR.
+.SH OPTIONS
+.TP
+\fIMESSAGE\fR
+The commit message.
+.SH EXAMPLES
+.PP
+.B git save \(dqparandasin harude skripti\(dq
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR git-state (1),
+.BR git-add (1),
+.BR git-commit (1),
+.BR git-push (1)

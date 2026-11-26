@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+TEMPLATE_REMOTE=upstream
+TEMPLATE_BRANCH=master
+
+git fetch --prune "${TEMPLATE_REMOTE}"
+echo "$(git symbolic-ref --short HEAD): git merge --no-edit ${TEMPLATE_REMOTE}/${TEMPLATE_BRANCH}"
+git merge --no-edit "${TEMPLATE_REMOTE}/${TEMPLATE_BRANCH}"

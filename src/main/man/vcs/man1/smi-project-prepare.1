@@ -23,7 +23,8 @@ and
 .BR "push.default simple" .
 .IP \[bu] 2
 Sets the push URL of \fBupstream\fR to \fBDISABLED\fR, so a push to the template fails. Fetching from
-the template still works, so its later changes can be merged into the new project.
+the template still works, so its later changes can be merged into the new project with
+\fBgit upstream-pull\fR(1).
 .IP \[bu] 2
 Pushes \fBmaster\fR to \fBorigin\fR and sets it as the upstream branch, then prints the remotes, the
 branches and the local Git configuration.
@@ -84,4 +85,5 @@ Report bugs to \fIimre.tabur@mail.ee\fR
 .BR git-remote (1),
 .BR git-push (1),
 .BR smi-new-tag (1),
-.BR smi-project-cleanup (1)
+.BR smi-project-cleanup (1),
+.BR git-upstream-pull (1)

@@ -2042,6 +2042,26 @@ class ForgejoDriverExecute extends DriverExecuteBase implements DriverExecute, N
     }
 }
 
+class MiseDriverExecute extends DriverExecuteBase implements DriverExecute, Name, Url {
+    @Override
+    void execute(WebDriver driver) {
+        def json = new groovy.json.JsonSlurper().parseText(new URL(getUrl()).text)
+        def asset = json.assets.find { it.name ==~ /mise-v\d+\.\d+\.\d+-linux-x64\.tar\.gz/ }
+        if (!asset) throw new RuntimeException("No mise linux x64 tar.gz found in latest release")
+        println asset.browser_download_url
+    }
+
+    @Override
+    String getUrl() {
+        return "https://api.github.com/repos/jdx/mise/releases/latest"
+    }
+
+    @Override
+    String getName() {
+        return "mise"
+    }
+}
+
 
 static void main(String[] args) {
     final OperatingSystem operatingSystem = new OperatingSystem()
@@ -2159,6 +2179,7 @@ static RulesRegister fillWithRules(RulesRegister rulesRegister) {
     fillWithRules(new FreenginxDriverExecute(), rulesRegister)
     fillWithRules(new SaplingDriverExecute(), rulesRegister)
     fillWithRules(new ForgejoDriverExecute(), rulesRegister)
+    fillWithRules(new MiseDriverExecute(), rulesRegister)
     return rulesRegister
 }
 

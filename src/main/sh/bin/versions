@@ -21,6 +21,8 @@ julia --version
 echo ######################
 janet --version
 echo ######################
+mise --version
+echo ######################
 sbcl --version
 echo ######################
 bazel version

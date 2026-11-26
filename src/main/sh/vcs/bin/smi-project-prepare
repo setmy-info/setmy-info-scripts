@@ -1,0 +1,81 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+    cat <<EOF
+Usage: $(basename "$0") NEW_PROJECT_NAME TEMPLATE_REPO_URL PRIVATE_REPOS_DIR
+
+Makes a new private project from a public template repository:
+  - creates the bare repository PRIVATE_REPOS_DIR/NEW_PROJECT_NAME.git on the private repository host (ssh)
+  - clones TEMPLATE_REPO_URL into ./NEW_PROJECT_NAME, the template remote is "upstream"
+  - adds the private repository as "origin", the default push target
+  - disables pushing to upstream, so nothing goes to the template repository by accident
+  - pushes master to origin
+
+  NEW_PROJECT_NAME      name of the new project: local folder and private repository name
+  TEMPLATE_REPO_URL     git URL of the template repository the new project starts from
+  PRIVATE_REPOS_DIR     folder of the bare repositories on the private repository host
+
+Environment:
+  SMI_PRIVATE_REPO_HOST private repository host, [user@]host, required
+
+Example:
+  SMI_PRIVATE_REPO_HOST=git.example.com $(basename "$0") myproject \\
+      git@github.com:setmy-info/setmy.info.git /srv/git/projects
+  makes ./myproject with origin git.example.com:/srv/git/projects/myproject.git
+EOF
+}
+
+if [ "$#" -ne 3 ]; then
+    usage >&2
+    exit 1
+fi
+
+NEW_PROJECT_NAME="$1"
+TEMPLATE_REPO_URL="$2"
+PRIVATE_REPOS_DIR="$3"
+PRIVATE_REPO_HOST="${SMI_PRIVATE_REPO_HOST:-}"
+PRIVATE_REPO_PATH="${PRIVATE_REPOS_DIR}/${NEW_PROJECT_NAME}.git"
+PRIVATE_REPO_URL="${PRIVATE_REPO_HOST}:${PRIVATE_REPO_PATH}"
+TEMPLATE_REMOTE=upstream
+PRIVATE_REMOTE=origin
+TEMPLATE_BRANCH=master
+PRIVATE_BRANCH=master
+
+if [ -z "${PRIVATE_REPO_HOST}" ]; then
+    echo "$(basename "$0"): SMI_PRIVATE_REPO_HOST is not set" >&2
+    usage >&2
+    exit 1
+fi
+
+case "${PRIVATE_REPO_HOST}" in
+    */*|*:*)
+        echo "$(basename "$0"): SMI_PRIVATE_REPO_HOST is [user@]host only, not a URL or path: ${PRIVATE_REPO_HOST}" >&2
+        exit 1
+        ;;
+esac
+
+case "${NEW_PROJECT_NAME}" in
+    ""|*/*|.*)
+        echo "$(basename "$0"): invalid project name: ${NEW_PROJECT_NAME}" >&2
+        exit 1
+        ;;
+esac
+
+if [ -e "${NEW_PROJECT_NAME}" ]; then
+    echo "$(basename "$0"): ${PWD}/${NEW_PROJECT_NAME} already exists" >&2
+    exit 1
+fi
+
+ssh "${PRIVATE_REPO_HOST}" "git init --bare --initial-branch=${PRIVATE_BRANCH} '${PRIVATE_REPO_PATH}'"
+git clone --origin "${TEMPLATE_REMOTE}" --branch "${TEMPLATE_BRANCH}" "${TEMPLATE_REPO_URL}" "${NEW_PROJECT_NAME}"
+cd "${NEW_PROJECT_NAME}"
+git remote add "${PRIVATE_REMOTE}" "${PRIVATE_REPO_URL}"
+git config --local remote.pushDefault "${PRIVATE_REMOTE}"
+git config --local push.default simple
+git remote set-url --push "${TEMPLATE_REMOTE}" DISABLED
+git push -u "${PRIVATE_REMOTE}" "${TEMPLATE_BRANCH}:${PRIVATE_BRANCH}"
+git remote -v
+git branch -vv
+git config --local --list

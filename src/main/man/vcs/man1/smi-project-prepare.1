@@ -3,7 +3,7 @@
 smi-project-prepare \- start a new private project from a public template repository
 .SH SYNOPSIS
 .B smi-project-prepare
-\fINEW_PROJECT_NAME\fR \fITEMPLATE_REPO_URL\fR \fIPRIVATE_REPOS_DIR\fR
+\fINEW_PROJECT_NAME\fR \fITEMPLATE_REPO_URL\fR \fIPRIVATE_REPOS_URL\fR
 .SH DESCRIPTION
 .PP
 The \fBsmi-project-prepare\fR command makes a new private, closed source project from a public
@@ -11,8 +11,8 @@ template repository, and protects the template from an accidental push of the pr
 .PP
 When run, it performs the following:
 .IP \[bu] 2
-Creates the bare repository \fIPRIVATE_REPOS_DIR\fR/\fINEW_PROJECT_NAME\fR.git with the initial
-branch \fBmaster\fR on the private repository host, over ssh.
+Creates the bare private repository \fIPRIVATE_REPOS_URL\fR/\fINEW_PROJECT_NAME\fR.git with the
+initial branch \fBmaster\fR, over ssh to the host of the URL.
 .IP \[bu] 2
 Clones the \fBmaster\fR branch of \fITEMPLATE_REPO_URL\fR into ./\fINEW_PROJECT_NAME\fR of the current
 directory, with the template as the remote \fBupstream\fR.
@@ -28,8 +28,8 @@ the template still works, so its later changes can be merged into the new projec
 Pushes \fBmaster\fR to \fBorigin\fR and sets it as the upstream branch, then prints the remotes, the
 branches and the local Git configuration.
 .PP
-The command fails if an argument is missing, if \fBSMI_PRIVATE_REPO_HOST\fR is not set or is a URL or
-path instead of a host, if the project name is empty, has a slash or starts with a dot, or if
+The command fails if an argument is missing, if \fIPRIVATE_REPOS_URL\fR is not an ssh URL with a host
+and a folder, if the project name is empty, has a slash or starts with a dot, or if
 \&./\fINEW_PROJECT_NAME\fR already exists.
 .PP
 The template code is left as it is. A cleanup of the copy, such as \fBsmi-project-cleanup\fR of the
@@ -37,23 +37,40 @@ Spring Boot template app, is a separate step.
 .SH OPTIONS
 .TP
 \fINEW_PROJECT_NAME\fR
-Name of the new project: the local folder and the name of the private repository.
+Name of the new project: the local folder, and the private repository \fINEW_PROJECT_NAME\fR.git.
 .TP
 \fITEMPLATE_REPO_URL\fR
 Git URL of the template repository the new project starts from.
 .TP
-\fIPRIVATE_REPOS_DIR\fR
-Folder of the bare repositories on the private repository host.
-.SH ENVIRONMENT
-.TP
-.B SMI_PRIVATE_REPO_HOST
-Private repository host, [\fIuser\fR@]\fIhost\fR, required. There is no default.
+\fIPRIVATE_REPOS_URL\fR
+ssh URL of the folder of the private repositories, without the repository name:
+[\fIuser\fR@]\fIhost\fR:\fIpath\fR or ssh://[\fIuser\fR@]\fIhost\fR[:\fIport\fR]/\fIpath\fR.
+The command adds /\fINEW_PROJECT_NAME\fR.git to it, a trailing slash is dropped.
 .SH EXAMPLES
 .PP
-Make ./myproject from the setmy.info template, with the origin
-git.example.com:/srv/git/projects/myproject.git:
+Make ./myproject from the setmy.info template. The private repositories are in
+/srv/git/projects of git.example.com, reached as the user git:
 .PP
-.B SMI_PRIVATE_REPO_HOST=git.example.com smi-project-prepare myproject git@github.com:setmy-info/setmy.info.git /srv/git/projects
+.nf
+.B smi-project-prepare myproject git@github.com:setmy-info/setmy.info.git \e
+.B "    git@git.example.com:/srv/git/projects"
+.fi
+.PP
+It runs \fBgit init \-\-bare /srv/git/projects/myproject.git\fR over ssh on git.example.com,
+clones the template into ./myproject, and sets the remotes:
+.PP
+.nf
+origin    git@git.example.com:/srv/git/projects/myproject.git (fetch, push)
+upstream  git@github.com:setmy-info/setmy.info.git (fetch)
+upstream  DISABLED (push)
+.fi
+.PP
+The same with an ssh port of its own:
+.PP
+.nf
+.B smi-project-prepare myproject git@github.com:setmy-info/setmy.info.git \e
+.B "    ssh://git@git.example.com:2222/srv/git/projects"
+.fi
 .SH AUTHOR
 .PP
 Command written by Imre Tabur.

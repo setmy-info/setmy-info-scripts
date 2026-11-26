@@ -1,0 +1,58 @@
+.TH git-full-merge "1" "November 2026" "SMI Toolset 0.156.0" "SMI Git Command"
+.SH NAME
+git-full-merge \- bring two branches up to date, merge one into the other and push, from any branch
+.SH SYNOPSIS
+.B git full-merge
+\fIFROM_BRANCH\fR \fITO_BRANCH\fR
+.SH DESCRIPTION
+.PP
+The \fBgit full-merge\fR command merges \fIFROM_BRANCH\fR into \fITO_BRANCH\fR with both branches up to
+date with \fBorigin\fR, and returns to the branch it was started on with the work in progress as it was.
+Each Git command is printed before it runs, as \fBExecuting: git ...\fR:
+.IP 1. 4
+Remembers the checked out branch. When the working tree has changes, new files included, they are put
+aside with \fBgit stash push \-\-include\-untracked\fR.
+.IP 2. 4
+\fBgit checkout\fR \fIFROM_BRANCH\fR, \fBgit pull origin\fR \fIFROM_BRANCH\fR,
+\fBgit push origin\fR \fIFROM_BRANCH\fR.
+.IP 3. 4
+\fBgit checkout\fR \fITO_BRANCH\fR, \fBgit pull origin\fR \fITO_BRANCH\fR,
+\fBgit push origin\fR \fITO_BRANCH\fR.
+.IP 4. 4
+\fBgit merge \-\-no\-edit\fR \fIFROM_BRANCH\fR, then \fBgit pull origin\fR \fITO_BRANCH\fR and
+\fBgit push origin\fR \fITO_BRANCH\fR.
+.IP 5. 4
+\fBgit checkout\fR of the branch it was started on, and \fBgit stash pop\fR when step 1 stashed.
+.PP
+It stops on the first failing command, for example on a merge conflict, and says on which branch it
+stopped and how to get the stashed changes back:
+\fBgit checkout\fR \fISTART_BRANCH\fR \fB&& git stash pop\fR. After a merge conflict, resolve the files,
+\fBgit add\fR and \fBgit commit\fR them on \fITO_BRANCH\fR and push, or \fBgit merge \-\-abort\fR.
+.PP
+It fails at once when no branch is checked out (detached HEAD).
+.PP
+Git runs it as a subcommand because the executable \fBgit-full-merge\fR is in the \fBPATH\fR.
+.SH OPTIONS
+.TP
+\fIFROM_BRANCH\fR
+The branch that is merged.
+.TP
+\fITO_BRANCH\fR
+The branch that gets the merge and is pushed.
+.SH EXAMPLES
+.PP
+On a feature branch with changes not committed yet, merge develop into master and continue:
+.PP
+.B git full-merge develop master
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR git-merge (1),
+.BR git-stash (1),
+.BR git-pull-all (1),
+.BR git-push-all (1)

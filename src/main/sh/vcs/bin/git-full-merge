@@ -1,0 +1,49 @@
+#!/bin/sh
+
+set -e
+
+. "$(smi-include commons.sh)"
+
+if [ "$#" -ne 2 ]; then
+    echo "Usage: git full-merge FROM_BRANCH TO_BRANCH" >&2
+    exit 1
+fi
+
+FROM_BRANCH="$1"
+TO_BRANCH="$2"
+REMOTE=origin
+START_BRANCH="$(git symbolic-ref --short HEAD)"
+STASHED=
+
+stopped() {
+    STATUS=$?
+    [ "${STATUS}" -eq 0 ] && return 0
+    echo "git full-merge: stopped on branch $(git symbolic-ref --quiet --short HEAD || echo '(none)')" >&2
+    if [ -n "${STASHED}" ]; then
+        echo "git full-merge: the changes of ${START_BRANCH} are in the stash: git checkout ${START_BRANCH} && git stash pop" >&2
+    fi
+}
+
+trap stopped EXIT
+
+if [ -n "$(git status --porcelain)" ]; then
+    execute git stash push --include-untracked -m "git full-merge ${FROM_BRANCH} ${TO_BRANCH} from ${START_BRANCH}"
+    STASHED=1
+fi
+
+execute git checkout "${FROM_BRANCH}"
+execute git pull "${REMOTE}" "${FROM_BRANCH}"
+execute git push "${REMOTE}" "${FROM_BRANCH}"
+
+execute git checkout "${TO_BRANCH}"
+execute git pull "${REMOTE}" "${TO_BRANCH}"
+execute git push "${REMOTE}" "${TO_BRANCH}"
+
+execute git merge --no-edit "${FROM_BRANCH}"
+execute git pull "${REMOTE}" "${TO_BRANCH}"
+execute git push "${REMOTE}" "${TO_BRANCH}"
+
+execute git checkout "${START_BRANCH}"
+if [ -n "${STASHED}" ]; then
+    execute git stash pop
+fi

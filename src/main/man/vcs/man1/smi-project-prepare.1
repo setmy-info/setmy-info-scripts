@@ -1,0 +1,69 @@
+.TH smi-project-prepare "1" "November 2026" "SMI Toolset 0.156.0" "SMI Project Command"
+.SH NAME
+smi-project-prepare \- start a new private project from a public template repository
+.SH SYNOPSIS
+.B smi-project-prepare
+\fINEW_PROJECT_NAME\fR \fITEMPLATE_REPO_URL\fR \fIPRIVATE_REPOS_DIR\fR
+.SH DESCRIPTION
+.PP
+The \fBsmi-project-prepare\fR command makes a new private, closed source project from a public
+template repository, and protects the template from an accidental push of the private code.
+.PP
+When run, it performs the following:
+.IP \[bu] 2
+Creates the bare repository \fIPRIVATE_REPOS_DIR\fR/\fINEW_PROJECT_NAME\fR.git with the initial
+branch \fBmaster\fR on the private repository host, over ssh.
+.IP \[bu] 2
+Clones the \fBmaster\fR branch of \fITEMPLATE_REPO_URL\fR into ./\fINEW_PROJECT_NAME\fR of the current
+directory, with the template as the remote \fBupstream\fR.
+.IP \[bu] 2
+Adds the private repository as the remote \fBorigin\fR, and makes it the default push target with
+.B remote.pushDefault
+and
+.BR "push.default simple" .
+.IP \[bu] 2
+Sets the push URL of \fBupstream\fR to \fBDISABLED\fR, so a push to the template fails. Fetching from
+the template still works, so its later changes can be merged into the new project.
+.IP \[bu] 2
+Pushes \fBmaster\fR to \fBorigin\fR and sets it as the upstream branch, then prints the remotes, the
+branches and the local Git configuration.
+.PP
+The command fails if an argument is missing, if \fBSMI_PRIVATE_REPO_HOST\fR is not set or is a URL or
+path instead of a host, if the project name is empty, has a slash or starts with a dot, or if
+\&./\fINEW_PROJECT_NAME\fR already exists.
+.PP
+The template code is left as it is. A cleanup of the copy, such as \fBsmi-project-cleanup\fR of the
+Spring Boot template app, is a separate step.
+.SH OPTIONS
+.TP
+\fINEW_PROJECT_NAME\fR
+Name of the new project: the local folder and the name of the private repository.
+.TP
+\fITEMPLATE_REPO_URL\fR
+Git URL of the template repository the new project starts from.
+.TP
+\fIPRIVATE_REPOS_DIR\fR
+Folder of the bare repositories on the private repository host.
+.SH ENVIRONMENT
+.TP
+.B SMI_PRIVATE_REPO_HOST
+Private repository host, [\fIuser\fR@]\fIhost\fR, required. There is no default.
+.SH EXAMPLES
+.PP
+Make ./myproject from the setmy.info template, with the origin
+git.example.com:/srv/git/projects/myproject.git:
+.PP
+.B SMI_PRIVATE_REPO_HOST=git.example.com smi-project-prepare myproject git@github.com:setmy-info/setmy.info.git /srv/git/projects
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR git-init (1),
+.BR git-clone (1),
+.BR git-remote (1),
+.BR git-push (1),
+.BR smi-new-tag (1)

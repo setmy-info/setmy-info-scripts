@@ -67,6 +67,16 @@ projectRemoveMavenModulesWithoutFolder() {
         { print }'
 }
 
+projectRenameMavenArtifact() {
+    project_from="$1"
+    project_to="$2"
+    shift 2
+    for project_pom in "$@"; do
+        projectReplaceInFile "${project_pom}" "<artifactId>${project_from}</artifactId>" "<artifactId>${project_to}</artifactId>"
+        projectReplaceInFile "${project_pom}" "<name>${project_from}</name>" "<name>${project_to}</name>"
+    done
+}
+
 projectRemoveGitSubmodulesWithoutFolder() {
     projectEditFile .gitmodules awk '
         function flush() { if (!drop) printf "%s", buf; buf = ""; drop = 0 }

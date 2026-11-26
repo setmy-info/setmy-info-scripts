@@ -54,6 +54,11 @@ into \fIFILE\fR.
 .BI projectRemoveMavenModulesWithoutFolder " DIRECTORY"
 Removes the <module> lines of \fIDIRECTORY\fR/pom.xml whose module folder does not exist.
 .TP
+.BI projectRenameMavenArtifact " FROM TO POM" ...
+Renames the artifactId and the name \fIFROM\fR to \fITO\fR in every \fIPOM\fR: the module itself and the
+dependencies on it, so the new project installs its own artifacts beside the template ones in the local
+Maven repository instead of overwriting them.
+.TP
 .B projectRemoveGitSubmodulesWithoutFolder
 Removes the entries of .gitmodules whose path does not exist, and .gitmodules when it is left empty.
 .PP

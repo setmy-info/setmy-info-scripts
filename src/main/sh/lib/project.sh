@@ -97,6 +97,18 @@ projectDeleteLinesInFile() {
     done
 }
 
+projectRemoveParagraphsInFile() {
+    project_file="$1"
+    shift
+    for project_first in "$@"; do
+        projectEditFile "${project_file}" awk -v first="${project_first}" '
+            skip && /^[ \t]*$/ { skip = 0; next }
+            skip { next }
+            $0 == first { skip = 1; next }
+            { print }'
+    done
+}
+
 projectRemoveMavenModulesWithoutFolder() {
     projectEditFile "$1/pom.xml" awk -v base="$1" '
         match($0, /<module>[^<]*<\/module>/) {

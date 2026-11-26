@@ -75,6 +75,10 @@ Renames the artifactId and the name \fIFROM\fR to \fITO\fR in every \fIPOM\fR: t
 dependencies on it, so the new project installs its own artifacts beside the template ones in the local
 Maven repository instead of overwriting them.
 .TP
+.BI projectRemoveParagraphsInFile " FILE FIRST_LINE" ...
+Removes the paragraphs of \fIFILE\fR, the lines up to and with the next empty line, whose first line is
+exactly \fIFIRST_LINE\fR, such as a .gitignore section by its comment line.
+.TP
 .BI projectRemoveGitignoreEntriesWithoutFolder " " [ FILE ]
 Removes the entries of \fIFILE\fR, default .gitignore, that are paths into a folder that does not exist,
 such as removed/build/ when removed is gone. Patterns without a folder, such as target/ or **/*.log, stay.

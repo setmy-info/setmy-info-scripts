@@ -1,0 +1,17 @@
+GIT_FLOW_NEXT_NAME=git-flow-next
+GIT_FLOW_NEXT_VERSION=2.1.0
+GIT_FLOW_NEXT_DIR_NAME=${GIT_FLOW_NEXT_NAME}-${GIT_FLOW_NEXT_VERSION}
+GIT_FLOW_NEXT_TAR_GZ_FILE_NAME=${GIT_FLOW_NEXT_NAME}-v${GIT_FLOW_NEXT_VERSION}-linux-amd64.tar.gz
+GIT_FLOW_NEXT_TAR_GZ_FILE_URL=https://github.com/gittower/git-flow-next/releases/download/v${GIT_FLOW_NEXT_VERSION}/${GIT_FLOW_NEXT_TAR_GZ_FILE_NAME}
+
+# https://github.com/gittower/git-flow-next/releases/download/v2.1.0/git-flow-next-v2.1.0-linux-amd64.tar.gz
+
+git_flow_next_download_func() {
+    smi-download ${GIT_FLOW_NEXT_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${GIT_FLOW_NEXT_TAR_GZ_FILE_NAME}
+}
+
+git_flow_next_install_func() {
+    sudo mkdir -p /opt/${GIT_FLOW_NEXT_DIR_NAME}/bin
+    sudo tar --overwrite -xvzf ${HOME_PACKAGES_DIR}/${GIT_FLOW_NEXT_TAR_GZ_FILE_NAME} -C /opt/${GIT_FLOW_NEXT_DIR_NAME}/bin
+    makeOptLink /opt/${GIT_FLOW_NEXT_NAME} /opt/${GIT_FLOW_NEXT_DIR_NAME}
+}

@@ -4,6 +4,8 @@ MISE_DIR_NAME=${MISE_NAME}-${MISE_VERSION}
 MISE_TAR_GZ_FILE_NAME=${MISE_NAME}-v${MISE_VERSION}-linux-x64.tar.gz
 MISE_TAR_GZ_FILE_URL=https://github.com/jdx/mise/releases/download/v${MISE_VERSION}/${MISE_TAR_GZ_FILE_NAME}
 
+# https://github.com/jdx/mise/releases/download/v2026.11.14/mise-v2026.11.14-linux-x64.tar.gz
+
 mise_download_func() {
     smi-download ${MISE_TAR_GZ_FILE_URL} ${HOME_PACKAGES_DIR}/${MISE_TAR_GZ_FILE_NAME}
 }

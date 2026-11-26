@@ -23,6 +23,8 @@ janet --version
 echo ######################
 mise --version
 echo ######################
+git flow version
+echo ######################
 sbcl --version
 echo ######################
 bazel version

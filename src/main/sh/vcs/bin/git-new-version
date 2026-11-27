@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+. "$(smi-include commons.sh)"
+
+if [ "$#" -ne 1 ] || [ -z "$1" ]; then
+    echo "Usage: git new-version NEW_VERSION" >&2
+    exit 1
+fi
+
+NEW_VERSION="$1"
+FEATURE="new-version-${NEW_VERSION}"
+
+execute git flow feature start "${FEATURE}"
+execute git flow feature list
+execute smi-new-version "${NEW_VERSION}"
+execute git add .
+execute git save "New version started"
+execute git flow feature finish "${FEATURE}"

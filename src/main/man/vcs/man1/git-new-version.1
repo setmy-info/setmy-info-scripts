@@ -1,0 +1,42 @@
+.TH git-new-version "1" "November 2026" "SMI Toolset 0.156.0" "SMI Git Command"
+.SH NAME
+git-new-version \- start a new version of the project in a git flow feature branch
+.SH SYNOPSIS
+.B git new-version
+\fINEW_VERSION\fR
+.SH DESCRIPTION
+.PP
+The \fBgit new-version\fR command changes the version of the project in the feature branch
+\fBnew-version-\fINEW_VERSION\fR and finishes it, each step printed as \fBExecuting: ...\fR before it runs:
+.IP 1. 4
+\fBgit flow feature start new-version-\fINEW_VERSION\fR.
+.IP 2. 4
+\fBgit flow feature list\fR.
+.IP 3. 4
+\fBsmi-new-version\fR \fINEW_VERSION\fR: the version markers of the project, by its \fB.new-version\fR file.
+.IP 4. 4
+\fBgit add .\fR
+.IP 5. 4
+\fBgit save "New version started"\fR: commit and push.
+.IP 6. 4
+\fBgit flow feature finish new-version-\fINEW_VERSION\fR: merge into the develop branch.
+.PP
+It is run in the project root, with git flow initialized there (\fBgit flow init\fR, for example by the
+git-flow-next package). It stops on the first failing step and stays on the feature branch then, for
+example when \fINEW_VERSION\fR is no semantic version or there is no \fB.new-version\fR file.
+.PP
+Git runs it as a subcommand because the executable \fBgit-new-version\fR is in the \fBPATH\fR.
+.SH EXAMPLES
+.PP
+.B git new-version 0.158.0
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-new-version (1),
+.BR git-save (1),
+.BR git-flow (1)

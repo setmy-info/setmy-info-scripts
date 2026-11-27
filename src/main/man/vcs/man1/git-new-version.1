@@ -7,7 +7,7 @@ git-new-version \- start a new version of the project in a git flow feature bran
 .SH DESCRIPTION
 .PP
 The \fBgit new-version\fR command changes the version of the project in the feature branch
-\fBnew-version-\fINEW_VERSION\fR and finishes it, each step printed as \fBExecuting: ...\fR before it runs:
+\fBnew-version-\fINEW_VERSION\fR, each step printed as \fBExecuting: ...\fR before it runs:
 .IP 1. 4
 \fBgit flow feature start new-version-\fINEW_VERSION\fR.
 .IP 2. 4
@@ -18,8 +18,9 @@ The \fBgit new-version\fR command changes the version of the project in the feat
 \fBgit add .\fR
 .IP 5. 4
 \fBgit save "\fINEW_VERSION\fB - version markers changed"\fR: commit and push.
-.IP 6. 4
-\fBgit flow feature finish new-version-\fINEW_VERSION\fR: merge into the develop branch.
+.PP
+The feature is not finished: the branch stays ready to merge, and the version is final when it is merged,
+for example by \fBgit flow feature finish new-version-\fINEW_VERSION\fR.
 .PP
 It is run in the project root, with git flow initialized there (\fBgit flow init\fR, for example by the
 git-flow-next package). It stops on the first failing step and stays on the feature branch then, for

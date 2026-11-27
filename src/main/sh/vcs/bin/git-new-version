@@ -16,5 +16,5 @@ execute git flow feature start "${FEATURE}"
 execute git flow feature list
 execute smi-new-version "${NEW_VERSION}"
 execute git add .
-execute git save "New version started"
+execute git save "${NEW_VERSION} - version markers changed"
 execute git flow feature finish "${FEATURE}"

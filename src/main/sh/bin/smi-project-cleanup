@@ -5,9 +5,14 @@ set -eu
 . "$(smi-include project.sh)"
 
 main() {
+    if [ ! -f ./.smi-project-cleanup ]; then
+        echo "No ./.smi-project-cleanup: nothing to clean up"
+        return 0
+    fi
     . ./.smi-project-cleanup
     projectRunStage cleanup doCleanup
     projectRunStage rename doRename
+    projectRunStage post doPost
 }
 
 main "$@"

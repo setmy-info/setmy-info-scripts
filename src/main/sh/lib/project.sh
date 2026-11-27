@@ -118,6 +118,20 @@ projectRemoveMavenModulesWithoutFolder() {
         { print }'
 }
 
+projectRemoveMavenModulesExcept() {
+    project_base="$1"
+    shift
+    for project_module in $(sed -n 's|.*<module>\([^<]*\)</module>.*|\1|p' "${project_base}/pom.xml"); do
+        case " $* " in
+            *" ${project_module} "*) ;;
+            *)
+                rm -rf "${project_base:?}/${project_module}"
+                projectDeleteLinesInFile "${project_base}/pom.xml" "<module>${project_module}</module>"
+                ;;
+        esac
+    done
+}
+
 projectRenameMavenArtifact() {
     project_from="$1"
     project_to="$2"

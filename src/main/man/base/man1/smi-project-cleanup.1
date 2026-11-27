@@ -14,9 +14,13 @@ The command runs two stages, in this order:
 \fBcleanup\fR: the function \fBdoCleanup\fR of the file, removing what the new project does not need.
 .IP 2. 4
 \fBrename\fR: the function \fBdoRename\fR of the file, renaming the template names to the new project.
+.IP 3. 4
+\fBpost\fR: the function \fBdoPost\fR of the file, what comes after both, such as removing the
+\fB.smi-project-cleanup\fR files themselves.
 .PP
 A stage whose function the file does not define is skipped, so a project implements only what it needs.
-The command stops on the first failing command.
+The command stops on the first failing command. Without a \fB.smi-project-cleanup\fR file there is nothing
+to clean up: the command says so and exits with status 0.
 .SH "THE .smi-project-cleanup FILE"
 .PP
 \fBdoCleanup\fR and \fBdoRename\fR call one small function per step through \fBprojectStep\fR, which
@@ -66,6 +70,9 @@ Deletes the lines of \fIFILE\fR that match a \fIPATTERN\fR (a sed regular expres
 .BI projectEditFile " FILE COMMAND " [ ARGUMENT ...]
 Runs \fICOMMAND\fR, such as sed or awk, with \fIFILE\fR as standard input and writes its output back
 into \fIFILE\fR.
+.TP
+.BI projectRemoveMavenModulesExcept " DIRECTORY KEEP" ...
+Removes every module of \fIDIRECTORY\fR/pom.xml that is not a \fIKEEP\fR: its <module> line and its folder.
 .TP
 .BI projectRemoveMavenModulesWithoutFolder " DIRECTORY"
 Removes the <module> lines of \fIDIRECTORY\fR/pom.xml whose module folder does not exist.

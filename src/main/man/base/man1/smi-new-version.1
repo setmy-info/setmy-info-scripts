@@ -1,0 +1,54 @@
+.TH smi-new-version "1" "November 2026" "SMI Toolset 0.156.0" "SMI Project Command"
+.SH NAME
+smi-new-version \- change the version markers of a project to a new version
+.SH SYNOPSIS
+.B smi-new-version
+.I NEW_VERSION
+.SH DESCRIPTION
+.PP
+The \fBsmi-new-version\fR command is run in the root folder of a project. \fINEW_VERSION\fR is a semantic
+version: \fIMAJOR\fB.\fIMINOR\fB.\fIPATCH\fR, numbers without leading zeros, optionally followed by a
+\fB-\fIpre-release\fR and a \fB+\fIbuild\fR part, such as \fB1.2.0\fR or \fB1.2.0-rc.1\fR. Without exactly one
+argument, or with one that is no semantic version, it prints the usage and exits with status 1.
+.PP
+The project says which files hold its version in the file \fB.new-version\fR of that folder, a shell file
+that the command includes. The command then calls its function \fBdoVersionChange\fR with \fINEW_VERSION\fR.
+It stops on the first failing command.
+.SH "THE .new-version FILE"
+.PP
+\fBdoVersionChange\fR gets the new version as \fB$1\fR and changes every version marker of the project. The
+helper functions of the library \fBproject.sh\fR are available, described in \fBsmi-project-cleanup\fR(1),
+for example \fBprojectEditFile\fR \fIFILE\fR \fBsed -e\fR \fIEXPRESSION\fR, which edits a file in place with
+any sed and leaves a missing file alone.
+.PP
+The \fB.new-version\fR of the project root can also only include another file, so the actual one lives
+beside the build scripts, as in setmy-info-scripts:
+.PP
+.nf
+.RS
+\&. ./src/main/sh/build/.new-version
+.RE
+.fi
+.SH EXAMPLES
+.PP
+A .new-version that changes the version of a Makefile:
+.PP
+.nf
+.RS
+doVersionChange() {
+    projectEditFile Makefile sed -e "s/^VERSION = .*/VERSION = $1/"
+}
+.RE
+.fi
+.PP
+.B smi-new-version 0.157.0
+.SH AUTHOR
+.PP
+Command written by Imre Tabur.
+.SH "REPORTING BUGS"
+.PP
+Report bugs to \fIimre.tabur@mail.ee\fR
+.SH "SEE ALSO"
+.PP
+.BR smi-project-cleanup (1),
+.BR sed (1)

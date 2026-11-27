@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+. "$(smi-include project.sh)"
+
+usage() {
+    echo "Usage: smi-new-version NEW_VERSION  (semantic version, e.g. 1.2.0)" >&2
+    exit 1
+}
+
+isSemanticVersion() {
+    printf '%s\n' "$1" | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$'
+}
+
+main() {
+    [ $# -eq 1 ] || usage
+    isSemanticVersion "$1" || usage
+    . ./.new-version
+    doVersionChange "$1"
+}
+
+main "$@"

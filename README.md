@@ -128,10 +128,11 @@ docker build --no-cache --progress=plain -f Dockerfile .
 Run from the project root:
 
 ```sh
-./src/main/sh/build/update-versions.sh <new-version>
+smi-new-version <new-version>
 ```
 
-This updates all version references in:
+smi-new-version includes ./.new-version, which includes ./src/main/sh/build/.new-version, whose doVersionChange
+updates all version references in:
 
 * ./README.md
 * ./Doxyfile
